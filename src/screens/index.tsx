@@ -3,7 +3,7 @@ import SplashScreen from "../components/general/SplashScreen";
 
 const Initialize = ({ navigation } : any) => {
 
-    const [loading, setLoading] = useState(true)
+    const [loading, setLoading] = useState(false)
 
     useEffect(() => {
 
@@ -11,7 +11,7 @@ const Initialize = ({ navigation } : any) => {
 
     if(loading)
         return <SplashScreen />
-        
+
     return (
         <>
         

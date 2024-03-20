@@ -4,7 +4,7 @@ import AppRoutes from './src/routes';
 
 export default function App() {
   return (
-    <View style={{ flex: 1, backgroundColor: "transparent" }} >
+    <View style={{ flex: 1, backgroundColor: 'transparent' }} >
         <StatusBar hidden translucent />
         <AppRoutes />
     </View>
