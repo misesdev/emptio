@@ -12,7 +12,7 @@ const theme = {
 
         ICONS: "#FFFFFF",
         MENU: "rgba(28,28,28,.9)",
-        TRANSPARENT: "rgba(18,41,49, .8)"
+        TRANSPARENT: "transparent"
     }
 };
 
