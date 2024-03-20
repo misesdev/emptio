@@ -1,20 +1,12 @@
 import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View } from 'react-native';
+import { View } from 'react-native';
+import AppRoutes from './src/routes'; 
 
 export default function App() {
   return (
-    <View style={styles.container}>
-      <Text>Emptio App!</Text>
-      <StatusBar style="auto" />
+    <View style={{ flex: 1, backgroundColor: "transparent" }} >
+        <StatusBar hidden translucent />
+        <AppRoutes />
     </View>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-});
