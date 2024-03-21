@@ -1,5 +1,5 @@
 import { StyleSheet, View, Text } from "react-native"
-import theme from "../../../theme"
+import theme from "@src/theme"
 
 
 const HomeSearch = () => {

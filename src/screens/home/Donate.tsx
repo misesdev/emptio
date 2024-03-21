@@ -1,7 +1,7 @@
 import { StyleSheet, View, Text } from "react-native"
 import theme from "@src/theme"
 
-const Donate = () => {
+const Donate = ({ navigation }: any) => {
     return (
         <View style={styles.container} >
             <Text style={styles.title}>Donate</Text>

@@ -1,18 +1,19 @@
 import { StyleSheet, View, Text } from "react-native"
 import theme from "@src/theme"
-import { useEffect } from "react"
-import { Ionicons } from "@expo/vector-icons"
-import SearchButton from "@components/form/SearchButton"
+import { useEffect, useState } from "react"
+import { createHeaderHome } from "./headers"
+import SplashScreen from "@/src/components/general/SplashScreen"
 
 const Home = ({ navigation }: any) => {
 
+    const [loading, setLoading] = useState(true)
+
     useEffect(() => {
-        navigation.setOptions({
-            headerTitle: () => <SearchButton label="Pesquisar"/>,
-            headerLeft: () => <Ionicons name="menu" color={theme.COLORS.WHITE} size={26} style={{ margin: 16 }} />,
-            headerRight: () => <Ionicons name="time" color={theme.COLORS.WHITE} size={26} style={{ margin: 16 }} />,
-        })
+        createHeaderHome(navigation)
     }, [])
+
+    if(loading)
+        return <SplashScreen />
 
     return (
         <View style={styles.container} >

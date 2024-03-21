@@ -21,16 +21,19 @@ const SearchButton = ({ label, onPress }: Props) => {
 
 const styles = StyleSheet.create({
     sarchArea: {
-        minWidth: 200,
-        padding: 5,
-        borderRadius: 15,
+        minWidth: 210,
+        maxWidth: 240,
+        padding: 4.5,
+        borderRadius: 25,
         backgroundColor: theme.COLORS.DEFAULT
     },
     content: {
         flexDirection: "row"
     },
     text: {
-        fontSize: 18, 
+        fontSize: 16,
+        marginHorizontal: 10,
+        marginVertical: 2, 
         color: theme.COLORS.GRAY
     },
     icon: {
