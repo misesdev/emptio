@@ -2,14 +2,15 @@ import { StyleSheet, View, Text } from "react-native"
 import theme from "@src/theme"
 import { useEffect } from "react"
 import { Ionicons } from "@expo/vector-icons"
+import SearchButton from "@components/form/SearchButton"
 
 const Home = ({ navigation }: any) => {
 
     useEffect(() => {
         navigation.setOptions({
-            headerTitle: () => <Ionicons name="home" color={theme.COLORS.WHITE} size={26} style={{ margin: 15 }} />,
-            headerLeft: () => <Ionicons name="menu" color={theme.COLORS.WHITE} size={26} style={{ margin: 15 }} />,
-            headerRight: () => <Ionicons name="bug" color={theme.COLORS.WHITE} size={26} style={{ margin: 15 }} />,
+            headerTitle: () => <SearchButton label="Pesquisar"/>,
+            headerLeft: () => <Ionicons name="menu" color={theme.COLORS.WHITE} size={26} style={{ margin: 16 }} />,
+            headerRight: () => <Ionicons name="time" color={theme.COLORS.WHITE} size={26} style={{ margin: 16 }} />,
         })
     }, [])
 

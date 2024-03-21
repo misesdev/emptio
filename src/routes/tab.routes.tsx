@@ -6,8 +6,13 @@ import theme from "@src/theme"
 import Home from "@screens/home/Home"
 import Feed from "@screens/home/Feed"
 import Donate from "@screens/home/Donate"
+import { IconProps } from "./components/Icons"
 
 const Tab = createBottomTabNavigator()
+
+type T = {
+    icon: IconProps
+}
 
 const TabRoutes = () => {
 
@@ -35,7 +40,7 @@ const TabRoutes = () => {
                             component={item.component}
                             options={{
                                 tabBarLabel: item.label,
-                                tabBarIcon: ({ color }) => <Ionicons name={item.icon} color={color} size={20} />,
+                                tabBarIcon: ({ color }) => <TouchableOpacity><Ionicons name={item.icon} color={color} size={20} /></TouchableOpacity>,
                             }}
                         />
                     )
