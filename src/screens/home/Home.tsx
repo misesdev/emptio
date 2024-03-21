@@ -1,8 +1,18 @@
 import { StyleSheet, View, Text } from "react-native"
-import theme from "../../theme"
+import theme from "@src/theme"
+import { useEffect } from "react"
+import { Ionicons } from "@expo/vector-icons"
 
+const Home = ({ navigation }: any) => {
 
-const Home = () => {
+    useEffect(() => {
+        navigation.setOptions({
+            headerTitle: () => <Ionicons name="home" color={theme.COLORS.WHITE} size={26} style={{ margin: 15 }} />,
+            headerLeft: () => <Ionicons name="menu" color={theme.COLORS.WHITE} size={26} style={{ margin: 15 }} />,
+            headerRight: () => <Ionicons name="bug" color={theme.COLORS.WHITE} size={26} style={{ margin: 15 }} />,
+        })
+    }, [])
+
     return (
         <View style={styles.container} >
             <Text style={styles.title}>Home</Text>

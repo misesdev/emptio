@@ -1,11 +1,11 @@
 import { StyleSheet, View, Text } from "react-native"
-import theme from "@src/theme"
+import theme from "../../../theme"
 
 
-const Feed = () => {
+const HomeSearch = () => {
     return (
         <View style={styles.container} >
-            <Text style={styles.title}>Feed</Text>
+            <Text style={styles.title}>Search Home</Text>
         </View>
     )
 }
@@ -24,4 +24,4 @@ const styles = StyleSheet.create({
     }
 })
 
-export default Feed
+export default HomeSearch

@@ -1,5 +1,4 @@
 import { createDrawerNavigator } from "@react-navigation/drawer";
-import { Ionicons } from "@expo/vector-icons"
 
 import TabRoutes from "./tab.routes";
 import theme from "../theme";
@@ -11,9 +10,11 @@ const DrawerRoutes = () => {
     return (
         <Drawer.Navigator 
             screenOptions={{ 
+                headerTitle: '',
                 headerTransparent: true,
                 drawerStyle: styles.drawer,                 
                 sceneContainerStyle: styles.tabBottom,  
+                headerLeft: () => <></>
             }} >  
             <Drawer.Screen
                 name='menu'

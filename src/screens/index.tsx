@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import SplashScreen from "../components/general/SplashScreen";
+import SplashScreen from "@components/general/SplashScreen";
 
 const Initialize = ({ navigation } : any) => {
 

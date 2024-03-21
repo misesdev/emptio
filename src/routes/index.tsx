@@ -8,9 +8,9 @@ const AppRoutes = () => {
 
     return (
         <NavigationContainer >            
-            {/* <TabRoutes /> */}
-            <DrawerRoutes />
+            <TabRoutes />
             {/* <StackRoutes /> */}
+            {/* <DrawerRoutes /> */}
         </NavigationContainer>
     )
 }

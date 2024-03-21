@@ -1,4 +1,4 @@
-import theme from "../../theme";
+import theme from "@src/theme";
 import { View, Text, ActivityIndicator, StyleSheet, Image } from "react-native";
 
 type Props = {
@@ -9,7 +9,7 @@ const SplashScreen = ({ message }: Props) => {
     return (
         <View style={styles.container}>
 
-            <Image style={styles.logo} source={require("../../../assets/logo.png")} />
+            <Image style={styles.logo} source={require("@/assets/logo.png")} />
 
             <ActivityIndicator style={styles.load} size={50} color={"white"}></ActivityIndicator>
 
