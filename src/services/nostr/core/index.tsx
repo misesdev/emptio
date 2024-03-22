@@ -15,9 +15,9 @@ export const createPairKeys = (): SecreteKeys => {
 
     const secreteKey = generateSecreteKey()
 
-    const publicKey = bytesToHex(schnorr.getPublicKey(secreteKey))
+    const publicKey = "npub" + bytesToHex(schnorr.getPublicKey(secreteKey))
 
-    const privateKey = bytesToHex(secreteKey)
+    const privateKey = "nsec" + bytesToHex(secreteKey)
 
     console.log(`privateKey: ${privateKey}`)
 
@@ -25,3 +25,5 @@ export const createPairKeys = (): SecreteKeys => {
 
     return { privateKey, publicKey }
 }
+
+
