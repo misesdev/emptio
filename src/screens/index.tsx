@@ -1,4 +1,3 @@
-import { useEffect, useState } from "react";
 import { Image, StyleSheet, Text, View } from "react-native";
 import { ButtonDanger, ButtonSuccess } from "@components/form/Buttons";
 import theme from "@src/theme";

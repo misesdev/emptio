@@ -7,6 +7,7 @@ import theme from '@src/theme';
 import { useEffect, useState } from 'react';
 import { getUser } from './src/services/memory';
 import SplashScreen from './src/components/general/SplashScreen';
+import { createPairKeys } from './src/services/nostr/core';
 
 export default function App() {
 
@@ -14,6 +15,9 @@ export default function App() {
     const [logged, setLogged] = useState(false)
 
     useEffect(() => {
+
+        createPairKeys()
+
         const {publicKey} = getUser()
         
         if(publicKey)
