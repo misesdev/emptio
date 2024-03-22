@@ -1,13 +1,21 @@
 import { useEffect, useState } from "react";
+import SplashScreen from "@components/general/SplashScreen";
 import { Image, StyleSheet, Text, View } from "react-native";
-import { ButtonDanger, ButtonSuccess } from "@components/form/Buttons";
+import { ButtonPrimary } from "@components/form/Buttons";
 import theme from "@src/theme";
 
-const Initialize = ({ navigation }: any) => {
+const Register = ({ navigation }: any) => {
 
-    const handlerLogin = () => navigation.navigate("login-stack")
+    const [loading, setLoading] = useState(true)
 
-    const handlerRegister = () => navigation.navigate("register-stack")
+    useEffect(() => {
+        // navigation.
+
+        setLoading(false)
+    }, [])
+
+    if (loading)
+        return <SplashScreen />
 
     return (
         <View style={theme.styles.container}>
@@ -16,8 +24,7 @@ const Initialize = ({ navigation }: any) => {
             <Text style={styles.title}>Welcome to emptio!</Text>
 
             <View style={styles.buttonArea}>
-                <ButtonSuccess title="REGISTER" onPress={handlerRegister} />
-                <ButtonDanger title="LOGIN" onPress={handlerLogin} />
+                <ButtonPrimary title="REGISTER" onPress={() => { }} />
             </View>
         </View>
     )
@@ -43,4 +50,4 @@ const styles = StyleSheet.create({
     }
 })
 
-export default Initialize;
+export default Register
