@@ -1,3 +1,4 @@
+import { DefaultRelays } from "@/src/constants/Relays"
 import { getItem, setItem } from "expo-secure-store"
 
 type Relays = string[]
@@ -7,28 +8,28 @@ export const getRelays = (): Relays => {
     if (data)
         return JSON.parse(data)
 
-    return []
+    return DefaultRelays
 }
 
 export const setRelays = (relays: Relays) => setItem("relays", JSON.stringify(relays))
 
-export const addRelay = (relay: string) => {
+export const insertRelay = (relay: string) => {
     const relays: Relays = [];
     const data = getItem("relays")
-    if(data) {
+    if (data) {
         const relays = JSON.parse(data)
         relays.push(relay)
-    } else 
-        relays.push(relay)        
-    
-    setItem("relays", JSON.stringify([relay]))
+    } else
+        relays.push(relay)
+
+    setRelays([relay])
 }
 
-export const removeRelay =(relay: string) => {
+export const deleteRelay = (relay: string) => {
     const data = getItem("relays")
-    if(data) {
+    if (data) {
         const relays: Relays = JSON.parse(data)
         relays.splice(relays.indexOf(relay), 1)
-        setItem("relays", JSON.stringify([relay]))
+        setRelays(relays)
     }
 }

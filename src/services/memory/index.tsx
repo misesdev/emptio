@@ -1,23 +1,22 @@
-import { setItem, getItem } from "expo-secure-store";
+import { setItem, getItem } from "expo-secure-store"
 
 type User = {
-    firstName?: string,
-    lastName?: string,
-    profile?: string,
+    userName?: string,
     privateKey?: string,
-    publicKey?: string
+    publicKey?: string,
+    profile?: string,
+    wallet?: Wallet
 }
 
-export const getUser = ():  User => {
+export const getUser = (): User => {
     const user = getItem("userData")
-    if(user)
+    if (user)
         return JSON.parse(user)
 
     return {}
 }
 
-export const setUser = (userData: User) =>  setItem("userData", JSON.stringify(userData))
-
+export const insertUser = (userData: User) => setItem("userData", JSON.stringify(userData), { requireAuthentication: false }) 
 
 type Wallet = {
     privateKey?: string,
@@ -26,10 +25,10 @@ type Wallet = {
 
 export const getWallet = (): Wallet => {
     const wallet = getItem("walletData")
-    if(wallet)
+    if (wallet)
         return JSON.parse(wallet)
 
     return {}
 }
 
-export const setWallet = (wallet: Wallet) => setItem("walletData", JSON.stringify(wallet))
+export const insertWallet = (wallet: Wallet) => setItem("walletData", JSON.stringify(wallet), { requireAuthentication: false }) 
