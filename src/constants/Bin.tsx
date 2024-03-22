@@ -1,0 +1,3 @@
+
+
+export const BinaryKeyCheck = "5cc62de0b8b396d7051d6bff13d0b15d36b9acb20b0455cec0a53d825f2fb1c7"

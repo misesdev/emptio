@@ -1,4 +1,4 @@
-import { createPairKeys, getPublicKey } from "@/src/services/nostr/core";
+import { createPairKeys, getPublicKey } from "@src/services/nostr";
 
 describe("Pair Keys Nostr", () => {
     it("generate pair keys", () => {
