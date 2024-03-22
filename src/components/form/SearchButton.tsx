@@ -12,7 +12,7 @@ const SearchButton = ({ label, onPress }: Props) => {
     return (
         <TouchableOpacity onPress={onPress} style={styles.sarchArea}>
             <View style={styles.content}>
-                <Ionicons name="search" color={theme.COLORS.GRAY} size={20} style={styles.icon} />
+                <Ionicons name="search" color={theme.colors.gray} size={theme.icons.medium} style={styles.icon} />
                 <Text style={styles.text}>{label}</Text>
             </View>
         </TouchableOpacity>
@@ -25,7 +25,7 @@ const styles = StyleSheet.create({
         maxWidth: 240,
         padding: 4.5,
         borderRadius: 25,
-        backgroundColor: theme.COLORS.DEFAULT
+        backgroundColor: theme.colors.default
     },
     content: {
         flexDirection: "row"
@@ -34,10 +34,11 @@ const styles = StyleSheet.create({
         fontSize: 16,
         marginHorizontal: 10,
         marginVertical: 2, 
-        color: theme.COLORS.GRAY
+        color: theme.colors.gray
     },
     icon: {
-        margin: 4
+        marginHorizontal: 5,
+        marginVertical: 1
     }
 })
 

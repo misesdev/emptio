@@ -9,9 +9,9 @@ const SplashScreen = ({ message }: Props) => {
     return (
         <View style={styles.container}>
 
-            <Image style={styles.logo} source={require("@/assets/logo.png")} />
+            <Image style={styles.logo} source={require("@assets/emptio.png")} />
 
-            <ActivityIndicator style={styles.load} size={50} color={"white"}></ActivityIndicator>
+            <ActivityIndicator style={styles.load} size={50} color={theme.colors.gray}></ActivityIndicator>
 
             {message && <Text style={styles.message}>{message}</Text>}
 
@@ -22,7 +22,7 @@ const SplashScreen = ({ message }: Props) => {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        backgroundColor: theme.COLORS.BLACK,
+        backgroundColor: theme.colors.black,
         justifyContent: 'center',
         alignItems: 'center',
     },
@@ -32,10 +32,10 @@ const styles = StyleSheet.create({
         marginTop: -100
     },
     load: {
-        margin: 30
+        marginVertical: 80
     },
     message: {
-        color: theme.COLORS.WHITE,
+        color: theme.colors.gray,
         backgroundColor: "rgba(255, 255, 255, .1)",
         maxWidth: "80%",
         padding: 10,
