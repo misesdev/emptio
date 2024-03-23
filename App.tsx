@@ -1,10 +1,10 @@
 import { StatusBar } from 'expo-status-bar';
 import { View } from 'react-native';
-import AppRoutes from './src/routes';
+import AppRoutes from '@src/routes';
 import theme from '@src/theme';
 import { useEffect, useState } from 'react';
-import { getUser } from './src/services/memory';
-import SplashScreen from './src/components/general/SplashScreen';
+import { getUser } from '@src/services/memory';
+import SplashScreen from '@components/general/SplashScreen';
 
 export default function App() {
 
@@ -13,15 +13,15 @@ export default function App() {
 
     useEffect(() => {
 
-        const {publicKey} = getUser()
-        
-        if(publicKey)
+        const { publicKey } = getUser()
+
+        if (publicKey)
             setLogged(true)
 
         setLoading(false)
     }, [])
 
-    if(loading)
+    if (loading)
         return <SplashScreen />
 
     return (
