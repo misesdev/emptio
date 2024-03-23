@@ -17,6 +17,8 @@
     "@react-navigation/native": "^6.1.17",
     "@react-navigation/stack": "^6.3.29",
     "expo": "~50.0.14",
+    "expo-camera": "^14.1.1",
+    "expo-clipboard": "^5.0.1",
     "expo-crypto": "^12.8.1",
     "expo-secure-store": "^12.8.1",
     "expo-status-bar": "~1.11.1",
@@ -26,10 +28,10 @@
     "react": "18.2.0",
     "react-dom": "18.2.0",
     "react-native": "0.73.6",
+    "react-native-gesture-handler": "~2.14.0",
     "react-native-paper": "^5.12.3",
     "react-native-vector-icons": "^10.0.3",
-    "react-native-web": "~0.19.6",
-    "react-native-gesture-handler": "~2.14.0"
+    "react-native-web": "~0.19.6"
   },
   "devDependencies": {
     "@babel/core": "^7.20.0",

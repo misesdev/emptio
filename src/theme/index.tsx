@@ -12,7 +12,7 @@ const theme = {
 
         icons: "#FFFFFF",
         menu: "rgba(28,28,28,.9)",
-        transparent: "transparent"
+        transparent: "transparent",
     },
     icons: {
         mine: 18,
@@ -22,6 +22,11 @@ const theme = {
         white: "#FFFFFF",
         gray: "525B5F",
         default: "#2D3138",
+    },
+    input: {
+        color: "#1f2224",
+        textColor: "#84898c",
+        backGround: "#0e191f",
     },
     styles: StyleSheet.create({
         container: {

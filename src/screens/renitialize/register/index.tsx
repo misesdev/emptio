@@ -3,28 +3,26 @@ import SplashScreen from "@components/general/SplashScreen";
 import { Image, StyleSheet, Text, View } from "react-native";
 import { ButtonPrimary } from "@components/form/Buttons";
 import theme from "@src/theme";
+import { TextBox } from "@components/form/TextBoxs";
 
 const Register = ({ navigation }: any) => {
 
-    const [loading, setLoading] = useState(true)
+    const [userName, setUserName] = useState("")
 
-    useEffect(() => {
-        // navigation.
-
-        setLoading(false)
-    }, [])
-
-    if (loading)
-        return <SplashScreen />
+    const handlerLogin = () => {
+        
+    }
 
     return (
         <View style={theme.styles.container}>
             <Image style={styles.logo} source={require("@assets/emptio.png")} />
 
-            <Text style={styles.title}>Welcome to emptio!</Text>
+            <Text style={styles.title}>You just need to set your username, the app takes care of the rest!</Text>
+
+            <TextBox placeholder="User Name" value={userName} onChangeText={setUserName} />
 
             <View style={styles.buttonArea}>
-                <ButtonPrimary title="REGISTER" onPress={() => { }} />
+                <ButtonPrimary title="REGISTER" onPress={handlerLogin} />
             </View>
         </View>
     )
@@ -39,6 +37,8 @@ const styles = StyleSheet.create({
     title: {
         marginVertical: 10,
         color: theme.colors.gray,
+        textAlign: "center",
+        width: "85%"
     },
     buttonArea: {
         width: '100%',

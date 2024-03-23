@@ -14,3 +14,5 @@ describe("Pair Keys Nostr", () => {
         expect(publicKey).toBe(derivatePublicKey)
     })
 })
+
+

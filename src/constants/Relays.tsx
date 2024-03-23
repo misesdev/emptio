@@ -5,4 +5,7 @@ export const DefaultRelays = [
     "wss://nostr-pub.wellorder.net",
     "wss://nostr.oxtr.dev",
     "wss://nostr-pub.semisol.dev",
+    "wss://relay.nostr.band",
+    "wss://search.nos.today",
+    "wss://relay.noswhere.com",
 ]
