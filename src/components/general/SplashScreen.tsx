@@ -38,7 +38,8 @@ const styles = StyleSheet.create({
         color: theme.colors.gray,
         backgroundColor: "rgba(255, 255, 255, .1)",
         maxWidth: "80%",
-        padding: 10,
+        paddingHorizontal: 20,
+        paddingVertical: 10,
         borderRadius: 10,
         position: "absolute",
         bottom: 100

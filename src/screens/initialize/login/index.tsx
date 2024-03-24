@@ -36,7 +36,7 @@ const Login = ({ navigation }: any) => {
             <QRCodeTextBox placeholder="Private Key" onChangeText={setPrivateKey} value={privateKey} />
 
             <View style={styles.buttonArea}>
-                <ButtonPrimary title="ENTER" onPress={handlerLogin} />
+                <ButtonPrimary title="Sign In" onPress={handlerLogin} />
             </View>
         </View>
     )

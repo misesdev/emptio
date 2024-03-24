@@ -4,28 +4,43 @@ import { Image, StyleSheet, Text, View } from "react-native";
 import { ButtonPrimary } from "@components/form/Buttons";
 import theme from "@src/theme";
 import { TextBox } from "@components/form/TextBoxs";
-import { insertUser } from "@/src/services/memory";
+import MessageBox, { showMessage } from "@/src/components/general/MessageBox";
+import { SignUp } from "@src/services/userManager";
+import AppRoutes from "@src/routes";
 
 const Register = ({ navigation }: any) => {
 
     const [userName, setUserName] = useState("")
+    const [loading, setLoading] = useState(false)
+    const [registered, setRegistered] = useState(false)
 
-    const handlerLogin = () => {
-        
+    const handlerRegister = () => {
+
+        setLoading(true)
+
+        SignUp({ userName, callback: () => setRegistered(true) })
+
+        setLoading(false)
     }
 
+    if(loading)
+        return <SplashScreen message="registering.."/>
+
     return (
-        <View style={theme.styles.container}>
-            <Image style={styles.logo} source={require("@assets/emptio.png")} />
+        <>
+            <View style={theme.styles.container}>
+                <Image style={styles.logo} source={require("@assets/emptio.png")} />
 
-            <Text style={styles.title}>You just need to set your username, the app takes care of the rest!</Text>
+                <Text style={styles.title}>You just need to set your username, the app takes care of the rest!</Text>
 
-            <TextBox placeholder="User Name" value={userName} onChangeText={setUserName} />
+                <TextBox placeholder="User Name" value={userName} onChangeText={setUserName} />
 
-            <View style={styles.buttonArea}>
-                <ButtonPrimary title="REGISTER" onPress={handlerLogin} />
+                <View style={styles.buttonArea}>
+                    <ButtonPrimary title="Sign Up" onPress={handlerRegister} />
+                </View>
             </View>
-        </View>
+            <MessageBox />
+        </>
     )
 }
 
@@ -43,7 +58,7 @@ const styles = StyleSheet.create({
     },
     buttonArea: {
         width: '100%',
-        position: 'absolute',        
+        position: 'absolute',
         justifyContent: 'center',
         marginVertical: 30,
         flexDirection: "row",
@@ -52,3 +67,4 @@ const styles = StyleSheet.create({
 })
 
 export default Register
+

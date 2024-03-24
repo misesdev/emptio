@@ -1,5 +1,5 @@
 import { Image, StyleSheet, Text, View } from "react-native";
-import { ButtonDanger, ButtonSuccess } from "@components/form/Buttons";
+import { ButtonDefault, ButtonSuccess } from "@components/form/Buttons";
 import theme from "@src/theme";
 
 const Initialize = ({ navigation }: any) => {
@@ -15,8 +15,8 @@ const Initialize = ({ navigation }: any) => {
             <Text style={styles.title}>Welcome to emptio!</Text>
 
             <View style={styles.buttonArea}>
-                <ButtonSuccess title="REGISTER" onPress={handlerRegister} />
-                <ButtonDanger title="LOGIN" onPress={handlerLogin} />
+                <ButtonDefault title="Sign Up" onPress={handlerRegister} />
+                <ButtonSuccess title="Sign In" onPress={handlerLogin} />
             </View>
         </View>
     )

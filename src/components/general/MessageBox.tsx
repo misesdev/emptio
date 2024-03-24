@@ -45,14 +45,16 @@ const MessageBox = () => {
     }, [visible]);
 
     return (
-        <Modal animationType="slide" onRequestClose={handleClose} transparent={true}  visible={visible}>
+        <Modal animationType="slide" onRequestClose={handleClose} visible={visible}>
             <View style={[styles.box, {...StyleSheet.absoluteFillObject}]}>
 
                 <Text style={{ color: baseColor, fontSize: 62, fontWeight: 'bold'}}> { title ?? "Oops!" } </Text>
 
                 <Text style={styles.message}> {message} </Text>
 
-                <ButtonDanger title="Close" style={{ minWidth: 120 }} onPress={handleClose} />
+                <View style={styles.sectionButtons}>
+                    <ButtonDanger title="Close" style={{ minWidth: 120 }} onPress={handleClose} />
+                </View>
 
             </View>
         </Modal>
@@ -68,7 +70,7 @@ const styles = StyleSheet.create({
         flex: 1,
         alignItems: 'center',
         justifyContent: 'center',
-        backgroundColor: theme.colors.transparent
+        backgroundColor: theme.colors.black
     },
     message: {
         fontSize: 16,
@@ -76,8 +78,13 @@ const styles = StyleSheet.create({
         paddingVertical: 50,
         marginVertical: 30,
         marginHorizontal: 15,
-        color: theme.colors.white,
+        color: theme.colors.gray,
         textAlign: 'center'
+    },
+    sectionButtons: {
+        bottom: 50,
+        position: "absolute",
+        flexDirection: "row"
     }
 });
 
