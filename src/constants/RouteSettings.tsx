@@ -1,16 +1,22 @@
 import { CardStyleInterpolators, StackNavigationOptions } from "@react-navigation/stack"
 import { ViewStyle } from "react-native"
 import theme from "../theme"
+import { BottomTabNavigationOptions } from "@react-navigation/bottom-tabs"
 
 export const tabBarStyle: ViewStyle = {
     display: 'flex',
     backgroundColor: theme.colors.transparent,
     borderTopColor: theme.colors.transparent,
     paddingBottom: 15,
-    height: 70, 
-           
+    height: 70,
+
 }
 
+export const TabBarOprions: BottomTabNavigationOptions = {
+    headerShown: false,
+    tabBarStyle: tabBarStyle,
+    tabBarActiveTintColor: theme.colors.green
+}
 
 export const stackOptions: StackNavigationOptions = {
     title: "",

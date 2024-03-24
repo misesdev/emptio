@@ -72,7 +72,8 @@ const styles = StyleSheet.create({
     header: {
         width: "100%",
         flexDirection: "row",
-        paddingVertical: 5
+        paddingVertical: 5,
+        backgroundColor: theme.colors.black
     },
     userMenu: {
         width: theme.icons.extra,

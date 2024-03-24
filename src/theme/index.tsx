@@ -11,8 +11,9 @@ const theme = {
         default: "#2D3138",
 
         icons: "#FFFFFF",
-        menu: "rgba(28,28,28,.9)",
+        section: "#141414",
         transparent: "transparent",
+        
     },
     icons: {
         mine: 18,

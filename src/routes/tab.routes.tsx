@@ -2,7 +2,7 @@ import { Ionicons } from "@expo/vector-icons"
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs"
 
 import theme from "@src/theme"
-import { tabBarStyle } from "../constants/RouteSettings"
+import { TabBarOprions } from "../constants/RouteSettings"
 import Home from "@screens/root/home"
 import Feed from "@screens/root/feed"
 import Donate from "@screens/root/donate"
@@ -15,13 +15,7 @@ const TabRoutes = () => {
 
     return (
         <Tab.Navigator
-            screenOptions={{
-                title: '',
-                headerShown: false,
-                headerTransparent: true,
-                tabBarStyle: tabBarStyle,
-                tabBarActiveTintColor: theme.colors.green,
-            }}
+            screenOptions={TabBarOprions}
             initialRouteName="home"
         >
             <Tab.Screen
