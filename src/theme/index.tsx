@@ -12,8 +12,7 @@ const theme = {
 
         icons: "#FFFFFF",
         section: "#141414",
-        transparent: "transparent",
-        
+        transparent: "transparent",        
     },
     icons: {
         mine: 18,

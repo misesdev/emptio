@@ -2,7 +2,7 @@ import SearchButton from "@components/form/SearchButton"
 import { Image, StyleSheet, TouchableOpacity, View } from "react-native"
 import { Ionicons } from "@expo/vector-icons"
 import theme from "@src/theme"
-import { getUser } from "@/src/services/memory"
+import { getUser } from "@src/services/memory"
 
 export const HeaderHome = ({ navigation }: any) => {
 

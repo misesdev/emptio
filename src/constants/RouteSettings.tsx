@@ -4,18 +4,17 @@ import theme from "../theme"
 import { BottomTabNavigationOptions } from "@react-navigation/bottom-tabs"
 
 export const tabBarStyle: ViewStyle = {
-    display: 'flex',
     backgroundColor: theme.colors.transparent,
     borderTopColor: theme.colors.transparent,
     paddingBottom: 15,
     height: 70,
-
+    elevation: 0
 }
 
 export const TabBarOprions: BottomTabNavigationOptions = {
     headerShown: false,
     tabBarStyle: tabBarStyle,
-    tabBarActiveTintColor: theme.colors.green
+    tabBarActiveTintColor: theme.colors.green,
 }
 
 export const stackOptions: StackNavigationOptions = {

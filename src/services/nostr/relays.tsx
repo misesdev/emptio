@@ -1,4 +1,4 @@
-import { DefaultRelays } from "@/src/constants/Relays"
+import { DefaultRelays } from "@src/constants/Relays"
 import { getItem, setItem } from "expo-secure-store"
 
 type Relays = string[]

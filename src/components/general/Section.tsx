@@ -1,4 +1,4 @@
-import theme from "@/src/theme"
+import theme from "@src/theme"
 import { StyleSheet, View } from "react-native"
 
 export const Section = ({ children }: any) => {
@@ -13,9 +13,9 @@ export const Section = ({ children }: any) => {
 const styles = StyleSheet.create({
     section: {
         width: "92%",
-        margin: 8,
-        minHeight: 200,
-        borderRadius: 20,
+        marginVertical: 8,
+        minHeight: 10,
+        borderRadius: 18,
         backgroundColor: theme.colors.section, 
     }
 })

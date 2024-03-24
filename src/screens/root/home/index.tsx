@@ -2,7 +2,8 @@ import { StyleSheet, View, ScrollView, RefreshControl } from "react-native"
 import theme from "@src/theme"
 import { useEffect, useState } from "react"
 import SplashScreen from "@components/general/SplashScreen"
-import { Section } from "@/src/components/general/Section"
+import { Section } from "@components/general/Section"
+import { ButtonDanger } from "@components/form/Buttons"
 
 const Home = ({ navigation }: any) => {
 
@@ -29,6 +30,9 @@ const Home = ({ navigation }: any) => {
                 refreshControl={<RefreshControl refreshing={refreshing} onRefresh={handleRefresh} />}
             >
                 <Section><></></Section>
+                <Section><></></Section>
+
+                <ButtonDanger title="Delete Account" onPress={() => {}}/>
             </ScrollView>
         </View>
     )
@@ -36,9 +40,10 @@ const Home = ({ navigation }: any) => {
 
 const styles = StyleSheet.create({
     title: {
+        padding: 10,
         fontSize: 22,
         fontWeight: 'bold',
-        color: theme.colors.gray
+        color: theme.colors.gray,
     },
     container: {
         backgroundColor: theme.colors.black, 

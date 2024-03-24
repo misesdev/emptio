@@ -3,6 +3,7 @@ import theme from "@src/theme"
 import { useEffect, useState } from "react"
 import SplashScreen from "@components/general/SplashScreen"
 import { Section } from "@components/general/Section"
+import { ButtonSuccess } from "@components/form/Buttons"
 
 const Feed = ({ navigation }: any) => {
 
@@ -30,13 +31,9 @@ const Feed = ({ navigation }: any) => {
             >
                 <Section><></></Section>
 
-                <Section>
-                    <Text>Hello my brother</Text>
-                    <Text>Hello my brother</Text>
-                    <Text>Hello my brother</Text>
-                    <Text>Hello my brother</Text>
-                    <Text>Hello my brother</Text>
-                </Section>
+                <Section><></></Section>
+
+                <ButtonSuccess title="Receive" onPress={() => {}}/>
 
             </ScrollView>
         </View>

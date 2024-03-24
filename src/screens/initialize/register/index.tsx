@@ -4,7 +4,7 @@ import { Image, StyleSheet, Text, View } from "react-native";
 import { ButtonPrimary } from "@components/form/Buttons";
 import theme from "@src/theme";
 import { TextBox } from "@components/form/TextBoxs";
-import MessageBox, { showMessage } from "@/src/components/general/MessageBox";
+import MessageBox, { showMessage } from "@components/general/MessageBox";
 import { SignUp } from "@src/services/userManager";
 
 const Register = ({ navigation }: any) => {
