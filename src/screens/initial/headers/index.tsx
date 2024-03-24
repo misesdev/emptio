@@ -8,9 +8,9 @@ export const createHeaderHome = (navigation: any) => {
 
     const { profile } = getUser()
 
-    const handleMenu = () => navigation.navigate("menu-home")
+    const handleMenu = () => navigation.navigate("user-menu-stack")
 
-    const handleSearch = () => navigation.navigate("search-home")
+    const handleSearch = () => navigation.navigate("search-home-stack")
 
     navigation.setOptions({
         headerTitle: () => <SearchButton label="Search" onPress={handleSearch} />,
@@ -32,9 +32,9 @@ export const createHeaderFeed = (navigation: any) => {
 
     const { profile } = getUser()
     
-    const handleMenu = () => navigation.navigate("menu-feed")
+    const handleMenu = () => navigation.navigate("user-menu-stack")
 
-    const handleSearch = () => navigation.navigate("search-feed")
+    const handleSearch = () => navigation.navigate("search-feed-stack")
 
     navigation.setOptions({
         headerTitle: () => <SearchButton label="Search" onPress={handleSearch}/>,

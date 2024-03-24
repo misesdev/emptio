@@ -1,12 +1,29 @@
-import { Image, StyleSheet, Text, View } from "react-native";
-import { ButtonDefault, ButtonSuccess } from "@components/form/Buttons";
-import theme from "@src/theme";
+import { Image, StyleSheet, Text, View } from "react-native"
+import { ButtonDefault, ButtonSuccess } from "@components/form/Buttons"
+import SplashScreen from "@components/general/SplashScreen"
+import { getUser } from "../services/memory"
+import { useEffect, useState } from "react"
+import theme from "@src/theme"
 
 const Initialize = ({ navigation }: any) => {
+
+    const [loading, setLoading] = useState(true)
+
+    useEffect(() => {
+        const { privateKey } = getUser()
+
+        if(privateKey)
+            navigation.navigate("authenticate-stack")
+
+        setLoading(false)
+    },[])
 
     const handlerLogin = () => navigation.navigate("login-stack")
 
     const handlerRegister = () => navigation.navigate("register-stack")
+
+    if(loading)
+        return <SplashScreen />
 
     return (
         <View style={theme.styles.container}>

@@ -1,35 +1,19 @@
 import { useEffect, useState } from "react";
 import { Image, StyleSheet, View } from "react-native";
 import { ButtonPrimary } from "@components/form/Buttons";
-import * as LocalAuthentication from 'expo-local-authentication';
-import InitializeRoutes from "@src/routes/login";
-import { getUser } from "@src/services/memory";
+import { hasHardwareAsync, authenticateAsync } from 'expo-local-authentication';
 import theme from "@src/theme";
-import AppRoutes from "@src/routes";
 
-const Authenticate = () => {
+const Authenticate = ({ navigation }: any) => {
 
-    const [logged, setLogged] = useState(false)
-    const [authenticated, setAuthenticated] = useState(false)
     const [biometrics, setBiometrics] = useState(true)
 
-    const handleLoadData = async () => {
-
-        const { publicKey } = getUser()
-
-        if (publicKey)
-            setLogged(true)
-
-        await checkBiometricAvailability()
-    }
-
     useEffect(() => {
-        if (logged)
-            handleLoadData()
+        checkBiometricAvailability()
     }, [])
 
     const checkBiometricAvailability = async () => {
-        const isBiometricAvailable = await LocalAuthentication.hasHardwareAsync()
+        const isBiometricAvailable = await hasHardwareAsync()
 
         if (isBiometricAvailable)
             return authenticateWithBiometrics()
@@ -38,25 +22,23 @@ const Authenticate = () => {
     };
 
     const authenticateWithBiometrics = async () => {
-        const { success } = await LocalAuthentication.authenticateAsync({
+        const { success } = await authenticateAsync({
             promptMessage: 'Authenticate yourself using biometrics',
         })
 
-        setAuthenticated(success)
+        if (success)
+            navigation.reset({ index: 0, routes: [{ name: "core-stack" }] })
     };
 
-    if (!logged)
-        return <InitializeRoutes />
-
-    if (logged && (authenticated || !biometrics))
-        return <AppRoutes />
+    if (!biometrics)
+        navigation.reset({ index: 0, routes: [{ name: "core-stack" }] })
 
     return (
         <View style={theme.styles.container}>
             <Image style={styles.logo} source={require("@assets/emptio.png")} />
 
             <View style={styles.buttonArea}>
-                <ButtonPrimary title="Authenticate" onPress={handleLoadData} />
+                <ButtonPrimary title="Authenticate" onPress={checkBiometricAvailability} />
             </View>
         </View>
     )

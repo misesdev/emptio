@@ -1,14 +1,11 @@
 import { StyleSheet, View, Text } from "react-native"
-import theme from "@src/theme"
 import { useEffect } from "react"
-import { tabBarStyle } from "@src/constants/RouteSettings"
+import theme from "@src/theme"
 
 const HomeSearch = ({ navigation }: any) => {
 
     useEffect(() => {
-        navigation.getParent()?.setOptions({ tabBarStyle: { display: "none" } })
-
-        return () => navigation.getParent()?.setOptions({ tabBarStyle })
+        
     }, [])
 
     return (

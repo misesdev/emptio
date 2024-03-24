@@ -11,7 +11,7 @@ const Home = ({ navigation }: any) => {
     useEffect(() => {
         createHeaderHome(navigation)
 
-        navigation.reset({ index: 0})
+        // navigation.reset({ index: 0})
     }, [])
 
     if(loading)
