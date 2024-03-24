@@ -1,7 +1,6 @@
 import { StyleSheet, View, Text } from "react-native"
 import theme from "@src/theme"
 import { useEffect } from "react"
-import { HeaderFeed } from "@/src/screens/root/headers"
 
 const Feed = ({ navigation }: any) => {
 
@@ -11,9 +10,6 @@ const Feed = ({ navigation }: any) => {
 
     return (
         <View style={theme.styles.container} >
-
-            <HeaderFeed navigation={navigation} />
-
             <Text style={styles.title}>Feed</Text>
         </View>
     )

@@ -70,16 +70,13 @@ export const HeaderFeed = ({ navigation }: any) => {
 
 const styles = StyleSheet.create({
     header: {
-        top: 0,
         width: "100%",
         flexDirection: "row",
-        position: "absolute",
-        paddingVertical: 10
+        paddingVertical: 5
     },
     userMenu: {
-        width: 30,
-        height: 30,
-        margin: 15,
+        width: theme.icons.extra,
+        height: theme.icons.extra,
         borderRadius: 20,
         borderColor: theme.colors.gray,
         borderWidth: 1
