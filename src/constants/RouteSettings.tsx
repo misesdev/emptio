@@ -11,8 +11,13 @@ export const tabBarStyle: ViewStyle = {
            
 }
 
+
 export const stackOptions: StackNavigationOptions = {
-    headerShown: true,
+    title: "",
+    headerShown: false,
     headerTransparent: true,
-    cardStyleInterpolator: CardStyleInterpolators.forVerticalIOS
+    headerTintColor: theme.colors.gray,
+    cardStyle: { backgroundColor: theme.colors.black },
+    cardStyleInterpolator: CardStyleInterpolators.forHorizontalIOS
 }
+

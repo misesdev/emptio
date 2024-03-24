@@ -21,9 +21,9 @@ const SearchButton = ({ label, onPress }: Props) => {
 
 const styles = StyleSheet.create({
     sarchArea: {
-        minWidth: 210,
-        maxWidth: 240,
+        width: "95%",
         padding: 4.5,
+        paddingVertical: 5,
         borderRadius: 25,
         backgroundColor: theme.colors.default
     },

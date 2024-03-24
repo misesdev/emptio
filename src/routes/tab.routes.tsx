@@ -3,9 +3,10 @@ import { createBottomTabNavigator } from "@react-navigation/bottom-tabs"
 
 import theme from "@src/theme"
 import { tabBarStyle } from "../constants/RouteSettings"
-import Home from "@screens/initial/home"
-import Feed from "@screens/initial/feed"
-import Donate from "@screens/initial/donate"
+import Home from "@screens/root/home"
+import Feed from "@screens/root/feed"
+import Donate from "@screens/root/donate"
+import Settings from "@screens/root/settings"
 
 const Tab = createBottomTabNavigator()
 
@@ -15,7 +16,7 @@ const TabRoutes = () => {
         <Tab.Navigator
             screenOptions={{
                 title: '',
-                headerTransparent: true,
+                headerShown: false,
                 tabBarStyle: tabBarStyle,
                 tabBarActiveTintColor: theme.colors.green,
             }}
@@ -43,6 +44,14 @@ const TabRoutes = () => {
                 options={{
                     tabBarLabel: "donate",
                     tabBarIcon: ({ color }) => <Ionicons name="heart" color={color} size={theme.icons.medium} />,
+                }}
+            />
+            <Tab.Screen
+                name="settings"
+                component={Settings}
+                options={{
+                    tabBarLabel: "settings",
+                    tabBarIcon: ({ color }) => <Ionicons name="settings" color={color} size={theme.icons.medium} />,
                 }}
             />
         </Tab.Navigator>
