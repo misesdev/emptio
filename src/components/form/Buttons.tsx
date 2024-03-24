@@ -119,7 +119,7 @@ const styles = StyleSheet.create({
         fontSize: 13,
         fontWeight: "400",
         textAlign: 'center',
-        marginHorizontal: 10
+        marginHorizontal: 28
     },
     icon: {
         marginHorizontal: 10

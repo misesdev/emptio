@@ -1,17 +1,11 @@
 import { NavigationContainer } from "@react-navigation/native"
 
 import TabRoutes from "./tab.routes"
-import InitializeRoutes from "./login"
 
-type Props = {
-    logged: boolean
-}
-
-const AppRoutes = ({ logged } : Props) => {
+const AppRoutes = () => {
     return (
         <NavigationContainer >            
-            {logged && <TabRoutes />}
-            {!logged && <InitializeRoutes />}
+            <TabRoutes />
         </NavigationContainer>
     )
 }

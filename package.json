@@ -20,6 +20,7 @@
     "expo-camera": "^14.1.1",
     "expo-clipboard": "^5.0.1",
     "expo-crypto": "^12.8.1",
+    "expo-local-authentication": "^13.8.0",
     "expo-secure-store": "^12.8.1",
     "expo-status-bar": "~1.11.1",
     "jest": "^29.3.1",

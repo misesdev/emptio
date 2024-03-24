@@ -4,6 +4,7 @@ import { Image, StyleSheet, Text, View } from "react-native";
 import { ButtonPrimary } from "@components/form/Buttons";
 import theme from "@src/theme";
 import { TextBox } from "@components/form/TextBoxs";
+import { insertUser } from "@/src/services/memory";
 
 const Register = ({ navigation }: any) => {
 
