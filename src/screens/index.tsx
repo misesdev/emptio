@@ -5,12 +5,14 @@ import { getUser } from "../services/memory"
 import { useEffect, useState } from "react"
 import theme from "@src/theme"
 import { useTranslate } from "../services/translate"
+import { getHexKeys, createPairKeys } from "../services/nostr"
 
 const Initialize = ({ navigation }: any) => {
 
     const [loading, setLoading] = useState(true)
 
-    useEffect(() => {
+    useEffect(() => { 
+
         const { privateKey } = getUser()
 
         if(privateKey)
@@ -33,8 +35,8 @@ const Initialize = ({ navigation }: any) => {
             <Text style={styles.title}>{useTranslate("initial.message")}</Text>
 
             <View style={styles.buttonArea}>
-                <ButtonDefault title={useTranslate("commons.signup")} onPress={handlerRegister} />
-                <ButtonSuccess title={useTranslate("commons.signin")} onPress={handlerLogin} />
+                <ButtonDefault label={useTranslate("commons.signup")} onPress={handlerRegister} />
+                <ButtonSuccess label={useTranslate("commons.signin")} onPress={handlerLogin} />
             </View>
         </View>
     )

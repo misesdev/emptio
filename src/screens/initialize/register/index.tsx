@@ -17,7 +17,9 @@ const Register = ({ navigation }: any) => {
 
         setLoading(true)
 
-        SignUp({ userName, callback: () => navigation.reset({ index: 0, routes: [{ name: "core-stack" }] }) })
+        setTimeout(() => {
+            SignUp({ userName, callback: () => navigation.reset({ index: 0, routes: [{ name: "core-stack" }] }) })
+        }, 300)
     }
 
     if (loading)

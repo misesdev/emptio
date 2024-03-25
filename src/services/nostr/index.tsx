@@ -1,5 +1,6 @@
 import { generateSecretKey, getPublicKey, nip19 } from "nostr-tools"
-import { SecreteKeys } from '../memory/types'
+import { SecreteKeys, HexPairKeys } from '../memory/types'
+import { etc } from "@noble/secp256k1"
 
 export const createPairKeys = (): SecreteKeys => {
 
@@ -12,11 +13,40 @@ export const createPairKeys = (): SecreteKeys => {
     return { privateKey, publicKey }
 }
 
-export const nsecEncode = (privateKey?: string) => {
+export const validatePrivateKey = (privateKey: string) => {
 
-    const key = generateSecretKey()
+    try {
+        const { type } = nip19.decode(privateKey)
 
-    const nsec = nip19.nsecEncode(key)
+        return type === "nsec"
+    } catch { return false }
+}
 
-    console.log(nsec)
+export const derivatePublicKey = (privateKey: string): string => {
+
+    try {
+        const { type, data } = nip19.decode(privateKey)
+
+        if (type === "nsec")
+            return nip19.npubEncode(getPublicKey(data))
+        else
+            return ""
+    }
+    catch { return "" }
+}
+
+export const getHexKeys = (privateKey: string): HexPairKeys => {
+
+    const response: HexPairKeys = { privateKey: "", publicKey: "" }
+
+    try {
+        const { type, data } = nip19.decode(privateKey)
+
+        if (type === "nsec") {
+            response.publicKey = getPublicKey(data)
+            response.privateKey = etc.bytesToHex(data)
+        }
+    } catch { }
+
+    return response
 }

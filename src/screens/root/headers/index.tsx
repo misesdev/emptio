@@ -10,23 +10,21 @@ export const HeaderHome = ({ navigation }: any) => {
 
     const handleMenu = () => navigation.navigate("user-menu-stack")
 
-    const handleSearch = () => navigation.navigate("search-home-stack")
-
     return (
         <View style={styles.header}>
             <View style={{ width: "15%", alignItems: "center", justifyContent: "center" }}>
                 <TouchableOpacity onPress={handleMenu}>
                     {profile && <Image source={{ uri: profile }} style={styles.userMenu} />}
-                    {!!!profile && <Ionicons name="person-circle" color={theme.colors.gray} size={theme.icons.extra} />}
+                    {!!!profile && <Image source={require("assets/images/defaultProfile.png")} style={styles.userMenu} />}
                 </TouchableOpacity>
             </View>
             <View style={{ width: "55%", alignItems: "center", justifyContent: "center" }}>
-                <SearchButton label="Search" onPress={handleSearch} />
+                <SearchButton label="Search" onPress={() => navigation.navigate("search-home-stack")} />
             </View>
             <View style={{ width: "15%", alignItems: "center", justifyContent: "center" }}>
                 <TouchableOpacity onPress={handleMenu}>
                     {profile && <Image source={{ uri: profile }} style={styles.userMenu} />}
-                    {!!!profile && <Ionicons name="pie-chart" color={theme.colors.gray} size={theme.icons.extra} />}
+                    {!profile && <Ionicons name="pie-chart" color={theme.colors.gray} size={theme.icons.extra} />}
                 </TouchableOpacity>
             </View>
             <View style={{ width: "15%", alignItems: "center", justifyContent: "center" }}>
@@ -45,18 +43,16 @@ export const HeaderFeed = ({ navigation }: any) => {
 
     const handleMenu = () => navigation.navigate("user-menu-stack")
 
-    const handleSearch = () => navigation.navigate("search-feed-stack")
-
     return (
         <View style={styles.header}>
             <View style={{ width: "15%", alignItems: "center", justifyContent: "center" }}>
                 <TouchableOpacity onPress={handleMenu}>
                     {profile && <Image source={{ uri: profile }} style={styles.userMenu} />}
-                    {!!!profile && <Ionicons name="person-circle" color={theme.colors.gray} size={theme.icons.extra} />}
+                    {!profile && <Image source={require("assets/images/defaultProfile.png")} style={styles.userMenu} />}
                 </TouchableOpacity>
             </View>
             <View style={{ width: "70%", alignItems: "center", justifyContent: "center" }}>
-                <SearchButton label="Search" onPress={handleSearch} />
+                <SearchButton label="Search" onPress={() => navigation.navigate("search-feed-stack")} />
             </View>
             <View style={{ width: "15%", alignItems: "center", justifyContent: "center" }}>
                 <TouchableOpacity onPress={handleMenu}>

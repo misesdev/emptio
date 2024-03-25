@@ -43,7 +43,8 @@ const styles = StyleSheet.create({
     linkIcon: {
         margin: 5,
         fontSize: theme.icons.mine,
-        color: theme.colors.gray
+        color: theme.colors.gray,
+        backgroundColor: theme.colors.section, 
     },
     linkText: {
         fontSize: 18,

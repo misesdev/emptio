@@ -6,6 +6,12 @@ export default {
     "register.title": "Sign Up",
     "register.message": "You just need to set your username, the app takes care of the rest!",
 
+    "commons.open": "Open",
+    "commons.close": "Close",
+    "commons.oops": "Oops!",
+    "commons.success": "Success",
+    "commons.alert": "Alert",
+    "commons.error": "Error",
     "commons.search": "Search",
     "commons.signin": "Sign In",
     "commons.signup": "Sign Up",

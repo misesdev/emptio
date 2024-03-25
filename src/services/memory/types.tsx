@@ -4,6 +4,11 @@ export type SecreteKeys = {
     publicKey?: string
 }
 
+export type HexPairKeys = {
+    privateKey: string,
+    publicKey: string
+}
+
 export type Wallet = {
     privateKey?: string,
     publicKey?: string

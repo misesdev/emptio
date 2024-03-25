@@ -5,9 +5,11 @@ import { ButtonPrimary } from "@components/form/Buttons";
 import * as ClipBoard from 'expo-clipboard'
 import theme from "@src/theme";
 import { useTranslate } from "@src/services/translate";
+import SplashScreen from "@/src/components/general/SplashScreen";
 
 const Login = ({ navigation }: any) => {
 
+    const [loading, setLoading] = useState(false)
     const [privateKey, setPrivateKey] = useState("")
 
     useEffect(() => {
@@ -24,8 +26,17 @@ const Login = ({ navigation }: any) => {
     }
 
     const handlerLogin = () => {
+        setLoading(true)
 
+        setTimeout(() => {
+
+            // pos sign in
+            navigation.reset({ index: 0, routes:[{ name: "core-stack" }] })
+        }, 300)
     }
+
+    if(loading)
+        return <SplashScreen message={useTranslate("commons.signin")}/>
 
     return (
         <View style={theme.styles.container}>

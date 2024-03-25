@@ -1,25 +1,37 @@
 import { StyleSheet, View, Text, Image, ScrollView, TouchableOpacity } from "react-native"
-import { getUser } from "@src/services/memory"
-import theme from "@src/theme"
+import { clearStorage, getUser } from "@src/services/memory"
 import { LinkSection, Section } from "@components/general/Section"
 import { ButtonDanger } from "@components/form/Buttons"
 import { useTranslate } from "@src/services/translate"
+import SplashScreen from "@components/general/SplashScreen"
+import { useState } from "react"
+import theme from "@src/theme"
 
 const UserMenu = ({ navigation }: any) => {
 
+    const [loading, setLoading] = useState(false)
+
     const { profile, userName } = getUser()
 
-    const handleEdit = () => navigation.navigate("user-edit-stack")
-
     const handleDeleteAccount = () => {
-        navigation.reset({ index: 0, routes:[{ name: "initial-stack" }] })
+
+        setLoading(true)
+
+        setTimeout(() => {
+            clearStorage()
+
+            navigation.reset({ index: 0, routes:[{ name: "initial-stack" }] })
+        }, 500)
     }
+
+    if(loading)
+        return <SplashScreen message="deleting storage.."/>
 
     return (
         <ScrollView contentContainerStyle={theme.styles.scroll_container}>
             <View style={{ width: "100%", height: 70 }}></View>
             <View style={styles.userArea}>
-                <TouchableOpacity onPress={handleEdit}>
+                <TouchableOpacity onPress={() => navigation.navigate("user-edit-stack")}>
                     <View style={styles.userIcon}>
                         {profile && <Image source={{ uri: profile }} style={styles.userImage} />}
                         {!profile && <Image source={require("assets/images/defaultProfile.png")} style={styles.userImage} />}
@@ -70,7 +82,9 @@ const styles = StyleSheet.create({
     userImage: {
         width: "100%",
         height: "100%",
-        borderRadius: 50
+        borderRadius: 50,
+        borderWidth: 2,
+        borderColor: theme.colors.green
     }
 })
 

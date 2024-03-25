@@ -2,12 +2,19 @@ import { useEffect, useState } from "react";
 import { Modal, StyleSheet, Text, View } from "react-native";
 import { ButtonDanger } from "@components/form/Buttons";
 import theme from "@src/theme";
+import { useTranslate } from "@src/services/translate";
 
 type typeMessage = "alert" | "error" | "success";
+
+type MessageAction = {
+    label: string,
+    onPress: () => void
+}
 
 type alertBoxProps = {
     title?: string,
     message: string,
+    action?: MessageAction,
     type?: typeMessage
 }
 
@@ -48,12 +55,12 @@ const MessageBox = () => {
         <Modal animationType="slide" onRequestClose={handleClose} visible={visible}>
             <View style={[styles.box, {...StyleSheet.absoluteFillObject}]}>
 
-                <Text style={{ color: baseColor, fontSize: 62, fontWeight: 'bold'}}> { title ?? "Oops!" } </Text>
+                <Text style={{ color: baseColor, fontSize: 62, fontWeight: 'bold'}}> { title ?? useTranslate("commons.oops") } </Text>
 
                 <Text style={styles.message}> {message} </Text>
 
                 <View style={styles.sectionButtons}>
-                    <ButtonDanger title="Close" style={{ minWidth: 120 }} onPress={handleClose} />
+                    <ButtonDanger label={useTranslate("commons.close")} style={{ minWidth: 120 }} onPress={handleClose} />
                 </View>
 
             </View>
