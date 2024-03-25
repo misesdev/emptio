@@ -5,66 +5,66 @@ import { TextStyle } from 'react-native';
 import theme from '@src/theme';
 
 type Props = {
-    title: string,
+    label: string,
     icon?: "add" | "add-circle" | "arrow-forward-circle" | "trash" | "bookmarks" | "clipboard" | "duplicate" | "open",
     style?: StyleProp<TextStyle>,
     onPress: () => void
 }
 
-export const ButtonSuccess = ({ title, style, icon, onPress }: Props) => {
+export const ButtonSuccess = ({ label, style, icon, onPress }: Props) => {
 
     return (
         <TouchableOpacity style={[styles.button, styles.buttonSuccess, style]} onPress={onPress}>
             <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'center' }}>
-                <Text style={styles.buttonText}> {title} </Text>
+                <Text style={styles.buttonText}> {label} </Text>
                 {icon &&  <Ionicons name={icon} size={18} style={styles.icon} color={theme.icons.gray} /> }
             </View>
         </TouchableOpacity>
     )
 }
 
-export const ButtonPrimary = ({ title, style, icon, onPress }: Props) => {
+export const ButtonPrimary = ({ label, style, icon, onPress }: Props) => {
 
     return (
         <TouchableOpacity style={[styles.button, styles.buttonPrimary, style]} onPress={onPress}>
            <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'center' }}>
-                <Text style={styles.buttonText}> {title} </Text>
+                <Text style={styles.buttonText}> {label} </Text>
                 {icon && <Ionicons name={icon} size={18} color={theme.icons.gray} /> }
             </View>       
         </TouchableOpacity>
     )
 }
 
-export const ButtonDanger = ({ title, style, icon, onPress }: Props) => {
+export const ButtonDanger = ({ label, style, icon, onPress }: Props) => {
 
     return (
         <TouchableOpacity style={[styles.button, styles.buttonDanger, style]} onPress={onPress}>
             <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'center' }}>
-                <Text style={styles.buttonText}> {title} </Text>
+                <Text style={styles.buttonText}> {label} </Text>
                 {icon && <Ionicons name={icon} size={18} color={theme.icons.gray} /> }
             </View>
         </TouchableOpacity>
     )
 }
 
-export const ButtonDefault = ({ title, style, icon, onPress }: Props) => {
+export const ButtonDefault = ({ label, style, icon, onPress }: Props) => {
 
     return (
         <TouchableOpacity style={[styles.button, styles.ButtonDefault, style]} onPress={onPress}>
            <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'center' }}>
-                <Text style={styles.buttonText}> {title} </Text>
+                <Text style={styles.buttonText}> {label} </Text>
                 {icon && <Ionicons name={icon} size={18} color={theme.icons.gray} /> }
             </View>
         </TouchableOpacity>
     )
 }
 
-export const ButtonHead = ({ title, style, icon, onPress }: Props) => {
+export const ButtonHead = ({ label, style, icon, onPress }: Props) => {
 
     return (
         <TouchableOpacity style={[styles.button, styles.ButtonDefault, style]} onPress={onPress}>
             <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'center' }}>
-                <Text style={styles.buttonText}> {title} </Text>
+                <Text style={styles.buttonText}> {label} </Text>
                 {icon && <Ionicons name={icon} size={18} color={theme.icons.gray} /> }
             </View>        
         </TouchableOpacity>

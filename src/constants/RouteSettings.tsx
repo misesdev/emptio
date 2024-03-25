@@ -22,7 +22,7 @@ export const stackOptions: StackNavigationOptions = {
     headerShown: false,
     headerTransparent: true,
     headerTintColor: theme.colors.gray,
-    cardStyle: { backgroundColor: theme.colors.black },
+    cardStyle: { backgroundColor: theme.colors.black },  
     cardStyleInterpolator: CardStyleInterpolators.forHorizontalIOS
 }
 

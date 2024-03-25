@@ -33,7 +33,7 @@ const Feed = ({ navigation }: any) => {
 
                 <Section><></></Section>
 
-                <ButtonSuccess title="Receive" onPress={() => {}}/>
+                <ButtonSuccess label="Receive" onPress={() => {}}/>
 
             </ScrollView>
         </View>

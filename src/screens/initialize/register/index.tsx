@@ -33,7 +33,7 @@ const Register = ({ navigation }: any) => {
                 <TextBox placeholder={useTranslate("labels.username")} value={userName} onChangeText={setUserName} />
 
                 <View style={styles.buttonArea}>
-                    <ButtonPrimary title={useTranslate("commons.signup")} onPress={handlerRegister} />
+                    <ButtonPrimary label={useTranslate("commons.signup")} onPress={handlerRegister} />
                 </View>
             </View>
             <MessageBox />

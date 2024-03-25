@@ -34,7 +34,11 @@ const theme = {
             justifyContent: 'center',
             alignItems: 'center',
             backgroundColor: "#000000"
-        }
+        },
+        scroll_container: {
+            flexGrow: 1,
+            alignItems: "center",
+        },
     }) 
 };
 

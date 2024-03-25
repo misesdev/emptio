@@ -39,7 +39,7 @@ const Authenticate = ({ navigation }: any) => {
             <Image style={styles.logo} source={require("@assets/emptio.png")} />
 
             <View style={styles.buttonArea}>
-                <ButtonPrimary title={useTranslate("commons.authenticate")} onPress={checkBiometricAvailability} />
+                <ButtonPrimary label={useTranslate("commons.authenticate")} onPress={checkBiometricAvailability} />
             </View>
         </View>
     )

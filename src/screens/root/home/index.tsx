@@ -26,13 +26,13 @@ const Home = ({ navigation }: any) => {
     return (
         <View style={styles.container}>
             <ScrollView
-                contentContainerStyle={styles.scroll_container}
+                contentContainerStyle={theme.styles.scroll_container}
                 refreshControl={<RefreshControl refreshing={refreshing} onRefresh={handleRefresh} />}
             >
                 <Section><></></Section>
                 <Section><></></Section>
 
-                <ButtonDanger title="Delete Account" onPress={() => {}}/>
+                <ButtonDanger label="Delete Account" onPress={() => {}}/>
             </ScrollView>
         </View>
     )
@@ -48,10 +48,6 @@ const styles = StyleSheet.create({
     container: {
         backgroundColor: theme.colors.black, 
         height: "100%"
-    },
-    scroll_container: {
-        flexGrow: 1,
-        alignItems: "center",
     },
 })
 

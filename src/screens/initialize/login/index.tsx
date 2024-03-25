@@ -36,7 +36,7 @@ const Login = ({ navigation }: any) => {
             <QRCodeTextBox placeholder={useTranslate("labels.privatekey")} onChangeText={setPrivateKey} value={privateKey} />
 
             <View style={styles.buttonArea}>
-                <ButtonPrimary title={useTranslate("commons.signin")} onPress={handlerLogin} />
+                <ButtonPrimary label={useTranslate("commons.signin")} onPress={handlerLogin} />
             </View>
         </View>
     )
