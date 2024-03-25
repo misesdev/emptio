@@ -24,4 +24,9 @@ export default {
 
     "labels.username": "User Name",
     "labels.privatekey": "Private Key",
+
+    "menu.home": "home",
+    "menu.buy&sell": "buy & sell",
+    "menu.donate": "donate",
+    "menu.setting": "settings",
 }

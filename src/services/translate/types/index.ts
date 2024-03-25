@@ -23,4 +23,8 @@ export type TranslateWords = "initial.message"
     | "commons.authenticate.message"
     | "labels.username"
     | "labels.privatekey"
+    | "menu.home"
+    | "menu.buy&sell"
+    | "menu.donate"
+    | "menu.setting"
 

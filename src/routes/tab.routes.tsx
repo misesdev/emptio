@@ -8,6 +8,7 @@ import Feed from "@screens/root/feed"
 import Donate from "@screens/root/donate"
 import Settings from "@screens/root/settings"
 import { HeaderFeed, HeaderHome } from "@screens/root/headers"
+import { useTranslate } from "../services/translate"
 
 const Tab = createBottomTabNavigator()
 
@@ -23,7 +24,7 @@ const TabRoutes = () => {
                 component={Home}
                 options={{
                     headerShown: true,
-                    tabBarLabel: "home",
+                    tabBarLabel: useTranslate("menu.home"),
                     header: ({ navigation }) => <HeaderHome navigation={navigation} />,
                     tabBarIcon: ({ color }) => <Ionicons name="home" color={color} size={theme.icons.medium} />,
                 }}
@@ -33,7 +34,7 @@ const TabRoutes = () => {
                 component={Feed}
                 options={{
                     headerShown: true,
-                    tabBarLabel: "buy & sell",
+                    tabBarLabel: useTranslate("menu.buy&sell"),
                     header: ({ navigation }) => <HeaderFeed navigation={navigation} />,
                     tabBarIcon: ({ color }) => <Ionicons name="wallet" color={color} size={theme.icons.medium} />,
                 }}
@@ -42,7 +43,7 @@ const TabRoutes = () => {
                 name="donate"
                 component={Donate}
                 options={{
-                    tabBarLabel: "donate",
+                    tabBarLabel: useTranslate("menu.donate"),
                     tabBarIcon: ({ color }) => <Ionicons name="heart" color={color} size={theme.icons.medium} />,
                 }}
             />
@@ -50,7 +51,7 @@ const TabRoutes = () => {
                 name="settings"
                 component={Settings}
                 options={{
-                    tabBarLabel: "settings",
+                    tabBarLabel: useTranslate("menu.setting"),
                     tabBarIcon: ({ color }) => <Ionicons name="settings" color={color} size={theme.icons.medium} />,
                 }}
             />

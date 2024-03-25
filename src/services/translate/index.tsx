@@ -1,6 +1,6 @@
 import { getLanguage } from "../memory"
 import pt from "./languages/pt"
-import en from "./languages/pt"
+import en from "./languages/en"
 import { TranslateWords } from "./types"
 
 const language = getLanguage()

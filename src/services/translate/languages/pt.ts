@@ -24,4 +24,9 @@ export default {
 
     "labels.username": "Nome de Usuário",
     "labels.privatekey": "Chave Privada",
+
+    "menu.home": "início",
+    "menu.buy&sell": "comprar & vender",
+    "menu.donate": "doar",
+    "menu.setting": "configurações",
 }

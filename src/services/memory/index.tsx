@@ -41,8 +41,9 @@ export const deleteWallet = () => setItem("walletData", "", { requireAuthenticat
 export const setLanguage = (language: string) => setItem("language", language, { requireAuthentication: false })
 
 export const getLanguage = (): Language => {
-    const language = getItem("language")
 
+    const language = getItem("language")
+    
     switch (language) {
         case "pt":
             return language
