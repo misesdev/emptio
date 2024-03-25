@@ -1,7 +1,6 @@
 import { DefaultRelays } from "@src/constants/Relays"
 import { getItem, setItem } from "expo-secure-store"
-
-type Relays = string[]
+import { Relays } from "../memory/types"
 
 export const getRelays = (): Relays => {
     const data = getItem("relays")

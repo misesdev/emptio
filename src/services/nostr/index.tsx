@@ -1,13 +1,9 @@
 import { getRandomBytes } from 'expo-crypto'
 import { schnorr } from '@noble/curves/secp256k1'
 import { bytesToHex } from "@noble/hashes/utils"
+import { SecreteKeys } from '../memory/types'
 
 const prefix = { private: "nsec", public: "npub" }
-
-type SecreteKeys = {
-    privateKey: string,
-    publicKey?: string
-}
 
 const generateSecreteKey = (bytesLength = 32) => {
     return getRandomBytes(bytesLength)
