@@ -7,14 +7,13 @@ type signUp = {
 }
 
 export const SignUp = ({ userName, callback }: signUp) => {
-    try 
-    {
+    try {
         const { privateKey, publicKey } = createPairKeys()
 
         insertUser({ userName, privateKey, publicKey })
 
         callback()
-    } 
+    }
     catch (ex) {
 
     }

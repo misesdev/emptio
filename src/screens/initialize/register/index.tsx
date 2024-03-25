@@ -16,14 +16,14 @@ const Register = ({ navigation }: any) => {
     const handlerRegister = () => {
 
         setLoading(true)
- 
-        SignUp({ userName, callback: () => navigation.navigate("core-stack") })        
+
+        SignUp({ userName, callback: () => navigation.reset({ index: 0, routes: [{ name: "core-stack" }] }) })
     }
 
-    if(loading)
-        return <SplashScreen message="registering.."/>
+    if (loading)
+        return <SplashScreen message="registering.." />
 
-    return ( 
+    return (
         <>
             <View style={theme.styles.container}>
                 <Image style={styles.logo} source={require("@assets/emptio.png")} />

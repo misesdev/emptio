@@ -11,7 +11,6 @@ const Initialize = ({ navigation }: any) => {
     const [loading, setLoading] = useState(true)
 
     useEffect(() => {
-
         const { privateKey } = getUser()
 
         if(privateKey)

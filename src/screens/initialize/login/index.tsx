@@ -13,8 +13,7 @@ const Login = ({ navigation }: any) => {
     useEffect(() => {
         // verify clipboard for a privateKey nostr
         ClipBoard.getStringAsync().then((clipboardString) => {
-            if(clipboardString.substring(0, 4) === "nsec") 
-            {
+            if (clipboardString.substring(0, 4) === "nsec") {
                 handlerClipboard(clipboardString)
             }
         })
@@ -22,7 +21,7 @@ const Login = ({ navigation }: any) => {
 
     const handlerClipboard = (key: string) => {
 
-    } 
+    }
 
     const handlerLogin = () => {
 
@@ -57,7 +56,7 @@ const styles = StyleSheet.create({
     },
     buttonArea: {
         width: '100%',
-        position: 'absolute',        
+        position: 'absolute',
         justifyContent: 'center',
         marginVertical: 30,
         flexDirection: "row",

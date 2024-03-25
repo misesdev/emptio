@@ -1,28 +1,22 @@
-import { getRandomBytes } from 'expo-crypto'
-import { schnorr } from '@noble/curves/secp256k1'
-import { bytesToHex } from "@noble/hashes/utils"
+import { generateSecretKey, getPublicKey, nip19 } from "nostr-tools"
 import { SecreteKeys } from '../memory/types'
-
-const prefix = { private: "nsec", public: "npub" }
-
-const generateSecreteKey = (bytesLength = 32) => {
-    return getRandomBytes(bytesLength)
-}
 
 export const createPairKeys = (): SecreteKeys => {
 
-    const secreteKey = generateSecreteKey()
+    const secreteKey = generateSecretKey()
 
-    const publicKey = prefix.public + bytesToHex(schnorr.getPublicKey(secreteKey))
+    const publicKey = nip19.npubEncode(getPublicKey(secreteKey))
 
-    const privateKey = prefix.private + bytesToHex(secreteKey)
+    const privateKey = nip19.nsecEncode(secreteKey)
 
     return { privateKey, publicKey }
 }
 
-export const getPublicKey = (privateKey: string) => {
-   
-    const clearNsec = privateKey.replace(prefix.private, "")
+export const nsecEncode = (privateKey?: string) => {
 
-    return prefix.public + bytesToHex(schnorr.getPublicKey(clearNsec))
+    const key = generateSecretKey()
+
+    const nsec = nip19.nsecEncode(key)
+
+    console.log(nsec)
 }

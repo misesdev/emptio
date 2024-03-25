@@ -19,7 +19,6 @@
     "expo": "~50.0.14",
     "expo-camera": "^14.1.1",
     "expo-clipboard": "^5.0.1",
-    "expo-crypto": "^12.8.1",
     "expo-local-authentication": "^13.8.0",
     "expo-secure-store": "^12.8.1",
     "expo-status-bar": "~1.11.1",
@@ -30,9 +29,12 @@
     "react-dom": "18.2.0",
     "react-native": "0.73.6",
     "react-native-gesture-handler": "~2.14.0",
+    "react-native-get-random-values": "^1.11.0",
     "react-native-paper": "^5.12.3",
     "react-native-vector-icons": "^10.0.3",
-    "react-native-web": "~0.19.6"
+    "react-native-web": "~0.19.6",
+    "react-native-webview": "13.6.4",
+    "text-encoding": "^0.7.0"
   },
   "devDependencies": {
     "@babel/core": "^7.20.0",
