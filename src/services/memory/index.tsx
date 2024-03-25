@@ -53,3 +53,10 @@ export const getLanguage = (): Language => {
             return "en"
     }
 }
+
+export const clearStorage = () => {
+    setItem("userData", "")
+    setItem("walletData", "")
+    setItem("language", "")
+    setItem("relays", "")
+}
