@@ -4,6 +4,7 @@ import SplashScreen from "@components/general/SplashScreen"
 import { getUser } from "../services/memory"
 import { useEffect, useState } from "react"
 import theme from "@src/theme"
+import { useTranslate } from "../services/translate"
 
 const Initialize = ({ navigation }: any) => {
 
@@ -13,7 +14,7 @@ const Initialize = ({ navigation }: any) => {
         const { privateKey } = getUser()
 
         if(privateKey)
-            navigation.navigate("authenticate-stack")
+            navigation.reset({ index: 0, routes: [{name: "authenticate-stack"}]})
 
         setLoading(false)
     },[])
@@ -28,12 +29,12 @@ const Initialize = ({ navigation }: any) => {
     return (
         <View style={theme.styles.container}>
             <Image style={styles.logo} source={require("@assets/emptio.png")} />
-
-            <Text style={styles.title}>Welcome to emptio!</Text>
+ 
+            <Text style={styles.title}>{useTranslate("initial.message")}</Text>
 
             <View style={styles.buttonArea}>
-                <ButtonDefault title="Sign Up" onPress={handlerRegister} />
-                <ButtonSuccess title="Sign In" onPress={handlerLogin} />
+                <ButtonDefault title={useTranslate("commons.signup")} onPress={handlerRegister} />
+                <ButtonSuccess title={useTranslate("commons.signin")} onPress={handlerLogin} />
             </View>
         </View>
     )

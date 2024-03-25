@@ -3,6 +3,7 @@ import { Image, StyleSheet, View } from "react-native";
 import { ButtonPrimary } from "@components/form/Buttons";
 import { hasHardwareAsync, authenticateAsync } from 'expo-local-authentication';
 import theme from "@src/theme";
+import { useTranslate } from "@src/services/translate";
 
 const Authenticate = ({ navigation }: any) => {
 
@@ -23,7 +24,7 @@ const Authenticate = ({ navigation }: any) => {
 
     const authenticateWithBiometrics = async () => {
         const { success } = await authenticateAsync({
-            promptMessage: 'Authenticate yourself using biometrics',
+            promptMessage: useTranslate("commons.authenticate.message"),
         })
 
         if (success)
@@ -38,7 +39,7 @@ const Authenticate = ({ navigation }: any) => {
             <Image style={styles.logo} source={require("@assets/emptio.png")} />
 
             <View style={styles.buttonArea}>
-                <ButtonPrimary title="Authenticate" onPress={checkBiometricAvailability} />
+                <ButtonPrimary title={useTranslate("commons.authenticate")} onPress={checkBiometricAvailability} />
             </View>
         </View>
     )

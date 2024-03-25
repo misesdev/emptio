@@ -10,4 +10,4 @@ export const useTranslate = (words: TranslateWords): string => {
     const languages = { pt, en }
 
     return languages[language][words]
-}
+} 

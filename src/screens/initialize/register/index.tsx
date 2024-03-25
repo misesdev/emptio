@@ -6,6 +6,7 @@ import theme from "@src/theme";
 import { TextBox } from "@components/form/TextBoxs";
 import MessageBox, { showMessage } from "@components/general/MessageBox";
 import { SignUp } from "@src/services/userManager";
+import { useTranslate } from "@src/services/translate";
 
 const Register = ({ navigation }: any) => {
 
@@ -22,17 +23,17 @@ const Register = ({ navigation }: any) => {
     if(loading)
         return <SplashScreen message="registering.."/>
 
-    return (
+    return ( 
         <>
             <View style={theme.styles.container}>
                 <Image style={styles.logo} source={require("@assets/emptio.png")} />
 
-                <Text style={styles.title}>You just need to set your username, the app takes care of the rest!</Text>
+                <Text style={styles.title}>{useTranslate("register.message")}</Text>
 
-                <TextBox placeholder="User Name" value={userName} onChangeText={setUserName} />
+                <TextBox placeholder={useTranslate("labels.username")} value={userName} onChangeText={setUserName} />
 
                 <View style={styles.buttonArea}>
-                    <ButtonPrimary title="Sign Up" onPress={handlerRegister} />
+                    <ButtonPrimary title={useTranslate("commons.signup")} onPress={handlerRegister} />
                 </View>
             </View>
             <MessageBox />

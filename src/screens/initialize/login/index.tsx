@@ -4,6 +4,7 @@ import { QRCodeTextBox } from "@components/form/TextBoxs";
 import { ButtonPrimary } from "@components/form/Buttons";
 import * as ClipBoard from 'expo-clipboard'
 import theme from "@src/theme";
+import { useTranslate } from "@src/services/translate";
 
 const Login = ({ navigation }: any) => {
 
@@ -21,7 +22,7 @@ const Login = ({ navigation }: any) => {
 
     const handlerClipboard = (key: string) => {
 
-    }
+    } 
 
     const handlerLogin = () => {
 
@@ -31,12 +32,12 @@ const Login = ({ navigation }: any) => {
         <View style={theme.styles.container}>
             <Image style={styles.logo} source={require("@assets/emptio.png")} />
 
-            <Text style={styles.title}>You just need to scan the QR code of your private key or copy it to your clipboard, the app takes care of the rest!</Text>
+            <Text style={styles.title}>{useTranslate("login.message")}</Text>
 
-            <QRCodeTextBox placeholder="Private Key" onChangeText={setPrivateKey} value={privateKey} />
+            <QRCodeTextBox placeholder={useTranslate("labels.privatekey")} onChangeText={setPrivateKey} value={privateKey} />
 
             <View style={styles.buttonArea}>
-                <ButtonPrimary title="Sign In" onPress={handlerLogin} />
+                <ButtonPrimary title={useTranslate("commons.signin")} onPress={handlerLogin} />
             </View>
         </View>
     )
