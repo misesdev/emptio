@@ -1,16 +1,18 @@
-import { deleteUser, insertUser } from "../memory"
-import { createPairKeys, getPublicKey } from "../nostr"
+import { clearStorage, insertUser } from "../memory"
+import { User } from "../memory/types"
+import { createPairKeys, derivatePublicKey, getHexKeys } from "../nostr"
+import { getUserData } from "../nostr/pool"
 
 type signUp = {
-    userName: string,
+    name: string,
     callback: () => void
 }
 
-export const SignUp = ({ userName, callback }: signUp) => {
+export const SignUp = ({ name, callback }: signUp) => {
     try {
         const { privateKey, publicKey } = createPairKeys()
 
-        insertUser({ userName, privateKey, publicKey })
+        insertUser({ name, privateKey, publicKey })
 
         callback()
     }
@@ -20,16 +22,28 @@ export const SignUp = ({ userName, callback }: signUp) => {
 }
 
 type signIn = {
-    privateKey: string
+    secretKey: string,
+    callback: () => void
 }
 
-export const SignIn = ({ privateKey }: signIn) => {
-    const publicKey = getPublicKey(privateKey)
+export const SignIn = async ({ secretKey, callback }: signIn) => {
 
-    insertUser({ privateKey, publicKey })
+    const { privateKey, publicKey } = getHexKeys(secretKey)
+
+    const userData = await getUserData(publicKey)
+
+    userData.privateKey = privateKey
+    userData.publicKey = publicKey
+
+    insertUser(userData)
+
+    callback()
 }
 
-export const SignOut = () => {
-    deleteUser()
+export const SignOut = (callback: () => void) => {
+
+    clearStorage()
+
+    callback()
 }
 

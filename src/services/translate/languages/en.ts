@@ -6,6 +6,8 @@ export default {
     "register.title": "Sign Up",
     "register.message": "You just need to set your username, the app takes care of the rest!",
 
+    "commons.yes": "Yes",
+    "commons.no": "No",
     "commons.open": "Open",
     "commons.close": "Close",
     "commons.oops": "Oops!",
@@ -27,6 +29,7 @@ export default {
     "commons.delete.account": "Delete Account",
     "commons.authenticate": "Authenticate",
     "commons.authenticate.message": "Authenticate yourself using biometrics",
+    "commons.detectedkey": "key detected",
 
     "labels.username": "User Name",
     "labels.privatekey": "Private Key",
@@ -35,4 +38,9 @@ export default {
     "menu.buy&sell": "buy & sell",
     "menu.donate": "donate",
     "menu.setting": "settings",
+
+    "message.invalidkey": "Invalid private key, please check if the key entered is in the correct format starting with 'nsec'. If you do not have a Nostr private key, consider creating an account.",
+    "message.detectedkey": "Private key detected in your clipboard, do you want to enter with the detected private key?",
+    "message.detectedkey.value": "key: "
+
 }

@@ -1,55 +1,85 @@
-import { useEffect, useState } from "react";
+import MessageBox, { showMessage } from "@components/general/MessageBox";
 import { Image, StyleSheet, Text, View } from "react-native";
 import { QRCodeTextBox } from "@components/form/TextBoxs";
 import { ButtonPrimary } from "@components/form/Buttons";
-import * as ClipBoard from 'expo-clipboard'
-import theme from "@src/theme";
 import { useTranslate } from "@src/services/translate";
-import SplashScreen from "@/src/components/general/SplashScreen";
+import SplashScreen from "@components/general/SplashScreen";
+import { validatePrivateKey } from "@src/services/nostr";
+import { useEffect, useState } from "react";
+import * as ClipBoard from 'expo-clipboard'
+import { AppState } from "react-native";
+import theme from "@src/theme";
+import { SignIn } from "@/src/services/userManager";
 
 const Login = ({ navigation }: any) => {
 
     const [loading, setLoading] = useState(false)
-    const [privateKey, setPrivateKey] = useState("")
+    const [secretKey, setSecretKey] = useState("")
 
     useEffect(() => {
-        // verify clipboard for a privateKey nostr
-        ClipBoard.getStringAsync().then((clipboardString) => {
-            if (clipboardString.substring(0, 4) === "nsec") {
-                handlerClipboard(clipboardString)
-            }
-        })
+        checkClipboardContainsKey()
+
+        AppState.addEventListener("change", handleAppStateChange)
     }, [])
 
-    const handlerClipboard = (key: string) => {
-
+    const checkClipboardContainsKey = () => {
+        // verify clipboard for a privateKey nostr
+        ClipBoard.getStringAsync().then((clipboardString) => handlerClipboard(clipboardString))
     }
 
-    const handlerLogin = () => {
+    const handleAppStateChange = (appstate: any) => {
+        if (appstate === 'active')
+            checkClipboardContainsKey()
+    }
+
+    const handlerClipboard = (key: string) => {
+        if (validatePrivateKey(key)) {
+            showMessage({
+                type: "alert",
+                // title: useTranslate("commons.detectedkey"),
+                message: useTranslate("message.detectedkey"),
+                infolog: useTranslate("message.detectedkey.value") + key,
+                action: {
+                    label: useTranslate("commons.yes"), onPress: () => {
+                        setSecretKey(key)
+                    }
+                }
+            })
+        }
+    }
+
+    const handlerLogin = async () => {
         setLoading(true)
 
-        setTimeout(() => {
+        if (validatePrivateKey(secretKey)) {
+            await SignIn({
+                secretKey: secretKey,
+                callback: () => navigation.reset({ index: 0, routes: [{ name: "core-stack" }] })
+            })
+        } else
+            showMessage({ message: useTranslate("message.invalidkey"), infolog: secretKey })
 
-            // pos sign in
-            navigation.reset({ index: 0, routes:[{ name: "core-stack" }] })
-        }, 300)
+        setLoading(false)
     }
 
-    if(loading)
-        return <SplashScreen message={useTranslate("commons.signin")}/>
+    if (loading)
+        return <SplashScreen message={useTranslate("commons.signin")} />
 
     return (
-        <View style={theme.styles.container}>
-            <Image style={styles.logo} source={require("@assets/emptio.png")} />
+        <>
+            <View style={theme.styles.container}>
+                <Image style={styles.logo} source={require("@assets/emptio.png")} />
 
-            <Text style={styles.title}>{useTranslate("login.message")}</Text>
+                <Text style={styles.title}>{useTranslate("login.message")}</Text>
 
-            <QRCodeTextBox placeholder={useTranslate("labels.privatekey")} onChangeText={setPrivateKey} value={privateKey} />
+                <QRCodeTextBox placeholder={useTranslate("labels.privatekey")} onChangeText={setSecretKey} value={secretKey} />
 
-            <View style={styles.buttonArea}>
-                <ButtonPrimary label={useTranslate("commons.signin")} onPress={handlerLogin} />
+                <View style={styles.buttonArea}>
+                    <ButtonPrimary label={useTranslate("commons.signin")} onPress={handlerLogin} />
+                </View>
             </View>
-        </View>
+            <MessageBox />
+        </>
     )
 }
 

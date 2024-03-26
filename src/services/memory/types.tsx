@@ -15,11 +15,15 @@ export type Wallet = {
 }
 
 export type User = {
-    userName?: string,
+    name?: string,
+    display_name?: string,
+    displayName?: string,
+    picture?: string,
+    about?: string,
+    lud16?: string,
+    banner?: string,
     privateKey?: string,
     publicKey?: string,
-    profile?: string,
-    wallet?: Wallet
 }
 
 export type Relays = string[]

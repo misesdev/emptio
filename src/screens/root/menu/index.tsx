@@ -6,22 +6,19 @@ import { useTranslate } from "@src/services/translate"
 import SplashScreen from "@components/general/SplashScreen"
 import { useState } from "react"
 import theme from "@src/theme"
+import { SignOut } from "@/src/services/userManager"
 
 const UserMenu = ({ navigation }: any) => {
 
     const [loading, setLoading] = useState(false)
 
-    const { profile, userName } = getUser()
+    const { picture, name } = getUser()
 
     const handleDeleteAccount = () => {
 
         setLoading(true)
 
-        setTimeout(() => {
-            clearStorage()
-
-            navigation.reset({ index: 0, routes:[{ name: "initial-stack" }] })
-        }, 500)
+        setTimeout(() => SignOut(() => navigation.reset({ index: 0, routes:[{ name: "initial-stack" }] })), 500)
     }
 
     if(loading)
@@ -33,11 +30,11 @@ const UserMenu = ({ navigation }: any) => {
             <View style={styles.userArea}>
                 <TouchableOpacity onPress={() => navigation.navigate("user-edit-stack")}>
                     <View style={styles.userIcon}>
-                        {profile && <Image source={{ uri: profile }} style={styles.userImage} />}
-                        {!profile && <Image source={require("assets/images/defaultProfile.png")} style={styles.userImage} />}
+                        {picture && <Image source={{ uri: picture }} style={styles.userImage} />}
+                        {!picture && <Image source={require("assets/images/defaultProfile.png")} style={styles.userImage} />}
                     </View>
                 </TouchableOpacity>
-                <Text style={styles.userName}>{userName}</Text>
+                <Text style={styles.userName}>{name}</Text>
             </View>
 
             <Section>
