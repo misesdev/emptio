@@ -1,19 +1,31 @@
 import { DefaultRelays } from "@src/constants/Relays"
 import { getItem, setItem } from "expo-secure-store"
-import { Relays } from "../memory/types"
+import { Relay } from "nostr-tools"
 
-export const getRelays = (): Relays => {
+export const getRelays = async (): Promise<Relay[]> => {
+
+    var relayList = DefaultRelays
+
+    const relays: Relay[] = []
+
     const data = getItem("relays")
-    if (data)
-        return JSON.parse(data)
 
-    return DefaultRelays
+    if (data)
+        relayList = JSON.parse(data)
+
+    relayList.forEach(async relay => { 
+        const relayConnected = await Relay.connect(relay)
+
+        relays.push(relayConnected)
+    })
+
+    return relays
 }
 
-export const setRelays = (relays: Relays) => setItem("relays", JSON.stringify(relays))
+export const setRelays = (relays: string[]) => setItem("relays", JSON.stringify(relays))
 
 export const insertRelay = (relay: string) => {
-    const relays: Relays = [];
+    const relays: string[] = [];
     const data = getItem("relays")
     if (data) {
         const relays = JSON.parse(data)
@@ -21,13 +33,13 @@ export const insertRelay = (relay: string) => {
     } else
         relays.push(relay)
 
-    setRelays([relay])
+    setRelays(relays)
 }
 
 export const deleteRelay = (relay: string) => {
     const data = getItem("relays")
     if (data) {
-        const relays: Relays = JSON.parse(data)
+        const relays: string[] = JSON.parse(data)
         relays.splice(relays.indexOf(relay), 1)
         setRelays(relays)
     }

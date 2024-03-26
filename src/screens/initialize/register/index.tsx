@@ -13,13 +13,11 @@ const Register = ({ navigation }: any) => {
     const [userName, setUserName] = useState("")
     const [loading, setLoading] = useState(false)
 
-    const handlerRegister = () => {
+    const handlerRegister = async () => {
 
         setLoading(true)
 
-        setTimeout(() => {
-            SignUp({ userName, callback: () => navigation.reset({ index: 0, routes: [{ name: "core-stack" }] }) })
-        }, 300)
+        await SignUp({ userName, callback: () => navigation.reset({ index: 0, routes: [{ name: "core-stack" }] }) })
     }
 
     if (loading)

@@ -37,6 +37,8 @@ const UserMenu = ({ navigation }: any) => {
                 <Text style={styles.userName}>{name}</Text>
             </View>
 
+            <Section><></></Section>
+
             <Section>
                 <LinkSection label="Settigns" icon="settings" onPress={() => {}}/>
                 <LinkSection label="Manage Keys" icon="settings" onPress={() => {}}/>

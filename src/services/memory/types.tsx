@@ -1,3 +1,4 @@
+import { Relay } from "nostr-tools"
 
 export type SecreteKeys = {
     privateKey: string,
@@ -26,4 +27,4 @@ export type User = {
     publicKey?: string,
 }
 
-export type Relays = string[]
+export type Relays = Relay[]

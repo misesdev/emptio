@@ -1,40 +1,16 @@
-import { SimplePool } from "nostr-tools"
-import { getRelays } from "./relays"
+import { Event, SimplePool, finalizeEvent, verifyEvent } from "nostr-tools"
+import { hexToBytes } from "@noble/hashes/utils"
 import { User } from "../memory/types"
-
-const relays = getRelays()
-
-const getPool = (publicKey: string) => {
-    const pool = new SimplePool()
-
-    const h = pool.subscribeMany(
-        relays,
-        [
-            {
-                authors: [publicKey],
-            },
-        ],
-        {
-            onevent(event) {
-                // this will only be called once the first time the event is received
-                // ...
-            },
-            oneose() {
-                h.close()
-            }
-        }
-    )
-
-    return pool
-}
+import { getNostrEvents, publishEvent } from "./events"
+import { getRelays } from "./relays"
 
 export const getUserData = async (publicKey: string): Promise<User> => {
 
     const response: User = {}
 
-    const pool = getPool(publicKey)
+    const relays = await getRelays()
 
-    const events = await pool.querySync(relays, { authors: [publicKey], kinds: [0] })
+    const events = await getNostrEvents(relays, { authors: [publicKey], kinds: [0] })
 
     events.forEach(event => {
         const content = JSON.parse(event.content)
@@ -56,4 +32,31 @@ export const getUserData = async (publicKey: string): Promise<User> => {
     })
 
     return response;
+}
+
+export const pushUserData = async (user: User) => {
+
+    const secretKey = user.privateKey ? user.privateKey : ""
+    const content = {
+        name: user.name,
+        display_name: user.display_name,
+        displayName: user.displayName,
+        picture: user.picture,
+        about: user.about,
+        lud16: user.lud16,
+        banner: user.banner
+    }
+
+    const event = finalizeEvent({
+        kind: 0,
+        content: JSON.stringify(content),
+        created_at: Math.floor(Date.now() / 1000),
+        tags: []
+    }, hexToBytes(secretKey))
+
+    const valid = verifyEvent(event)
+
+    if (valid)
+        publishEvent(event)
+
 }

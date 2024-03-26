@@ -1,18 +1,31 @@
 import { clearStorage, insertUser } from "../memory"
+import { createPairKeys, getHexKeys } from "../nostr"
+import { getUserData, pushUserData } from "../nostr/pool"
+import { hexToBytes } from "@noble/hashes/utils"
 import { User } from "../memory/types"
-import { createPairKeys, derivatePublicKey, getHexKeys } from "../nostr"
-import { getUserData } from "../nostr/pool"
+import { nip19 } from "nostr-tools"
 
 type signUp = {
-    name: string,
+    userName: string,
     callback: () => void
 }
 
-export const SignUp = ({ name, callback }: signUp) => {
+export const SignUp = async ({ userName, callback }: signUp) => {
     try {
+
         const { privateKey, publicKey } = createPairKeys()
 
-        insertUser({ name, privateKey, publicKey })
+        const userData: User = { 
+            name: userName,
+            privateKey: privateKey,
+            publicKey: publicKey  
+        }
+
+        await pushUserData(userData)
+
+        console.log(nip19.nsecEncode(hexToBytes(privateKey)))
+
+        insertUser(userData)
 
         callback()
     }
@@ -34,6 +47,8 @@ export const SignIn = async ({ secretKey, callback }: signIn) => {
 
     userData.privateKey = privateKey
     userData.publicKey = publicKey
+
+    console.log(userData)
 
     insertUser(userData)
 

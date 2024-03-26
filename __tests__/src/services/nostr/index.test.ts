@@ -1,4 +1,6 @@
 import { createPairKeys, derivatePublicKey, validatePrivateKey, getHexKeys } from "@src/services/nostr";
+import { nip19 } from "nostr-tools";
+import { hexToBytes } from "@noble/hashes/utils"
 
 describe("Pair Keys Nostr", () => {
     it("generate pair keys => generated", () => {
@@ -10,7 +12,7 @@ describe("Pair Keys Nostr", () => {
     it("derivate public key => generated", () => {
         const { privateKey, publicKey } = createPairKeys()
 
-        const secretKey = derivatePublicKey(privateKey)
+        const secretKey = derivatePublicKey(nip19.nsecEncode(hexToBytes(privateKey)))
 
         expect(publicKey).toBe(secretKey)
     })
@@ -23,7 +25,7 @@ describe("Pair Keys Nostr", () => {
     it("validate nostr privateKey => is valid", () => {
         const { privateKey } = createPairKeys()
 
-        const valid = validatePrivateKey(privateKey)
+        const valid = validatePrivateKey(nip19.nsecEncode(hexToBytes(privateKey)))
 
         expect(valid).toBe(true)
     })
@@ -37,7 +39,7 @@ describe("Pair Keys Nostr", () => {
     it("get hex keys => success", () => {
         const { privateKey } = createPairKeys()
 
-        const pairKeyHex = getHexKeys(privateKey)
+        const pairKeyHex = getHexKeys(nip19.nsecEncode(hexToBytes(privateKey)))
 
         expect(pairKeyHex.privateKey).toHaveLength(64)
         expect(pairKeyHex.publicKey).toHaveLength(64)
