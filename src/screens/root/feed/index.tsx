@@ -3,32 +3,31 @@ import theme from "@src/theme"
 import { useEffect, useState } from "react"
 import SplashScreen from "@components/general/SplashScreen"
 import { Section } from "@components/general/Section"
-import { ButtonSuccess } from "@components/form/Buttons"
-import { getNostrEvents } from "@/src/services/nostr/events"
-import { getUser } from "@/src/services/memory"
+import { ButtonDanger, ButtonSuccess } from "@components/form/Buttons"
+import { listenerEvents } from "@src/services/nostr/events"
+import { getPairKeys } from "@src/services/memory"
+
+type EventData = {
+    kind: number,
+    pubkey: string,
+    content: string
+}
 
 const Feed = ({ navigation }: any) => {
 
-    const [pubkey, setPubkey] = useState("")
     const [loading, setLoading] = useState(true)
-    const [refreshing, setRefreshing] = useState(false)
+    const [posts, setPosts] = useState<EventData[]>()
+    
+    useEffect(() => handleData(), [])
 
-    useEffect(() => {
-        setTimeout(() => setLoading(false), 1000)
+    const handleData = () => {
+        setLoading(true)
+        const { publicKey } = getPairKeys()
+        listenerEvents({ limit: 5, kinds: [0], authors: [publicKey] }).then(result => {
+            setPosts(result)
 
-        const { publicKey } = getUser()
-
-        setPubkey(publicKey ? publicKey : "")
-    }, [])
-
-    const handleRefresh =() => {
-        setRefreshing(true)
-
-        getNostrEvents({ limit: 20, kinds: [1], authors: [pubkey] }, pubkey).then(events => {
-            console.log(events)
+            setLoading(false)
         })
-
-        setTimeout(() => setRefreshing(false), 1000)
     }
 
     if (loading)
@@ -36,15 +35,19 @@ const Feed = ({ navigation }: any) => {
 
     return (
         <View style={styles.container} >
-            <ScrollView 
-                contentContainerStyle={styles.scroll_container} 
-                refreshControl={<RefreshControl refreshing={refreshing} onRefresh={handleRefresh} />}
+            <ScrollView
+                contentContainerStyle={styles.scroll_container}
+                refreshControl={<RefreshControl refreshing={false} onRefresh={handleData} />}
             >
-                <Section><></></Section>
-
-                <Section><></></Section>
-
-                <ButtonSuccess label="Receive" onPress={() => {}}/>
+                {posts && posts.map((event, key) => {
+                    return <Section key={key}>
+                        <Text style={{ fontSize: 16, color: theme.colors.gray, margin: 10 }}>{event.content}</Text>
+                        <View style={{ flexDirection: "row" }}>
+                            <ButtonSuccess label="Buy" onPress={() => { }} />
+                            <ButtonDanger label="Sell" onPress={() => { }} />
+                        </View>
+                    </Section>
+                })}
 
             </ScrollView>
         </View>
@@ -58,7 +61,7 @@ const styles = StyleSheet.create({
         color: theme.colors.gray
     },
     container: {
-        backgroundColor: theme.colors.black, 
+        backgroundColor: theme.colors.black,
         height: "100%"
     },
     scroll_container: {

@@ -21,6 +21,8 @@ export const SignUp = async ({ userName, callback }: signUp) => {
             publicKey: publicKey  
         }
 
+        console.log("salvando")
+
         await pushUserData(userData)
 
         console.log(nip19.nsecEncode(hexToBytes(privateKey)))

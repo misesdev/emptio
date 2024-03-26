@@ -1,6 +1,23 @@
 import { setItem, getItem } from "expo-secure-store"
 import { Language } from "../translate/types"
-import { User, Wallet } from "./types"
+import { HexPairKeys, User, Wallet } from "./types"
+
+const pairKeys: HexPairKeys = { privateKey: "", publicKey: "" }
+
+export const getPairKeys = () => {
+    if (pairKeys.privateKey.length > 0)
+        return pairKeys
+
+    const userData = getItem("userData", { requireAuthentication: false })
+
+    if (userData) {
+        const user: User = JSON.parse(userData)
+        pairKeys.privateKey = user.privateKey ? user.privateKey : pairKeys.privateKey
+        pairKeys.publicKey = user.publicKey ? user.publicKey : pairKeys.publicKey
+    }
+
+    return pairKeys
+}
 
 export const getUser = (): User => {
     const user = getItem("userData", { requireAuthentication: false })

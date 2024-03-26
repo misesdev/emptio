@@ -17,12 +17,17 @@ export type Wallet = {
 
 export type User = {
     name?: string,
-    display_name?: string,
     displayName?: string,
     picture?: string,
+    image?: string,
     about?: string,
+    bio?: string,
+    nip05?: string,
+    lud06?: string,
     lud16?: string,
     banner?: string,
+    zapService?: string,
+    website?: string,
     privateKey?: string,
     publicKey?: string,
 }

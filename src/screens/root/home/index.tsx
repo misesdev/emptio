@@ -1,23 +1,35 @@
-import { StyleSheet, View, ScrollView, RefreshControl } from "react-native"
+import { StyleSheet, Text, View, ScrollView, RefreshControl } from "react-native"
 import theme from "@src/theme"
 import { useEffect, useState } from "react"
 import SplashScreen from "@components/general/SplashScreen"
 import { Section } from "@components/general/Section"
-import { ButtonDanger } from "@components/form/Buttons"
+import { ButtonDanger, ButtonPrimary } from "@components/form/Buttons"
+import { getPairKeys } from "@src/services/memory"
+import { listenerEvents } from "@src/services/nostr/events"
+
+type EventData = {
+    kind: number,
+    pubkey: string,
+    content: string
+}
 
 const Home = ({ navigation }: any) => {
 
     const [loading, setLoading] = useState(true)
-    const [refreshing, setRefreshing] = useState(false)
+    const [events, setEvents] = useState<EventData[]>([])
 
-    useEffect(() => {
-        setTimeout(() => setLoading(false), 2000)
-    }, [])
+    useEffect(() => handleData(), [])
 
-    const handleRefresh = () => {
-        setRefreshing(true)
+    const handleData = () => {
+        setLoading(true)
+        const { publicKey } = getPairKeys()
 
-        setTimeout(() => setRefreshing(false), 1000)
+        listenerEvents({ limit: 5, kinds: [0], authors: [publicKey], search: "contribuinte" }).then(result => {
+            
+            setEvents(result)
+
+            setLoading(false)
+        }) 
     }
 
     if (loading)
@@ -27,12 +39,18 @@ const Home = ({ navigation }: any) => {
         <View style={styles.container}>
             <ScrollView
                 contentContainerStyle={theme.styles.scroll_container}
-                refreshControl={<RefreshControl refreshing={refreshing} onRefresh={handleRefresh} />}
+                refreshControl={<RefreshControl refreshing={false} onRefresh={handleData} />}
             >
-                <Section><></></Section>
-                <Section><></></Section>
+                {events && events.map((event, key) => {
+                    return <Section key={key}>
+                        <Text style={{ fontSize: 16, color: theme.colors.gray, margin: 10 }}>{event.content}</Text>
+                        <View style={{ flexDirection: "row" }}>
+                            <ButtonPrimary label="Repost" onPress={() => { }} />
+                            <ButtonDanger label="Donate" onPress={() => { }} />
+                        </View>
+                    </Section>
+                })}
 
-                <ButtonDanger label="Delete Account" onPress={() => {}}/>
             </ScrollView>
         </View>
     )
@@ -46,7 +64,7 @@ const styles = StyleSheet.create({
         color: theme.colors.gray,
     },
     container: {
-        backgroundColor: theme.colors.black, 
+        backgroundColor: theme.colors.black,
         height: "100%"
     },
 })
