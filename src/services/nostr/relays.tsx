@@ -1,23 +1,14 @@
 import { DefaultRelays } from "@src/constants/Relays"
 import { getItem, setItem } from "expo-secure-store"
-import { Relay } from "nostr-tools"
 
-export const getRelays = async (): Promise<Relay[]> => {
+export const getRelays = async (): Promise<string[]> => {
 
-    var relayList = DefaultRelays
-
-    const relays: Relay[] = []
+    var relays = DefaultRelays
 
     const data = getItem("relays")
 
     if (data)
-        relayList = JSON.parse(data)
-
-    relayList.forEach(async relay => { 
-        const relayConnected = await Relay.connect(relay)
-
-        relays.push(relayConnected)
-    })
+        relays = JSON.parse(data)
 
     return relays
 }

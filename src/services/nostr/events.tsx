@@ -1,93 +1,56 @@
-import { Event, Relay, Filter, NostrEvent } from "nostr-tools"
+import { Event, Relay, Filter, NostrEvent, SimplePool } from "nostr-tools"
 import { getRelays } from "./relays"
 import { Events } from "@src/constants/Events"
 
+
 export const publishEvent = async (event: Event) => {
 
-    var returned = false
+    const pool = new SimplePool()
 
     const relays = await getRelays()
 
-    return await new Promise((resolve) => {
-
-        relays.forEach(async relay => {
-            if (!relay.publish)
-                return
-
-            const result = await relay.publish(event)
-
-            switch (result) {
-                case "ok":
-                    if (!returned) {
-                        resolve(event)
-                        returned = true
-                    }
-                    console.log(`${relay.url} has accepted our event`)
-                case "seen":
-                    console.log(`we saw the event on ${relay.url}`)
-                case "filed":
-                    console.log(`failed to publish to ${relay.url}`)
-                default:
-                    console.log(`${relay.url} returned ${result}`)
-            }
-        })
-
-        setTimeout(() => {
-            if (!returned) {
-                resolve(undefined)
-                returned = true
-            }
-        }, Events.TimeOut)
-
+    let h = pool.subscribeMany(relays,
+    [
+        {
+            authors: [event.pubkey],
+        },
+    ],
+    {
+        onevent(event) {
+            // this will only be called once the first time the event is received
+            // ...
+        },
+        oneose() {
+            h.close()
+        }
     })
+
+    await Promise.any(pool.publish(relays, event))
 }
 
-export const getNostrEvents = async (relays: Relay[], filter: Filter): Promise<NostrEvent[]> => {
+export const getNostrEvents = async (filter: Filter, pubkey: string): Promise<NostrEvent[]> => {
 
-    return await new Promise((resolve) => {
-        const limit = filter?.limit || Events.MaxListener
-        const eventsById: Record<string, NostrEvent> = {}
-        let fetchedCount = 0
-        let returned = false
+    const pool = new SimplePool()
 
-        relays.forEach((relay) => {
-            if (!relay.subscribe) {
-                return
-            }
+    const relays = await getRelays()
 
-            const sub = relay.subscribe([filter], {})
-
-            sub.onevent(event => {
-
-                const nostrEvent: Event = event
-
-                // ts-expect-error
-                eventsById[nostrEvent.id] = nostrEvent
-
-                fetchedCount++
-
-                if (fetchedCount >= limit) {
-                    resolve(Array.from(Object.values(eventsById)))
-                    sub.close()
-                    returned = true
-                }
-            })
-
-            sub.oneose(() => sub.close())
-
-            setTimeout(() => {
-                // If all data was already received do nothing
-                if (returned)
-                    return
-
-                // If a timeout happens, return what has been received so far
-                sub.close()
-                returned = true
-
-                resolve(Array.from(Object.values(eventsById)))
-            }, Events.TimeOut)
-        })
+    let h = pool.subscribeMany(relays,
+    [
+        {
+            authors: [pubkey],
+        },
+    ],
+    {
+        onevent(event) {
+            // this will only be called once the first time the event is received
+            // ...
+        },
+        oneose() {
+            h.close()
+        }
     })
+
+    return pool.querySync(relays, filter)
 }
 
 

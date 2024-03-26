@@ -30,7 +30,7 @@ export const SignUp = async ({ userName, callback }: signUp) => {
         callback()
     }
     catch (ex) {
-
+        console.log(ex)
     }
 }
 

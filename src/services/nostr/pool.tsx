@@ -1,16 +1,13 @@
-import { Event, SimplePool, finalizeEvent, verifyEvent } from "nostr-tools"
+import { finalizeEvent, verifyEvent } from "nostr-tools"
 import { hexToBytes } from "@noble/hashes/utils"
 import { User } from "../memory/types"
 import { getNostrEvents, publishEvent } from "./events"
-import { getRelays } from "./relays"
 
 export const getUserData = async (publicKey: string): Promise<User> => {
 
     const response: User = {}
 
-    const relays = await getRelays()
-
-    const events = await getNostrEvents(relays, { authors: [publicKey], kinds: [0] })
+    const events = await getNostrEvents({ authors: [publicKey], kinds: [0] }, publicKey)
 
     events.forEach(event => {
         const content = JSON.parse(event.content)
@@ -37,6 +34,7 @@ export const getUserData = async (publicKey: string): Promise<User> => {
 export const pushUserData = async (user: User) => {
 
     const secretKey = user.privateKey ? user.privateKey : ""
+
     const content = {
         name: user.name,
         display_name: user.display_name,
@@ -57,6 +55,5 @@ export const pushUserData = async (user: User) => {
     const valid = verifyEvent(event)
 
     if (valid)
-        publishEvent(event)
-
+        await publishEvent(event)
 }

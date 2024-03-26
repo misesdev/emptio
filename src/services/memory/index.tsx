@@ -7,7 +7,7 @@ export const getUser = (): User => {
     if (user)
         return JSON.parse(user)
 
-    return { privateKey: "" }
+    return { privateKey: "", publicKey: "" }
 }
 
 export const insertUser = (userData: User) => setItem("userData", JSON.stringify(userData), { requireAuthentication: false })
