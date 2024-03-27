@@ -6,7 +6,7 @@ import { Section } from "@components/general/Section"
 import { ButtonDanger, ButtonPrimary } from "@components/form/Buttons"
 import { getPairKeys } from "@src/services/memory"
 import { listenerEvents } from "@src/services/nostr/events"
-import { UpdateUser } from "@src/services/userManager"
+import { UpdateUserProfile } from "@src/services/userManager"
 
 type EventData = {
     kind: number,
@@ -19,14 +19,15 @@ const Home = ({ navigation }: any) => {
     const [loading, setLoading] = useState(true)
     const [events, setEvents] = useState<EventData[]>([])
 
-    useEffect(() => { handleData() }, [])
+    useEffect(() => { 
+        UpdateUserProfile()
+        handleData() 
+    }, [])
 
     const handleData = async () => {
         setLoading(true)
         const { publicKey } = await getPairKeys()
 
-        await UpdateUser()
-        
         listenerEvents({ limit: 3, kinds: [1, 4], authors: [publicKey] }).then(result => {
             
             setEvents(result)

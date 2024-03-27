@@ -12,17 +12,20 @@ const Initialize = ({ navigation }: any) => {
     const [loading, setLoading] = useState(true)
 
     useEffect(() => {
-
-        const { privateKey } = getUser()
-
-        instanceNostr().then(() => {
-            if (privateKey)
-                navigation.reset({ index: 0, routes: [{ name: "authenticate-stack" }] })
-
-            setLoading(false)
-        })
+        handleVerifyLogon()
     }, [])
-    
+
+    const handleVerifyLogon = async () => {
+        const { privateKey } = await getUser()
+
+        await instanceNostr()
+
+        if (privateKey)
+            navigation.reset({ index: 0, routes: [{ name: "authenticate-stack" }] })
+
+        setLoading(false)
+    }
+
     const instanceNostr = async () => {
         Nostr = await getConnection()
     }

@@ -1,4 +1,4 @@
-import { clearStorage, getUser, insertUser } from "../memory"
+import { clearStorage, getPairKeys, getUser, insertUser } from "../memory"
 import { createPairKeys, getHexKeys } from "../nostr"
 import { getUserData, pushUserData } from "../nostr/pool"
 import { User } from "../memory/types"
@@ -37,7 +37,7 @@ export const SignIn = async (secretKey: string) => {
 
         userData.privateKey = privateKey
 
-        insertUser(userData)
+        await insertUser(userData)
 
         return { success: true }
     }
@@ -47,31 +47,28 @@ export const SignIn = async (secretKey: string) => {
     }
 }
 
-export const UpdateUser = async () => {
+export const UpdateUserProfile = async () => {
 
-    const user = await getUser()
+    const userProfile: User = await getUser()
 
-    const event = await getEvent({ kinds: [0], authors: [user.publicKey] })
+    const event = await getEvent({ kinds: [0], authors: [userProfile.publicKey] })
 
     const content = JSON.parse(event.content)
 
-    user.displayName = content.displayName
-    user.picture = content.picture
-    user.image = content.image
-    user.banner = content.banner
-    user.lud06 = content.lud06
-    user.lud16 = content.lud16
-    user.nip05 = content.nip05
-    user.bio = content.bio
-    user.name = content.name
-    user.website = content.website
-    user.about = content.about
-    user.zapService = content.zapService
+    userProfile.displayName = content.displayName
+    userProfile.picture = content.picture
+    userProfile.image = content.image
+    userProfile.banner = content.banner
+    userProfile.lud06 = content.lud06
+    userProfile.lud16 = content.lud16
+    userProfile.nip05 = content.nip05
+    userProfile.bio = content.bio
+    userProfile.name = content.name
+    userProfile.website = content.website
+    userProfile.about = content.about
+    userProfile.zapService = content.zapService
 
-    console.log("update profile")
-    console.log(content)
-
-    insertUser(user)
+    insertUser(userProfile)
 }
 
 export const SignOut = async () => {
