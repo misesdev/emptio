@@ -1,11 +1,11 @@
 import { HexPairKeys, User } from "../memory/types"
-import { getEvent, publishEvent } from "./events"
+import { getEvent, listenerEvents, publishEvent } from "./events"
 
 export const getUserData = async (publicKey: string): Promise<User> => {
 
     const response: User = { privateKey: "", publicKey }
 
-    const event = await getEvent({ authors: [publicKey], kinds: [0] })
+    const event = (await listenerEvents({ authors: [publicKey], kinds: [0] }))[0]
 
     const content = JSON.parse(event.content)
 

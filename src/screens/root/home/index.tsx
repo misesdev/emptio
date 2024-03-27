@@ -26,9 +26,10 @@ const Home = ({ navigation }: any) => {
 
     const handleData = async () => {
         setLoading(true)
+        
         const { publicKey } = await getPairKeys()
 
-        listenerEvents({ limit: 3, kinds: [1, 4], authors: [publicKey] }).then(result => {
+        listenerEvents({ limit: 6, kinds: [1], authors: [publicKey] }).then(result => {
             
             setEvents(result)
 

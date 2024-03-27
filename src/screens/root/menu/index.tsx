@@ -1,5 +1,5 @@
 import { StyleSheet, View, Text, Image, ScrollView, TouchableOpacity } from "react-native"
-import { clearStorage, getUser } from "@src/services/memory"
+import { getUser } from "@src/services/memory"
 import { LinkSection, Section } from "@components/general/Section"
 import { ButtonDanger } from "@components/form/Buttons"
 import { useTranslate } from "@src/services/translate"
@@ -71,7 +71,7 @@ const UserMenu = ({ navigation }: any) => {
                 </Section>
 
                 <View style={{ padding: 20 }}>
-                    <ButtonDanger label={useTranslate("commons.delete.account")} onPress={handleDeleteAccount} />
+                    <ButtonDanger label={useTranslate("commons.signout")} onPress={handleDeleteAccount} />
                 </View>
             </ScrollView>
             <MessageBox />

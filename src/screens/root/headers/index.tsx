@@ -13,7 +13,7 @@ export const HeaderHome = ({ navigation }: any) => {
     useEffect(() => { handleLoadUserInfo() }, [])
 
     const handleLoadUserInfo = async () => {
-        const { picture, name, banner } = await getUser()
+        const { picture } = await getUser()
         setPicture(picture)
     }
 

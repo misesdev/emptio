@@ -3,7 +3,6 @@ import NDK, { NDKUserProfile, NDKPrivateKeySigner, NDKEvent } from "@nostr-dev-k
 import { Filter, Event } from "nostr-tools"
 import { HexPairKeys } from "../memory/types"
 import { getRelays } from "./relays"
-import { getPairKeys } from "../memory"
 
 export const getConnection = async (): Promise<NDK> => {
 

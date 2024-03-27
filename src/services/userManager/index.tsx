@@ -1,8 +1,8 @@
-import { clearStorage, getPairKeys, getUser, insertUser } from "../memory"
+import { clearStorage, getUser, insertUser } from "../memory"
 import { createPairKeys, getHexKeys } from "../nostr"
 import { getUserData, pushUserData } from "../nostr/pool"
 import { User } from "../memory/types"
-import { getEvent } from "../nostr/events"
+import { listenerEvents } from "../nostr/events"
 
 export const SignUp = async (userName: string) => {
     try {
@@ -18,7 +18,7 @@ export const SignUp = async (userName: string) => {
 
         await pushUserData(userData)
 
-        insertUser(userData)
+        await insertUser(userData)
 
         return { success: true }
     }
@@ -51,7 +51,7 @@ export const UpdateUserProfile = async () => {
 
     const userProfile: User = await getUser()
 
-    const event = await getEvent({ kinds: [0], authors: [userProfile.publicKey] })
+    const event = (await listenerEvents({ limit: 5, kinds: [0], authors: [userProfile.publicKey] }))[0]
 
     const content = JSON.parse(event.content)
 
@@ -68,7 +68,7 @@ export const UpdateUserProfile = async () => {
     userProfile.about = content.about
     userProfile.zapService = content.zapService
 
-    insertUser(userProfile)
+    await insertUser(userProfile)
 }
 
 export const SignOut = async () => {
