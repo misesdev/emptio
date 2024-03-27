@@ -5,33 +5,39 @@ import { getUser } from "../services/memory"
 import { useEffect, useState } from "react"
 import theme from "@src/theme"
 import { useTranslate } from "../services/translate"
-import { getHexKeys, createPairKeys } from "../services/nostr"
+import { getConnection } from "../services/nostr/events"
 
 const Initialize = ({ navigation }: any) => {
 
     const [loading, setLoading] = useState(true)
 
-    useEffect(() => { 
+    useEffect(() => {
 
         const { privateKey } = getUser()
 
-        if(privateKey)
-            navigation.reset({ index: 0, routes: [{name: "authenticate-stack"}]})
+        instanceNostr().then(() => {
+            if (privateKey)
+                navigation.reset({ index: 0, routes: [{ name: "authenticate-stack" }] })
 
-        setLoading(false)
-    },[])
+            setLoading(false)
+        })
+    }, [])
+    
+    const instanceNostr = async () => {
+        Nostr = await getConnection()
+    }
 
     const handlerLogin = () => navigation.navigate("login-stack")
 
     const handlerRegister = () => navigation.navigate("register-stack")
 
-    if(loading)
+    if (loading)
         return <SplashScreen />
 
     return (
         <View style={theme.styles.container}>
             <Image style={styles.logo} source={require("@assets/emptio.png")} />
- 
+
             <Text style={styles.title}>{useTranslate("initial.message")}</Text>
 
             <View style={styles.buttonArea}>
@@ -54,7 +60,7 @@ const styles = StyleSheet.create({
     },
     buttonArea: {
         width: '100%',
-        position: 'absolute',        
+        position: 'absolute',
         justifyContent: 'center',
         marginVertical: 30,
         flexDirection: "row",

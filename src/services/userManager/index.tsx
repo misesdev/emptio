@@ -1,60 +1,75 @@
-import { clearStorage, insertUser } from "../memory"
+import { clearStorage, getUser, insertUser } from "../memory"
 import { createPairKeys, getHexKeys } from "../nostr"
 import { getUserData, pushUserData } from "../nostr/pool"
-import { hexToBytes } from "@noble/hashes/utils"
 import { User } from "../memory/types"
-import { nip19 } from "nostr-tools"
+import { getEvent } from "../nostr/events"
 
-type signUp = {
-    userName: string,
-    callback: () => void
-}
-
-export const SignUp = async ({ userName, callback }: signUp) => {
+export const SignUp = async (userName: string) => {
     try {
 
         const { privateKey, publicKey } = createPairKeys()
 
-        const userData: User = { 
-            name: userName,
+        const userData: User = {
+            name: userName.trim().replace(" ", "_"),
+            displayName: userName.trim(),
             privateKey: privateKey,
-            publicKey: publicKey  
+            publicKey: publicKey ? publicKey : ""
         }
-
-        console.log("salvando")
 
         await pushUserData(userData)
 
-        console.log(nip19.nsecEncode(hexToBytes(privateKey)))
-
         insertUser(userData)
 
-        callback()
+        return { success: true }
     }
     catch (ex) {
         console.log(ex)
+        return { success: false, message: ex }
     }
 }
 
-type signIn = {
-    secretKey: string,
-    callback: () => void
+export const SignIn = async (secretKey: string) => {
+
+    try {
+        const { privateKey, publicKey } = getHexKeys(secretKey)
+
+        const userData = await getUserData(publicKey)
+
+        userData.privateKey = privateKey
+
+        insertUser(userData)
+
+        return { success: true }
+    } 
+    catch (ex) {
+        console.log(ex)
+        return { success: false, message: ex }
+    }
 }
 
-export const SignIn = async ({ secretKey, callback }: signIn) => {
+export const UpdateUser = async() => {
+    
+    const user = getUser()
 
-    const { privateKey, publicKey } = getHexKeys(secretKey)
+    const event = await getEvent({ kinds: [0], authors: [user.publicKey] })
 
-    const userData = await getUserData(publicKey)
+    const content = JSON.parse(event.content)
 
-    userData.privateKey = privateKey
-    userData.publicKey = publicKey
+    user.displayName = content.displayName
+    user.picture = content.picture
+    user.image = content.image
+    user.banner = content.banner 
+    user.lud06 = content.lud06 
+    user.lud16 = content.lud16
+    user.nip05 = content.nip05 
+    user.bio = content.bio 
+    user.name = content.name 
+    user.website = content.website 
+    user.about = content.about
+    user.zapService = content.zapService
 
-    console.log(userData)
+    insertUser(user)
 
-    insertUser(userData)
-
-    callback()
 }
 
 export const SignOut = (callback: () => void) => {

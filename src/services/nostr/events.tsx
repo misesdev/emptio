@@ -1,82 +1,51 @@
 
-import { Event, Filter, SimplePool } from "nostr-tools"
-import { getRelays } from "./relays"
-
-import NDK, { NDKUserProfile, NDKPrivateKeySigner } from "@nostr-dev-kit/ndk"
+import NDK, { NDKUserProfile, NDKPrivateKeySigner, NDKEvent } from "@nostr-dev-kit/ndk"
+import { Filter, Event } from "nostr-tools"
 import { HexPairKeys } from "../memory/types"
+import { getRelays } from "./relays"
+import { getPairKeys } from "../memory"
 
-export const getConnection = async (privateKey?: string): Promise<NDK> => {
+export const getConnection = async (): Promise<NDK> => {
+
     const relays = await getRelays()
 
-    const ndk = new NDK({
-        explicitRelayUrls: relays,
-        signer: new NDKPrivateKeySigner(privateKey)
-    })
+    const ndk = new NDK({ explicitRelayUrls: relays })
 
     await ndk.connect()
-
+    
     return ndk
 }
 
 export const publishUser = async (profile: NDKUserProfile, keys: HexPairKeys) => {
-    
-    const client = await getConnection(keys.privateKey)
+       
+    Nostr.signer = new NDKPrivateKeySigner(keys.privateKey)
 
-    const user = client.getUser({ hexpubkey: keys.publicKey })
+    const user = Nostr.getUser({ hexpubkey: keys.publicKey })
 
     await user.fetchProfile()
 
     user.profile = profile
 
-    console.log("publishing")
-
     await user.publish()
 }
 
-// export const publishEvent = async (event: Event, secretKey: string) => {
+export const publishEvent = async (event: { kind: number, content: string }, keys: HexPairKeys) => {
 
-//     const relays = await getRelays()
+    Nostr.signer = new NDKPrivateKeySigner(keys.privateKey)
 
-//     const ndk = new NDK({ explicitRelayUrls: relays, signer: secretKey })
+    const eventSend = new NDKEvent(Nostr);
 
-//     const eventSend = new NDKEvent(ndk);
+    eventSend.content = event.content
+    eventSend.kind = event.kind 
 
-//     eventSend.content = event.content
-//     eventSend.kind = event.kind   
+    await eventSend.sign()  
     
-//     await eventSend.publish()
-// }
-
-export const getNostrEvents = async (filter: Filter, pubkey: string) => {
-
-    const pool = new SimplePool()
-
-    const relays = await getRelays()
-
-    let h = pool.subscribeMany(relays,
-        [
-            {
-                authors: [pubkey],
-            },
-        ],
-        {
-            onevent(event) {
-                // this will only be called once the first time the event is received
-                // ...
-            },
-            oneose() {
-                h.close()
-            }
-        })
-
-    return pool.querySync(relays, filter)
+    await eventSend.publish()
 }
 
 export const listenerEvents = async (filters: Filter) => {
 
-    const client = await getConnection()
-
-    const events = await client.fetchEvents(filters)
+    const events = await Nostr.fetchEvents(filters)
 
     const eventsResut: {
         kind: number,
@@ -84,8 +53,8 @@ export const listenerEvents = async (filters: Filter) => {
         content: string
     }[] = []
 
-    events.forEach(event => eventsResut.push({
-        kind: 0,
+    events.forEach((event:Event) => eventsResut.push({
+        kind: event.kind,
         pubkey: event.pubkey,
         content: event.content
     }))
@@ -95,9 +64,7 @@ export const listenerEvents = async (filters: Filter) => {
 
 export const getEvent = async (filters: Filter) => {
 
-    const client = await getConnection()
-
-    const event = await client.fetchEvent(filters)
+    const event = await Nostr.fetchEvent(filters)
 
     const eventsResut: {
         kind: number,
@@ -110,11 +77,5 @@ export const getEvent = async (filters: Filter) => {
     }
 
     return eventsResut
-}
-
-export const sendEvent = async (event: Event) => {
-    const client = await getConnection()
-
-    // client.publish()
 }
 

@@ -21,4 +21,14 @@
             ],
         },
     },
+    "include": [
+        "./**/*.ts",
+        "./**/*.tsx",
+    ],
+    "exclude": [
+        "node_modules",
+        "<node_internals>/**",
+        "bin/**"
+    ],
+    "typeRoots": ["./global.d.ts" ]
 }

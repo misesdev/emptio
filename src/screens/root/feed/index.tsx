@@ -4,7 +4,7 @@ import { useEffect, useState } from "react"
 import SplashScreen from "@components/general/SplashScreen"
 import { Section } from "@components/general/Section"
 import { ButtonDanger, ButtonSuccess } from "@components/form/Buttons"
-import { listenerEvents } from "@src/services/nostr/events"
+import { listenerEvents, publishEvent } from "@src/services/nostr/events"
 import { getPairKeys } from "@src/services/memory"
 
 type EventData = {
@@ -30,6 +30,14 @@ const Feed = ({ navigation }: any) => {
         })
     }
 
+    const handleEvent = async () => {
+        setLoading(true)
+
+        await publishEvent({ kind: 1, content: "Testando eventos gerados em backgroundo" }, getPairKeys())
+        
+        setLoading(false)
+    }
+
     if (loading)
         return <SplashScreen />
 
@@ -39,12 +47,13 @@ const Feed = ({ navigation }: any) => {
                 contentContainerStyle={styles.scroll_container}
                 refreshControl={<RefreshControl refreshing={false} onRefresh={handleData} />}
             >
+                <View style={{ width: "100%", height: 30 }}></View>
                 {posts && posts.map((event, key) => {
                     return <Section key={key}>
                         <Text style={{ fontSize: 16, color: theme.colors.gray, margin: 10 }}>{event.content}</Text>
                         <View style={{ flexDirection: "row" }}>
                             <ButtonSuccess label="Buy" onPress={() => { }} />
-                            <ButtonDanger label="Sell" onPress={() => { }} />
+                            <ButtonDanger label="Sell" onPress={handleEvent} />
                         </View>
                     </Section>
                 })}

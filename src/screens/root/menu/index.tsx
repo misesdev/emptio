@@ -12,78 +12,90 @@ const UserMenu = ({ navigation }: any) => {
 
     const [loading, setLoading] = useState(false)
 
-    const { picture, name } = getUser()
+    const { picture, displayName, banner } = getUser()
 
     const handleDeleteAccount = () => {
 
         setLoading(true)
 
-        setTimeout(() => SignOut(() => navigation.reset({ index: 0, routes:[{ name: "initial-stack" }] })), 500)
+        setTimeout(() => SignOut(() => navigation.reset({ index: 0, routes: [{ name: "initial-stack" }] })), 500)
     }
 
-    if(loading)
-        return <SplashScreen message="deleting storage.."/>
+    if (loading)
+        return <SplashScreen message="deleting storage.." />
 
     return (
-        <ScrollView contentContainerStyle={theme.styles.scroll_container}>
-            <View style={{ width: "100%", height: 70 }}></View>
-            <View style={styles.userArea}>
+        <>
+            {banner && <Image style={styles.banner} source={{ uri: banner }} />}
+            <View style={{ width: "100%", height: 30 }}></View>
+            <View style={styles.area}>
                 <TouchableOpacity onPress={() => navigation.navigate("user-edit-stack")}>
-                    <View style={styles.userIcon}>
-                        {picture && <Image source={{ uri: picture }} style={styles.userImage} />}
-                        {!picture && <Image source={require("assets/images/defaultProfile.png")} style={styles.userImage} />}
+                    <View style={styles.image}>
+                        {picture && <Image source={{ uri: picture }} style={styles.picture} />}
+                        {!picture && <Image source={require("assets/images/defaultProfile.png")} style={styles.picture} />}
                     </View>
                 </TouchableOpacity>
-                <Text style={styles.userName}>{name}</Text>
+                <Text style={styles.name}>{displayName}</Text>
             </View>
+            <ScrollView contentContainerStyle={theme.styles.scroll_container}>
+                <Section>
+                    <LinkSection label="Settigns" icon="settings" onPress={() => { }} />
+                    <LinkSection label="Manage Keys" icon="settings" onPress={() => { }} />
+                    <LinkSection label="settigns" icon="settings" onPress={() => { }} />
+                    <LinkSection label="settigns" icon="settings" onPress={() => { }} />
+                </Section>
 
-            <Section><></></Section>
+                <Section>
+                    <LinkSection label="Settigns" icon="settings" onPress={() => { }} />
+                    <LinkSection label="Manage Keys" icon="settings" onPress={() => { }} />
+                    <LinkSection label="settigns" icon="settings" onPress={() => { }} />
+                    <LinkSection label="settigns" icon="settings" onPress={() => { }} />
+                </Section>
 
-            <Section>
-                <LinkSection label="Settigns" icon="settings" onPress={() => {}}/>
-                <LinkSection label="Manage Keys" icon="settings" onPress={() => {}}/>
-                <LinkSection label="settigns" icon="settings" onPress={() => {}}/>
-                <LinkSection label="settigns" icon="settings" onPress={() => {}}/>
-            </Section>
-
-            <Section>
-                <LinkSection label="Settigns" icon="settings" onPress={() => {}}/>
-                <LinkSection label="Manage Keys" icon="settings" onPress={() => {}}/>
-                <LinkSection label="settigns" icon="settings" onPress={() => {}}/>
-                <LinkSection label="settigns" icon="settings" onPress={() => {}}/>
-            </Section>
-
-            <View style={{ padding: 20 }}>
-                <ButtonDanger  label={useTranslate("commons.delete.account")} onPress={handleDeleteAccount}/>
-            </View>
-        </ScrollView>
+                <View style={{ padding: 20 }}>
+                    <ButtonDanger label={useTranslate("commons.delete.account")} onPress={handleDeleteAccount} />
+                </View>
+            </ScrollView>
+        </>
     )
 }
 
 const styles = StyleSheet.create({
-    userArea: {
+    area: {
         width: "100%",
         alignItems: "center",
         marginVertical: 10
     },
-    userName: {
+    name: {
         fontSize: 22,
         fontWeight: 'bold',
-        color: theme.colors.gray,
-        marginVertical: 10
+        color: theme.colors.white,
+        backgroundColor: theme.colors.section,
+        paddingHorizontal: 18,
+        marginVertical: 10,
+        borderRadius: 25,
+        padding: 10,
     },
-    userIcon: {
+    image: {
         width: 100,
         height: 100,
         borderRadius: 50,
         backgroundColor: theme.colors.gray,
     },
-    userImage: {
+    picture: {
+        zIndex: 999,
         width: "100%",
         height: "100%",
         borderRadius: 50,
         borderWidth: 2,
-        borderColor: theme.colors.green
+        borderColor: theme.colors.section,
+    },
+    banner: {
+        width: "100%",
+        height: 200,
+        position: "absolute",
+        top: 0,
+        zIndex: 0
     }
 })
 

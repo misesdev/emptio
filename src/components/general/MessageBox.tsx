@@ -97,7 +97,7 @@ const styles = StyleSheet.create({
     },
     message: {
         fontSize: 16,
-        paddingHorizontal: 5,
+        marginHorizontal: 10,
         paddingVertical: 30,
         paddingBottom: 20,
         marginVertical: 10,

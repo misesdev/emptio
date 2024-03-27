@@ -28,8 +28,8 @@ export type User = {
     banner?: string,
     zapService?: string,
     website?: string,
-    privateKey?: string,
-    publicKey?: string,
+    privateKey: string,
+    publicKey: string,
 }
 
 export type Relays = Relay[]

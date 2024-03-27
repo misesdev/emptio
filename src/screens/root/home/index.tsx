@@ -5,7 +5,8 @@ import SplashScreen from "@components/general/SplashScreen"
 import { Section } from "@components/general/Section"
 import { ButtonDanger, ButtonPrimary } from "@components/form/Buttons"
 import { getPairKeys } from "@src/services/memory"
-import { listenerEvents } from "@src/services/nostr/events"
+import { getEvent, listenerEvents } from "@src/services/nostr/events"
+import { UpdateUser } from "@/src/services/userManager"
 
 type EventData = {
     kind: number,
@@ -18,13 +19,15 @@ const Home = ({ navigation }: any) => {
     const [loading, setLoading] = useState(true)
     const [events, setEvents] = useState<EventData[]>([])
 
-    useEffect(() => handleData(), [])
+    useEffect(() => { handleData() }, [])
 
-    const handleData = () => {
+    const handleData = async () => {
         setLoading(true)
         const { publicKey } = getPairKeys()
 
-        listenerEvents({ limit: 5, kinds: [0], authors: [publicKey], search: "contribuinte" }).then(result => {
+        UpdateUser()
+        
+        listenerEvents({ limit: 6, kinds: [1, 4], authors: [publicKey] }).then(result => {
             
             setEvents(result)
 
@@ -41,6 +44,7 @@ const Home = ({ navigation }: any) => {
                 contentContainerStyle={theme.styles.scroll_container}
                 refreshControl={<RefreshControl refreshing={false} onRefresh={handleData} />}
             >
+                <View style={{ width: "100%", height: 30 }}></View>
                 {events && events.map((event, key) => {
                     return <Section key={key}>
                         <Text style={{ fontSize: 16, color: theme.colors.gray, margin: 10 }}>{event.content}</Text>

@@ -6,7 +6,7 @@ export const applyGlobalPolyfills = () => {
         TextEncoder: TextEncodingPolyfill.TextEncoder,
         TextDecoder: TextEncodingPolyfill.TextDecoder,
         MessageChannel,
-        MessagePort
+        MessagePort,
     })
 }
 

@@ -22,7 +22,7 @@ const Login = ({ navigation }: any) => {
         AppState.addEventListener("change", handleAppStateChange)
     }, [])
 
-    const checkClipboardContainsKey = () => {
+    const checkClipboardContainsKey = async () => {
         // verify clipboard for a privateKey nostr
         ClipBoard.getStringAsync().then((clipboardString) => handlerClipboard(clipboardString))
     }
@@ -48,14 +48,13 @@ const Login = ({ navigation }: any) => {
         }
     }
 
-    const handlerLogin = async () => {
+    const handlerLogin = async() => {
         setLoading(true)
 
         if (validatePrivateKey(secretKey)) {
-            await SignIn({
-                secretKey: secretKey,
-                callback: () => navigation.reset({ index: 0, routes: [{ name: "core-stack" }] })
-            })
+            const result = await SignIn(secretKey)
+            if (result.success)
+                navigation.reset({ index: 0, routes: [{ name: "core-stack" }] })
         } else
             showMessage({ message: useTranslate("message.invalidkey"), infolog: secretKey })
 

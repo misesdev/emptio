@@ -10,7 +10,7 @@ import HomeSearch from "@screens/root/home/search/HomeSearch"
 import FeedSearch from "@screens/root/feed/search/FeedSearch"
 import Authenticate from "@screens/initialize"
 import { stackOptions } from "../constants/RouteSettings"
-import UserEdit from "@screens/root/user/edit"
+import UserEdit from "@/src/screens/root/menu/user/edit"
 
 const Stack = createStackNavigator()
 

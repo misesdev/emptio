@@ -4,9 +4,11 @@ import { ButtonPrimary } from "@components/form/Buttons";
 import { hasHardwareAsync, authenticateAsync } from 'expo-local-authentication';
 import theme from "@src/theme";
 import { useTranslate } from "@src/services/translate";
+import SplashScreen from "@components/general/SplashScreen";
 
 const Authenticate = ({ navigation }: any) => {
 
+    const [loading, setLoading] = useState(true)
     const [biometrics, setBiometrics] = useState(true)
 
     useEffect(() => {
@@ -23,6 +25,7 @@ const Authenticate = ({ navigation }: any) => {
     };
 
     const authenticateWithBiometrics = async () => {
+        setLoading(false)
         const { success } = await authenticateAsync({
             promptMessage: useTranslate("commons.authenticate.message"),
         })
@@ -33,6 +36,9 @@ const Authenticate = ({ navigation }: any) => {
 
     if (!biometrics)
         navigation.reset({ index: 0, routes: [{ name: "core-stack" }] })
+
+    if (loading)
+        return <SplashScreen />
 
     return (
         <View style={theme.styles.container}>
