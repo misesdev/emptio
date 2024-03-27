@@ -88,7 +88,7 @@ const UserMenu = ({ navigation }: any) => {
                 <SectionContainer>
                     <LinkSection label={useTranslate("settings.account.edit")} icon="person" onPress={() => navigation.navigate("user-edit-stack")} />
                     <LinkSection label={useTranslate("settings.secretkey.copy")} icon="document-lock-outline" onPress={handleCopyKeys} />
-                    <LinkSection label="settigns" icon="settings" onPress={() => { }} />
+                    <LinkSection label={useTranslate("settings.security")} icon="settings" onPress={() => navigation.navigate("manage-security-stack")} />
                 </SectionContainer>
 
                 <SectionContainer>

@@ -50,6 +50,7 @@ export default {
     "settings.secretkey.copy": "Copiar chave privada",
     "settings.account.edit": "Minha Conta",
     "settings.chooselanguage": "Idioma",
+    "settings.security": "Segurança",
 
 
     "settings.about": "Sobre",

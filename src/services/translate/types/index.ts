@@ -47,4 +47,5 @@ export type TranslateWords = "initial.message"
     | "settings.about"
     | "settings.secretkey.copy"
     | "settings.chooselanguage"
+    | "settings.security"
 

@@ -13,6 +13,7 @@ import { stackOptions } from "../constants/RouteSettings"
 import UserEdit from "@screens/root/menu/user/edit"
 import ManageRelays from "@screens/root/settings/relays"
 import About from "@screens/root/settings/about"
+import ManageSecurity from "@screens/root/settings/security"
 
 const Stack = createStackNavigator()
 
@@ -33,6 +34,7 @@ const AppRoutes = () => {
                 <Stack.Screen name="user-edit-stack" component={UserEdit} options={{ headerShown: true }} />   
 
                 <Stack.Screen name="manage-relays-stack" component={ManageRelays} options={{ headerShown: true }} />
+                <Stack.Screen name="manage-security-stack" component={ManageSecurity} options={{ headerShown: true }} />
                 <Stack.Screen name="about-stack" component={About} options={{ headerShown: true }} />     
                 
             </Stack.Navigator>

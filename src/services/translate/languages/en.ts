@@ -50,6 +50,7 @@ export default {
     "settings.account.edit": "My Account",
     "settings.secretkey.copy": "Copy secret key",    
     "settings.chooselanguage": "Language",
+    "settings.security": "Security",
 
 
 
