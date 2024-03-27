@@ -26,7 +26,7 @@ const Initialize = ({ navigation }: any) => {
         setLoading(false)
     }
 
-    const instanceNostr = async () => {
+    const instanceNostr = async () => { 
         Nostr = await getConnection()
     }
 
