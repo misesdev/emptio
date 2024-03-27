@@ -2,11 +2,12 @@ import { StyleSheet, Text, View, ScrollView, RefreshControl } from "react-native
 import theme from "@src/theme"
 import { useEffect, useState } from "react"
 import SplashScreen from "@components/general/SplashScreen"
-import { Section } from "@components/general/Section"
+import { SectionContainer } from "@/src/components/general/section"
 import { ButtonDanger, ButtonPrimary } from "@components/form/Buttons"
 import { getPairKeys } from "@src/services/memory"
 import { listenerEvents } from "@src/services/nostr/events"
 import { UpdateUserProfile } from "@src/services/userManager"
+import { ActionHeader, SectionHeader } from "@/src/components/general/section/headers"
 
 type EventData = {
     kind: number,
@@ -19,24 +20,29 @@ const Home = ({ navigation }: any) => {
     const [loading, setLoading] = useState(true)
     const [events, setEvents] = useState<EventData[]>([])
 
-    useEffect(() => { 
+    useEffect(() => {
         UpdateUserProfile()
-        handleData() 
+        handleData()
     }, [])
 
     const handleData = async () => {
         setLoading(true)
-        
+
         const { publicKey } = await getPairKeys()
 
         listenerEvents({ limit: 6, kinds: [1], authors: [publicKey] }).then(result => {
-            
+
             setEvents(result)
 
             setLoading(false)
-        }) 
+        })
     }
 
+    const actionWallet : ActionHeader = { icon: "add-circle", action: () => { 
+            console.log("action -> wallets") 
+        } 
+    }
+    
     if (loading)
         return <SplashScreen />
 
@@ -47,14 +53,25 @@ const Home = ({ navigation }: any) => {
                 refreshControl={<RefreshControl refreshing={false} onRefresh={handleData} />}
             >
                 <View style={{ width: "100%", height: 30 }}></View>
+                {/* Wallets */}
+                <SectionHeader label="Wallets" actions={[actionWallet]}>
+                    <></>
+                </SectionHeader>
+
+                <SectionContainer>
+                    
+                </SectionContainer>
+
+
+                {/* Sales and Shopping */}
                 {events && events.map((event, key) => {
-                    return <Section key={key}>
+                    return <SectionContainer key={key}>
                         <Text style={{ fontSize: 16, color: theme.colors.gray, margin: 10 }}>{event.content}</Text>
                         <View style={{ flexDirection: "row" }}>
                             <ButtonPrimary label="Repost" onPress={() => { }} />
                             <ButtonDanger label="Donate" onPress={() => { }} />
                         </View>
-                    </Section>
+                    </SectionContainer>
                 })}
 
             </ScrollView>

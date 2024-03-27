@@ -2,7 +2,7 @@ import { StyleSheet, View, ScrollView, RefreshControl, Text } from "react-native
 import theme from "@src/theme"
 import { useEffect, useState } from "react"
 import SplashScreen from "@components/general/SplashScreen"
-import { Section } from "@components/general/Section"
+import { SectionContainer } from "@/src/components/general/section"
 import { ButtonDanger, ButtonSuccess } from "@components/form/Buttons"
 import { listenerEvents, publishEvent } from "@src/services/nostr/events"
 import { getPairKeys } from "@src/services/memory"
@@ -33,7 +33,7 @@ const Feed = ({ navigation }: any) => {
     const handleEvent = async () => {
         setLoading(true)
 
-        await publishEvent({ kind: 1, content: "Testando eventos gerados em backgroundo" }, await getPairKeys())
+        // await publishEvent({ kind: 1, content: "Testando eventos gerados em backgroundo" }, await getPairKeys())
 
         setLoading(false)
     }
@@ -49,13 +49,13 @@ const Feed = ({ navigation }: any) => {
             >
                 <View style={{ width: "100%", height: 30 }}></View>
                 {posts && posts.map((event, key) => {
-                    return <Section key={key}>
+                    return <SectionContainer key={key}>
                         <Text style={{ fontSize: 16, color: theme.colors.gray, margin: 10 }}>{event.content}</Text>
                         <View style={{ flexDirection: "row" }}>
                             <ButtonSuccess label="Buy" onPress={() => { }} />
                             <ButtonDanger label="Sell" onPress={handleEvent} />
                         </View>
-                    </Section>
+                    </SectionContainer>
                 })}
 
             </ScrollView>

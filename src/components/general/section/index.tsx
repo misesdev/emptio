@@ -1,8 +1,9 @@
 import theme from "@src/theme"
 import { Ionicons } from "@expo/vector-icons"
 import { StyleSheet, Text, TouchableOpacity, View } from "react-native"
+import { IconNames } from "@src/services/types/icons"
 
-export const Section = ({ children }: any) => {
+export const SectionContainer = ({ children }: any) => {
 
     return (
         <View style={styles.section}>
@@ -14,7 +15,7 @@ export const Section = ({ children }: any) => {
 type LinkSectionProps = {
     label: string,
     onPress: () => void,
-    icon?: IoniconsNames
+    icon?: IconNames
 }
 
 export const LinkSection = ({ label, onPress, icon }: LinkSectionProps) => {

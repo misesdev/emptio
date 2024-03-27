@@ -1,6 +1,6 @@
 import { StyleSheet, View, Text, Image, ScrollView, TouchableOpacity } from "react-native"
 import { getUser } from "@src/services/memory"
-import { LinkSection, Section } from "@components/general/Section"
+import { LinkSection, SectionContainer } from "@/src/components/general/section"
 import { ButtonDanger } from "@components/form/Buttons"
 import { useTranslate } from "@src/services/translate"
 import SplashScreen from "@components/general/SplashScreen"
@@ -56,19 +56,19 @@ const UserMenu = ({ navigation }: any) => {
                 <Text style={styles.name}>{name}</Text>
             </View>
             <ScrollView contentContainerStyle={theme.styles.scroll_container}>
-                <Section>
+                <SectionContainer>
                     <LinkSection label="Settigns" icon="settings" onPress={() => { }} />
                     <LinkSection label="Manage Keys" icon="settings" onPress={() => { }} />
                     <LinkSection label="settigns" icon="settings" onPress={() => { }} />
                     <LinkSection label="settigns" icon="settings" onPress={() => { }} />
-                </Section>
+                </SectionContainer>
 
-                <Section>
+                <SectionContainer>
                     <LinkSection label="Settigns" icon="settings" onPress={() => { }} />
                     <LinkSection label="Manage Keys" icon="settings" onPress={() => { }} />
                     <LinkSection label="settigns" icon="settings" onPress={() => { }} />
                     <LinkSection label="settigns" icon="settings" onPress={() => { }} />
-                </Section>
+                </SectionContainer>
 
                 <View style={{ padding: 20 }}>
                     <ButtonDanger label={useTranslate("commons.signout")} onPress={handleDeleteAccount} />

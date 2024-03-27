@@ -1,0 +1,75 @@
+import { IconNames } from "@src/services/types/icons"
+import { StyleSheet, View, Text, Touchable, TouchableOpacity } from "react-native"
+import { Ionicons } from "@expo/vector-icons"
+import theme from "@src/theme"
+
+export type ActionHeader = {
+    label?: string,
+    icon?: IconNames
+    action: () => void
+}
+
+type Props = {
+    label: string,
+    actions?: ActionHeader[],
+    children: any
+}
+
+export const SectionHeader = ({ label, actions, children }: Props) => {
+
+    return (
+        <View style={styles.container}>
+            <View style={{ width: actions ? "50%" : "100%" }}>
+                <Text style={styles.label}>{label}</Text>
+            </View>
+
+            {
+                actions &&
+                <View style={{ width: "50%", flexDirection: "row-reverse", alignItems: "flex-end" }}>
+                    {
+                        actions.map((action, key) => {
+                            return (
+                                <TouchableOpacity style={styles.action} key={key} onPress={action.action} >
+                                    {action.label && <Text style={styles.actionLabel}>{action.label}</Text>}
+                                    {action.icon && <Ionicons style={styles.actionIcon} name={action.icon} />}
+                                </TouchableOpacity>
+                            )
+                        })
+                    }
+                </View>
+            }
+            {/* {children} */}
+        </View>
+    )
+}
+
+const styles = StyleSheet.create({
+    container: {
+        width: "100%",
+        flexDirection: "row",
+        paddingHorizontal: 20,
+        marginVertical: 10,
+    },
+    label: {
+        fontSize: 20,
+        fontWeight: "bold",
+        color: theme.colors.gray,
+        paddingVertical: 5
+    },
+    action: {
+        padding: 8,
+        borderRadius: 10,
+        flexDirection: "row",
+        marginHorizontal: 5,
+        backgroundColor: theme.colors.blue
+    },
+    actionLabel: {
+        fontSize: 16,
+        marginHorizontal: 5,
+        color: theme.colors.white
+    },
+    actionIcon: {
+        fontSize: 20,
+        color: theme.colors.white
+    }
+})

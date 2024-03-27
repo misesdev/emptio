@@ -11,6 +11,9 @@ export type HexPairKeys = {
 }
 
 export type Wallet = {
+    name?: string,
+    type?: "lightning" | "bitcoin",
+    lastBalance?: number, 
     privateKey?: string,
     publicKey?: string
 }
