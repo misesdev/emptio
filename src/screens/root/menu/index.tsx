@@ -15,6 +15,7 @@ import { setStringAsync } from "expo-clipboard";
 
 const UserMenu = ({ navigation }: any) => {
 
+    const opacity = .6
     const [name, setName] = useState<string>()
     const [banner, setBanner] = useState<string>()
     const [picture, setPicture] = useState<string>()
@@ -74,9 +75,9 @@ const UserMenu = ({ navigation }: any) => {
     return (
         <>
             {banner && <Image style={styles.banner} source={{ uri: banner }} />}
-            <View style={{ width: "100%", height: 30 }}></View>
+            <View style={{ width: "100%", height: 58 }}></View>
             <View style={styles.area}>
-                <TouchableOpacity activeOpacity={1} onPress={() => navigation.navigate("user-edit-stack")}>
+                <TouchableOpacity activeOpacity={opacity} onPress={() => navigation.navigate("user-edit-stack")}>
                     <View style={styles.image}>
                         {picture && <Image source={{ uri: picture }} style={styles.picture} />}
                         {!picture && <Image source={require("assets/images/defaultProfile.png")} style={styles.picture} />}
@@ -130,7 +131,7 @@ const styles = StyleSheet.create({
         backgroundColor: theme.colors.gray,
     },
     picture: {
-        zIndex: 999,
+        zIndex: 99,
         width: "100%",
         height: "100%",
         borderRadius: 50,
@@ -139,7 +140,7 @@ const styles = StyleSheet.create({
     },
     banner: {
         width: "100%",
-        height: 200,
+        height: 120,
         position: "absolute",
         top: 0,
         zIndex: 0

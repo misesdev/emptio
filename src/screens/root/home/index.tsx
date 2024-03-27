@@ -2,19 +2,12 @@ import { StyleSheet, Text, View, ScrollView, RefreshControl } from "react-native
 import theme from "@src/theme"
 import { useEffect, useState } from "react"
 import SplashScreen from "@components/general/SplashScreen"
-import { SectionContainer } from "@/src/components/general/section"
-import { ButtonDanger, ButtonPrimary } from "@components/form/Buttons"
 import { UpdateUserProfile } from "@src/services/userManager"
 import { ActionHeader, SectionHeader } from "@components/general/section/headers"
 import { Wallet } from "@src/services/memory/types"
 import { getWallets } from "@src/services/memory"
-import { WalletList } from "@/src/components/wallet"
-
-type EventData = {
-    kind: number,
-    pubkey: string,
-    content: string
-}
+import { WalletList } from "@src/components/wallet"
+import { useTranslate } from "@src/services/translate"
 
 const Home = ({ navigation }: any) => {
 
@@ -55,13 +48,13 @@ const Home = ({ navigation }: any) => {
                 refreshControl={<RefreshControl refreshing={false} onRefresh={handleData} />}
             >
                 {/* Wallets */}
-                <SectionHeader icon="wallet" label="Wallets" actions={[actionWallet]} />
+                <SectionHeader icon="wallet" label={useTranslate("section.title.wallets")} actions={[actionWallet]} />
 
                 {/* Wallets section  */}
                 <WalletList wallets={wallets} />
 
                 {/* Sales and Shopping */}
-                <SectionHeader icon="cash-outline" label="Purchasing & Sales" />
+                <SectionHeader icon="cash-outline" label={useTranslate("section.title.sales")} />
 
                 {/* Wallets section  */}
                 <WalletList  wallets={wallets} />

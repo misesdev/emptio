@@ -48,4 +48,6 @@ export type TranslateWords = "initial.message"
     | "settings.secretkey.copy"
     | "settings.chooselanguage"
     | "settings.security"
+    | "section.title.wallets"
+    | "section.title.sales"
 

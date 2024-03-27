@@ -17,7 +17,7 @@ export default {
     "commons.search": "Search",
     "commons.signin": "Sign In",
     "commons.signup": "Sign Up",
-    "commons.signout": "Sign Out",
+    "commons.signout": "Log Out",
     "commons.enter": "Enter",
     "commons.buy": "Buy",
     "commons.sell": "Sell",
@@ -46,12 +46,13 @@ export default {
     "message.detectedkey.value": "key: ",
     "message.wallet.create": "Add as many wallets as you want. To buy or sell, you can select a wallet in the purchase or sale order.",
 
-    "settings.relays": "Relays", 
+    "settings.relays": "Relays",
     "settings.account.edit": "My Account",
-    "settings.secretkey.copy": "Copy secret key",    
+    "settings.secretkey.copy": "Copy secret key",
     "settings.chooselanguage": "Language",
     "settings.security": "Security",
-
+    "section.title.wallets": "Wallets",
+    "section.title.sales": "Purchasing & Sales",
 
 
     "settings.about": "About"

@@ -19,7 +19,10 @@ type LinkSectionProps = {
 }
 
 export const LinkSection = ({ label, onPress, icon }: LinkSectionProps) => {
-    return <TouchableOpacity style={styles.link} onPress={onPress}>
+
+    const opacity = .6
+
+    return <TouchableOpacity activeOpacity={opacity} style={styles.link} onPress={onPress}>
         { icon && <Ionicons style={styles.linkIcon} name={icon} /> }
         <Text style={styles.linkText}>{label}</Text>
     </TouchableOpacity>

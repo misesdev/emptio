@@ -51,6 +51,8 @@ export default {
     "settings.account.edit": "Minha Conta",
     "settings.chooselanguage": "Idioma",
     "settings.security": "Segurança",
+    "section.title.wallets": "Carteiras",
+    "section.title.sales": "Compas & Vendas",
 
 
     "settings.about": "Sobre",

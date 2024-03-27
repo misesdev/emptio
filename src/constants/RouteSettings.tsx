@@ -8,7 +8,7 @@ export const tabBarStyle: ViewStyle = {
     borderTopColor: theme.colors.transparent,
     paddingBottom: 15,
     height: 70,
-    elevation: 0
+    elevation: 0,
 }
 
 export const TabBarOprions: BottomTabNavigationOptions = {
@@ -22,7 +22,7 @@ export const stackOptions: StackNavigationOptions = {
     headerShown: false,
     headerTransparent: true,
     headerTintColor: theme.colors.gray,
-    cardStyle: { backgroundColor: theme.colors.black },  
+    cardStyle: { backgroundColor: theme.colors.black },
     cardStyleInterpolator: CardStyleInterpolators.forHorizontalIOS
 }
 

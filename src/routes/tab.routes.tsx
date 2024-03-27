@@ -15,7 +15,7 @@ const Tab = createBottomTabNavigator()
 const TabRoutes = () => {
 
     return (
-        <Tab.Navigator
+        <Tab.Navigator 
             screenOptions={TabBarOprions}
             initialRouteName="home"
         >

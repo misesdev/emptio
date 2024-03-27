@@ -17,8 +17,8 @@ export const TextBox = ({ value, placeholder, onChangeText }: TextBoxProps) => {
             <TextInput style={styles.input}
                 placeholder={placeholder}
                 onChangeText={onChangeText}
-                placeholderTextColor={theme.colors.gray}   
-                value={value}             
+                placeholderTextColor={theme.colors.gray}
+                value={value}
             />
         </View>
     )
@@ -33,8 +33,8 @@ export const QRCodeTextBox = ({ value, placeholder, onChangeText }: TextBoxProps
             <TextInput style={styles.input}
                 placeholder={placeholder}
                 onChangeText={onChangeText}
-                placeholderTextColor={theme.colors.gray}   
-                value={value}             
+                placeholderTextColor={theme.colors.gray}
+                value={value}
             />
             <TouchableOpacity style={styles.pastButton} onPress={() => { setQrReader(true) }}>
                 <Ionicons name="qr-code" size={theme.icons.medium} color="white" style={styles.pastIcon} />
@@ -72,7 +72,7 @@ const styles = StyleSheet.create({
         padding: 2.4,
     },
     pastIcon: {
-        textAlign: "center", 
+        textAlign: "center",
         paddingVertical: 15,
     }
 })
