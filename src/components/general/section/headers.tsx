@@ -11,11 +11,10 @@ export type ActionHeader = {
 
 type Props = {
     label: string,
-    actions?: ActionHeader[],
-    children: any
+    actions?: ActionHeader[]
 }
 
-export const SectionHeader = ({ label, actions, children }: Props) => {
+export const SectionHeader = ({ label, actions }: Props) => {
 
     return (
         <View style={styles.container}>

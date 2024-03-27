@@ -4,10 +4,11 @@ import { useEffect, useState } from "react"
 import SplashScreen from "@components/general/SplashScreen"
 import { SectionContainer } from "@/src/components/general/section"
 import { ButtonDanger, ButtonPrimary } from "@components/form/Buttons"
-import { getPairKeys } from "@src/services/memory"
+import { getPairKeys, getWallets } from "@src/services/memory"
 import { listenerEvents } from "@src/services/nostr/events"
 import { UpdateUserProfile } from "@src/services/userManager"
 import { ActionHeader, SectionHeader } from "@/src/components/general/section/headers"
+import { Wallet } from "@/src/services/memory/types"
 
 type EventData = {
     kind: number,
@@ -19,23 +20,23 @@ const Home = ({ navigation }: any) => {
 
     const [loading, setLoading] = useState(true)
     const [events, setEvents] = useState<EventData[]>([])
+    const [wallets, setWallets] = useState<Wallet[]>()
 
     useEffect(() => {
-        UpdateUserProfile()
         handleData()
     }, [])
 
     const handleData = async () => {
         setLoading(true)
 
-        const { publicKey } = await getPairKeys()
+        await UpdateUserProfile()
 
-        listenerEvents({ limit: 6, kinds: [1], authors: [publicKey] }).then(result => {
+        console.log("profile updated")
+        const wallets = await getWallets()
 
-            setEvents(result)
+        setWallets(wallets)
 
-            setLoading(false)
-        })
+        setLoading(false)
     }
 
     const actionWallet : ActionHeader = { icon: "add-circle", action: () => { 
@@ -54,12 +55,12 @@ const Home = ({ navigation }: any) => {
             >
                 <View style={{ width: "100%", height: 30 }}></View>
                 {/* Wallets */}
-                <SectionHeader label="Wallets" actions={[actionWallet]}>
-                    <></>
-                </SectionHeader>
+                <SectionHeader label="Wallets" actions={[actionWallet]} />
 
                 <SectionContainer>
-                    
+                    {/* Wallets section  */}
+                    {wallets && <></>}
+                    {!wallets && <></>}
                 </SectionContainer>
 
 

@@ -11,11 +11,13 @@ export type HexPairKeys = {
 }
 
 export type Wallet = {
+    id?: number,
     name?: string,
     type?: "lightning" | "bitcoin",
     lastBalance?: number, 
     privateKey?: string,
     publicKey?: string
+    address?: string
 }
 
 export type User = {
