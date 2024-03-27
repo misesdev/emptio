@@ -45,6 +45,14 @@ export default {
     "message.detectedkey": "Private key detected in your clipboard, do you want to enter with the detected private key?",
     "message.detectedkey.value": "key: ",
     "message.wallet.create": "Add as many wallets as you want. To buy or sell, you can select a wallet in the purchase or sale order.",
-    
+
+    "settings.relays": "Relays", 
+    "settings.account.edit": "My Account",
+    "settings.secretkey.copy": "Copy secret key",    
+    "settings.chooselanguage": "Language",
+
+
+
+    "settings.about": "About"
 
 }

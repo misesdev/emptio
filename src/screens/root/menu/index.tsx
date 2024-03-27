@@ -1,13 +1,17 @@
 import { StyleSheet, View, Text, Image, ScrollView, TouchableOpacity } from "react-native"
-import { getUser } from "@src/services/memory"
-import { LinkSection, SectionContainer } from "@/src/components/general/section"
+import { hasHardwareAsync, authenticateAsync } from 'expo-local-authentication';
+import { LinkSection, SectionContainer } from "@components/general/section"
+import MessageBox, { showMessage } from "@components/general/MessageBox"
+import { getPairKeys, getUser } from "@src/services/memory"
+import SplashScreen from "@components/general/SplashScreen"
 import { ButtonDanger } from "@components/form/Buttons"
 import { useTranslate } from "@src/services/translate"
-import SplashScreen from "@components/general/SplashScreen"
+import { SignOut } from "@src/services/userManager"
+import { hexToBytes } from "@noble/hashes/utils"
 import { useEffect, useState } from "react"
+import { nip19 } from "nostr-tools";
 import theme from "@src/theme"
-import { SignOut } from "@/src/services/userManager"
-import MessageBox, { showMessage } from "@/src/components/general/MessageBox"
+import { setStringAsync } from "expo-clipboard";
 
 const UserMenu = ({ navigation }: any) => {
 
@@ -39,6 +43,31 @@ const UserMenu = ({ navigation }: any) => {
         }, 300)
     }
 
+    const checkBiometric = async () => {
+        const isBiometricAvailable = await hasHardwareAsync()
+
+        if (isBiometricAvailable) {
+            const { success } = await authenticateAsync({
+                promptMessage: useTranslate("commons.authenticate.message"),
+            })
+    
+            return success
+        }            
+        else
+            return true
+    };
+
+    const handleCopyKeys = async () => { 
+        const biometrics = await checkBiometric()
+
+        const { privateKey } = await getPairKeys()
+
+        if (biometrics) {
+            const secretkey = nip19.nsecEncode(hexToBytes(privateKey))
+            await setStringAsync(secretkey)
+        }
+    }
+
     if (loading)
         return <SplashScreen message="deleting storage.." />
 
@@ -47,7 +76,7 @@ const UserMenu = ({ navigation }: any) => {
             {banner && <Image style={styles.banner} source={{ uri: banner }} />}
             <View style={{ width: "100%", height: 30 }}></View>
             <View style={styles.area}>
-                <TouchableOpacity onPress={() => navigation.navigate("user-edit-stack")}>
+                <TouchableOpacity activeOpacity={1} onPress={() => navigation.navigate("user-edit-stack")}>
                     <View style={styles.image}>
                         {picture && <Image source={{ uri: picture }} style={styles.picture} />}
                         {!picture && <Image source={require("assets/images/defaultProfile.png")} style={styles.picture} />}
@@ -57,17 +86,16 @@ const UserMenu = ({ navigation }: any) => {
             </View>
             <ScrollView contentContainerStyle={theme.styles.scroll_container}>
                 <SectionContainer>
-                    <LinkSection label="Settigns" icon="settings" onPress={() => { }} />
-                    <LinkSection label="Manage Keys" icon="settings" onPress={() => { }} />
-                    <LinkSection label="settigns" icon="settings" onPress={() => { }} />
+                    <LinkSection label={useTranslate("settings.account.edit")} icon="person" onPress={() => navigation.navigate("user-edit-stack")} />
+                    <LinkSection label={useTranslate("settings.secretkey.copy")} icon="document-lock-outline" onPress={handleCopyKeys} />
                     <LinkSection label="settigns" icon="settings" onPress={() => { }} />
                 </SectionContainer>
 
                 <SectionContainer>
                     <LinkSection label="Settigns" icon="settings" onPress={() => { }} />
-                    <LinkSection label="Manage Keys" icon="settings" onPress={() => { }} />
-                    <LinkSection label="settigns" icon="settings" onPress={() => { }} />
-                    <LinkSection label="settigns" icon="settings" onPress={() => { }} />
+                    <LinkSection label={useTranslate("settings.chooselanguage")} icon="language" onPress={() => { }} />                   
+                    <LinkSection label={useTranslate("settings.relays")} icon="earth" onPress={() => navigation.navigate("manage-relays-stack")} />
+                    <LinkSection label={useTranslate("settings.about")} icon="settings" onPress={() => navigation.navigate("about-stack")} />
                 </SectionContainer>
 
                 <View style={{ padding: 20 }}>

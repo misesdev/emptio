@@ -33,7 +33,7 @@ const Home = ({ navigation }: any) => {
         const wallets = await getWallets()
         // const sales = await getSales()
 
-        setWallets([{}])
+        setWallets(wallets)
         // setSales(sales)
 
         setLoading(false)

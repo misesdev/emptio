@@ -10,7 +10,9 @@ import HomeSearch from "@screens/root/home/search/HomeSearch"
 import FeedSearch from "@screens/root/feed/search/FeedSearch"
 import Authenticate from "@screens/initialize"
 import { stackOptions } from "../constants/RouteSettings"
-import UserEdit from "@/src/screens/root/menu/user/edit"
+import UserEdit from "@screens/root/menu/user/edit"
+import ManageRelays from "@screens/root/settings/relays"
+import About from "@screens/root/settings/about"
 
 const Stack = createStackNavigator()
 
@@ -28,7 +30,11 @@ const AppRoutes = () => {
                 <Stack.Screen name="search-feed-stack" component={FeedSearch} options={{ headerShown: true }} />   
 
                 <Stack.Screen name="user-menu-stack" component={UserMenu} options={{ headerShown: true }} />  
-                <Stack.Screen name="user-edit-stack" component={UserEdit} options={{ headerShown: true }} />             
+                <Stack.Screen name="user-edit-stack" component={UserEdit} options={{ headerShown: true }} />   
+
+                <Stack.Screen name="manage-relays-stack" component={ManageRelays} options={{ headerShown: true }} />
+                <Stack.Screen name="about-stack" component={About} options={{ headerShown: true }} />     
+                
             </Stack.Navigator>
         </NavigationContainer>
     )

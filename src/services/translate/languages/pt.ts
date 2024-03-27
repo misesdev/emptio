@@ -46,4 +46,12 @@ export default {
     "message.detectedkey.value": "chave: ",
     "message.wallet.create": "Adicione quantas carteiras desejar. Para comprar ou vender, você pode selecionar uma carteira na ordem de compra ou venda.",
 
+    "settings.relays": "Relays", 
+    "settings.secretkey.copy": "Copiar chave privada",
+    "settings.account.edit": "Minha Conta",
+    "settings.chooselanguage": "Idioma",
+
+
+    "settings.about": "Sobre",
+
 }
