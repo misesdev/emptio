@@ -1,14 +1,12 @@
-import { setItem, getItem } from "expo-secure-store"
+import { setItem, getItem, getItemAsync, setItemAsync, deleteItemAsync } from "expo-secure-store"
 import { Language } from "../translate/types"
 import { HexPairKeys, User, Wallet } from "./types"
 
 const pairKeys: HexPairKeys = { privateKey: "", publicKey: "" }
 
-export const getPairKeys = () => {
-    if (pairKeys.privateKey.length > 0)
-        return pairKeys
-
-    const userData = getItem("userData", { requireAuthentication: false })
+export const getPairKeys = async () => {
+    
+    const userData = await getItemAsync("userData")
 
     if (userData) {
         const user: User = JSON.parse(userData)
@@ -19,31 +17,31 @@ export const getPairKeys = () => {
     return pairKeys
 }
 
-export const getUser = (): User => {
-    const user = getItem("userData", { requireAuthentication: false })
+export const getUser = async (): Promise<User> => {
+    const user = await getItemAsync("userData")
     if (user)
         return JSON.parse(user)
 
     return { privateKey: "", publicKey: "" }
 }
 
-export const insertUser = (userData: User) => setItem("userData", JSON.stringify(userData), { requireAuthentication: false })
+export const insertUser = async (userData: User) => await setItemAsync("userData", JSON.stringify(userData))
 
-export const deleteUser = () => setItem("userData", "", { requireAuthentication: false })
+export const deleteUser = async () => await deleteItemAsync("userData")
 
-export const getWallet = (): Wallet => {
-    const wallet = getItem("walletData", { requireAuthentication: false })
+export const getWallet = async(): Promise<Wallet> => {
+    const wallet = await getItemAsync("walletData")
     if (wallet)
         return JSON.parse(wallet)
 
     return {}
 }
 
-export const insertWallet = (wallet: Wallet) => setItem("walletData", JSON.stringify(wallet), { requireAuthentication: false })
+export const insertWallet = async (wallet: Wallet) => await setItemAsync("walletData", JSON.stringify(wallet))
 
-export const deleteWallet = () => setItem("walletData", "", { requireAuthentication: false })
+export const deleteWallet = async () => await deleteItemAsync("walletData")
 
-export const setLanguage = (language: string) => setItem("language", language, { requireAuthentication: false })
+export const setLanguage = async (language: string) => await setItemAsync("language", language)
 
 export const getLanguage = (): Language => {
 
@@ -59,9 +57,9 @@ export const getLanguage = (): Language => {
     }
 }
 
-export const clearStorage = () => {
-    setItem("userData", "")
-    setItem("walletData", "")
-    setItem("language", "")
-    setItem("relays", "")
+export const clearStorage = async () => {
+    await deleteItemAsync("userData")
+    await deleteItemAsync("walletData")
+    await deleteItemAsync("language")
+    await deleteItemAsync("relays")
 }

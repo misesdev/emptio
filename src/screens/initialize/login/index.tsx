@@ -48,17 +48,19 @@ const Login = ({ navigation }: any) => {
         }
     }
 
-    const handlerLogin = async() => {
+    const handlerLogin = async () => {
         setLoading(true)
 
-        if (validatePrivateKey(secretKey)) {
-            const result = await SignIn(secretKey)
-            if (result.success)
-                navigation.reset({ index: 0, routes: [{ name: "core-stack" }] })
-        } else
-            showMessage({ message: useTranslate("message.invalidkey"), infolog: secretKey })
+        setTimeout(async () => {
+            if (validatePrivateKey(secretKey)) {
+                const result = await SignIn(secretKey)
+                if (result.success)
+                    navigation.reset({ index: 0, routes: [{ name: "core-stack" }] })
+            } else
+                showMessage({ message: useTranslate("message.invalidkey"), infolog: secretKey })
 
-        setLoading(false)
+            setLoading(false)
+        }, 100)
     }
 
     if (loading)

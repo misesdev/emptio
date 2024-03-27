@@ -10,7 +10,7 @@ export const SignUp = async (userName: string) => {
         const { privateKey, publicKey } = createPairKeys()
 
         const userData: User = {
-            name: userName.trim().replace(" ", "_"),
+            name: userName.trim(),
             displayName: userName.trim(),
             privateKey: privateKey,
             publicKey: publicKey ? publicKey : ""
@@ -40,16 +40,16 @@ export const SignIn = async (secretKey: string) => {
         insertUser(userData)
 
         return { success: true }
-    } 
+    }
     catch (ex) {
         console.log(ex)
         return { success: false, message: ex }
     }
 }
 
-export const UpdateUser = async() => {
-    
-    const user = getUser()
+export const UpdateUser = async () => {
+
+    const user = await getUser()
 
     const event = await getEvent({ kinds: [0], authors: [user.publicKey] })
 
@@ -58,24 +58,31 @@ export const UpdateUser = async() => {
     user.displayName = content.displayName
     user.picture = content.picture
     user.image = content.image
-    user.banner = content.banner 
-    user.lud06 = content.lud06 
+    user.banner = content.banner
+    user.lud06 = content.lud06
     user.lud16 = content.lud16
-    user.nip05 = content.nip05 
-    user.bio = content.bio 
-    user.name = content.name 
-    user.website = content.website 
+    user.nip05 = content.nip05
+    user.bio = content.bio
+    user.name = content.name
+    user.website = content.website
     user.about = content.about
     user.zapService = content.zapService
 
-    insertUser(user)
+    console.log("update profile")
+    console.log(content)
 
+    insertUser(user)
 }
 
-export const SignOut = (callback: () => void) => {
+export const SignOut = async () => {
 
-    clearStorage()
-
-    callback()
+    try {
+        await clearStorage()
+        await clearStorage()
+        await clearStorage()
+        return { success: true }
+    } catch (ex) {
+        return { success: false, message: ex }
+    }
 }
 

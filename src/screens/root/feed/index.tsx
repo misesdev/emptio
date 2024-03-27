@@ -18,11 +18,11 @@ const Feed = ({ navigation }: any) => {
     const [loading, setLoading] = useState(true)
     const [posts, setPosts] = useState<EventData[]>()
     
-    useEffect(() => handleData(), [])
+    useEffect(() => { handleData() }, [])
 
-    const handleData = () => {
+    const handleData = async () => {
         setLoading(true)
-        const { publicKey } = getPairKeys()
+        const { publicKey } = await getPairKeys()
         listenerEvents({ limit: 5, kinds: [0], authors: [publicKey] }).then(result => {
             setPosts(result)
 
@@ -33,8 +33,8 @@ const Feed = ({ navigation }: any) => {
     const handleEvent = async () => {
         setLoading(true)
 
-        await publishEvent({ kind: 1, content: "Testando eventos gerados em backgroundo" }, getPairKeys())
-        
+        await publishEvent({ kind: 1, content: "Testando eventos gerados em backgroundo" }, await getPairKeys())
+
         setLoading(false)
     }
 

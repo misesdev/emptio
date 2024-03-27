@@ -1,11 +1,11 @@
 import { DefaultRelays } from "@src/constants/Relays"
-import { getItem, setItem } from "expo-secure-store"
+import { getItemAsync, setItemAsync } from "expo-secure-store"
 
 export const getRelays = async (): Promise<string[]> => {
 
     var relays = DefaultRelays
 
-    const data = getItem("relays")
+    const data = await getItemAsync("relays")
 
     if (data)
         relays = JSON.parse(data)
@@ -13,11 +13,11 @@ export const getRelays = async (): Promise<string[]> => {
     return relays
 }
 
-export const setRelays = (relays: string[]) => setItem("relays", JSON.stringify(relays))
+export const setRelays = async (relays: string[]) => await setItemAsync("relays", JSON.stringify(relays))
 
-export const insertRelay = (relay: string) => {
+export const insertRelay = async (relay: string) => {
     const relays: string[] = [];
-    const data = getItem("relays")
+    const data = await getItemAsync("relays")
     if (data) {
         const relays = JSON.parse(data)
         relays.push(relay)
@@ -27,8 +27,8 @@ export const insertRelay = (relay: string) => {
     setRelays(relays)
 }
 
-export const deleteRelay = (relay: string) => {
-    const data = getItem("relays")
+export const deleteRelay = async (relay: string) => {
+    const data = await getItemAsync("relays")
     if (data) {
         const relays: string[] = JSON.parse(data)
         relays.splice(relays.indexOf(relay), 1)

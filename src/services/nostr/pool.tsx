@@ -1,5 +1,5 @@
 import { HexPairKeys, User } from "../memory/types"
-import { getEvent, publishEvent, publishUser } from "./events"
+import { getEvent, publishEvent } from "./events"
 
 export const getUserData = async (publicKey: string): Promise<User> => {
 
@@ -48,8 +48,6 @@ export const pushUserData = async (user: User) => {
         zapService: user.zapService,
         website: user.website
     }
-
-    // await publishUser(profile, pairKeys)
 
     const event = { kind: 0, content: JSON.stringify(profile) }
 

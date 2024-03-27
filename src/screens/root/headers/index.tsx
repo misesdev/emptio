@@ -4,10 +4,18 @@ import { Ionicons } from "@expo/vector-icons"
 import theme from "@src/theme"
 import { getUser } from "@src/services/memory"
 import { useTranslate } from "@src/services/translate"
+import { useEffect, useState } from "react"
 
 export const HeaderHome = ({ navigation }: any) => {
 
-    const { picture } = getUser()
+    const [picture, setPicture] = useState<string>()
+
+    useEffect(() => { handleLoadUserInfo() }, [])
+
+    const handleLoadUserInfo = async () => {
+        const { picture, name, banner } = await getUser()
+        setPicture(picture)
+    }
 
     const handleMenu = () => navigation.navigate("user-menu-stack")
 
@@ -38,7 +46,14 @@ export const HeaderHome = ({ navigation }: any) => {
 
 export const HeaderFeed = ({ navigation }: any) => {
 
-    const { picture } = getUser()
+    const [picture, setPicture] = useState<string>()
+
+    useEffect(() => { handleLoadUserInfo() }, [])
+
+    const handleLoadUserInfo = async () => {
+        const { picture, name, banner } = await getUser()
+        setPicture(picture)
+    }
 
     const handleMenu = () => navigation.navigate("user-menu-stack")
 

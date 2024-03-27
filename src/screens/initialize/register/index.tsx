@@ -15,20 +15,21 @@ const Register = ({ navigation }: any) => {
 
     const handlerRegister = async () => {
         if (userName) {
-            setLoading(true)
 
-            if (userName.length <= 5) {
-                setLoading(false)
+            if (userName.length <= 5)
                 return showMessage({ message: "Ops, parece que o nome de usuário é muito curto, por favor digite um nome de usuário com mais caracteres!" })
-            }
 
-            const result = await SignUp(userName)
+            setLoading(true)
+            setTimeout(async () => {
+                const result = await SignUp(userName)
 
-            if (result.success)
-                return navigation.reset({ index: 0, routes: [{ name: "core-stack" }] })
-
-            showMessage({ message: `Ocorreu um erro inesperado durante a regisição: ${result.message}` })
-            setLoading(false)
+                if (result.success)
+                    return navigation.reset({ index: 0, routes: [{ name: "core-stack" }] })
+                else {
+                    showMessage({ message: `Ocorreu um erro inesperado durante a regisição: ${result.message}` })
+                    setLoading(false)
+                }
+            }, 100)
         }
     }
 

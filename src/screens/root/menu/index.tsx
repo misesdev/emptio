@@ -4,21 +4,39 @@ import { LinkSection, Section } from "@components/general/Section"
 import { ButtonDanger } from "@components/form/Buttons"
 import { useTranslate } from "@src/services/translate"
 import SplashScreen from "@components/general/SplashScreen"
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import theme from "@src/theme"
 import { SignOut } from "@/src/services/userManager"
+import MessageBox, { showMessage } from "@/src/components/general/MessageBox"
 
 const UserMenu = ({ navigation }: any) => {
 
-    const [loading, setLoading] = useState(false)
+    const [name, setName] = useState<string>()
+    const [banner, setBanner] = useState<string>()
+    const [picture, setPicture] = useState<string>()
+    const [loading, setLoading] = useState(false)    
 
-    const { picture, displayName, banner } = getUser()
+    useEffect(() => { handleLoadUserInfo() }, [])
 
-    const handleDeleteAccount = () => {
+    const handleLoadUserInfo = async () => {
+        const { picture, name, banner } = await getUser()
+        setPicture(picture)
+        setBanner(banner)
+        setName(name)
+    }
+
+    const handleDeleteAccount = async () => {
 
         setLoading(true)
 
-        setTimeout(() => SignOut(() => navigation.reset({ index: 0, routes: [{ name: "initial-stack" }] })), 500)
+        setTimeout(async () => { 
+            const result = await SignOut()
+
+            if(result.success)
+                navigation.reset({ index: 0, routes: [{ name: "initial-stack" }] })
+            else
+                showMessage({ message: `Ocorreu um erro inesperado durante a regisição: ${result.message}` })
+        }, 300)
     }
 
     if (loading)
@@ -35,7 +53,7 @@ const UserMenu = ({ navigation }: any) => {
                         {!picture && <Image source={require("assets/images/defaultProfile.png")} style={styles.picture} />}
                     </View>
                 </TouchableOpacity>
-                <Text style={styles.name}>{displayName}</Text>
+                <Text style={styles.name}>{name}</Text>
             </View>
             <ScrollView contentContainerStyle={theme.styles.scroll_container}>
                 <Section>
@@ -56,6 +74,7 @@ const UserMenu = ({ navigation }: any) => {
                     <ButtonDanger label={useTranslate("commons.delete.account")} onPress={handleDeleteAccount} />
                 </View>
             </ScrollView>
+            <MessageBox />
         </>
     )
 }

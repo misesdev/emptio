@@ -5,8 +5,8 @@ import SplashScreen from "@components/general/SplashScreen"
 import { Section } from "@components/general/Section"
 import { ButtonDanger, ButtonPrimary } from "@components/form/Buttons"
 import { getPairKeys } from "@src/services/memory"
-import { getEvent, listenerEvents } from "@src/services/nostr/events"
-import { UpdateUser } from "@/src/services/userManager"
+import { listenerEvents } from "@src/services/nostr/events"
+import { UpdateUser } from "@src/services/userManager"
 
 type EventData = {
     kind: number,
@@ -23,11 +23,11 @@ const Home = ({ navigation }: any) => {
 
     const handleData = async () => {
         setLoading(true)
-        const { publicKey } = getPairKeys()
+        const { publicKey } = await getPairKeys()
 
-        UpdateUser()
+        await UpdateUser()
         
-        listenerEvents({ limit: 6, kinds: [1, 4], authors: [publicKey] }).then(result => {
+        listenerEvents({ limit: 3, kinds: [1, 4], authors: [publicKey] }).then(result => {
             
             setEvents(result)
 
