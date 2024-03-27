@@ -39,14 +39,14 @@ const TabRoutes = () => {
                     tabBarIcon: ({ color }) => <Ionicons name="wallet" color={color} size={theme.icons.medium} />,
                 }}
             />
-            <Tab.Screen
+            {/* <Tab.Screen
                 name="donate"
                 component={Donate}
                 options={{
                     tabBarLabel: useTranslate("menu.donate"),
                     tabBarIcon: ({ color }) => <Ionicons name="heart" color={color} size={theme.icons.medium} />,
                 }}
-            />
+            /> */}
             <Tab.Screen
                 name="settings"
                 component={Settings}

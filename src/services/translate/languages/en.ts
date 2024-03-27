@@ -24,6 +24,7 @@ export default {
     "commons.send": "Send",
     "commons.receive": "Receive",
     "commons.create": "Create",
+    "commons.add": "Add Now",
     "commons.update": "Update",
     "commons.delete": "Delete",
     "commons.delete.account": "Delete Account",
@@ -33,6 +34,7 @@ export default {
 
     "labels.username": "User Name",
     "labels.privatekey": "Private Key",
+    "labels.wallet.add": "Add a wallet!",
 
     "menu.home": "home",
     "menu.buy&sell": "buy & sell",
@@ -41,6 +43,8 @@ export default {
 
     "message.invalidkey": "Invalid private key, please check if the key entered is in the correct format starting with 'nsec'. If you do not have a Nostr private key, consider creating an account.",
     "message.detectedkey": "Private key detected in your clipboard, do you want to enter with the detected private key?",
-    "message.detectedkey.value": "key: "
+    "message.detectedkey.value": "key: ",
+    "message.wallet.create": "Add as many wallets as you want. To buy or sell, you can select a wallet in the purchase or sale order.",
+    
 
 }

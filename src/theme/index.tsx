@@ -12,7 +12,7 @@ const theme = {
 
         icons: "#FFFFFF",
         section: "#141414",
-        transparent: "transparent",        
+        transparent: "transparent",
     },
     icons: {
         mine: 18,
@@ -39,7 +39,7 @@ const theme = {
             flexGrow: 1,
             alignItems: "center",
         },
-    }) 
+    })
 };
 
 export default theme;

@@ -11,14 +11,16 @@ export type ActionHeader = {
 
 type Props = {
     label: string,
+    icon?: IconNames,
     actions?: ActionHeader[]
 }
 
-export const SectionHeader = ({ label, actions }: Props) => {
+export const SectionHeader = ({ label, icon, actions }: Props) => {
 
     return (
         <View style={styles.container}>
-            <View style={{ width: actions ? "50%" : "100%" }}>
+            <View style={{ width: actions ? "50%" : "100%", flexDirection: "row" }}>
+                {icon && <Ionicons name={icon} size={theme.icons.medium} style={styles.labelIcon} />}
                 <Text style={styles.label}>{label}</Text>
             </View>
 
@@ -37,7 +39,6 @@ export const SectionHeader = ({ label, actions }: Props) => {
                     }
                 </View>
             }
-            {/* {children} */}
         </View>
     )
 }
@@ -46,6 +47,7 @@ const styles = StyleSheet.create({
     container: {
         width: "100%",
         flexDirection: "row",
+        marginTop: 38,
         paddingHorizontal: 20,
         marginVertical: 10,
     },
@@ -70,5 +72,10 @@ const styles = StyleSheet.create({
     actionIcon: {
         fontSize: 20,
         color: theme.colors.white
+    },
+    labelIcon: {
+        color: theme.colors.gray, 
+        marginHorizontal: 10, 
+        marginVertical: 7
     }
 })

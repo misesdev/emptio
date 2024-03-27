@@ -24,6 +24,7 @@ export default {
     "commons.send": "Enviar",
     "commons.receive": "Receber",
     "commons.create": "Criar",
+    "commons.add": "Adicionar",
     "commons.update": "Atualizar",
     "commons.delete": "Excluir",
     "commons.delete.account": "Excluir Conta",
@@ -33,6 +34,7 @@ export default {
 
     "labels.username": "Nome de Usuário",
     "labels.privatekey": "Chave Privada",
+    "labels.wallet.add": "Adicionar carteira!",
 
     "menu.home": "início",
     "menu.buy&sell": "comprar & vender",
@@ -42,5 +44,6 @@ export default {
     "message.invalidkey": "Chave privada inválida, verifique se a chave digitada está no formato correto começando com 'nsec', caso você não possua uma chave privada nostr considere criar uma conta.",
     "message.detectedkey": "Chave privada detectada em sua area de transferência, deseja entrar com a chave privada detectada?",
     "message.detectedkey.value": "chave: ",
+    "message.wallet.create": "Adicione quantas carteiras desejar. Para comprar ou vender, você pode selecionar uma carteira na ordem de compra ou venda.",
 
 }

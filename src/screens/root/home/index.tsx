@@ -4,11 +4,11 @@ import { useEffect, useState } from "react"
 import SplashScreen from "@components/general/SplashScreen"
 import { SectionContainer } from "@/src/components/general/section"
 import { ButtonDanger, ButtonPrimary } from "@components/form/Buttons"
-import { getPairKeys, getWallets } from "@src/services/memory"
-import { listenerEvents } from "@src/services/nostr/events"
 import { UpdateUserProfile } from "@src/services/userManager"
-import { ActionHeader, SectionHeader } from "@/src/components/general/section/headers"
-import { Wallet } from "@/src/services/memory/types"
+import { ActionHeader, SectionHeader } from "@components/general/section/headers"
+import { Wallet } from "@src/services/memory/types"
+import { getWallets } from "@src/services/memory"
+import { WalletList } from "@/src/components/wallet"
 
 type EventData = {
     kind: number,
@@ -19,7 +19,6 @@ type EventData = {
 const Home = ({ navigation }: any) => {
 
     const [loading, setLoading] = useState(true)
-    const [events, setEvents] = useState<EventData[]>([])
     const [wallets, setWallets] = useState<Wallet[]>()
 
     useEffect(() => {
@@ -31,19 +30,21 @@ const Home = ({ navigation }: any) => {
 
         await UpdateUserProfile()
 
-        console.log("profile updated")
         const wallets = await getWallets()
+        // const sales = await getSales()
 
-        setWallets(wallets)
+        setWallets([{}])
+        // setSales(sales)
 
         setLoading(false)
     }
 
-    const actionWallet : ActionHeader = { icon: "add-circle", action: () => { 
-            console.log("action -> wallets") 
-        } 
+    const actionWallet: ActionHeader = {
+        icon: "add", action: () => {
+            console.log("action -> wallets")
+        }
     }
-    
+
     if (loading)
         return <SplashScreen />
 
@@ -53,27 +54,17 @@ const Home = ({ navigation }: any) => {
                 contentContainerStyle={theme.styles.scroll_container}
                 refreshControl={<RefreshControl refreshing={false} onRefresh={handleData} />}
             >
-                <View style={{ width: "100%", height: 30 }}></View>
                 {/* Wallets */}
-                <SectionHeader label="Wallets" actions={[actionWallet]} />
+                <SectionHeader icon="wallet" label="Wallets" actions={[actionWallet]} />
 
-                <SectionContainer>
-                    {/* Wallets section  */}
-                    {wallets && <></>}
-                    {!wallets && <></>}
-                </SectionContainer>
-
+                {/* Wallets section  */}
+                <WalletList wallets={wallets} />
 
                 {/* Sales and Shopping */}
-                {events && events.map((event, key) => {
-                    return <SectionContainer key={key}>
-                        <Text style={{ fontSize: 16, color: theme.colors.gray, margin: 10 }}>{event.content}</Text>
-                        <View style={{ flexDirection: "row" }}>
-                            <ButtonPrimary label="Repost" onPress={() => { }} />
-                            <ButtonDanger label="Donate" onPress={() => { }} />
-                        </View>
-                    </SectionContainer>
-                })}
+                <SectionHeader icon="cash-outline" label="Purchasing & Sales" />
+
+                {/* Wallets section  */}
+                <WalletList  wallets={wallets} />
 
             </ScrollView>
         </View>

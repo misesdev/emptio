@@ -1,4 +1,5 @@
 import { TouchableOpacity, StyleSheet, Text, View } from 'react-native';
+import { IconNames } from '@src/services/types/icons';
 import { Ionicons } from '@expo/vector-icons';
 import { StyleProp } from 'react-native';
 import { TextStyle } from 'react-native';
@@ -6,7 +7,7 @@ import theme from '@src/theme';
 
 type Props = {
     label: string,
-    icon?: "add" | "add-circle" | "arrow-forward-circle" | "trash" | "bookmarks" | "clipboard" | "duplicate" | "open",
+    icon?: IconNames,
     style?: StyleProp<TextStyle>,
     onPress: () => void
 }
@@ -72,7 +73,7 @@ export const ButtonHead = ({ label, style, icon, onPress }: Props) => {
 }
 
 type IconProps = {
-    icon: any,
+    icon: IconNames,
     size?: number | undefined,
     iconStyle?: {} | undefined,
     buttonStyles: Array<{}> | undefined,

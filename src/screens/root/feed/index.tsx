@@ -17,7 +17,7 @@ const Feed = ({ navigation }: any) => {
 
     const [loading, setLoading] = useState(true)
     const [posts, setPosts] = useState<EventData[]>()
-    
+
     useEffect(() => { handleData() }, [])
 
     const handleData = async () => {
