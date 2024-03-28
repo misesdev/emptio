@@ -35,6 +35,7 @@ export const publishEvent = async (event: { kind: number, content: string }, key
     const eventSend = new NDKEvent(Nostr);
 
     eventSend.content = event.content
+    
     eventSend.kind = event.kind 
 
     await eventSend.sign()  

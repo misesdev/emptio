@@ -3,6 +3,7 @@ import { createPairKeys, getHexKeys } from "../nostr"
 import { getUserData, pushUserData } from "../nostr/pool"
 import { User } from "../memory/types"
 import { listenerEvents } from "../nostr/events"
+import { Response, trackException } from "../telemetry/telemetry"
 
 export const SignUp = async (userName: string) => {
     try {
@@ -23,8 +24,7 @@ export const SignUp = async (userName: string) => {
         return { success: true }
     }
     catch (ex) {
-        console.log(ex)
-        return { success: false, message: ex }
+        return trackException(ex)
     }
 }
 
@@ -42,8 +42,7 @@ export const SignIn = async (secretKey: string) => {
         return { success: true }
     }
     catch (ex) {
-        console.log(ex)
-        return { success: false, message: ex }
+        return trackException(ex)
     }
 }
 
@@ -71,15 +70,15 @@ export const UpdateUserProfile = async () => {
     await insertUser(userProfile)
 }
 
-export const SignOut = async () => {
+export const SignOut = async () : Promise<Response> => {
 
     try {
         await clearStorage()
-        await clearStorage()
-        await clearStorage()
-        return { success: true }
-    } catch (ex) {
-        return { success: false, message: ex }
+
+        return { success: true, message: "" }
+    } 
+    catch (ex) {
+        return trackException(ex)
     }
 }
 

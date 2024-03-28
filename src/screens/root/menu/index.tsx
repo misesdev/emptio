@@ -41,6 +41,7 @@ const UserMenu = ({ navigation }: any) => {
                 navigation.reset({ index: 0, routes: [{ name: "initial-stack" }] })
             else
                 showMessage({ message: `Ocorreu um erro inesperado durante a regisição: ${result.message}` })
+            
         }, 300)
     }
 
