@@ -14,10 +14,29 @@ export type Wallet = {
     id?: number,
     name?: string,
     type?: "lightning" | "bitcoin",
-    lastBalance?: number, 
+    lastBalance?: number,
     privateKey?: string,
     publicKey?: string
     address?: string
+}
+
+export type Purchase = {
+    title?: string
+}
+
+export type Sales = {
+    title?: string
+}
+
+export type Transaction = {
+    to?: string,
+    from?: string,
+    addressTo?: string,
+    addressFrom?: string,
+    type?: "sended" | "received",
+    description?: string,
+    amount?: number,
+    date?: string
 }
 
 export type User = {

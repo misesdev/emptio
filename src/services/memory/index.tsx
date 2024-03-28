@@ -45,6 +45,8 @@ export const insertWallet = async (wallet: Wallet) => {
     
     const wallets = await getWallets()
 
+    wallet.id = wallets.length + 1
+
     wallets.push(wallet)
 
     await setItemAsync("walletsData", JSON.stringify(wallets))

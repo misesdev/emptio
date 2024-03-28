@@ -1,10 +1,11 @@
+
 import { StyleSheet, View, Text } from "react-native"
 import theme from "@src/theme"
 
-export const FeedSearch = ({ navigation }: any) => {
+const AddWallet = ({ navigation }: any) => {
     return (
         <View style={theme.styles.container} >
-            <Text style={styles.title}>Search Feed</Text>
+            <Text style={styles.title}>Add Wallet</Text>
         </View>
     )
 }
@@ -17,3 +18,4 @@ const styles = StyleSheet.create({
     }
 })
 
+export default AddWallet

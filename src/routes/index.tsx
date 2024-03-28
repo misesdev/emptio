@@ -14,6 +14,8 @@ import UserEdit from "@screens/root/menu/user/edit"
 import ManageRelays from "@screens/root/settings/relays"
 import About from "@screens/root/settings/about"
 import ManageSecurity from "@screens/root/settings/security"
+import WalletManager from "@screens/root/wallet"
+import AddWallet from "../screens/root/wallet/add"
 
 const Stack = createStackNavigator()
 
@@ -36,6 +38,9 @@ const AppRoutes = () => {
                 <Stack.Screen name="manage-relays-stack" component={ManageRelays} options={{ headerShown: true }} />
                 <Stack.Screen name="manage-security-stack" component={ManageSecurity} options={{ headerShown: true }} />
                 <Stack.Screen name="about-stack" component={About} options={{ headerShown: true }} />     
+
+                <Stack.Screen name="add-wallet-stack" component={AddWallet} options={{ headerShown: true }} />
+                <Stack.Screen name="wallet-stack" component={WalletManager} options={{ headerShown: true }} />
                 
             </Stack.Navigator>
         </NavigationContainer>

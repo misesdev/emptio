@@ -21,7 +21,7 @@ export const stackOptions: StackNavigationOptions = {
     title: "",
     headerShown: false,
     headerTransparent: true,
-    headerTintColor: theme.colors.gray,
+    headerTintColor: theme.colors.white,
     cardStyle: { backgroundColor: theme.colors.black },
     cardStyleInterpolator: CardStyleInterpolators.forHorizontalIOS
 }

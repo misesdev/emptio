@@ -39,8 +39,8 @@ const styles = StyleSheet.create({
     },
     link: {
         width: '100%',
-        padding: 12,
-        margin: 5,
+        padding: 8,
+        margin: 2,
         borderRadius: 10,
         flexDirection: "row"
     },

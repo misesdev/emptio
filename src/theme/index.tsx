@@ -3,12 +3,13 @@ import { StyleSheet } from "react-native";
 const theme = {
     colors: {
         black: "#000000",
-        white: "#FFFFFF",
+        white: "#BBB",
         red: "#C14D45",
         green: "#009751",
         blue: "#184149",
         gray: "#525B5F",
         default: "#2D3138",
+        orange: "#bd6413",
 
         icons: "#FFFFFF",
         section: "#141414",

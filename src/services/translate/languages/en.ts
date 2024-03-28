@@ -31,6 +31,7 @@ export default {
     "commons.authenticate": "Authenticate",
     "commons.authenticate.message": "Authenticate yourself using biometrics",
     "commons.detectedkey": "key detected",
+    "commons.nodescription": "No description",
 
     "labels.username": "User Name",
     "labels.privatekey": "Private Key",
@@ -53,6 +54,7 @@ export default {
     "settings.security": "Security",
     "section.title.wallets": "Wallets",
     "section.title.sales": "Purchasing & Sales",
+    "section.title.transactions": "Transactions",
 
 
     "settings.about": "About"

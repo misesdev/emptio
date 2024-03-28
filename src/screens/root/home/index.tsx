@@ -4,7 +4,7 @@ import { useEffect, useState } from "react"
 import SplashScreen from "@components/general/SplashScreen"
 import { UpdateUserProfile } from "@src/services/userManager"
 import { ActionHeader, SectionHeader } from "@components/general/section/headers"
-import { Wallet } from "@src/services/memory/types"
+import { Purchase, Sales, Wallet } from "@src/services/memory/types"
 import { getWallets } from "@src/services/memory"
 import { WalletList } from "@src/components/wallet"
 import { useTranslate } from "@src/services/translate"
@@ -12,10 +12,14 @@ import { useTranslate } from "@src/services/translate"
 const Home = ({ navigation }: any) => {
 
     const [loading, setLoading] = useState(true)
+    const [sales, setSales] = useState<Sales[]>()
+    const [purchases, setPurchases] = useState<Purchase[]>()
     const [wallets, setWallets] = useState<Wallet[]>()
 
     useEffect(() => {
+
         handleData()
+        
     }, [])
 
     const handleData = async () => {
@@ -24,18 +28,18 @@ const Home = ({ navigation }: any) => {
         await UpdateUserProfile()
 
         const wallets = await getWallets()
+        // const purchases = await getPurchase()
         // const sales = await getSales()
 
         setWallets(wallets)
+        // setPurchases(purchases)
         // setSales(sales)
 
         setLoading(false)
     }
 
     const actionWallet: ActionHeader = {
-        icon: "add", action: () => {
-            console.log("action -> wallets")
-        }
+        icon: "add", action: () => navigation.navigate("add-wallet-stack")
     }
 
     if (loading)
@@ -51,13 +55,13 @@ const Home = ({ navigation }: any) => {
                 <SectionHeader icon="wallet" label={useTranslate("section.title.wallets")} actions={[actionWallet]} />
 
                 {/* Wallets section  */}
-                <WalletList wallets={wallets} />
+                <WalletList wallets={wallets} action={() => navigation.navigate("add-wallet-stack")} />
 
                 {/* Sales and Shopping */}
                 <SectionHeader icon="cash-outline" label={useTranslate("section.title.sales")} />
 
                 {/* Wallets section  */}
-                <WalletList  wallets={wallets} />
+                {/* <WalletList  wallets={wallets} /> */}
 
             </ScrollView>
         </View>

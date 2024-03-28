@@ -93,7 +93,7 @@ const UserMenu = ({ navigation }: any) => {
                 </SectionContainer>
 
                 <SectionContainer>
-                    <LinkSection label="Settigns" icon="settings" onPress={() => { }} />
+                    <LinkSection label="Wallet" icon="settings" onPress={() => navigation.navigate("wallet-stack")} />
                     <LinkSection label={useTranslate("settings.chooselanguage")} icon="language" onPress={() => { }} />                   
                     <LinkSection label={useTranslate("settings.relays")} icon="earth" onPress={() => navigation.navigate("manage-relays-stack")} />
                     <LinkSection label={useTranslate("settings.about")} icon="settings" onPress={() => navigation.navigate("about-stack")} />
