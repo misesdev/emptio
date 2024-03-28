@@ -52,4 +52,5 @@ export type TranslateWords = "initial.message"
     | "section.title.wallets"
     | "section.title.sales"
     | "section.title.transactions"
+    | "section.title.transactions.empty"
 

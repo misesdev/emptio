@@ -1,82 +1,68 @@
-import { StyleSheet, View, ScrollView, RefreshControl, Text } from "react-native"
+import { StyleSheet, View, ScrollView, RefreshControl, Text, NativeScrollEvent, NativeSyntheticEvent, FlatList, ActivityIndicator } from "react-native"
 import theme from "@src/theme"
 import { useEffect, useState } from "react"
-import SplashScreen from "@components/general/SplashScreen"
 import { SectionContainer } from "@/src/components/general/section"
 import { ButtonDanger, ButtonSuccess } from "@components/form/Buttons"
-import { listenerEvents, publishEvent } from "@src/services/nostr/events"
+import { listenerEvents } from "@src/services/nostr/events"
 import { getPairKeys } from "@src/services/memory"
 
 type EventData = {
+    id: string,
     kind: number,
     pubkey: string,
-    content: string
+    content: string,
+    created_at: number
 }
 
 const Feed = ({ navigation }: any) => {
 
-    const [loading, setLoading] = useState(true)
-    const [posts, setPosts] = useState<EventData[]>()
-
-    useEffect(() => { handleData() }, [])
+    const [loading, setLoading] = useState(false)
+    const [posts, setPosts] = useState<EventData[]>([])
 
     const handleData = async () => {
         setLoading(true)
+
+        console.log("chamou")
+
         const { publicKey } = await getPairKeys()
-        listenerEvents({ limit: 5, kinds: [0], authors: [publicKey] }).then(result => {
-            setPosts(result)
 
-            setLoading(false)
-        })
-    }
+        const result = await listenerEvents({ limit: 20, kinds: [1], authors: [publicKey] });
 
-    const handleEvent = async () => {
-        setLoading(true)
-
-        // await publishEvent({ kind: 1, content: "Testando eventos gerados em backgroundo" }, await getPairKeys())
+        setPosts(result)
 
         setLoading(false)
     }
 
-    if (loading)
-        return <SplashScreen />
+    const renderItem = ({ item }: { item: EventData }) => {
+        return (
+            <SectionContainer >
+                <Text style={{ fontSize: 16, color: theme.colors.gray, margin: 10, textAlign: "center" }}>{item.content}</Text>
+                <View style={{ width: "100%", flexDirection: "row", alignItems: "center" }}>
+                    <ButtonSuccess label="Buy" onPress={() => { }} />
+                    <ButtonDanger label="Sell" onPress={() => { }} />
+                </View>
+            </SectionContainer>
+        )
+    }
+
+    const ListEndLoader = () => {
+        if (loading) {
+            // Show loader at the end of list when fetching next page data.
+            return <ActivityIndicator color={theme.colors.gray} style={{ margin: 10 }} size={50} />
+        }
+    }
 
     return (
-        <View style={styles.container} >
-            <ScrollView
-                contentContainerStyle={styles.scroll_container}
-                refreshControl={<RefreshControl refreshing={false} onRefresh={handleData} />}
-            >
-                <View style={{ width: "100%", height: 30 }}></View>
-                {posts && posts.map((event, key) => {
-                    return <SectionContainer key={key}>
-                        <Text style={{ fontSize: 16, color: theme.colors.gray, margin: 10 }}>{event.content}</Text>
-                        <View style={{ flexDirection: "row" }}>
-                            <ButtonSuccess label="Buy" onPress={() => { }} />
-                            <ButtonDanger label="Sell" onPress={handleEvent} />
-                        </View>
-                    </SectionContainer>
-                })}
+        <FlatList
+            data={posts}
+            renderItem={renderItem}
+            onEndReached={handleData}
+            onEndReachedThreshold={2}
+            contentContainerStyle={[theme.styles.scroll_container, { backgroundColor: theme.colors.black, alignItems: "center" }]}
+            ListFooterComponent={ListEndLoader}
+        />
 
-            </ScrollView>
-        </View>
     )
 }
-
-const styles = StyleSheet.create({
-    title: {
-        fontSize: 22,
-        fontWeight: 'bold',
-        color: theme.colors.gray
-    },
-    container: {
-        backgroundColor: theme.colors.black,
-        height: "100%"
-    },
-    scroll_container: {
-        flexGrow: 1,
-        alignItems: "center"
-    }
-})
 
 export default Feed

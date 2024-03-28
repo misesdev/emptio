@@ -1,14 +1,13 @@
 import { StyleSheet, Text, View, ScrollView, RefreshControl } from "react-native"
 import theme from "@src/theme"
 import { useEffect, useState } from "react"
-import SplashScreen from "@components/general/SplashScreen"
 import { UpdateUserProfile } from "@src/services/userManager"
 import { ActionHeader, SectionHeader } from "@components/general/section/headers"
 import { Purchase, Sales, Wallet } from "@src/services/memory/types"
 import { getWallets } from "@src/services/memory"
-import { WalletList } from "@src/components/wallet"
+import { WalletList } from "@components/wallet"
 import { useTranslate } from "@src/services/translate"
-import { createBitcoinAddress } from "@/src/services/bitcoin"
+import AlertBox, { alertMessage } from "@components/general/AlertBox"
 
 const Home = ({ navigation }: any) => {
 
@@ -21,9 +20,9 @@ const Home = ({ navigation }: any) => {
 
         handleData()
 
-        createBitcoinAddress()
-        
     }, [])
+
+    // search for SafeAreaView to scoll horizontal wallets
 
     const handleData = async () => {
         setLoading(true)
@@ -39,20 +38,20 @@ const Home = ({ navigation }: any) => {
         // setSales(sales)
 
         setLoading(false)
+
+        if (wallets.length <= 0)
+            alertMessage("add a wallet to buy or sell bitcoin!")
     }
 
     const actionWallet: ActionHeader = {
         icon: "add", action: () => navigation.navigate("add-wallet-stack")
     }
 
-    if (loading)
-        return <SplashScreen />
-
     return (
         <View style={styles.container}>
             <ScrollView
                 contentContainerStyle={theme.styles.scroll_container}
-                refreshControl={<RefreshControl refreshing={false} onRefresh={handleData} />}
+                refreshControl={<RefreshControl refreshing={loading} onRefresh={handleData} />}
             >
                 {/* Wallets */}
                 <SectionHeader icon="wallet" label={useTranslate("section.title.wallets")} actions={[actionWallet]} />
@@ -67,6 +66,7 @@ const Home = ({ navigation }: any) => {
                 {/* <WalletList  wallets={wallets} /> */}
 
             </ScrollView>
+            <AlertBox />
         </View>
     )
 }

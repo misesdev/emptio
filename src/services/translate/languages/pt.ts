@@ -55,6 +55,7 @@ export default {
     "section.title.wallets": "Carteiras",
     "section.title.sales": "Compas & Vendas",
     "section.title.transactions": "Transações",
+    "section.title.transactions.empty": "Suas transações serão exibidas aqui",
 
 
     "settings.about": "Sobre",

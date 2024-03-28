@@ -48,15 +48,19 @@ export const listenerEvents = async (filters: Filter) => {
     const events = await Nostr.fetchEvents(filters)
 
     const eventsResut: {
+        id: string,
         kind: number,
         pubkey: string,
-        content: string
+        content: string,
+        created_at: number,
     }[] = []
 
     events.forEach((event:Event) => eventsResut.push({
+        id: event.id,
         kind: event.kind,
         pubkey: event.pubkey,
-        content: event.content
+        content: event.content,
+        created_at: event.created_at,
     }))
 
     return eventsResut

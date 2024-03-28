@@ -55,6 +55,7 @@ export default {
     "section.title.wallets": "Wallets",
     "section.title.sales": "Purchasing & Sales",
     "section.title.transactions": "Transactions",
+    "section.title.transactions.empty": "Your transactions will paper here!",
 
 
     "settings.about": "About"

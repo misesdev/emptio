@@ -1,11 +1,12 @@
 import { Transaction, Wallet } from "@src/services/memory/types";
-import { View, Text, TouchableOpacity, Image } from "react-native";
+import { View, Text, TouchableOpacity, Image, StyleProp, TextStyle } from "react-native";
 import { useTranslate } from "@/src/services/translate";
 import { Ionicons } from "@expo/vector-icons"
 import { styles } from "./style"
 import theme from "@/src/theme";
 import { useEffect, useState } from "react";
 import SplashScreen from "../general/SplashScreen";
+import { IconNames } from "@/src/services/types/icons";
 
 type Props = {
     wallets?: Wallet[],
@@ -48,7 +49,7 @@ export const WalletHeader = ({ wallet }: WalletProps) => {
 
     var lastBalance = wallet!.lastBalance ? wallet!.lastBalance : 0
 
-    var walletColor = wallet.type == "bitcoin" ? theme.colors.orange : theme.colors.blue 
+    var walletColor = wallet.type == "bitcoin" ? theme.colors.orange : theme.colors.blue
 
     return (
         <>
@@ -75,18 +76,14 @@ export const WalletHeader = ({ wallet }: WalletProps) => {
 export const WalletTransactions = ({ wallet }: WalletProps) => {
 
     const [loading, setLoading] = useState(true)
-    const [transactions, setTransactions] = useState<Transaction[]>()
-
+    const [transactions, setTransactions] = useState<Transaction[]>([])
+    
     useEffect(() => {
 
-        setTransactions([
-            { type: "received", amount: 0.05603200, description: "buy for hodl", date: "16/08/2023 08:90" },
-            { type: "sended", amount: 0.00765000, description: "donate to project ", date: "12 de dezembro de 2023" },
-            { type: "received", amount: 0.00032123, description: "buy a computer", date: "12 de dezembro de 2023" },
-            { type: "received", amount: 0.00032123, description: "buy a computer", date: "12 de dezembro de 2023" },
-        ])
-
-        setTimeout(() => setLoading(false), 2000)
+        // setTransactions([
+        //     { type: "received", amount: 0.05603200, description: "buy for hodl", date: "16/08/2023 08:90" },
+        // ])
+        setTimeout(() => setLoading(false), 1000)
 
     }, [])
 
@@ -100,9 +97,11 @@ export const WalletTransactions = ({ wallet }: WalletProps) => {
 
     const TransactionIcon = ({ type }: Transaction) => {
 
-        let color = true ? theme.colors.green : theme.colors.red
+        let rotate =  type == "received" ? "90deg" : "-90deg"
+        let icon : IconNames = type == "received" ? "enter" : "exit"
+        let color = type == "received" ? theme.colors.green : theme.colors.red
 
-        return <Ionicons name="checkmark-done-circle" size={theme.icons.extra} color={color} />
+        return <Ionicons name={icon} size={theme.icons.medium} color={color} style={{ transform: [{ rotate: rotate }] }} />
     }
 
     return (
@@ -114,7 +113,7 @@ export const WalletTransactions = ({ wallet }: WalletProps) => {
                     transactions?.map((transaction, key) => {
 
                         if (transaction.description!.length > 18)
-                            transaction.description = `${transaction.description?.substring(0, 18)}..`
+                            transaction.description = `${transaction.description?.substring(0, 20)}..`
                         else if (!transaction!.description)
                             transaction.description = useTranslate("commons.nodescription")
 
@@ -144,6 +143,13 @@ export const WalletTransactions = ({ wallet }: WalletProps) => {
                         )
                     })
                 }
+
+                {
+                    !loading && transactions!.length <= 0 &&
+                    <Text style={{ color: theme.colors.gray, textAlign: "center" }}>
+                        {useTranslate("section.title.transactions.empty")}
+                    </Text>
+                }
             </View>
         </>
     )
@@ -156,14 +162,14 @@ export const WalletButtons = ({ wallet }: WalletProps) => {
             <View style={{ flexDirection: "row" }}>
                 <TouchableOpacity style={[styles.walletActionButton, { borderRightWidth: .2, borderBottomLeftRadius: 15, borderTopLeftRadius: 15 }]} activeOpacity={.7}>
 
-                    <Ionicons style={{ margin: 5 }} name="enter-sharp" color={theme.colors.white} size={theme.icons.medium} />
+                    <Ionicons style={{ margin: 5 }} name="enter" color={theme.colors.white} size={theme.icons.medium} />
                     <Text style={styles.walletaAtionText} >{useTranslate("commons.receive")}</Text>
 
                 </TouchableOpacity>
                 <TouchableOpacity style={[styles.walletActionButton, { borderLeftWidth: .2, borderBottomRightRadius: 15, borderTopRightRadius: 15 }]} activeOpacity={.7} >
 
                     <Text style={styles.walletaAtionText} >{useTranslate("commons.send")}</Text>
-                    <Ionicons style={{ margin: 5 }} name="exit-sharp" color={theme.colors.white} size={theme.icons.medium} />
+                    <Ionicons style={{ margin: 5 }} name="exit" color={theme.colors.white} size={theme.icons.medium} />
 
                 </TouchableOpacity>
             </View>

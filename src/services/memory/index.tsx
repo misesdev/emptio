@@ -1,4 +1,4 @@
-import { setItem, getItem, getItemAsync, setItemAsync, deleteItemAsync } from "expo-secure-store"
+import { getItem, getItemAsync, setItemAsync, deleteItemAsync } from "expo-secure-store"
 import { Language } from "../translate/types"
 import { HexPairKeys, User, Wallet } from "./types"
 

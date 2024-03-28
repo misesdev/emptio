@@ -22,8 +22,8 @@ const Initialize = ({ navigation }: any) => {
 
         if (privateKey)
             navigation.reset({ index: 0, routes: [{ name: "authenticate-stack" }] })
-
-        setLoading(false)
+        else
+            setLoading(false)
     }
 
     const instanceNostr = async () => { 
