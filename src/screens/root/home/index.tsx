@@ -8,6 +8,7 @@ import { Purchase, Sales, Wallet } from "@src/services/memory/types"
 import { getWallets } from "@src/services/memory"
 import { WalletList } from "@src/components/wallet"
 import { useTranslate } from "@src/services/translate"
+import { createBitcoinAddress } from "@/src/services/bitcoin"
 
 const Home = ({ navigation }: any) => {
 
@@ -19,6 +20,8 @@ const Home = ({ navigation }: any) => {
     useEffect(() => {
 
         handleData()
+
+        createBitcoinAddress()
         
     }, [])
 

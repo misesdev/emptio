@@ -12,86 +12,58 @@ type Props = {
     onPress: () => void
 }
 
-export const ButtonSuccess = ({ label, style, icon, onPress }: Props) => {
+const TouchableEmptio = ({ label, style, icon, onPress }: Props) => {
 
     return (
-        <TouchableOpacity style={[styles.button, styles.buttonSuccess, style]} onPress={onPress}>
+        <TouchableOpacity style={style} onPress={onPress} activeOpacity={.7}>
             <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'center' }}>
-                <Text style={styles.buttonText}> {label} </Text>
-                {icon &&  <Ionicons name={icon} size={18} style={styles.icon} color={theme.icons.gray} /> }
+                <Text style={styles.text}> {label} </Text>
+                {icon && <Ionicons name={icon} size={18} color={theme.icons.gray} />}
             </View>
         </TouchableOpacity>
     )
+}
+
+export const ButtonSuccess = ({ label, style, icon, onPress }: Props) => {
+    return <TouchableEmptio label={label} icon={icon} onPress={onPress} style={[[styles.button, styles.succes, style]]} />
 }
 
 export const ButtonPrimary = ({ label, style, icon, onPress }: Props) => {
-
-    return (
-        <TouchableOpacity style={[styles.button, styles.buttonPrimary, style]} onPress={onPress}>
-           <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'center' }}>
-                <Text style={styles.buttonText}> {label} </Text>
-                {icon && <Ionicons name={icon} size={18} color={theme.icons.gray} /> }
-            </View>       
-        </TouchableOpacity>
-    )
+    return <TouchableEmptio label={label} icon={icon} onPress={onPress} style={[[styles.button, styles.primary, style]]} />
 }
 
 export const ButtonDanger = ({ label, style, icon, onPress }: Props) => {
-
-    return (
-        <TouchableOpacity style={[styles.button, styles.buttonDanger, style]} onPress={onPress}>
-            <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'center' }}>
-                <Text style={styles.buttonText}> {label} </Text>
-                {icon && <Ionicons name={icon} size={18} color={theme.icons.gray} /> }
-            </View>
-        </TouchableOpacity>
-    )
+    return <TouchableEmptio label={label} icon={icon} onPress={onPress} style={[[styles.button, styles.danger, style]]} />
 }
 
 export const ButtonDefault = ({ label, style, icon, onPress }: Props) => {
-
-    return (
-        <TouchableOpacity style={[styles.button, styles.ButtonDefault, style]} onPress={onPress}>
-           <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'center' }}>
-                <Text style={styles.buttonText}> {label} </Text>
-                {icon && <Ionicons name={icon} size={18} color={theme.icons.gray} /> }
-            </View>
-        </TouchableOpacity>
-    )
+    return <TouchableEmptio label={label} icon={icon} onPress={onPress} style={[[styles.button, styles.default, style]]} />
 }
 
 export const ButtonHead = ({ label, style, icon, onPress }: Props) => {
-
-    return (
-        <TouchableOpacity style={[styles.button, styles.ButtonDefault, style]} onPress={onPress}>
-            <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'center' }}>
-                <Text style={styles.buttonText}> {label} </Text>
-                {icon && <Ionicons name={icon} size={18} color={theme.icons.gray} /> }
-            </View>        
-        </TouchableOpacity>
-    )
+    return <TouchableEmptio label={label} icon={icon} onPress={onPress} style={[[styles.button, styles.default, style]]} />
 }
 
 type IconProps = {
     icon: IconNames,
-    size?: number | undefined,
-    iconStyle?: {} | undefined,
-    buttonStyles: Array<{}> | undefined,
+    size?: number,
+    style?: StyleProp<TextStyle>,
+    buttonStyle: StyleProp<TextStyle>,
     onPress: () => void
 }
 
-export const ButtonIcon = ({ icon, size, iconStyle, buttonStyles, onPress }: IconProps) => {
+export const ButtonIcon = ({ icon, size, style, buttonStyle, onPress }: IconProps) => {
 
     size = size ? size : 20
-    iconStyle = iconStyle ? iconStyle : { textAlign: "center", padding: 12 }
+    style = style ? style : { textAlign: "center", padding: 12 }
 
     /**
    * See Icon Explorer app
    * {@link https://expo.github.io/vector-icons/}
    */
     return (
-        <TouchableOpacity style={buttonStyles} onPress={onPress}>
-            <Ionicons name={icon} size={size} color={theme.icons.gray} style={iconStyle} />
+        <TouchableOpacity style={buttonStyle} onPress={onPress} activeOpacity={.7}>
+            <Ionicons name={icon} size={size} color={theme.icons.gray} style={style} />
         </TouchableOpacity>
     )
 }
@@ -103,22 +75,22 @@ const styles = StyleSheet.create({
         paddingVertical: 14,
         borderRadius: 25,
     },
-    buttonSuccess: {
+    succes: {
         backgroundColor: theme.colors.green
     },
-    buttonPrimary: {
+    primary: {
         backgroundColor: theme.colors.blue
     },
-    buttonDanger: {
+    danger: {
         backgroundColor: theme.colors.red
     },
-    ButtonDefault: {
+    default: {
         backgroundColor: theme.colors.gray
     },
-    buttonText: {
+    text: {
         color: theme.colors.white,
         fontSize: 13,
-        fontWeight: "400",
+        fontWeight: "500",
         textAlign: 'center',
         marginHorizontal: 28
     },

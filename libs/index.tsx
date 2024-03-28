@@ -1,4 +1,5 @@
 const TextEncodingPolyfill = require("text-encoding")
+
 import { MessageChannel, MessagePort } from "./channel"
 
 export const applyGlobalPolyfills = () => {
