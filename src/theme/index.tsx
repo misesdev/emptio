@@ -38,7 +38,8 @@ const theme = {
         },
         scroll_container: {
             flexGrow: 1,
-            alignContent: "center"
+            alignContent: "center",
+            alignItems: "center"
         },
     })
 };

@@ -1,12 +1,11 @@
-const TextEncodingPolyfill = require("text-encoding")
+const { TextEncoder, TextDecoder } = require("text-encoding")
 import { MessageChannel, MessagePort } from "./channel"
+const { Buffer } = require("buffer")
 
-export const applyGlobalPolyfills = () => {
-    Object.assign(global, {
-        TextEncoder: TextEncodingPolyfill.TextEncoder,
-        TextDecoder: TextEncodingPolyfill.TextDecoder,
-        MessageChannel,
-        MessagePort,
-    })    
-}
-
+Object.assign(global, {
+    TextEncoder,
+    TextDecoder,
+    MessageChannel,
+    MessagePort,
+    Buffer
+})    

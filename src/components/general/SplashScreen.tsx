@@ -9,7 +9,7 @@ const SplashScreen = ({ message }: Props) => {
     return (
         <View style={styles.container}>
 
-            <Image style={styles.logo} source={require("@assets/emptio_.png")} />
+            <Image style={styles.logo} source={require("assets/emptio.png")} />
 
             <ActivityIndicator style={styles.load} size={50} color={theme.colors.gray}></ActivityIndicator>
 

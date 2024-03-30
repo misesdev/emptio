@@ -1,10 +1,10 @@
+// require('node-libs-react-native/globals')
 
 // fixeds the problems with 'nostr-utils' on generate keys => include crypto.getRandomValues on native core
 import "react-native-get-random-values"
 
 // fixeds the problems with 'notr-utils' on encode and decode cophers => include TextDecoder and TextEncoder on native core 
-import { applyGlobalPolyfills } from './libs/global';
-applyGlobalPolyfills()
+import './libs/global';
 
 import { StatusBar } from 'expo-status-bar';
 import { View } from 'react-native';

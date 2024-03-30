@@ -2,7 +2,7 @@ import { StyleSheet, View, Text, Image, ScrollView, TouchableOpacity } from "rea
 import { hasHardwareAsync, authenticateAsync } from 'expo-local-authentication';
 import { LinkSection, SectionContainer } from "@components/general/section"
 import MessageBox, { showMessage } from "@components/general/MessageBox"
-import { getPairKeys, getUser } from "@src/services/memory"
+import { getPairKeys, getUser } from "@src/services/memory/user"
 import SplashScreen from "@components/general/SplashScreen"
 import { ButtonDanger } from "@components/form/Buttons"
 import { useTranslate } from "@src/services/translate"

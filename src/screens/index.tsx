@@ -1,7 +1,7 @@
 import { ButtonDefault, ButtonSuccess } from "@components/form/Buttons"
 import { Image, StyleSheet, Text, View } from "react-native"
 import SplashScreen from "@components/general/SplashScreen"
-import { createWallet } from "../services/bitcoin"
+import { createWallet, seedToWallet } from "../services/bitcoin"
 import { getConnection } from "../services/nostr/events"
 import { useTranslate } from "../services/translate"
 import { IsLogged } from "../services/userManager"
@@ -13,8 +13,6 @@ const Initialize = ({ navigation }: any) => {
     const [loading, setLoading] = useState(true)
 
     useEffect(() => {
-
-        createWallet()
 
         handleVerifyLogon()
 

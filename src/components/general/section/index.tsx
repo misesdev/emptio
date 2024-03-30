@@ -31,8 +31,6 @@ export const LinkSection = ({ label, onPress, icon }: LinkSectionProps) => {
 const styles = StyleSheet.create({
     section: {
         width: "96%",
-        minWidth: "96%",
-        maxWidth: "96%",
         marginVertical: 8,
         borderRadius: 18,
         padding: 5,

@@ -4,7 +4,7 @@ import { useEffect, useState } from "react"
 import { SectionContainer } from "@/src/components/general/section"
 import { ButtonDanger, ButtonSuccess } from "@components/form/Buttons"
 import { listenerEvents } from "@src/services/nostr/events"
-import { getPairKeys } from "@src/services/memory"
+import { getPairKeys } from "@src/services/memory/user"
 
 type EventData = {
     id: string,
