@@ -1,9 +1,10 @@
-import { clearStorage, getUser, insertUser } from "../memory"
+import { clearStorage } from "../memory"
 import { createPairKeys, getHexKeys } from "../nostr"
 import { getUserData, pushUserData } from "../nostr/pool"
 import { User } from "../memory/types"
 import { listenerEvents } from "../nostr/events"
 import { Response, trackException } from "../telemetry/telemetry"
+import { getUser, insertUpdateUser } from "../memory/user"
 
 export const SignUp = async (userName: string) => {
     try {
@@ -19,7 +20,7 @@ export const SignUp = async (userName: string) => {
 
         await pushUserData(userData)
 
-        await insertUser(userData)
+        await insertUpdateUser(userData)
 
         return { success: true }
     }
@@ -37,7 +38,7 @@ export const SignIn = async (secretKey: string) => {
 
         userData.privateKey = privateKey
 
-        await insertUser(userData)
+        await insertUpdateUser(userData)
 
         return { success: true }
     }
@@ -52,22 +53,20 @@ export const UpdateUserProfile = async () => {
 
     const event = (await listenerEvents({ limit: 5, kinds: [0], authors: [userProfile.publicKey] }))[0]
 
-    const content = JSON.parse(event.content)
+    userProfile.displayName = event.content?.displayName
+    userProfile.picture = event.content?.picture
+    userProfile.image = event.content?.image
+    userProfile.banner = event.content?.banner
+    userProfile.lud06 = event.content?.lud06
+    userProfile.lud16 = event.content?.lud16
+    userProfile.nip05 = event.content?.nip05
+    userProfile.bio = event.content?.bio
+    userProfile.name = event.content?.name
+    userProfile.website = event.content?.website
+    userProfile.about = event.content?.about
+    userProfile.zapService = event.content?.zapService
 
-    userProfile.displayName = content.displayName
-    userProfile.picture = content.picture
-    userProfile.image = content.image
-    userProfile.banner = content.banner
-    userProfile.lud06 = content.lud06
-    userProfile.lud16 = content.lud16
-    userProfile.nip05 = content.nip05
-    userProfile.bio = content.bio
-    userProfile.name = content.name
-    userProfile.website = content.website
-    userProfile.about = content.about
-    userProfile.zapService = content.zapService
-
-    await insertUser(userProfile)
+    await insertUpdateUser(userProfile)
 }
 
 export const SignOut = async () : Promise<Response> => {
@@ -82,3 +81,9 @@ export const SignOut = async () : Promise<Response> => {
     }
 }
 
+export const IsLogged = async () => {
+    
+    const { privateKey } = await getUser()
+
+    return !!privateKey
+}

@@ -1,4 +1,4 @@
-import { getLanguage } from "../memory"
+import { getLanguage } from "../memory/language"
 import pt from "./languages/pt"
 import en from "./languages/en"
 import { TranslateWords } from "./types"

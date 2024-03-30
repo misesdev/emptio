@@ -11,3 +11,7 @@ export const DefaultRelays = [
     // "wss://paid.no.str.cr",
     // "wss://n.wingu.se"
 ]
+
+export const ZapRelays = [
+    
+]

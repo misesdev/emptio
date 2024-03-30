@@ -9,17 +9,19 @@ export const Events = {
     MessageEvent: {
         kind: 4
     },
-    MaxListener: 50,
+    MaxListener: 20,
     TimeOut: 5000,
 }
 
 export const NostrEventKinds = {
-    profile: 0,
+    metadata: 0,
     note: 1,
     contactList: 3,
+    privateChat: 4,
     repost: 6,
     reaction: 7,
+    classifiedListening: 30402,
+    zap: 9734
 }
 
-export default Events
 

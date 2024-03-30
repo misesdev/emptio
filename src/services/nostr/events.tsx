@@ -3,6 +3,7 @@ import NDK, { NDKUserProfile, NDKPrivateKeySigner, NDKEvent } from "@nostr-dev-k
 import { Filter, Event } from "nostr-tools"
 import { HexPairKeys } from "../memory/types"
 import { getRelays } from "./relays"
+import { NostrEventKinds } from "@/src/constants/Events"
 
 export const getConnection = async (): Promise<NDK> => {
 
@@ -51,17 +52,24 @@ export const listenerEvents = async (filters: Filter) => {
         id: string,
         kind: number,
         pubkey: string,
-        content: string,
+        content: any,
         created_at: number,
+        tags: string[][] 
     }[] = []
 
-    events.forEach((event:Event) => eventsResut.push({
-        id: event.id,
-        kind: event.kind,
-        pubkey: event.pubkey,
-        content: event.content,
-        created_at: event.created_at,
-    }))
+    events.forEach((event: Event) => {
+
+        let jsonContent = [NostrEventKinds.metadata].includes(event.kind)
+
+        eventsResut.push({
+            id: event.id,
+            kind: event.kind,
+            pubkey: event.pubkey,
+            content: jsonContent ? JSON.parse(event.content) : event.content,
+            created_at: event.created_at,
+            tags: event.tags
+        })
+    })
 
     return eventsResut
 }

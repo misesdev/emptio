@@ -1,13 +1,13 @@
-import { StyleSheet, Text, View, ScrollView, RefreshControl } from "react-native"
-import theme from "@src/theme"
-import { useEffect, useState } from "react"
-import { UpdateUserProfile } from "@src/services/userManager"
+import { StyleSheet, View, ScrollView, RefreshControl } from "react-native"
 import { ActionHeader, SectionHeader } from "@components/general/section/headers"
-import { Purchase, Sales, Wallet } from "@src/services/memory/types"
-import { getWallets } from "@src/services/memory"
-import { WalletList } from "@components/wallet"
-import { useTranslate } from "@src/services/translate"
 import AlertBox, { alertMessage } from "@components/general/AlertBox"
+import { Purchase, Sales, Wallet } from "@src/services/memory/types"
+import { UpdateUserProfile } from "@src/services/userManager"
+import { useTranslate } from "@src/services/translate"
+import { getWallets } from "@src/services/memory/wallets"
+import { WalletList } from "@components/wallet"
+import { useEffect, useState } from "react"
+import theme from "@src/theme"
 
 const Home = ({ navigation }: any) => {
 

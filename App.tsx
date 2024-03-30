@@ -3,7 +3,7 @@
 import "react-native-get-random-values"
 
 // fixeds the problems with 'notr-utils' on encode and decode cophers => include TextDecoder and TextEncoder on native core 
-import { applyGlobalPolyfills } from './libs';
+import { applyGlobalPolyfills } from './libs/global';
 applyGlobalPolyfills()
 
 import { StatusBar } from 'expo-status-bar';

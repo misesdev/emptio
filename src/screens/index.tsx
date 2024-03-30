@@ -1,38 +1,34 @@
-import { Image, StyleSheet, Text, View } from "react-native"
 import { ButtonDefault, ButtonSuccess } from "@components/form/Buttons"
+import { Image, StyleSheet, Text, View } from "react-native"
 import SplashScreen from "@components/general/SplashScreen"
-import { getUser } from "../services/memory"
+import { createWallet } from "../services/bitcoin"
+import { getConnection } from "../services/nostr/events"
+import { useTranslate } from "../services/translate"
+import { IsLogged } from "../services/userManager"
 import { useEffect, useState } from "react"
 import theme from "@src/theme"
-import { useTranslate } from "../services/translate"
-import { getConnection } from "../services/nostr/events"
 
 const Initialize = ({ navigation }: any) => {
 
     const [loading, setLoading] = useState(true)
 
     useEffect(() => {
+
+        createWallet()
+
         handleVerifyLogon()
+
     }, [])
 
     const handleVerifyLogon = async () => {
-        const { privateKey } = await getUser()
 
-        await instanceNostr()
+        Nostr = await getConnection()
 
-        if (privateKey)
+        if (await IsLogged())
             navigation.reset({ index: 0, routes: [{ name: "authenticate-stack" }] })
         else
             setLoading(false)
     }
-
-    const instanceNostr = async () => { 
-        Nostr = await getConnection()
-    }
-
-    const handlerLogin = () => navigation.navigate("login-stack")
-
-    const handlerRegister = () => navigation.navigate("register-stack")
 
     if (loading)
         return <SplashScreen />
@@ -44,8 +40,8 @@ const Initialize = ({ navigation }: any) => {
             <Text style={styles.title}>{useTranslate("initial.message")}</Text>
 
             <View style={styles.buttonArea}>
-                <ButtonDefault label={useTranslate("commons.signup")} onPress={handlerRegister} />
-                <ButtonSuccess label={useTranslate("commons.signin")} onPress={handlerLogin} />
+                <ButtonSuccess label={useTranslate("commons.signin")} onPress={() => navigation.navigate("login-stack")} />
+                <ButtonDefault label={useTranslate("commons.signup")} onPress={() => navigation.navigate("register-stack")} />
             </View>
         </View>
     )

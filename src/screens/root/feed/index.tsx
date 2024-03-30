@@ -26,30 +26,30 @@ const Feed = ({ navigation }: any) => {
 
         const { publicKey } = await getPairKeys()
 
-        const result = await listenerEvents({ limit: 20, kinds: [1], authors: [publicKey] });
+        const result = await listenerEvents({ limit: 2, kinds: [30402] });
+
+        console.log(result)
 
         setPosts(result)
 
         setLoading(false)
     }
 
-    const renderItem = ({ item }: { item: EventData }) => {
-        return (
-            <SectionContainer >
-                <Text style={{ fontSize: 16, color: theme.colors.gray, margin: 10, textAlign: "center" }}>{item.content}</Text>
-                <View style={{ width: "100%", flexDirection: "row", alignItems: "center" }}>
-                    <ButtonSuccess label="Buy" onPress={() => { }} />
-                    <ButtonDanger label="Sell" onPress={() => { }} />
-                </View>
-            </SectionContainer>
-        )
-    }
+    const renderItem = ({ item }: { item: EventData }) =>
+    (
+        <SectionContainer >
+            <Text style={{ fontSize: 16, color: theme.colors.gray, margin: 10, textAlign: "center" }}>{item.content}</Text>
+            <View style={{ width: "100%", flexDirection: "row", alignItems: "center" }}>
+                <ButtonSuccess label="Buy" onPress={() => { }} />
+                <ButtonDanger label="Sell" onPress={() => { }} />
+            </View>
+        </SectionContainer>
+    )
 
     const ListEndLoader = () => {
-        if (loading) {
+        if (loading)
             // Show loader at the end of list when fetching next page data.
             return <ActivityIndicator color={theme.colors.gray} style={{ margin: 10 }} size={50} />
-        }
     }
 
     return (
