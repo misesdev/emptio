@@ -1,10 +1,10 @@
-import SearchButton from "@components/form/SearchButton"
 import { Image, StyleSheet, TouchableOpacity, View } from "react-native"
-import { Ionicons } from "@expo/vector-icons"
-import theme from "@src/theme"
-import { getUser } from "@src/services/memory/user"
+import SearchButton from "@components/form/SearchButton"
 import { useTranslate } from "@src/services/translate"
+import { getUser } from "@src/services/memory/user"
+import { Ionicons } from "@expo/vector-icons"
 import { useEffect, useState } from "react"
+import theme from "@src/theme"
 
 export const HeaderHome = ({ navigation }: any) => {
 
@@ -17,12 +17,10 @@ export const HeaderHome = ({ navigation }: any) => {
         setPicture(picture)
     }
 
-    const handleMenu = () => navigation.navigate("user-menu-stack")
-
     return (
         <View style={styles.header}>
             <View style={{ width: "15%", alignItems: "center", justifyContent: "center" }}>
-                <TouchableOpacity onPress={handleMenu}>
+                <TouchableOpacity onPress={() => navigation.navigate("user-menu-stack")}>
                     {picture && <Image source={{ uri: picture }} style={styles.userMenu} />}
                     {!!!picture && <Image source={require("assets/images/defaultProfile.png")} style={styles.userMenu} />}
                 </TouchableOpacity>
@@ -31,12 +29,12 @@ export const HeaderHome = ({ navigation }: any) => {
                 <SearchButton label={useTranslate("commons.search")} onPress={() => navigation.navigate("search-home-stack")} />
             </View>
             <View style={{ width: "15%", alignItems: "center", justifyContent: "center" }}>
-                <TouchableOpacity onPress={handleMenu}>
+                <TouchableOpacity onPress={() => navigation.navigate("user-menu-stack")}>
                     <Ionicons name="pie-chart" color={theme.colors.gray} size={theme.icons.extra} />
                 </TouchableOpacity>
             </View>
             <View style={{ width: "15%", alignItems: "center", justifyContent: "center" }}>
-                <TouchableOpacity onPress={handleMenu}>
+                <TouchableOpacity onPress={() => navigation.navigate("user-menu-stack")}>
                     <Ionicons name="notifications-circle" color={theme.colors.gray} size={theme.icons.extra} />
                 </TouchableOpacity>
             </View>
@@ -54,13 +52,11 @@ export const HeaderFeed = ({ navigation }: any) => {
         const { picture, name, banner } = await getUser()
         setPicture(picture)
     }
-
-    const handleMenu = () => navigation.navigate("user-menu-stack")
-
+    
     return (
         <View style={styles.header}>
             <View style={{ width: "15%", alignItems: "center", justifyContent: "center" }}>
-                <TouchableOpacity onPress={handleMenu}>
+                <TouchableOpacity onPress={() => navigation.navigate("user-menu-stack")}>
                     {picture && <Image source={{ uri: picture }} style={styles.userMenu} />}
                     {!picture && <Image source={require("assets/images/defaultProfile.png")} style={styles.userMenu} />}
                 </TouchableOpacity>
@@ -69,7 +65,7 @@ export const HeaderFeed = ({ navigation }: any) => {
                 <SearchButton label={useTranslate("commons.search")} onPress={() => navigation.navigate("search-feed-stack")} />
             </View>
             <View style={{ width: "15%", alignItems: "center", justifyContent: "center" }}>
-                <TouchableOpacity onPress={handleMenu}>
+                <TouchableOpacity onPress={() => navigation.navigate("user-menu-stack")}>
                     <Ionicons name="chatbubble" color={theme.colors.gray} size={theme.icons.extra} />
                 </TouchableOpacity>
             </View>

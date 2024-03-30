@@ -1,4 +1,4 @@
-import { createWallet, getSeedPhrase, seedToWallet, generateAddress } from "@/src/services/bitcoin";
+import { createWallet, getSeedPhrase, seedToWallet, generateAddress } from "@src/services/bitcoin";
 
 describe("wallets bitcoin functions", () => {
     it("create wallet", () => {
@@ -34,5 +34,6 @@ describe("wallets bitcoin functions", () => {
         const address = generateAddress(publicKey)
 
         expect(address).toBeDefined()
+        expect(address.substring(0,1)).toBe("1")
     })
 })

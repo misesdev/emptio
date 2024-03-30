@@ -8,6 +8,7 @@ import { getWallets } from "@src/services/memory/wallets"
 import { WalletList } from "@components/wallet"
 import { useEffect, useState } from "react"
 import theme from "@src/theme"
+import { HeaderHome } from "../headers"
 
 const Home = ({ navigation }: any) => {
 
@@ -49,6 +50,7 @@ const Home = ({ navigation }: any) => {
 
     return (
         <View style={styles.container}>
+            <HeaderHome navigation={navigation} />
             <ScrollView
                 contentContainerStyle={theme.styles.scroll_container}
                 refreshControl={<RefreshControl refreshing={loading} onRefresh={handleData} />}

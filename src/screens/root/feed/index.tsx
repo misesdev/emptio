@@ -5,6 +5,8 @@ import { SectionContainer } from "@/src/components/general/section"
 import { ButtonDanger, ButtonSuccess } from "@components/form/Buttons"
 import { listenerEvents } from "@src/services/nostr/events"
 import { getPairKeys } from "@src/services/memory/user"
+import { NostrEventKinds } from "@/src/constants/Events"
+import { HeaderFeed } from "../headers"
 
 type EventData = {
     id: string,
@@ -26,9 +28,7 @@ const Feed = ({ navigation }: any) => {
 
         const { publicKey } = await getPairKeys()
 
-        const result = await listenerEvents({ limit: 2, kinds: [30402] });
-
-        console.log(result)
+        const result = await listenerEvents({ limit: 2, kinds: [NostrEventKinds.classifiedListening] });
 
         setPosts(result)
 
@@ -53,6 +53,8 @@ const Feed = ({ navigation }: any) => {
     }
 
     return (
+        <>
+        <HeaderFeed navigation={navigation} />
         <FlatList
             data={posts}
             renderItem={renderItem}
@@ -61,6 +63,7 @@ const Feed = ({ navigation }: any) => {
             contentContainerStyle={[theme.styles.scroll_container, { backgroundColor: theme.colors.black, alignItems: "center" }]}
             ListFooterComponent={ListEndLoader}
         />
+        </>
 
     )
 }

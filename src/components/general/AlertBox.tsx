@@ -1,6 +1,6 @@
 
-import { useRef, useState } from "react"
 import { Animated, Image, StyleSheet, Text, View } from "react-native"
+import { useRef, useState } from "react"
 import theme from "@src/theme"
 
 var showMessageFunction: (message: string) => void
@@ -19,9 +19,9 @@ const AlertBox = () => {
 
         // move the component message to top
         Animated.timing(fadeAnim, {
-            toValue: new Animated.Value(580),
-            duration: 500,
+            toValue: new Animated.Value(620),
             useNativeDriver: true,
+            duration: 500,
         }).start()
 
         // return the component text to down
@@ -31,7 +31,7 @@ const AlertBox = () => {
                 duration: 500,
                 useNativeDriver: true,
             }).start()
-        }, 2500)
+        }, 3000)
     }
 
     return (

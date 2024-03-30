@@ -1,12 +1,12 @@
 import { Transaction, Wallet } from "@src/services/memory/types";
-import { View, Text, TouchableOpacity, Image, StyleProp, TextStyle } from "react-native";
-import { useTranslate } from "@/src/services/translate";
+import { View, Text, TouchableOpacity, Image, SafeAreaView, ScrollView } from "react-native";
+import { useTranslate } from "@src/services/translate";
 import { Ionicons } from "@expo/vector-icons"
 import { styles } from "./style"
-import theme from "@/src/theme";
+import theme from "@src/theme";
 import { useEffect, useState } from "react";
 import SplashScreen from "../general/SplashScreen";
-import { IconNames } from "@/src/services/types/icons";
+import { IconNames } from "@src/services/types/icons";
 
 type Props = {
     wallets?: Wallet[],
@@ -15,29 +15,31 @@ type Props = {
 
 export const WalletList = ({ wallets, action }: Props) => {
     return (
-        <View style={styles.section}>
-            {
-                wallets && wallets.map((wallet, key) => {
-                    return (
-                        <TouchableOpacity style={[styles.wallet, { backgroundColor: "#eb8f34" }]} key={key}>
-                            <Text style={styles.title}>{useTranslate("labels.wallet.add")}</Text>
-                            <Text style={styles.description}>{useTranslate("message.wallet.create")}</Text>
-                            <TouchableOpacity style={styles.button} onPress={() => { }}>
-                                <Text style={styles.buttonText}> {useTranslate("commons.add")} </Text>
+        <SafeAreaView style={{ width: "100%", height: 200 }}>
+            <ScrollView horizontal>
+                {
+                    wallets && wallets.map((wallet, key) => {
+                        return (
+                            <TouchableOpacity style={[styles.wallet, { backgroundColor: "#eb8f34" }]} key={key}>
+                                <Text style={styles.title}>{useTranslate("labels.wallet.add")}</Text>
+                                <Text style={styles.description}>{useTranslate("message.wallet.create")}</Text>
+                                <TouchableOpacity style={styles.button} onPress={() => { }}>
+                                    <Text style={styles.buttonText}> {useTranslate("commons.add")} </Text>
+                                </TouchableOpacity>
                             </TouchableOpacity>
-                        </TouchableOpacity>
-                    )
-                })
-            }
+                        )
+                    })
+                }
 
-            <View style={[styles.wallet, { backgroundColor: theme.colors.section }]}>
-                <Text style={styles.title}>{useTranslate("labels.wallet.add")}</Text>
-                <Text style={styles.description}>{useTranslate("message.wallet.create")}</Text>
-                <TouchableOpacity style={styles.button} onPress={action}>
-                    <Text style={styles.buttonText}> {useTranslate("commons.add")} </Text>
-                </TouchableOpacity>
-            </View>
-        </View>
+                <View style={[styles.wallet, { backgroundColor: theme.colors.section }]}>
+                    <Text style={styles.title}>{useTranslate("labels.wallet.add")}</Text>
+                    <Text style={styles.description}>{useTranslate("message.wallet.create")}</Text>
+                    <TouchableOpacity style={styles.button} onPress={action}>
+                        <Text style={styles.buttonText}> {useTranslate("commons.add")} </Text>
+                    </TouchableOpacity>
+                </View>
+            </ScrollView>
+        </SafeAreaView>
     )
 }
 
@@ -77,7 +79,7 @@ export const WalletTransactions = ({ wallet }: WalletProps) => {
 
     const [loading, setLoading] = useState(true)
     const [transactions, setTransactions] = useState<Transaction[]>([])
-    
+
     useEffect(() => {
 
         // setTransactions([
@@ -97,8 +99,8 @@ export const WalletTransactions = ({ wallet }: WalletProps) => {
 
     const TransactionIcon = ({ type }: Transaction) => {
 
-        let rotate =  type == "received" ? "90deg" : "-90deg"
-        let icon : IconNames = type == "received" ? "enter" : "exit"
+        let rotate = type == "received" ? "90deg" : "-90deg"
+        let icon: IconNames = type == "received" ? "enter" : "exit"
         let color = type == "received" ? theme.colors.green : theme.colors.red
 
         return <Ionicons name={icon} size={theme.icons.medium} color={color} style={{ transform: [{ rotate: rotate }] }} />
