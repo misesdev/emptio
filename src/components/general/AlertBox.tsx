@@ -12,6 +12,8 @@ const AlertBox = () => {
     const [message, setMessage] = useState<string>()
 
     showMessageFunction = (message: string) => {
+
+        message = message.length < 75 ? message : `${message.substring(0, 75)}...`
         
         setMessage(message)
 
@@ -59,9 +61,8 @@ const styles = StyleSheet.create({
         alignItems: "center",
     },
     message: {
-        textAlign: "center",
         fontWeight: "500",
-        color: theme.colors.white
+        color: theme.colors.white,
     }
 })
 

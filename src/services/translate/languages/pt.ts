@@ -46,6 +46,7 @@ export default {
     "message.detectedkey": "Chave privada detectada em sua area de transferência, deseja entrar com a chave privada detectada?",
     "message.detectedkey.value": "chave: ",
     "message.wallet.create": "Adicione quantas carteiras desejar. Para comprar ou vender, você pode selecionar uma carteira na ordem de compra ou venda.",
+    "message.wallet.alertcreate": "Adicione uma carteira bitcoin para comprar e vender!", 
 
     "settings.relays": "Relays", 
     "settings.secretkey.copy": "Copiar chave privada",

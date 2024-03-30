@@ -14,7 +14,7 @@ export const tabBarStyle: ViewStyle = {
 export const TabBarOprions: BottomTabNavigationOptions = {
     headerShown: false,
     tabBarStyle: tabBarStyle,
-    tabBarActiveTintColor: theme.colors.green,
+    tabBarActiveTintColor: theme.colors.blue,
 }
 
 export const stackOptions: StackNavigationOptions = {

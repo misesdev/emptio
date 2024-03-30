@@ -46,6 +46,7 @@ export default {
     "message.detectedkey": "Private key detected in your clipboard, do you want to enter with the detected private key?",
     "message.detectedkey.value": "key: ",
     "message.wallet.create": "Add as many wallets as you want. To buy or sell, you can select a wallet in the purchase or sale order.",
+    "message.wallet.alertcreate": "Add a Bitcoin wallet for buying and selling!",
 
     "settings.relays": "Relays",
     "settings.account.edit": "My Account",

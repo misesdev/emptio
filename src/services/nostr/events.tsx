@@ -5,7 +5,7 @@ import { HexPairKeys } from "../memory/types"
 import { getRelays } from "./relays"
 import { NostrEventKinds } from "@/src/constants/Events"
 
-export const getConnection = async (): Promise<NDK> => {
+export const getNostrInstance = async (): Promise<NDK> => {
 
     const relays = await getRelays()
 

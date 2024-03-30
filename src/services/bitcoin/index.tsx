@@ -1,13 +1,20 @@
 import { getRandomBytes } from "expo-crypto"
 import { getPublicKey } from "@noble/secp256k1"
 import { bytesToHex, hexToBytes } from "@noble/hashes/utils"
-// const bitcore = require("bitcoinjs-lib")
+import { mnemonicToEntropy, entropyToMnemonic, mnemonicToSeedSync } from "bip39"
 import { payments } from "bitcoinjs-lib"
-
-import { mnemonicToEntropy, entropyToMnemonic } from "bip39"
 import { HexPairKeys } from "../memory/types"
 
-export const createWallet = () : HexPairKeys => {
+// export const passPhraseToSeed = (passPhrase: string): string => {
+
+//     const seed = mnemonicToSeedSync(passPhrase)
+
+//     console.log(seed)
+
+//     return seed
+// }
+
+export const createWallet = (passPhrase: string = "") : HexPairKeys => {
 
     const secretBytes = getRandomBytes(32)
 
@@ -18,6 +25,11 @@ export const createWallet = () : HexPairKeys => {
     const publicKey = bytesToHex(publicbytes)
 
     return { privateKey, publicKey }
+}
+
+export type SeedProps = {
+    seed: string, // phrase with 12 or 24 words
+    passPhrase: string // password with a 
 }
 
 export const seedToWallet = (seedPhrase: string) : HexPairKeys => {

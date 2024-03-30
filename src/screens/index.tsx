@@ -1,8 +1,7 @@
 import { ButtonDefault, ButtonSuccess } from "@components/form/Buttons"
 import { Image, StyleSheet, Text, View } from "react-native"
 import SplashScreen from "@components/general/SplashScreen"
-import { createWallet, seedToWallet } from "../services/bitcoin"
-import { getConnection } from "../services/nostr/events"
+import { getNostrInstance } from "../services/nostr/events"
 import { useTranslate } from "../services/translate"
 import { IsLogged } from "../services/userManager"
 import { useEffect, useState } from "react"
@@ -20,7 +19,7 @@ const Initialize = ({ navigation }: any) => {
 
     const handleVerifyLogon = async () => {
 
-        Nostr = await getConnection()
+        Nostr = await getNostrInstance()
 
         if (await IsLogged())
             navigation.reset({ index: 0, routes: [{ name: "authenticate-stack" }] })

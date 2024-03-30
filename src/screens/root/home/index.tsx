@@ -40,7 +40,7 @@ const Home = ({ navigation }: any) => {
         setLoading(false)
 
         if (wallets.length <= 0)
-            alertMessage("add a wallet to buy or sell bitcoin!")
+            alertMessage(useTranslate("message.wallet.alertcreate"))
     }
 
     const actionWallet: ActionHeader = {
