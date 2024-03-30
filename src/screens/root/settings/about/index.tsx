@@ -2,7 +2,7 @@
 import { StyleSheet, View, Text } from "react-native"
 import theme from "@src/theme"
 
-const About = ({ navigation }: any) => {
+const AboutScreen = ({ navigation }: any) => {
     return (
         <View style={theme.styles.container} >
             <Text style={styles.title}>About</Text>
@@ -18,4 +18,4 @@ const styles = StyleSheet.create({
     }
 })
 
-export default About
+export default AboutScreen

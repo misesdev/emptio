@@ -1,12 +1,12 @@
-import { StyleSheet, View, ScrollView, RefreshControl, Text, NativeScrollEvent, NativeSyntheticEvent, FlatList, ActivityIndicator } from "react-native"
-import theme from "@src/theme"
-import { useEffect, useState } from "react"
+import { View, Text, FlatList, ActivityIndicator } from "react-native"
 import { SectionContainer } from "@/src/components/general/section"
 import { ButtonDanger, ButtonSuccess } from "@components/form/Buttons"
 import { listenerEvents } from "@src/services/nostr/events"
 import { getPairKeys } from "@src/services/memory/user"
 import { NostrEventKinds } from "@/src/constants/Events"
 import { HeaderFeed } from "../headers"
+import { useState } from "react"
+import theme from "@src/theme"
 
 type EventData = {
     id: string,
@@ -16,7 +16,7 @@ type EventData = {
     created_at: number
 }
 
-const Feed = ({ navigation }: any) => {
+const FeedScreen = ({ navigation }: any) => {
 
     const [loading, setLoading] = useState(false)
     const [posts, setPosts] = useState<EventData[]>([])
@@ -24,7 +24,7 @@ const Feed = ({ navigation }: any) => {
     const handleData = async () => {
         setLoading(true)
 
-        console.log("chamou")
+        console.log("searching poducts => btc")
 
         const { publicKey } = await getPairKeys()
 
@@ -54,18 +54,18 @@ const Feed = ({ navigation }: any) => {
 
     return (
         <>
-        <HeaderFeed navigation={navigation} />
-        <FlatList
-            data={posts}
-            renderItem={renderItem}
-            onEndReached={handleData}
-            onEndReachedThreshold={2}
-            contentContainerStyle={[theme.styles.scroll_container, { backgroundColor: theme.colors.black, alignItems: "center" }]}
-            ListFooterComponent={ListEndLoader}
-        />
+            <HeaderFeed navigation={navigation} />
+            <FlatList
+                data={posts}
+                renderItem={renderItem}
+                onEndReached={handleData}
+                onEndReachedThreshold={2}
+                contentContainerStyle={[theme.styles.scroll_container, { backgroundColor: theme.colors.black, alignItems: "center" }]}
+                ListFooterComponent={ListEndLoader}
+            />
         </>
 
     )
 }
 
-export default Feed
+export default FeedScreen

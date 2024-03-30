@@ -6,7 +6,7 @@ import theme from "@src/theme";
 import { useTranslate } from "@src/services/translate";
 import SplashScreen from "@components/general/SplashScreen";
 
-const Authenticate = ({ navigation }: any) => {
+const AuthenticateScreen = ({ navigation }: any) => {
 
     const [loading, setLoading] = useState(true)
     const [biometrics, setBiometrics] = useState(true)
@@ -73,4 +73,4 @@ const styles = StyleSheet.create({
     }
 })
 
-export default Authenticate
+export default AuthenticateScreen

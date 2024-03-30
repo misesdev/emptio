@@ -2,7 +2,7 @@ import { StyleSheet, View, Text } from "react-native"
 import theme from "@src/theme"
 import { useEffect, useState } from "react"
 
-const Settings = ({ navigation }: any) => {
+const SettingsScreen = ({ navigation }: any) => {
 
     useEffect(() => {
 
@@ -23,4 +23,4 @@ const styles = StyleSheet.create({
     }
 })
 
-export default Settings
+export default SettingsScreen

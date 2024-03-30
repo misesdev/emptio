@@ -2,7 +2,7 @@ import { StyleSheet, View, Text } from "react-native"
 import { useEffect } from "react"
 import theme from "@src/theme"
 
-const HomeSearch = ({ navigation }: any) => {
+const HomeSearchScreen = ({ navigation }: any) => {
 
     useEffect(() => {
         
@@ -23,4 +23,4 @@ const styles = StyleSheet.create({
     }
 })
 
-export default HomeSearch
+export default HomeSearchScreen

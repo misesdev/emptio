@@ -2,20 +2,20 @@ import { NavigationContainer } from "@react-navigation/native"
 
 import TabRoutes from "./tab.routes"
 import { createStackNavigator } from "@react-navigation/stack"
-import Initialize from "../screens"
-import Register from "@screens/initialize/register"
-import Login from "@screens/initialize/login"
-import UserMenu from "@screens/root/menu"
-import HomeSearch from "@screens/root/home/search/HomeSearch"
-import FeedSearch from "@screens/root/feed/search/FeedSearch"
-import Authenticate from "@screens/initialize"
+import InitializeScreen from "../screens"
+import RegisterScreen from "@screens/initialize/register"
+import LoginScreen from "@screens/initialize/login"
+import UserMenuScreen from "@screens/root/menu"
+import HomeSearchScreen from "@screens/root/home/search/HomeSearch"
+import FeedSearchScreen from "@screens/root/feed/search/FeedSearch"
+import AuthenticateScreen from "@screens/initialize"
 import { stackOptions } from "../constants/RouteSettings"
-import UserEdit from "@screens/root/menu/user/edit"
-import ManageRelays from "@screens/root/settings/relays"
-import About from "@screens/root/settings/about"
-import ManageSecurity from "@screens/root/settings/security"
-import WalletManager from "@screens/root/wallet"
-import AddWallet from "../screens/root/wallet/add"
+import UserEditScreen from "@screens/root/menu/user/edit"
+import ManageRelaysScreen from "@screens/root/settings/relays"
+import AboutScreen from "@screens/root/settings/about"
+import ManageSecurityScreen from "@screens/root/settings/security"
+import WalletManagerScreen from "@screens/root/wallet"
+import AddWalletScreen from "../screens/root/wallet/add"
 
 const Stack = createStackNavigator()
 
@@ -23,24 +23,24 @@ const AppRoutes = () => {
     return (
         <NavigationContainer >  
              <Stack.Navigator screenOptions={stackOptions} initialRouteName="initial-stack">
-                <Stack.Screen name="initial-stack" component={Initialize} options={{ headerShown: false }} />
-                <Stack.Screen name="register-stack" component={Register} options={{ headerShown: true }} />
-                <Stack.Screen name="login-stack" component={Login} options={{ headerShown: true }} />
+                <Stack.Screen name="initial-stack" component={InitializeScreen} options={{ headerShown: false }} />
+                <Stack.Screen name="register-stack" component={RegisterScreen} options={{ headerShown: true }} />
+                <Stack.Screen name="login-stack" component={LoginScreen} options={{ headerShown: true }} />
 
-                <Stack.Screen name="authenticate-stack" component={Authenticate} options={{ headerShown: false }} />
+                <Stack.Screen name="authenticate-stack" component={AuthenticateScreen} options={{ headerShown: false }} />
                 <Stack.Screen name="core-stack" component={TabRoutes} />                
-                <Stack.Screen name="search-home-stack" component={HomeSearch} options={{ headerShown: true }}/>
-                <Stack.Screen name="search-feed-stack" component={FeedSearch} options={{ headerShown: true }} />   
+                <Stack.Screen name="search-home-stack" component={HomeSearchScreen} options={{ headerShown: true }}/>
+                <Stack.Screen name="search-feed-stack" component={FeedSearchScreen} options={{ headerShown: true }} />   
 
-                <Stack.Screen name="user-menu-stack" component={UserMenu} options={{ headerShown: true }} />  
-                <Stack.Screen name="user-edit-stack" component={UserEdit} options={{ headerShown: true }} />   
+                <Stack.Screen name="user-menu-stack" component={UserMenuScreen} options={{ headerShown: true }} />  
+                <Stack.Screen name="user-edit-stack" component={UserEditScreen} options={{ headerShown: true }} />   
 
-                <Stack.Screen name="manage-relays-stack" component={ManageRelays} options={{ headerShown: true }} />
-                <Stack.Screen name="manage-security-stack" component={ManageSecurity} options={{ headerShown: true }} />
-                <Stack.Screen name="about-stack" component={About} options={{ headerShown: true }} />     
+                <Stack.Screen name="manage-relays-stack" component={ManageRelaysScreen} options={{ headerShown: true }} />
+                <Stack.Screen name="manage-security-stack" component={ManageSecurityScreen} options={{ headerShown: true }} />
+                <Stack.Screen name="about-stack" component={AboutScreen} options={{ headerShown: true }} />     
 
-                <Stack.Screen name="add-wallet-stack" component={AddWallet} options={{ headerShown: true }} />
-                <Stack.Screen name="wallet-stack" component={WalletManager} options={{ headerShown: true }} />
+                <Stack.Screen name="add-wallet-stack" component={AddWalletScreen} options={{ headerShown: true }} />
+                <Stack.Screen name="wallet-stack" component={WalletManagerScreen} options={{ headerShown: true }} />
                 
             </Stack.Navigator>
         </NavigationContainer>

@@ -2,7 +2,7 @@
 import { StyleSheet, View, Text } from "react-native"
 import theme from "@src/theme"
 
-const AddWallet = ({ navigation }: any) => {
+const AddWalletScreen = ({ navigation }: any) => {
     return (
         <View style={theme.styles.container} >
             <Text style={styles.title}>Add Wallet</Text>
@@ -18,4 +18,4 @@ const styles = StyleSheet.create({
     }
 })
 
-export default AddWallet
+export default AddWalletScreen

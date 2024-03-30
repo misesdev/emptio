@@ -2,7 +2,7 @@ import { StyleSheet, View, Text } from "react-native"
 import { useEffect } from "react"
 import theme from "@src/theme"
 
-const FeedSearch = ({ navigation }: any) => {
+const FeedSearchScreen = ({ navigation }: any) => {
 
     useEffect(() => {
         
@@ -23,4 +23,4 @@ const styles = StyleSheet.create({
     }
 })
 
-export default FeedSearch
+export default FeedSearchScreen

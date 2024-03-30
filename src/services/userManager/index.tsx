@@ -6,7 +6,7 @@ import { listenerEvents } from "../nostr/events"
 import { Response, trackException } from "../telemetry/telemetry"
 import { getUser, insertUpdateUser } from "../memory/user"
 
-export const SignUp = async (userName: string) => {
+export const SignUp = async (userName: string): Promise<Response> => {
     try {
 
         const { privateKey, publicKey } = createPairKeys()
@@ -22,7 +22,7 @@ export const SignUp = async (userName: string) => {
 
         await insertUpdateUser(userData)
 
-        return { success: true }
+        return { success: true, message: "" }
     }
     catch (ex) {
         return trackException(ex)

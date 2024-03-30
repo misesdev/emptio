@@ -13,7 +13,7 @@ import { nip19 } from "nostr-tools";
 import theme from "@src/theme"
 import { setStringAsync } from "expo-clipboard";
 
-const UserMenu = ({ navigation }: any) => {
+const UserMenuScreen = ({ navigation }: any) => {
 
     const opacity = .6
     const [name, setName] = useState<string>()
@@ -148,4 +148,4 @@ const styles = StyleSheet.create({
     }
 })
 
-export default UserMenu
+export default UserMenuScreen

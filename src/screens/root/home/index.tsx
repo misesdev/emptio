@@ -10,7 +10,7 @@ import { useEffect, useState } from "react"
 import theme from "@src/theme"
 import { HeaderHome } from "../headers"
 
-const Home = ({ navigation }: any) => {
+const HomeScreen = ({ navigation }: any) => {
 
     const [loading, setLoading] = useState(true)
     const [sales, setSales] = useState<Sales[]>()
@@ -86,4 +86,4 @@ const styles = StyleSheet.create({
     },
 })
 
-export default Home
+export default HomeScreen

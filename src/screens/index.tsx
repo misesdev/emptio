@@ -7,7 +7,7 @@ import { IsLogged } from "../services/userManager"
 import { useEffect, useState } from "react"
 import theme from "@src/theme"
 
-const Initialize = ({ navigation }: any) => {
+const InitializeScreen = ({ navigation }: any) => {
 
     const [loading, setLoading] = useState(true)
 
@@ -64,4 +64,4 @@ const styles = StyleSheet.create({
     }
 })
 
-export default Initialize;
+export default InitializeScreen;

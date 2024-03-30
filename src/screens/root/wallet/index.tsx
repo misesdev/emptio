@@ -7,7 +7,7 @@ import { SectionHeader } from "@components/general/section/headers"
 import { useTranslate } from "@/src/services/translate"
 import { Wallet } from "@/src/services/memory/types"
 
-const WalletManager = ({ navigation }: any) => {
+const WalletManagerScreen = ({ navigation }: any) => {
 
     const wallet: Wallet = { type: "bitcoin", name: "My First Wallet", lastBalance: 0.09684900 }
 
@@ -34,4 +34,4 @@ const WalletManager = ({ navigation }: any) => {
 }
 
 
-export default WalletManager
+export default WalletManagerScreen

@@ -2,7 +2,7 @@
 import { StyleSheet, View, Text } from "react-native"
 import theme from "@src/theme"
 
-const ManageRelays = ({ navigation }: any) => {
+const ManageRelaysScreen = ({ navigation }: any) => {
     return (
         <View style={theme.styles.container} >
             <Text style={styles.title}>Manager Relays</Text>
@@ -18,4 +18,4 @@ const styles = StyleSheet.create({
     }
 })
 
-export default ManageRelays
+export default ManageRelaysScreen

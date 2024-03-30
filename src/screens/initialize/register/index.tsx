@@ -8,7 +8,7 @@ import MessageBox, { showMessage } from "@components/general/MessageBox";
 import { SignUp } from "@src/services/userManager";
 import { useTranslate } from "@src/services/translate";
 
-const Register = ({ navigation }: any) => {
+const RegisterScreen = ({ navigation }: any) => {
 
     const [userName, setUserName] = useState("")
     const [loading, setLoading] = useState(false)
@@ -76,5 +76,5 @@ const styles = StyleSheet.create({
     }
 })
 
-export default Register
+export default RegisterScreen
 

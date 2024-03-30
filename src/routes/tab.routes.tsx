@@ -1,10 +1,10 @@
 import { createMaterialBottomTabNavigator } from '@react-navigation/material-bottom-tabs';
 import { useTranslate } from "../services/translate"
-import Settings from "@screens/root/settings"
+import SettingsScreen from "@screens/root/settings"
 import { Ionicons } from "@expo/vector-icons"
-import Donate from "@screens/root/donate"
-import Home from "@screens/root/home"
-import Feed from "@screens/root/feed"
+import DonateScreen from "@screens/root/donate"
+import HomeScreen from "@screens/root/home"
+import FeedScreen from "@screens/root/feed"
 import theme from "@src/theme"
 
 const Tab = createMaterialBottomTabNavigator()
@@ -22,7 +22,7 @@ const TabRoutes = () => {
         >
             <Tab.Screen
                 name="home"
-                component={Home}
+                component={HomeScreen}
                 options={{
                     tabBarLabel: useTranslate("menu.home"),
                     tabBarIcon: ({ color }) => <Ionicons name="home" color={color} size={theme.icons.medium} />,
@@ -30,7 +30,7 @@ const TabRoutes = () => {
             />
             <Tab.Screen
                 name="feed"
-                component={Feed}
+                component={FeedScreen}
                 options={{
                     tabBarLabel: useTranslate("menu.buy&sell"),
                     tabBarIcon: ({ color }) => <Ionicons name="wallet" color={color} size={theme.icons.medium} />,
@@ -38,7 +38,7 @@ const TabRoutes = () => {
             />
             <Tab.Screen
                 name="donate"
-                component={Donate}
+                component={DonateScreen}
                 options={{
                     tabBarLabel: useTranslate("menu.donate"),
                     tabBarIcon: ({ color }) => <Ionicons name="heart" color={color} size={theme.icons.medium} />,
@@ -46,7 +46,7 @@ const TabRoutes = () => {
             />
             <Tab.Screen
                 name="settings"
-                component={Settings}
+                component={SettingsScreen}
                 options={{
                     tabBarLabel: useTranslate("menu.setting"),
                     tabBarIcon: ({ color }) => <Ionicons name="settings" color={color} size={theme.icons.medium} />,

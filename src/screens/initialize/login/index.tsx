@@ -11,7 +11,7 @@ import { AppState } from "react-native";
 import theme from "@src/theme";
 import { SignIn } from "@/src/services/userManager";
 
-const Login = ({ navigation }: any) => {
+const LoginScreen = ({ navigation }: any) => {
 
     const [loading, setLoading] = useState(false)
     const [secretKey, setSecretKey] = useState("")
@@ -106,4 +106,4 @@ const styles = StyleSheet.create({
     }
 })
 
-export default Login
+export default LoginScreen
