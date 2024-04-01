@@ -2,9 +2,9 @@ import { useEffect, useState } from "react";
 import { Image, StyleSheet, View } from "react-native";
 import { ButtonPrimary } from "@components/form/Buttons";
 import { hasHardwareAsync, authenticateAsync } from 'expo-local-authentication';
-import theme from "@src/theme";
 import { useTranslate } from "@src/services/translate";
 import SplashScreen from "@components/general/SplashScreen";
+import theme from "@src/theme";
 
 const AuthenticateScreen = ({ navigation }: any) => {
 
@@ -30,7 +30,7 @@ const AuthenticateScreen = ({ navigation }: any) => {
             promptMessage: useTranslate("commons.authenticate.message"),
         })
 
-        if (success)
+        if (success) 
             navigation.reset({ index: 0, routes: [{ name: "core-stack" }] })
     };
 
@@ -45,7 +45,7 @@ const AuthenticateScreen = ({ navigation }: any) => {
             <Image style={styles.logo} source={require("@assets/emptio.png")} />
 
             <View style={styles.buttonArea}>
-                <ButtonPrimary label={useTranslate("commons.authenticate")} onPress={checkBiometricAvailability} />
+                <ButtonPrimary label={useTranslate("commons.authenticate")} leftIcon="finger-print" onPress={checkBiometricAvailability} />
             </View>
         </View>
     )

@@ -57,6 +57,8 @@ export default {
     "section.title.sales": "Compas & Vendas",
     "section.title.transactions": "Transações",
     "section.title.transactions.empty": "Suas transações serão exibidas aqui",
+    "wallet.lightning.tag": "Carteira Lightning",
+    "wallet.bitcoin.tag": "Carteira Bitcoin",
 
 
     "settings.about": "Sobre",

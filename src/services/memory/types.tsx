@@ -1,11 +1,7 @@
 import { Relay } from "nostr-tools"
 
-export type SecreteKeys = {
-    privateKey: string,
-    publicKey?: string
-}
-
-export type HexPairKeys = {
+export type PairKey = {
+    key: string,
     privateKey: string,
     publicKey: string
 }
@@ -15,9 +11,9 @@ export type Wallet = {
     name?: string,
     type?: "lightning" | "bitcoin",
     lastBalance?: number,
-    privateKey?: string,
-    publicKey?: string
-    address?: string
+    pairKey?: PairKey,
+    address?: string,
+    key?: string
 }
 
 export type Purchase = {
@@ -52,8 +48,8 @@ export type User = {
     banner?: string,
     zapService?: string,
     website?: string,
-    privateKey: string,
-    publicKey: string,
+    keychanges?: string,
+    pairKey?: PairKey
 }
 
 export type Relays = Relay[]

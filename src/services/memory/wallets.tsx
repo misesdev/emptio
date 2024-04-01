@@ -1,11 +1,11 @@
-import { deleteItemAsync, getItemAsync, setItemAsync } from "expo-secure-store"
+import AsyncStorage from "@react-native-async-storage/async-storage"
 import { Wallet } from "./types"
 
 export const getWallets = async (): Promise<Wallet[]> => {
 
     var wallets: Wallet[] = []
 
-    const data = await getItemAsync("walletsData")
+    const data = await AsyncStorage.getItem("walletsData")
 
     if (data)
         wallets = JSON.parse(data)
@@ -21,7 +21,7 @@ export const insertWallet = async (wallet: Wallet) => {
 
     wallets.push(wallet)
 
-    await setItemAsync("walletsData", JSON.stringify(wallets))
+    await AsyncStorage.setItem("walletsData", JSON.stringify(wallets))
 }
 
 export const updateWallet = async (wallet: Wallet) => {
@@ -34,12 +34,10 @@ export const updateWallet = async (wallet: Wallet) => {
         throw "wallet not found in storage"
 
     wallets[index].name = wallet.name
-    wallets[index].privateKey = wallet.privateKey
-    wallets[index].publicKey = wallet.publicKey
     wallets[index].lastBalance = wallet.lastBalance
     wallets[index].address = wallet.address
 
-    await setItemAsync("walletsData", JSON.stringify(wallets))
+    await AsyncStorage.setItem("walletsData", JSON.stringify(wallets))
 }
 
 export const deleteWallet = async (wallet: Wallet) => {
@@ -48,7 +46,7 @@ export const deleteWallet = async (wallet: Wallet) => {
 
     wallets.splice(wallets.indexOf(wallet), 1)
 
-    await setItemAsync("walletsData", JSON.stringify(wallets))
+    await AsyncStorage.setItem("walletsData", JSON.stringify(wallets))
 }
 
-export const deleteWallets = async () => await deleteItemAsync("walletsData")
+export const deleteWallets = async () => await AsyncStorage.removeItem("walletsData")

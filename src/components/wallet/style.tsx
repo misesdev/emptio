@@ -8,11 +8,10 @@ export const styles = StyleSheet.create({
         padding: 10
     },
     wallet: {
-        maxWidth: 384,
+        width: 382,
         marginVertical: 10,
         marginHorizontal: 6,
         borderRadius: 18,
-        padding: 5,
     },
     title: {
         color: theme.colors.white,
@@ -22,7 +21,7 @@ export const styles = StyleSheet.create({
         marginHorizontal: 10
     },
     description: {
-        color: theme.colors.gray,
+        fontSize: 12,
         marginHorizontal: 10,
         marginVertical: 6
     },
@@ -31,7 +30,6 @@ export const styles = StyleSheet.create({
         maxWidth: 150,
         paddingVertical: 14,
         borderRadius: 15,
-        backgroundColor: theme.colors.blue
     },
     buttonText: {
         color: theme.colors.white,
@@ -48,11 +46,6 @@ export const styles = StyleSheet.create({
         width: "100%",
         position: "absolute",
         backgroundColor: "rgba(0, 55, 55, .7)"
-    },
-    headerWalletSub: {
-        width: "100%",
-        flexDirection: "row-reverse",
-        padding: 20,
     },
     headerText: {
         fontWeight: "bold",

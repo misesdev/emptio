@@ -10,9 +10,11 @@ import * as ClipBoard from 'expo-clipboard'
 import { AppState } from "react-native";
 import theme from "@src/theme";
 import { SignIn } from "@/src/services/userManager";
+import { useAuth } from "@/src/providers/userProvider";
 
 const LoginScreen = ({ navigation }: any) => {
 
+    const { setUser } = useAuth()
     const [loading, setLoading] = useState(false)
     const [secretKey, setSecretKey] = useState("")
 
@@ -53,7 +55,7 @@ const LoginScreen = ({ navigation }: any) => {
 
         setTimeout(async () => {
             if (validatePrivateKey(secretKey)) {
-                const result = await SignIn(secretKey)
+                const result = await SignIn(secretKey, user => setUser(user))
                 if (result.success)
                     navigation.reset({ index: 0, routes: [{ name: "core-stack" }] })
             } else

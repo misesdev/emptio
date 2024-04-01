@@ -6,9 +6,11 @@ import { useTranslate } from "../services/translate"
 import { IsLogged } from "../services/userManager"
 import { useEffect, useState } from "react"
 import theme from "@src/theme"
+import { useAuth } from "../providers/userProvider"
 
 const InitializeScreen = ({ navigation }: any) => {
 
+    const { setUser } = useAuth()
     const [loading, setLoading] = useState(true)
 
     useEffect(() => {
@@ -19,10 +21,12 @@ const InitializeScreen = ({ navigation }: any) => {
 
     const handleVerifyLogon = async () => {
 
-        Nostr = await getNostrInstance()
+        if (await IsLogged(setUser)) {     
+            
+            Nostr = await getNostrInstance()
 
-        if (await IsLogged())
             navigation.reset({ index: 0, routes: [{ name: "authenticate-stack" }] })
+        }
         else
             setLoading(false)
     }

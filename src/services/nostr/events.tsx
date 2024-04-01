@@ -1,8 +1,8 @@
 
 import NDK, { NDKUserProfile, NDKPrivateKeySigner, NDKEvent } from "@nostr-dev-kit/ndk"
 import { Filter, Event } from "nostr-tools"
-import { HexPairKeys } from "../memory/types"
-import { getRelays } from "./relays"
+import { PairKey } from "../memory/types"
+import { getRelays } from "../memory/relays"
 import { NostrEventKinds } from "@/src/constants/Events"
 
 export const getNostrInstance = async (): Promise<NDK> => {
@@ -16,7 +16,7 @@ export const getNostrInstance = async (): Promise<NDK> => {
     return ndk
 }
 
-export const publishUser = async (profile: NDKUserProfile, keys: HexPairKeys) => {
+export const publishUser = async (profile: NDKUserProfile, keys: PairKey) => {
        
     Nostr.signer = new NDKPrivateKeySigner(keys.privateKey)
 
@@ -29,7 +29,7 @@ export const publishUser = async (profile: NDKUserProfile, keys: HexPairKeys) =>
     await user.publish()
 }
 
-export const publishEvent = async (event: { kind: number, content: string }, keys: HexPairKeys) => {
+export const publishEvent = async (event: { kind: number, content: string }, keys: PairKey) => {
 
     Nostr.signer = new NDKPrivateKeySigner(keys.privateKey)
 

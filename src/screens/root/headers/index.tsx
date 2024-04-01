@@ -1,28 +1,20 @@
 import { Image, StyleSheet, TouchableOpacity, View } from "react-native"
 import SearchButton from "@components/form/SearchButton"
 import { useTranslate } from "@src/services/translate"
-import { getUser } from "@src/services/memory/user"
+import { useAuth } from "@src/providers/userProvider"
 import { Ionicons } from "@expo/vector-icons"
-import { useEffect, useState } from "react"
 import theme from "@src/theme"
 
 export const HeaderHome = ({ navigation }: any) => {
 
-    const [picture, setPicture] = useState<string>()
-
-    useEffect(() => { handleLoadUserInfo() }, [])
-
-    const handleLoadUserInfo = async () => {
-        const { picture } = await getUser()
-        setPicture(picture)
-    }
+    const { user } = useAuth()
 
     return (
         <View style={styles.header}>
             <View style={{ width: "15%", alignItems: "center", justifyContent: "center" }}>
                 <TouchableOpacity onPress={() => navigation.navigate("user-menu-stack")}>
-                    {picture && <Image source={{ uri: picture }} style={styles.userMenu} />}
-                    {!!!picture && <Image source={require("assets/images/defaultProfile.png")} style={styles.userMenu} />}
+                    {user?.picture && <Image source={{ uri: user?.picture }} style={styles.userMenu} />}
+                    {!!!user?.picture && <Image source={require("assets/images/defaultProfile.png")} style={styles.userMenu} />}
                 </TouchableOpacity>
             </View>
             <View style={{ width: "55%", alignItems: "center", justifyContent: "center" }}>
@@ -44,21 +36,14 @@ export const HeaderHome = ({ navigation }: any) => {
 
 export const HeaderFeed = ({ navigation }: any) => {
 
-    const [picture, setPicture] = useState<string>()
-
-    useEffect(() => { handleLoadUserInfo() }, [])
-
-    const handleLoadUserInfo = async () => {
-        const { picture, name, banner } = await getUser()
-        setPicture(picture)
-    }
+    const { user } = useAuth()
     
     return (
         <View style={styles.header}>
             <View style={{ width: "15%", alignItems: "center", justifyContent: "center" }}>
                 <TouchableOpacity onPress={() => navigation.navigate("user-menu-stack")}>
-                    {picture && <Image source={{ uri: picture }} style={styles.userMenu} />}
-                    {!picture && <Image source={require("assets/images/defaultProfile.png")} style={styles.userMenu} />}
+                    {user?.picture && <Image source={{ uri: user?.picture }} style={styles.userMenu} />}
+                    {!user?.picture && <Image source={require("assets/images/defaultProfile.png")} style={styles.userMenu} />}
                 </TouchableOpacity>
             </View>
             <View style={{ width: "70%", alignItems: "center", justifyContent: "center" }}>

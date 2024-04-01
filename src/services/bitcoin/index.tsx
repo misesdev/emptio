@@ -54,4 +54,3 @@ export const generateAddress = (publicKey: string): string  => {
     return address ? address : ""
 }
 
-

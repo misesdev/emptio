@@ -57,6 +57,8 @@ export default {
     "section.title.sales": "Purchasing & Sales",
     "section.title.transactions": "Transactions",
     "section.title.transactions.empty": "Your transactions will paper here!",
+    "wallet.lightning.tag": "Lightning Wallet",
+    "wallet.bitcoin.tag": "Bitcoin Wallet",
 
 
     "settings.about": "About"

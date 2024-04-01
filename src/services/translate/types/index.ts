@@ -54,4 +54,6 @@ export type TranslateWords = "initial.message"
     | "section.title.transactions"
     | "section.title.transactions.empty"
     | "message.wallet.alertcreate"
+    | "wallet.lightning.tag"
+    | "wallet.bitcoin.tag"
 

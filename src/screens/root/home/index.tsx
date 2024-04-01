@@ -3,15 +3,18 @@ import { ActionHeader, SectionHeader } from "@components/general/section/headers
 import AlertBox, { alertMessage } from "@components/general/AlertBox"
 import { Purchase, Sales, Wallet } from "@src/services/memory/types"
 import { UpdateUserProfile } from "@src/services/userManager"
-import { useTranslate } from "@src/services/translate"
+import SplashScreen from "@components/general/SplashScreen"
 import { getWallets } from "@src/services/memory/wallets"
+import { useTranslate } from "@src/services/translate"
+import { useAuth } from "@src/providers/userProvider"
 import { WalletList } from "@components/wallet"
 import { useEffect, useState } from "react"
-import theme from "@src/theme"
 import { HeaderHome } from "../headers"
+import theme from "@src/theme"
 
 const HomeScreen = ({ navigation }: any) => {
 
+    const { user, setUser } = useAuth()
     const [loading, setLoading] = useState(true)
     const [sales, setSales] = useState<Sales[]>()
     const [purchases, setPurchases] = useState<Purchase[]>()
@@ -28,13 +31,16 @@ const HomeScreen = ({ navigation }: any) => {
     const handleData = async () => {
         setLoading(true)
 
-        await UpdateUserProfile()
+        await UpdateUserProfile({ user: user ?? {}, setUser })
 
         const wallets = await getWallets()
         // const purchases = await getPurchase()
         // const sales = await getSales()
 
-        setWallets(wallets)
+        setWallets([
+            { name: "My Bitcoin Wallet", lastBalance: .047333, type: "bitcoin" },
+            { name: "My Lightning Wallet", lastBalance: .0900384, type: "lightning" },
+        ])
         // setPurchases(purchases)
         // setSales(sales)
 
@@ -48,6 +54,9 @@ const HomeScreen = ({ navigation }: any) => {
         icon: "add", action: () => navigation.navigate("add-wallet-stack")
     }
 
+    if(loading)
+        return <SplashScreen />
+
     return (
         <View style={styles.container}>
             <HeaderHome navigation={navigation} />
@@ -59,7 +68,7 @@ const HomeScreen = ({ navigation }: any) => {
                 <SectionHeader icon="wallet" label={useTranslate("section.title.wallets")} actions={[actionWallet]} />
 
                 {/* Wallets section  */}
-                <WalletList wallets={wallets} action={() => navigation.navigate("add-wallet-stack")} />
+                <WalletList wallets={wallets} navigation={navigation} />
 
                 {/* Sales and Shopping */}
                 <SectionHeader icon="cash-outline" label={useTranslate("section.title.sales")} />

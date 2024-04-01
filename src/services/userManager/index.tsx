@@ -1,26 +1,30 @@
 import { clearStorage } from "../memory"
 import { createPairKeys, getHexKeys } from "../nostr"
 import { getUserData, pushUserData } from "../nostr/pool"
-import { User } from "../memory/types"
+import { PairKey, User } from "../memory/types"
 import { listenerEvents } from "../nostr/events"
 import { Response, trackException } from "../telemetry/telemetry"
 import { getUser, insertUpdateUser } from "../memory/user"
+import { getPairKey, insertPairKey } from "../memory/pairkeys"
 
-export const SignUp = async (userName: string): Promise<Response> => {
+export const SignUp = async (userName: string, setUser: (user: User) => void): Promise<Response> => {
     try {
 
-        const { privateKey, publicKey } = createPairKeys()
+        const pairKey: PairKey = createPairKeys()
 
         const userData: User = {
             name: userName.trim(),
             displayName: userName.trim(),
-            privateKey: privateKey,
-            publicKey: publicKey ? publicKey : ""
+            keychanges: pairKey.key,
         }
 
-        await pushUserData(userData)
+        await pushUserData(userData, pairKey)
+
+        userData.keychanges = pairKey.key
 
         await insertUpdateUser(userData)
+
+        setUser(userData)
 
         return { success: true, message: "" }
     }
@@ -29,16 +33,20 @@ export const SignUp = async (userName: string): Promise<Response> => {
     }
 }
 
-export const SignIn = async (secretKey: string) => {
+export const SignIn = async (secretKey: string, setUser: (user: User) => void) => {
 
     try {
-        const { privateKey, publicKey } = getHexKeys(secretKey)
+        const pairKey: PairKey = getHexKeys(secretKey)
 
-        const userData = await getUserData(publicKey)
+        const userData = await getUserData(pairKey.publicKey)
 
-        userData.privateKey = privateKey
+        userData.keychanges = pairKey.key
 
         await insertUpdateUser(userData)
+
+        await insertPairKey(pairKey)
+
+        setUser(userData)
 
         return { success: true }
     }
@@ -47,26 +55,33 @@ export const SignIn = async (secretKey: string) => {
     }
 }
 
-export const UpdateUserProfile = async () => {
+type UpdateProfileProps = {
+    user: User,
+    setUser: (user: User) => void
+}
 
-    const userProfile: User = await getUser()
+export const UpdateUserProfile = async ({ user, setUser }: UpdateProfileProps) => {
 
-    const event = (await listenerEvents({ limit: 5, kinds: [0], authors: [userProfile.publicKey] }))[0]
+    const pairKey: PairKey = await getPairKey(user.keychanges ?? "")
 
-    userProfile.displayName = event.content?.displayName
-    userProfile.picture = event.content?.picture
-    userProfile.image = event.content?.image
-    userProfile.banner = event.content?.banner
-    userProfile.lud06 = event.content?.lud06
-    userProfile.lud16 = event.content?.lud16
-    userProfile.nip05 = event.content?.nip05
-    userProfile.bio = event.content?.bio
-    userProfile.name = event.content?.name
-    userProfile.website = event.content?.website
-    userProfile.about = event.content?.about
-    userProfile.zapService = event.content?.zapService
+    const event = (await listenerEvents({ limit: 5, kinds: [0], authors: [pairKey.publicKey] }))[0]
 
-    await insertUpdateUser(userProfile)
+    user.displayName = event.content?.displayName
+    user.picture = event.content?.picture
+    user.image = event.content?.image
+    user.banner = event.content?.banner
+    user.lud06 = event.content?.lud06
+    user.lud16 = event.content?.lud16
+    user.nip05 = event.content?.nip05
+    user.bio = event.content?.bio
+    user.name = event.content?.name
+    user.website = event.content?.website
+    user.about = event.content?.about
+    user.zapService = event.content?.zapService
+
+    await insertUpdateUser(user)
+
+    setUser(user)
 }
 
 export const SignOut = async () : Promise<Response> => {
@@ -81,9 +96,14 @@ export const SignOut = async () : Promise<Response> => {
     }
 }
 
-export const IsLogged = async () => {
+export const IsLogged = async (setUser: (user: User) => void) => {
     
-    const { privateKey } = await getUser()
+    const user: User = await getUser()
+
+    const { privateKey } = await getPairKey(user.keychanges ?? "")
+
+    if(!!privateKey)
+        setUser(user)
 
     return !!privateKey
 }

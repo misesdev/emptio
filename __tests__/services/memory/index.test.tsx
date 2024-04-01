@@ -1,4 +1,4 @@
-import { getUser, insertUser } from '@src/services/memory'
+import { getUser, insertUpdateUser } from '@src/services/memory/user'
 
 describe("Memory data", () => {
     it("save user", () => {

@@ -1,71 +1,86 @@
-import { Transaction, Wallet } from "@src/services/memory/types";
 import { View, Text, TouchableOpacity, Image, SafeAreaView, ScrollView } from "react-native";
+import { Transaction, Wallet } from "@src/services/memory/types";
 import { useTranslate } from "@src/services/translate";
+import { IconNames } from "@src/services/types/icons";
+import SplashScreen from "../general/SplashScreen";
 import { Ionicons } from "@expo/vector-icons"
+import { useEffect, useState } from "react";
 import { styles } from "./style"
 import theme from "@src/theme";
-import { useEffect, useState } from "react";
-import SplashScreen from "../general/SplashScreen";
-import { IconNames } from "@src/services/types/icons";
+import { toBitcoin, toSats } from "@/src/services/converter";
 
 type Props = {
     wallets?: Wallet[],
-    action: () => void
+    navigation: any
 }
 
-export const WalletList = ({ wallets, action }: Props) => {
+export const WalletList = ({ wallets, navigation }: Props) => {
+
     return (
-        <SafeAreaView style={{ width: "100%", height: 200 }}>
+        <SafeAreaView style={{ width: "100%", height: 220 }}>
             <ScrollView horizontal>
-                {
-                    wallets && wallets.map((wallet, key) => {
+                {wallets &&
+                    wallets.map((wallet, key) => {
+                        let balanceSats = toSats(wallet.lastBalance)
+                        let balanceBTC = toBitcoin(wallet.lastBalance)
+                        let baseColor = wallet.type === "bitcoin" ? theme.colors.orange : theme.colors.blue
+                        let typyWallet = wallet.type === "bitcoin" ? useTranslate("wallet.bitcoin.tag") : useTranslate("wallet.lightning.tag")
                         return (
-                            <TouchableOpacity style={[styles.wallet, { backgroundColor: "#eb8f34" }]} key={key}>
-                                <Text style={styles.title}>{useTranslate("labels.wallet.add")}</Text>
-                                <Text style={styles.description}>{useTranslate("message.wallet.create")}</Text>
-                                <TouchableOpacity style={styles.button} onPress={() => { }}>
-                                    <Text style={styles.buttonText}> {useTranslate("commons.add")} </Text>
+                            <TouchableOpacity style={[styles.wallet, { paddingHorizontal: 5 }]} key={key} activeOpacity={1}>
+                                {wallet!.type === "bitcoin" && <Image source={require("assets/images/bitcoin-wallet-header3.jpg")} style={{ position: "absolute", borderRadius: 18, width: "100%", height: "100%" }} />}
+                                {wallet!.type === "lightning" && <Image source={require("assets/images/lightning-wallet-header.png")} style={{ position: "absolute", borderRadius: 18, width: "100%", height: "100%" }} />}
+                                <View style={{ position: "absolute", width: "100%", height: "100%", borderRadius: 18, backgroundColor: "rgba(0,55,55,.7)" }}></View>
+
+                                <Text style={styles.title}>{wallet.name}</Text>
+                                <Text style={{ marginHorizontal: 10, marginVertical: 6, color: theme.colors.white, fontSize: 18, fontWeight: "bold" }}>{balanceSats} Sats</Text>
+                                <Text style={[styles.description, { color: theme.colors.white }]}>{balanceBTC} BTC</Text>
+                                <TouchableOpacity activeOpacity={.7} style={[styles.button, { backgroundColor: baseColor }]} onPress={() => navigation.navigate("wallet-stack", { wallet })}>
+                                    <Text style={styles.buttonText}> {useTranslate("commons.open")} </Text>
                                 </TouchableOpacity>
+
+                                <Text style={{
+                                    backgroundColor: theme.colors.gray, color: theme.colors.white, margin: 10, borderRadius: 10,
+                                    fontSize: 10, fontWeight: "bold", paddingHorizontal: 10, paddingVertical: 4, position: "absolute", top: -18, right: 14,
+                                }}>{typyWallet}</Text>
                             </TouchableOpacity>
                         )
                     })
                 }
-
-                <View style={[styles.wallet, { backgroundColor: theme.colors.section }]}>
-                    <Text style={styles.title}>{useTranslate("labels.wallet.add")}</Text>
-                    <Text style={styles.description}>{useTranslate("message.wallet.create")}</Text>
-                    <TouchableOpacity style={styles.button} onPress={action}>
-                        <Text style={styles.buttonText}> {useTranslate("commons.add")} </Text>
-                    </TouchableOpacity>
-                </View>
+                {wallets?.length &&
+                    <View style={[styles.wallet, { backgroundColor: theme.colors.section, padding: 5 }]}>
+                        <Text style={styles.title}>{useTranslate("labels.wallet.add")}</Text>
+                        <Text style={[styles.description, { color: theme.colors.gray }]}>{useTranslate("message.wallet.create")}</Text>
+                        <TouchableOpacity style={[styles.button, { backgroundColor: theme.colors.blue }]} activeOpacity={.7} onPress={() => navigation.navigate("add-wallet-stack")}>
+                            <Text style={styles.buttonText}> {useTranslate("commons.add")} </Text>
+                        </TouchableOpacity>
+                    </View>
+                }
             </ScrollView>
         </SafeAreaView>
     )
 }
 
 type WalletProps = {
-    wallet: Wallet
+    wallet: Wallet,
+    showOptions?: () => void
 }
 
-export const WalletHeader = ({ wallet }: WalletProps) => {
+export const WalletHeader = ({ wallet, showOptions }: WalletProps) => {
 
-    var lastBalance = wallet!.lastBalance ? wallet!.lastBalance : 0
+    let balanceSats = toSats(wallet.lastBalance)
+    let balanceBTC = toBitcoin(wallet.lastBalance)
 
-    var walletColor = wallet.type == "bitcoin" ? theme.colors.orange : theme.colors.blue
+    let walletColor = wallet.type == "bitcoin" ? theme.colors.orange : theme.colors.blue
 
     return (
         <>
             {wallet!.type == "bitcoin" && <Image source={require("assets/images/bitcoin-wallet-header3.jpg")} style={{ width: "100%", height: 240 }} />}
             {wallet!.type == "lightning" && <Image source={require("assets/images/lightning-wallet-header.png")} style={{ width: "100%", height: 240 }} />}
             <View style={styles.headerWallet}>
-                <View style={styles.headerWalletSub}>
-                    <TouchableOpacity onPress={() => { }}>
-                        <Ionicons name="ellipsis-vertical-sharp" color={theme.colors.white} size={theme.icons.large} />
-                    </TouchableOpacity>
-                </View>
+                <View style={{ height: 50 }}></View>
                 <Text style={[{ fontSize: 18 }, styles.headerText]}>{wallet!.name}</Text>
-                <Text style={[{ fontSize: 30 }, styles.headerText]}>{(lastBalance * 100000000).toFixed(0).toString().replace(/(.)(?=(\d{3})+$)/g, '$1.')} Sats</Text>
-                <Text style={[{ fontSize: 14 }, styles.headerText]}>{wallet!.lastBalance?.toFixed(8)} BTC</Text>
+                <Text style={[{ fontSize: 30 }, styles.headerText]}>{balanceSats} Sats</Text>
+                <Text style={[{ fontSize: 14 }, styles.headerText]}>{balanceBTC} BTC</Text>
                 <Text style={[styles.headerText, { fontSize: 12, backgroundColor: walletColor, padding: 10, borderRadius: 15, maxWidth: 130, textAlign: "center" }]}>
                     {wallet!.type == "bitcoin" && "Bitcoin Wallet"}
                     {wallet!.type == "lightning" && "Lightning Wallet"}
@@ -75,26 +90,20 @@ export const WalletHeader = ({ wallet }: WalletProps) => {
     )
 }
 
-export const WalletTransactions = ({ wallet }: WalletProps) => {
+type WalletTransactionsProps = {
+    transactions: Transaction[],
+    onPressTransaction: (transaction: Transaction) => void
+}
 
-    const [loading, setLoading] = useState(true)
-    const [transactions, setTransactions] = useState<Transaction[]>([])
-
-    useEffect(() => {
-
-        // setTransactions([
-        //     { type: "received", amount: 0.05603200, description: "buy for hodl", date: "16/08/2023 08:90" },
-        // ])
-        setTimeout(() => setLoading(false), 1000)
-
-    }, [])
+export const WalletTransactions = ({ transactions, onPressTransaction }: WalletTransactionsProps) => {
 
     const AmmountText = ({ type, amount }: Transaction) => {
-        let operator = type == "received" ? "+" : "-"
-        let color = type == "received" ? theme.colors.green : theme.colors.red
-        let satoshis = amount ? `${(amount * 100000000).toFixed(0).toString().replace(/(.)(?=(\d{3})+$)/g, '$1.')}` : ""
 
-        return <Text style={{ color: color, margin: 2, fontWeight: "bold" }}>{operator + satoshis}</Text>
+        let operator = type == "received" ? "+" : "-"
+        let ammountSatoshis = operator + toSats(amount)
+        let color = type == "received" ? theme.colors.green : theme.colors.red
+
+        return <Text style={{ color: color, margin: 2, fontWeight: "bold" }}>{ammountSatoshis}</Text>
     }
 
     const TransactionIcon = ({ type }: Transaction) => {
@@ -107,53 +116,51 @@ export const WalletTransactions = ({ wallet }: WalletProps) => {
     }
 
     return (
-        <>
-            <View style={styles.sectionTransactions}>
-                {loading && <SplashScreen />}
+        <View style={styles.sectionTransactions}>
+            {
+                transactions?.map((transaction, key) => {
 
-                {!loading &&
-                    transactions?.map((transaction, key) => {
+                    if (transaction.description!.length > 18)
+                        transaction.description = `${transaction.description?.substring(0, 20)}..`
+                    else if (!transaction!.description)
+                        transaction.description = useTranslate("commons.nodescription")
 
-                        if (transaction.description!.length > 18)
-                            transaction.description = `${transaction.description?.substring(0, 20)}..`
-                        else if (!transaction!.description)
-                            transaction.description = useTranslate("commons.nodescription")
-
-                        return (
-                            <TouchableOpacity style={styles.sectionTransaction} key={key} activeOpacity={.7}>
-                                {/* Transaction Type */}
-                                <View style={{ width: "18%", minHeight: 75, justifyContent: "center", alignItems: "center" }}>
-                                    <TransactionIcon type={transaction.type} />
+                    return (
+                        <TouchableOpacity style={styles.sectionTransaction} onPress={() => onPressTransaction(transaction)} key={key} activeOpacity={.7}>
+                            {/* Transaction Type */}
+                            <View style={{ width: "18%", minHeight: 75, justifyContent: "center", alignItems: "center" }}>
+                                <TransactionIcon type={transaction.type} />
+                            </View>
+                            {/* Transaction Description and Date */}
+                            <View style={{ width: "50%", minHeight: 75 }}>
+                                <View style={{ width: "100%" }}>
+                                    <Text style={{ color: theme.colors.white, fontFamily: "", fontSize: 18, fontWeight: "600", margin: 2, marginTop: 12 }}>
+                                        {transaction.description}
+                                    </Text>
                                 </View>
-                                {/* Transaction Description and Date */}
-                                <View style={{ width: "50%", minHeight: 75 }}>
-                                    <View style={{ width: "100%" }}>
-                                        <Text style={{ color: theme.colors.white, fontFamily: "", fontSize: 18, fontWeight: "600", margin: 2, marginTop: 12 }}>
-                                            {transaction.description}
-                                        </Text>
-                                    </View>
-                                    <View style={{ width: "100%" }}>
-                                        <Text style={{ color: theme.colors.gray, margin: 2, fontWeight: "bold" }}>{transaction.date}</Text>
-                                    </View>
+                                <View style={{ width: "100%" }}>
+                                    <Text style={{ color: theme.colors.gray, margin: 2, fontWeight: "bold" }}>{transaction.date}</Text>
                                 </View>
-                                {/* Transaction Ammount */}
-                                <View style={{ width: "32%", minHeight: 75, justifyContent: "center", alignItems: "center" }}>
-                                    <AmmountText type={transaction.type} amount={transaction.amount} />
-                                    <Text style={{ color: theme.colors.gray, margin: 0 }}>sats</Text>
-                                </View>
-                            </TouchableOpacity>
-                        )
-                    })
-                }
+                            </View>
+                            {/* Transaction Ammount */}
+                            <View style={{ width: "32%", minHeight: 75, justifyContent: "center", alignItems: "center" }}>
+                                <AmmountText type={transaction.type} amount={transaction.amount} />
+                                <Text style={{ color: theme.colors.gray, margin: 0 }}>sats</Text>
+                            </View>
+                        </TouchableOpacity>
+                    )
+                })
+            }
 
-                {
-                    !loading && transactions!.length <= 0 &&
-                    <Text style={{ color: theme.colors.gray, textAlign: "center" }}>
-                        {useTranslate("section.title.transactions.empty")}
-                    </Text>
-                }
-            </View>
-        </>
+            {
+                transactions!.length <= 0 &&
+                <Text style={{ color: theme.colors.gray, textAlign: "center" }}>
+                    {useTranslate("section.title.transactions.empty")}
+                </Text>
+            }
+
+            <View style={{ height: 80 }}></View>
+        </View>
     )
 }
 

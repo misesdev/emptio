@@ -1,12 +1,17 @@
 import theme from "@src/theme"
 import { Ionicons } from "@expo/vector-icons"
-import { StyleSheet, Text, TouchableOpacity, View } from "react-native"
+import { StyleProp, StyleSheet, Text, TouchableOpacity, View, ViewStyle } from "react-native"
 import { IconNames } from "@src/services/types/icons"
 
-export const SectionContainer = ({ children }: any) => {
+type SectionProps = {
+    style?: StyleProp<ViewStyle>
+    children: any
+}
+
+export const SectionContainer = ({ style, children }: SectionProps) => {
 
     return (
-        <View style={styles.section}>
+        <View style={[styles.section, style]}>
             {children}
         </View>
     )

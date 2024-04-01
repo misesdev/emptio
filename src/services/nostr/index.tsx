@@ -1,8 +1,10 @@
 import { generateSecretKey, getPublicKey, nip19 } from "nostr-tools"
-import { SecreteKeys, HexPairKeys } from '../memory/types'
 import { bytesToHex } from "@noble/hashes/utils"
+import { PairKey } from '../memory/types'
 
-export const createPairKeys = (): SecreteKeys => {
+export const createPairKeys = (): PairKey => {
+
+    const key = (Math.random() * 9999).toFixed(0).toString()
 
     const secreteKey = generateSecretKey()
 
@@ -10,7 +12,7 @@ export const createPairKeys = (): SecreteKeys => {
 
     const privateKey = bytesToHex(secreteKey)
 
-    return { privateKey, publicKey }
+    return { key, privateKey, publicKey }
 }
 
 export const validatePrivateKey = (privateKey: string) => {
@@ -35,9 +37,11 @@ export const derivatePublicKey = (privateKey: string): string => {
     catch { return "" }
 }
 
-export const getHexKeys = (privateKey: string): HexPairKeys => {
+export const getHexKeys = (privateKey: string): PairKey => {
 
-    const response: HexPairKeys = { privateKey: "", publicKey: "" }
+    const key = (Math.random() * 9999).toFixed(0).toString()
+
+    const response: PairKey = { key, privateKey: "", publicKey: "" }
 
     try {
         const { type, data } = nip19.decode(privateKey)

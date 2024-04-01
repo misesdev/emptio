@@ -2,14 +2,16 @@ import { useState } from "react";
 import SplashScreen from "@components/general/SplashScreen";
 import { Image, StyleSheet, Text, View } from "react-native";
 import { ButtonPrimary } from "@components/form/Buttons";
-import theme from "@src/theme";
 import { TextBox } from "@components/form/TextBoxs";
 import MessageBox, { showMessage } from "@components/general/MessageBox";
 import { SignUp } from "@src/services/userManager";
 import { useTranslate } from "@src/services/translate";
+import { useAuth } from "@/src/providers/userProvider";
+import theme from "@src/theme";
 
 const RegisterScreen = ({ navigation }: any) => {
 
+    const { setUser } = useAuth()
     const [userName, setUserName] = useState("")
     const [loading, setLoading] = useState(false)
 
@@ -21,7 +23,8 @@ const RegisterScreen = ({ navigation }: any) => {
 
             setLoading(true)
             setTimeout(async () => {
-                const result = await SignUp(userName)
+                
+                const result = await SignUp(userName, user => setUser(user))
 
                 if (result.success)
                     return navigation.reset({ index: 0, routes: [{ name: "core-stack" }] })

@@ -2,33 +2,24 @@ import { StyleSheet, View, Text, Image, ScrollView, TouchableOpacity } from "rea
 import { hasHardwareAsync, authenticateAsync } from 'expo-local-authentication';
 import { LinkSection, SectionContainer } from "@components/general/section"
 import MessageBox, { showMessage } from "@components/general/MessageBox"
-import { getPairKeys, getUser } from "@src/services/memory/user"
+import { getPairKey } from "@src/services/memory/pairkeys"
 import SplashScreen from "@components/general/SplashScreen"
+import { useAuth } from "@src/providers/userProvider"
 import { ButtonDanger } from "@components/form/Buttons"
 import { useTranslate } from "@src/services/translate"
 import { SignOut } from "@src/services/userManager"
 import { hexToBytes } from "@noble/hashes/utils"
-import { useEffect, useState } from "react"
+import { useState } from "react"
 import { nip19 } from "nostr-tools";
 import theme from "@src/theme"
 import { setStringAsync } from "expo-clipboard";
 
+
 const UserMenuScreen = ({ navigation }: any) => {
 
     const opacity = .6
-    const [name, setName] = useState<string>()
-    const [banner, setBanner] = useState<string>()
-    const [picture, setPicture] = useState<string>()
+    const { user } = useAuth()
     const [loading, setLoading] = useState(false)    
-
-    useEffect(() => { handleLoadUserInfo() }, [])
-
-    const handleLoadUserInfo = async () => {
-        const { picture, name, banner } = await getUser()
-        setPicture(picture)
-        setBanner(banner)
-        setName(name)
-    }
 
     const handleDeleteAccount = async () => {
 
@@ -62,7 +53,7 @@ const UserMenuScreen = ({ navigation }: any) => {
     const handleCopyKeys = async () => { 
         const biometrics = await checkBiometric()
 
-        const { privateKey } = await getPairKeys()
+        const { privateKey } = await getPairKey(user?.keychanges ?? "")
 
         if (biometrics) {
             const secretkey = nip19.nsecEncode(hexToBytes(privateKey))
@@ -75,16 +66,16 @@ const UserMenuScreen = ({ navigation }: any) => {
 
     return (
         <>
-            {banner && <Image style={styles.banner} source={{ uri: banner }} />}
+            {user?.banner && <Image style={styles.banner} source={{ uri: user?.banner }} />}
             <View style={{ width: "100%", height: 58 }}></View>
             <View style={styles.area}>
                 <TouchableOpacity activeOpacity={opacity} onPress={() => navigation.navigate("user-edit-stack")}>
                     <View style={styles.image}>
-                        {picture && <Image source={{ uri: picture }} style={styles.picture} />}
-                        {!picture && <Image source={require("assets/images/defaultProfile.png")} style={styles.picture} />}
+                        {user?.picture && <Image source={{ uri: user?.picture }} style={styles.picture} />}
+                        {!user?.picture && <Image source={require("assets/images/defaultProfile.png")} style={styles.picture} />}
                     </View>
                 </TouchableOpacity>
-                <Text style={styles.name}>{name}</Text>
+                <Text style={styles.name}>{user?.name}</Text>
             </View>
             <ScrollView contentContainerStyle={theme.styles.scroll_container}>
                 <SectionContainer>
