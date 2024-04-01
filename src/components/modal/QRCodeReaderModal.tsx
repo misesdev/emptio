@@ -13,7 +13,7 @@ export default function QRCodeReaderModal({ visible, setValue, runClose }: Props
 
     useCameraPermissions()
 
-    const handleBarCodeScanned = ({ type, data }: { type: any, data: any }) => {
+    const handleBarCodeScanned = ({ type, data }: any) => {
         runClose(false)
         setValue(data)
     }
@@ -57,11 +57,12 @@ const styles = StyleSheet.create({
         backgroundColor: "rgba(255, 255, 255, .2)",
     },
     closeButton: {
-        borderWidth: 1,
-        borderColor: theme.colors.white,
+        bottom: 80,
+        // borderWidth: 1,
+        // borderColor: theme.colors.white,
         borderRadius: 50,
-        position: 'absolute',
-        bottom: 80
+        position: 'absolute',  
+        backgroundColor: "rgba(0,0,0,.5)"      
     }
 })
 
