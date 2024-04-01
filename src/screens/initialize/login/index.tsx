@@ -5,12 +5,12 @@ import { ButtonPrimary } from "@components/form/Buttons";
 import { useTranslate } from "@src/services/translate";
 import SplashScreen from "@components/general/SplashScreen";
 import { validatePrivateKey } from "@src/services/nostr";
+import { SignIn } from "@/src/services/userManager";
+import { useAuth } from "@/src/providers/userProvider";
 import { useEffect, useState } from "react";
 import * as ClipBoard from 'expo-clipboard'
 import { AppState } from "react-native";
 import theme from "@src/theme";
-import { SignIn } from "@/src/services/userManager";
-import { useAuth } from "@/src/providers/userProvider";
 
 const LoginScreen = ({ navigation }: any) => {
 
@@ -55,7 +55,7 @@ const LoginScreen = ({ navigation }: any) => {
 
         setTimeout(async () => {
             if (validatePrivateKey(secretKey)) {
-                const result = await SignIn(secretKey, user => setUser(user))
+                const result = await SignIn({ secretKey, setUser })
                 if (result.success)
                     navigation.reset({ index: 0, routes: [{ name: "core-stack" }] })
             } else

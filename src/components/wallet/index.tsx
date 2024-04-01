@@ -1,13 +1,11 @@
 import { View, Text, TouchableOpacity, Image, SafeAreaView, ScrollView } from "react-native";
 import { Transaction, Wallet } from "@src/services/memory/types";
+import { toBitcoin, toSats } from "@src/services/converter";
 import { useTranslate } from "@src/services/translate";
 import { IconNames } from "@src/services/types/icons";
-import SplashScreen from "../general/SplashScreen";
 import { Ionicons } from "@expo/vector-icons"
-import { useEffect, useState } from "react";
 import { styles } from "./style"
 import theme from "@src/theme";
-import { toBitcoin, toSats } from "@/src/services/converter";
 
 type Props = {
     wallets?: Wallet[],
@@ -46,7 +44,7 @@ export const WalletList = ({ wallets, navigation }: Props) => {
                         )
                     })
                 }
-                {wallets?.length &&
+                {!wallets?.length &&
                     <View style={[styles.wallet, { backgroundColor: theme.colors.section, padding: 5 }]}>
                         <Text style={styles.title}>{useTranslate("labels.wallet.add")}</Text>
                         <Text style={[styles.description, { color: theme.colors.gray }]}>{useTranslate("message.wallet.create")}</Text>

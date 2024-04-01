@@ -1,12 +1,14 @@
 import { ReactElement, ReactNode, createContext, useContext, useState } from "react";
-import { User } from "../services/memory/types"
+import { User, Wallet } from "../services/memory/types"
 
 type AuthContextType = {
     user?: User,
-    setUser: (user: User) => void
+    wallets?: Wallet[]
+    setUser?: (user: User) => void
+    setWallets?: (wallets: Wallet[]) => void
 }
 
-const AuthContext = createContext<AuthContextType>({ setUser: () => { } })
+const AuthContext = createContext<AuthContextType>({ })
 
 const useAuth = (): AuthContextType => {
 
@@ -20,10 +22,11 @@ const useAuth = (): AuthContextType => {
 
 const AuthProvider = ({ children }: { children: ReactNode }): ReactElement => {
 
-    const [user, setUser] = useState<User>()
+    const [user, setUser] = useState<User>({})
+    const [wallets, setWallets] = useState<Wallet[]>([])
 
     return (
-        <AuthContext.Provider value={{ user, setUser }}>
+        <AuthContext.Provider value={{ user, setUser, wallets, setWallets }}>
             {children}
         </AuthContext.Provider>
     )

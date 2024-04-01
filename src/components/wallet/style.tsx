@@ -8,7 +8,7 @@ export const styles = StyleSheet.create({
         padding: 10
     },
     wallet: {
-        width: 382,
+        width: 360,
         marginVertical: 10,
         marginHorizontal: 6,
         borderRadius: 18,

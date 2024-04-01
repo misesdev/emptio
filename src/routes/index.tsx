@@ -1,7 +1,7 @@
 import { NavigationContainer } from "@react-navigation/native"
 
 import TabRoutes from "./tab.routes"
-import { createStackNavigator } from "@react-navigation/stack"
+import { CardStyleInterpolators, createStackNavigator } from "@react-navigation/stack"
 import InitializeScreen from "../screens"
 import RegisterScreen from "@screens/initialize/register"
 import LoginScreen from "@screens/initialize/login"
@@ -39,7 +39,7 @@ const AppRoutes = () => {
                 <Stack.Screen name="manage-security-stack" component={ManageSecurityScreen} options={{ headerShown: true }} />
                 <Stack.Screen name="about-stack" component={AboutScreen} options={{ headerShown: true }} />     
 
-                <Stack.Screen name="add-wallet-stack" component={AddWalletScreen} options={{ headerShown: true }} />
+                <Stack.Screen name="add-wallet-stack" component={AddWalletScreen} options={{ headerShown: true, cardStyleInterpolator: CardStyleInterpolators.forVerticalIOS }} />
                 <Stack.Screen name="wallet-stack" component={WalletManagerScreen} options={{ headerShown: true }} />
                 
             </Stack.Navigator>

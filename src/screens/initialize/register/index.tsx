@@ -23,8 +23,8 @@ const RegisterScreen = ({ navigation }: any) => {
 
             setLoading(true)
             setTimeout(async () => {
-                
-                const result = await SignUp(userName, user => setUser(user))
+
+                const result = await SignUp({ userName, setUser })
 
                 if (result.success)
                     return navigation.reset({ index: 0, routes: [{ name: "core-stack" }] })

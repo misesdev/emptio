@@ -7,7 +7,12 @@ import { Response, trackException } from "../telemetry/telemetry"
 import { getUser, insertUpdateUser } from "../memory/user"
 import { getPairKey, insertPairKey } from "../memory/pairkeys"
 
-export const SignUp = async (userName: string, setUser: (user: User) => void): Promise<Response> => {
+type SignUpProps = {
+    userName: string,
+    setUser?: (user: User) => void
+}
+
+export const SignUp = async ({ userName, setUser }: SignUpProps): Promise<Response> => {
     try {
 
         const pairKey: PairKey = createPairKeys()
@@ -24,7 +29,8 @@ export const SignUp = async (userName: string, setUser: (user: User) => void): P
 
         await insertUpdateUser(userData)
 
-        setUser(userData)
+        if (setUser)
+            setUser(userData)
 
         return { success: true, message: "" }
     }
@@ -33,7 +39,12 @@ export const SignUp = async (userName: string, setUser: (user: User) => void): P
     }
 }
 
-export const SignIn = async (secretKey: string, setUser: (user: User) => void) => {
+type SignProps = {
+    secretKey: string,
+    setUser?: (user: User) => void
+}
+
+export const SignIn = async ({ secretKey, setUser }: SignProps) => {
 
     try {
         const pairKey: PairKey = getHexKeys(secretKey)
@@ -46,7 +57,8 @@ export const SignIn = async (secretKey: string, setUser: (user: User) => void) =
 
         await insertPairKey(pairKey)
 
-        setUser(userData)
+        if (setUser)
+            setUser(userData)
 
         return { success: true }
     }
@@ -57,7 +69,7 @@ export const SignIn = async (secretKey: string, setUser: (user: User) => void) =
 
 type UpdateProfileProps = {
     user: User,
-    setUser: (user: User) => void
+    setUser?: (user: User) => void
 }
 
 export const UpdateUserProfile = async ({ user, setUser }: UpdateProfileProps) => {
@@ -81,28 +93,33 @@ export const UpdateUserProfile = async ({ user, setUser }: UpdateProfileProps) =
 
     await insertUpdateUser(user)
 
-    setUser(user)
+    if (setUser)
+        setUser(user)
 }
 
-export const SignOut = async () : Promise<Response> => {
+export const SignOut = async (): Promise<Response> => {
 
     try {
         await clearStorage()
 
         return { success: true, message: "" }
-    } 
+    }
     catch (ex) {
         return trackException(ex)
     }
 }
 
-export const IsLogged = async (setUser: (user: User) => void) => {
-    
+type loggedProps = {
+    setUser?: (user: User) => void
+}
+
+export const IsLogged = async ({ setUser }: loggedProps) => {
+
     const user: User = await getUser()
 
     const { privateKey } = await getPairKey(user.keychanges ?? "")
 
-    if(!!privateKey)
+    if (setUser && !!privateKey)
         setUser(user)
 
     return !!privateKey

@@ -1,9 +1,10 @@
 import { View, Text, FlatList, ActivityIndicator } from "react-native"
-import { SectionContainer } from "@/src/components/general/section"
+import { SectionContainer } from "@components/general/section"
 import { ButtonDanger, ButtonSuccess } from "@components/form/Buttons"
 import { listenerEvents } from "@src/services/nostr/events"
-import { getPairKeys } from "@src/services/memory/user"
-import { NostrEventKinds } from "@/src/constants/Events"
+import { getPairKey } from "@src/services/memory/pairkeys"
+import { NostrEventKinds } from "@src/constants/Events"
+import { useAuth } from "@src/providers/userProvider"
 import { HeaderFeed } from "../headers"
 import { useState } from "react"
 import theme from "@src/theme"
@@ -18,15 +19,14 @@ type EventData = {
 
 const FeedScreen = ({ navigation }: any) => {
 
+    const { user } = useAuth()
     const [loading, setLoading] = useState(false)
     const [posts, setPosts] = useState<EventData[]>([])
 
     const handleData = async () => {
         setLoading(true)
 
-        console.log("searching poducts => btc")
-
-        const { publicKey } = await getPairKeys()
+        const { publicKey } = await getPairKey(user?.keychanges ?? "")
 
         const result = await listenerEvents({ limit: 2, kinds: [NostrEventKinds.classifiedListening] });
 

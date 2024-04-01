@@ -3,7 +3,6 @@ import { ActionHeader, SectionHeader } from "@components/general/section/headers
 import AlertBox, { alertMessage } from "@components/general/AlertBox"
 import { Purchase, Sales, Wallet } from "@src/services/memory/types"
 import { UpdateUserProfile } from "@src/services/userManager"
-import SplashScreen from "@components/general/SplashScreen"
 import { getWallets } from "@src/services/memory/wallets"
 import { useTranslate } from "@src/services/translate"
 import { useAuth } from "@src/providers/userProvider"
@@ -37,10 +36,7 @@ const HomeScreen = ({ navigation }: any) => {
         // const purchases = await getPurchase()
         // const sales = await getSales()
 
-        setWallets([
-            { name: "My Bitcoin Wallet", lastBalance: .047333, type: "bitcoin" },
-            { name: "My Lightning Wallet", lastBalance: .0900384, type: "lightning" },
-        ])
+        setWallets(wallets)
         // setPurchases(purchases)
         // setSales(sales)
 
@@ -53,9 +49,6 @@ const HomeScreen = ({ navigation }: any) => {
     const actionWallet: ActionHeader = {
         icon: "add", action: () => navigation.navigate("add-wallet-stack")
     }
-
-    if(loading)
-        return <SplashScreen />
 
     return (
         <View style={styles.container}>

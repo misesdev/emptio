@@ -21,8 +21,8 @@ const InitializeScreen = ({ navigation }: any) => {
 
     const handleVerifyLogon = async () => {
 
-        if (await IsLogged(setUser)) {     
-            
+        if (await IsLogged({ setUser })) {
+
             Nostr = await getNostrInstance()
 
             navigation.reset({ index: 0, routes: [{ name: "authenticate-stack" }] })
