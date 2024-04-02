@@ -36,6 +36,7 @@ export default {
     "labels.username": "Nome de Usuário",
     "labels.privatekey": "Chave Privada",
     "labels.wallet.add": "Adicionar carteira!",
+    "labels.wallet.name": "Nome da Carteira",
 
     "menu.home": "início",
     "menu.buy&sell": "comprar & vender",
@@ -47,6 +48,12 @@ export default {
     "message.detectedkey.value": "chave: ",
     "message.wallet.create": "Adicione quantas carteiras desejar. Para comprar ou vender, você pode selecionar uma carteira na ordem de compra ou venda.",
     "message.wallet.alertcreate": "Adicione uma carteira bitcoin para comprar e vender!", 
+    "message.wallet.notfound": "Wallet not found!",
+    "message.transaction.insufficient_funds": "Fundos insuficientes!",
+    "message.transaction.confirmed": "Transação confirmada!",
+    "message.transaction.notconfirmed": "Transação não confirmada!",
+    "message.shortly": "Essa funcionalidade estará disponível em breve!",
+    "message.wallet.nameempty": "Por favor preencha o nome com mais de 5 caracteres!",
 
     "settings.relays": "Relays", 
     "settings.secretkey.copy": "Copiar chave privada",
@@ -59,6 +66,8 @@ export default {
     "section.title.transactions.empty": "Suas transações serão exibidas aqui",
     "wallet.lightning.tag": "Carteira Lightning",
     "wallet.bitcoin.tag": "Carteira Bitcoin",
+
+    "screnn.title.addwallet": "Adicionar Carteira",
 
 
     "settings.about": "Sobre",

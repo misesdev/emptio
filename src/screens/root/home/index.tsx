@@ -17,7 +17,7 @@ const HomeScreen = ({ navigation }: any) => {
     const [loading, setLoading] = useState(true)
     const [sales, setSales] = useState<Sales[]>()
     const [purchases, setPurchases] = useState<Purchase[]>()
-    const [wallets, setWallets] = useState<Wallet[]>()
+    const [wallets, setWallets] = useState<Wallet[]>([])
 
     useEffect(() => {
 
@@ -37,6 +37,7 @@ const HomeScreen = ({ navigation }: any) => {
         // const sales = await getSales()
 
         setWallets(wallets)
+
         // setPurchases(purchases)
         // setSales(sales)
 

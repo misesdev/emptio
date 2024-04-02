@@ -2,6 +2,7 @@ import { WalletButtons, WalletHeader, WalletTransactions } from "@components/wal
 import { LinkSection, SectionContainer } from "@components/general/section"
 import { SectionHeader } from "@components/general/section/headers"
 import { deleteWallet, updateWallet } from "@src/services/memory/wallets"
+import { getWalletInfo } from "@src/services/bitcoin/mempool"
 import { ButtonDanger } from "@components/form/Buttons"
 import { useTranslate } from "@src/services/translate"
 import { Transaction, Wallet } from "@src/services/memory/types"
@@ -9,6 +10,7 @@ import { View, ScrollView, Modal, RefreshControl, TouchableOpacity } from "react
 import { useEffect, useState } from "react"
 import { Ionicons } from "@expo/vector-icons"
 import theme from "@src/theme"
+import { walletService } from "@/src/services/walletManager"
 
 const WalletManagerScreen = ({ navigation, route }: any) => {
 
@@ -31,33 +33,34 @@ const WalletManagerScreen = ({ navigation, route }: any) => {
         setWallet(route.params?.wallet)
 
         handleLoadTransactions()
-
     }, [])
 
     const handleLoadTransactions = async () => {
         setLoading(true)
 
-        // search transactions and update wallet lastBalance
-        setTransactions(Array.from({ length: 12 }).map<Transaction>(item => {
-            return {
-                type: Math.random() < .5 ? "received" : "sended",
-                description: "buy for hodl in my wallet",
-                date: new Date(Math.random() * 8453345452343).toLocaleString(),
-                amount: (Math.random() / 50)
-            }
-        }))
+        const address = route.params?.wallet?.address
 
-        wallet.lastBalance = transactions.reduce((acumulator, current) => (acumulator + (current.amount ? current.amount : 0)), 0)
+        console.log(address)
+        // search transactions and update wallet lastBalance
+        const walletInfo = await getWalletInfo(address)
+
+        setTransactions(walletInfo.transactions)
+
+        wallet.lastBalance = walletInfo.balance
+        wallet.lastReceived = walletInfo.received
+        wallet.lastSended = walletInfo.sended
 
         // if (wallet)
         //     await updateWallet(wallet)
 
+        console.log(walletInfo.transactions)
+        
         setLoading(false)
     }
 
     const hadleDeleteWallet = async () => {
 
-        await deleteWallet(wallet)
+        await walletService.exclude(wallet)
 
         navigation.navigate("core-stack")
     }

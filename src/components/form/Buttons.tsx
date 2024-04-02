@@ -46,6 +46,14 @@ export const ButtonHead = ({ label, style, leftIcon, rightIcon, onPress }: Props
     return <TouchableEmptio label={label} leftIcon={leftIcon} rightIcon={rightIcon} onPress={onPress} style={[styles.button, styles.default, style]} />
 }
 
+export const ButtonLink = ({ label, style, leftIcon, rightIcon, onPress }: Props)  => {
+    return (
+        <TouchableOpacity onPress={onPress}>
+            <Text style={styles.textLink}></Text>
+        </TouchableOpacity>
+    )
+}
+
 type IconProps = {
     icon: IconNames,
     size?: number,
@@ -96,5 +104,8 @@ const styles = StyleSheet.create({
         textAlign: 'center',
         marginHorizontal: 10
     },
+    textLink: {
+        color: theme.colors.link
+    }
 })
 

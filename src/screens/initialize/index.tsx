@@ -12,7 +12,11 @@ const AuthenticateScreen = ({ navigation }: any) => {
     const [biometrics, setBiometrics] = useState(true)
 
     useEffect(() => {
-        checkBiometricAvailability()
+
+        // remover depois 
+        navigation.reset({ index: 0, routes: [{ name: "core-stack" }] })
+
+        // checkBiometricAvailability()
     }, [])
 
     const checkBiometricAvailability = async () => {

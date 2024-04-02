@@ -11,8 +11,10 @@ export type Wallet = {
     name?: string,
     type?: "lightning" | "bitcoin",
     lastBalance?: number,
-    pairKey?: PairKey,
+    lastSended?: number,
+    lastReceived?: number, 
     address?: string,
+    pairkey?: string, 
     key?: string
 }
 

@@ -36,6 +36,7 @@ export default {
     "labels.username": "User Name",
     "labels.privatekey": "Private Key",
     "labels.wallet.add": "Add a wallet!",
+    "labels.wallet.name": "Wallet Name",
 
     "menu.home": "home",
     "menu.buy&sell": "buy & sell",
@@ -47,6 +48,12 @@ export default {
     "message.detectedkey.value": "key: ",
     "message.wallet.create": "Add as many wallets as you want. To buy or sell, you can select a wallet in the purchase or sale order.",
     "message.wallet.alertcreate": "Add a Bitcoin wallet for buying and selling!",
+    "message.wallet.notfound": "Wallet not found!",
+    "message.transaction.insufficient_funds": "Insufficient funds!",
+    "message.transaction.confirmed": "Confirmed transaction!",
+    "message.transaction.notconfirmed": "Transaction not confirmed!",
+    "message.shortly": "This feature will be available soon!",
+    "message.wallet.nameempty": "Please fill in the name with more than 5 characters!",
 
     "settings.relays": "Relays",
     "settings.account.edit": "My Account",
@@ -59,6 +66,8 @@ export default {
     "section.title.transactions.empty": "Your transactions will paper here!",
     "wallet.lightning.tag": "Lightning Wallet",
     "wallet.bitcoin.tag": "Bitcoin Wallet",
+
+    "screnn.title.addwallet": "Add Wallet",
 
 
     "settings.about": "About"

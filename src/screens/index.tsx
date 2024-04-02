@@ -7,7 +7,6 @@ import { IsLogged } from "../services/userManager"
 import { useEffect, useState } from "react"
 import theme from "@src/theme"
 import { useAuth } from "../providers/userProvider"
-import { bitcoinSend, createWallet } from "../services/bitcoin"
 
 const InitializeScreen = ({ navigation }: any) => {
 
@@ -15,9 +14,6 @@ const InitializeScreen = ({ navigation }: any) => {
     const [loading, setLoading] = useState(true)
 
     useEffect(() => {
-
-        // bitcoinSend({ destination: "1KRMKfeZcmosxALVYESdPNez1AP1mEtywp", amount: 5000 })
-        console.log(createWallet())
 
         handleVerifyLogon()
 

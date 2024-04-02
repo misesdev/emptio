@@ -1,18 +1,26 @@
 import mempool from "@mempool/mempool.js"
 import { Tx } from "@mempool/mempool.js/lib/interfaces/bitcoin/transactions"
 import { Transaction, WalletInfo } from "../memory/types"
+import { useTranslate } from "../translate"
 
 const { bitcoin: { transactions, fees, addresses } } = mempool({
-    hostname: "mempool.space",
-    network: "testnet" // "mainnet"
+    hostname: 'mempool.space',
+    network: 'testnet' // "mainnet"
 })
 
+// post a transaction
 export const sendUtxo = async (txhex: string) => await transactions.postTx({ txhex })
 
+// find all utxos
 export const getUtxos = async (address: string) => await addresses.getAddressTxs({ address })
 
+// find unspent cash
+export const getTxsUtxos = async (address: string) => await addresses.getAddressTxsUtxo({ address })
+
+// find specific utxo
 export const getUtxo = async (txid: string) => await transactions.getTx({ txid })
 
+// Find current transaction rates
 export const getFee = async () => await fees.getFeesRecommended()
 
 export const getWalletInfo = async (address: string): Promise<WalletInfo> => {
@@ -39,9 +47,10 @@ export const getWalletInfo = async (address: string): Promise<WalletInfo> => {
         const transaction: Transaction = {
             txid: utxo.txid,
             confirmed: utxo.status.confirmed,
-            type: utxo.vout[0].scriptpubkey_address == address ? "received" : "sended",
-            amount: utxo.vout[0].scriptpubkey_address == address ? received : sended,
-            date: new Date(utxo.status.block_time * 1000).toLocaleTimeString()
+            description: utxo.status.confirmed ? useTranslate("message.transaction.confirmed") : useTranslate("message.transaction.notconfirmed"),
+            type: received > sended ? "received" : "sended",
+            amount: received > sended ? received : sended, 
+            date: utxo.status.confirmed ? new Date(utxo.status.block_time * 1000).toLocaleString() : useTranslate("message.transaction.notconfirmed")
         }
 
         response.transactions.push(transaction)
@@ -51,12 +60,15 @@ export const getWalletInfo = async (address: string): Promise<WalletInfo> => {
 
     response.balance = response.received - response.sended
 
+    console.log("wallet balance", response.balance)
+
     return response
 }
 
 export const getTransactionInfo = async (txid: string) => {
 
-    const utxo = await getUtxo(txid)
+    const utxo : Tx = await getUtxo(txid)
 
+    
     
 }

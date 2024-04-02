@@ -10,10 +10,12 @@ const theme = {
         gray: "#525B5F",
         default: "#2D3138",
         orange: "#bd6413",
+        yellow: "#d4a91e",
 
         icons: "#FFFFFF",
         section: "#141414",
         transparent: "transparent",
+        link: "#0940e3"
     },
     icons: {
         mine: 18,
