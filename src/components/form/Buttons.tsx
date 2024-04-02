@@ -18,9 +18,9 @@ const TouchableEmptio = ({ label, style, leftIcon, rightIcon, onPress }: Props) 
     return (
         <TouchableOpacity style={style} onPress={onPress} activeOpacity={.7}>
             <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'center' }}>
-                {leftIcon && <Ionicons style={styles.icon} name={leftIcon} size={18} color={theme.icons.white} />}
+                {leftIcon && <Ionicons style={{ marginLeft: 10 }} name={leftIcon} size={18} color={theme.icons.white} />}
                 <Text style={styles.text}> {label} </Text>
-                {rightIcon && <Ionicons style={styles.icon} name={rightIcon} size={18} color={theme.icons.white} />}
+                {rightIcon && <Ionicons style={{ marginRight: 10 }} name={rightIcon} size={18} color={theme.icons.white} />}
             </View>
         </TouchableOpacity>
     )
@@ -96,8 +96,5 @@ const styles = StyleSheet.create({
         textAlign: 'center',
         marginHorizontal: 10
     },
-    icon: {
-        marginHorizontal: 10
-    }
 })
 

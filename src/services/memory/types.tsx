@@ -24,15 +24,40 @@ export type Sales = {
     title?: string
 }
 
+export type WalletInfo = {
+    balance: number,
+    received: number,
+    sended: number,
+    transactions: Transaction[]
+}
+
+export type TransactionInfo = {
+    type?: "sended" | "received",
+    amount?: number,
+    date?: string,
+    txid?: string
+    confirmed?: boolean,
+    inputs?: TransactionInput[],
+    outputs?: TransactionOutput[]
+}
+
+export type TransactionInput = {
+    amount?: number,
+    address?: number
+}
+
+export type TransactionOutput = {
+    amount?: number,
+    address?: number
+}
+
 export type Transaction = {
-    to?: string,
-    from?: string,
-    addressTo?: string,
-    addressFrom?: string,
     type?: "sended" | "received",
     description?: string,
     amount?: number,
-    date?: string
+    date?: string,
+    txid?: string
+    confirmed?: boolean
 }
 
 export type User = {
