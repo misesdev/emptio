@@ -42,7 +42,7 @@ export const AmountBox = ({ value, placeholder, onChangeText, isValidHandle }: A
                 textAlign="center"
                 autoFocus
             />
-            <Text style={styles.balance}>{useTranslate("wallet.subtitle.balance") + formatSats(wallet.lastBalance)}</Text>
+            <Text style={styles.balance}>{`${useTranslate("wallet.subtitle.balance")}${formatSats(wallet.lastBalance)} sats.`}</Text>
         </View>
     )
 }

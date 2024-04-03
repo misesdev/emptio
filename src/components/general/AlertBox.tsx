@@ -14,22 +14,22 @@ const AlertBox = () => {
     showMessageFunction = (message: string) => {
 
         message = message.length < 75 ? message : `${message.substring(0, 75)}...`
-        
+
         setMessage(message)
 
         // move the component message to top
         Animated.timing(fadeAnim, {
             toValue: new Animated.Value(620),
             useNativeDriver: true,
-            duration: 500,
+            duration: 300,
         }).start()
 
         // return the component text to down
         setTimeout(() => {
             Animated.timing(fadeAnim, {
                 toValue: new Animated.Value(800),
-                duration: 500,
                 useNativeDriver: true,
+                duration: 300,
             }).start()
         }, 3000)
     }

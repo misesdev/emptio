@@ -5,7 +5,7 @@ import { ButtonScanQRCode } from "@components/wallet/buttons"
 import { TextBox } from "@components/form/TextBoxs"
 import { useAuth } from "@src/providers/userProvider"
 import { ButtonDefault, ButtonSuccess } from "@components/form/Buttons"
-import { ValidateAddress, sendTransaction } from "@src/services/bitcoin"
+import { ValidateAddress, createTransaction, sendTransaction } from "@src/services/bitcoin"
 import AlertBox, { alertMessage } from "@components/general/AlertBox"
 import SplashScreen from "@components/general/SplashScreen"
 import { toNumber } from "@src/services/converter"
@@ -35,7 +35,7 @@ const SendReceiverScreen = ({ navigation, route }: any) => {
 
     const handleSend = async () => {
 
-        if(whoaddres.length < 28)
+        if (whoaddres.length < 28)
             return alertMessage("Escaneie um QR code ou selecione um amigo!")
 
         if (!ValidateAddress(address))
@@ -43,10 +43,15 @@ const SendReceiverScreen = ({ navigation, route }: any) => {
 
         setLoading(true)
 
-        const result = await sendTransaction({ amount: toNumber(amount), destination: address, walletKey: wallet.key ?? "" })
+        const result = await createTransaction({ amount: toNumber(amount), destination: address, walletKey: wallet.key ?? "" })
 
-        if(!result.success)
-            alertMessage(result.message)
+        if(result.success)
+            await sendTransaction(result.data)
+
+        if (!result.success) 
+            return alertMessage(result.message)
+
+        console.log("sign transaction: ", result.data)
 
         setLoading(false)
     }

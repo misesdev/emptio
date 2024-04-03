@@ -1,7 +1,6 @@
 import { StyleSheet, View, Text, Image, ScrollView, TouchableOpacity } from "react-native"
 import { hasHardwareAsync, authenticateAsync } from 'expo-local-authentication';
 import { LinkSection, SectionContainer } from "@components/general/section"
-import MessageBox, { showMessage } from "@components/general/MessageBox"
 import { getPairKey } from "@src/services/memory/pairkeys"
 import SplashScreen from "@components/general/SplashScreen"
 import { useAuth } from "@src/providers/userProvider"
@@ -13,7 +12,7 @@ import { useState } from "react"
 import { nip19 } from "nostr-tools";
 import theme from "@src/theme"
 import { setStringAsync } from "expo-clipboard";
-
+import AlertBox, { alertMessage } from "@components/general/AlertBox";
 
 const UserMenuScreen = ({ navigation }: any) => {
 
@@ -31,7 +30,7 @@ const UserMenuScreen = ({ navigation }: any) => {
             if(result.success)
                 navigation.reset({ index: 0, routes: [{ name: "initial-stack" }] })
             else
-                showMessage({ message: `Ocorreu um erro inesperado durante a regisição: ${result.message}` })
+                alertMessage(result.message)
             
         }, 300)
     }
@@ -57,8 +56,21 @@ const UserMenuScreen = ({ navigation }: any) => {
 
         if (biometrics) {
             const secretkey = nip19.nsecEncode(hexToBytes(privateKey))
+
             await setStringAsync(secretkey)
+
+            alertMessage(useTranslate("message.copied"))
         }
+    }
+
+    const handleCopyNostrKey = async () => {
+        const { publicKey } = await getPairKey(user?.keychanges ?? "")
+
+        const pubKey = nip19.npubEncode(publicKey)
+
+        await setStringAsync(pubKey)
+
+        alertMessage(useTranslate("message.copied"))
     }
 
     if (loading)
@@ -80,6 +92,7 @@ const UserMenuScreen = ({ navigation }: any) => {
             <ScrollView contentContainerStyle={theme.styles.scroll_container}>
                 <SectionContainer>
                     <LinkSection label={useTranslate("settings.account.edit")} icon="person" onPress={() => navigation.navigate("user-edit-stack")} />
+                    <LinkSection label={useTranslate("settings.nostrkey.copy")} icon="document-lock-outline" onPress={handleCopyNostrKey} />
                     <LinkSection label={useTranslate("settings.secretkey.copy")} icon="document-lock-outline" onPress={handleCopyKeys} />
                     <LinkSection label={useTranslate("settings.security")} icon="settings" onPress={() => navigation.navigate("manage-security-stack")} />
                 </SectionContainer>
@@ -95,7 +108,7 @@ const UserMenuScreen = ({ navigation }: any) => {
                     <ButtonDanger label={useTranslate("commons.signout")} onPress={handleDeleteAccount} />
                 </View>
             </ScrollView>
-            <MessageBox />
+            <AlertBox />
         </>
     )
 }

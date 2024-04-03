@@ -58,9 +58,11 @@ export default {
     "message.transaction.notconfirmed": "Transaction not confirmed!",
     "message.shortly": "This feature will be available soon!",
     "message.wallet.nameempty": "Please fill in the name with more than 5 characters!",
+    "message.copied": "Copied to clipboard!",
 
     "settings.relays": "Relays",
     "settings.account.edit": "My Account",
+    "settings.nostrkey.copy": "Copy Nostr ID",
     "settings.secretkey.copy": "Copy secret key",
     "settings.chooselanguage": "Language",
     "settings.security": "Security",
