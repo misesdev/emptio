@@ -2,10 +2,10 @@ import { getRandomBytes } from "expo-crypto"
 import { getPublicKey, } from "@noble/secp256k1"
 import { bytesToHex } from "@noble/hashes/utils"
 import { mnemonicToEntropy, entropyToMnemonic, mnemonicToSeed } from "bip39"
-import { payments, Psbt, networks } from "bitcoinjs-lib"
+import { payments, Psbt, networks, address, Transaction } from "bitcoinjs-lib"
 import { PairKey } from "../memory/types"
 import { getPairKey } from "../memory/pairkeys"
-import { getRandomKey, signTransaction } from "./signature"
+import { getRandomKey, signHex } from "./signature"
 import { getTxsUtxos, sendUtxo } from "./mempool"
 import { trackException } from "../telemetry/telemetry"
 import { getWallet } from "../memory/wallets"
@@ -71,7 +71,7 @@ export const getSeedPhrase = (privateKey: string): string => entropyToMnemonic(p
 
 export const generateAddress = (publicKey: string): string => {
 
-    const { address } = payments.p2pkh({ pubkey: Buffer.from(publicKey, "hex"), network })
+    const { address } = payments.p2wpkh({ pubkey: Buffer.from(publicKey, "hex"), network })
 
     return address ?? ""
 }
@@ -82,16 +82,23 @@ type TransactionProps = {
     walletKey: string
 }
 
+export const ValidateAddress = (btcAddress: string) => {
+    try {
+        address.toOutputScript(btcAddress, network)
+        return true
+    } catch { return false }
+}
+
 export const sendTransaction = async ({ amount, destination, walletKey }: TransactionProps) => {
 
     try {
         var utxoAmount = 0
 
-        const transaction = new Psbt()
+        const transaction = new Psbt({ network })
 
         const { pairkey, address } = await getWallet(walletKey)
 
-        const { privateKey } = await getPairKey(pairkey ?? "")
+        const { privateKey, publicKey } = await getPairKey(pairkey ?? "")
 
         const utxos = await getTxsUtxos(address ?? "")
 
@@ -104,7 +111,7 @@ export const sendTransaction = async ({ amount, destination, walletKey }: Transa
             if (utxoAmount < amount) {
                 utxoAmount += utxos[index].value
                 // define the utxo entered -> buffer
-                transaction.addInput({ hash: utxos[index].txid, index })
+                transaction.addInput({ hash: utxos[index].txid, index, nonWitnessUtxo: Buffer.from(utxos[index].txid, "hex") })
             } else
                 break
         }
@@ -116,13 +123,21 @@ export const sendTransaction = async ({ amount, destination, walletKey }: Transa
         if (utxoAmount > amount)
             transaction.addOutput({ address: address ?? "", value: utxoAmount - amount })
 
-        const txTransaction = signTransaction(transaction.toHex(), privateKey)
+        transaction.signAllInputs({
+            publicKey: Buffer.from(publicKey, "hex"),
+            sign: (hash: Buffer, lowR?: boolean): Buffer => {
 
-        // send transaction tx -> hexadecimal sugn transaction
-        const txid = await sendUtxo(txTransaction)
+                var signed = signHex(hash.toString("hex"), privateKey)
 
-        return txid
+                return Buffer.from(signed, "hex")
+            }
+        })
 
+        transaction.finalizeAllInputs()
+
+        var txHex = transaction.extractTransaction().toHex()
+
+        return await sendUtxo(txHex)
     }
     catch (ex) { return trackException(ex) }
 }

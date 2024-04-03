@@ -22,6 +22,7 @@ export default {
     "commons.buy": "Buy",
     "commons.sell": "Sell",
     "commons.send": "Send",
+    "commons.scan": "Scan",
     "commons.receive": "Receive",
     "commons.create": "Create",
     "commons.add": "Add Now",
@@ -35,6 +36,7 @@ export default {
     "commons.copy": "Copy",
     "commons.copied": "Copied!",
 
+    "labels.friends": "Friends",
     "labels.username": "User Name",
     "labels.privatekey": "Private Key",
     "labels.wallet.add": "Add a wallet!",
@@ -72,6 +74,9 @@ export default {
     "wallet.title.send": "Send",
     "wallet.title.sendvalue": "How many sats do you want to send?",
     "wallet.subtitle.balance": "Available balance of ",
+    "wallet.title.sendfor": "For whom?",
+    "wallet.title.sendreceiver": "For those who want to send ",
+    "wallet.placeholder.addressuser": "Address bc1.. or Friend",
 
     "screnn.title.addwallet": "Add Wallet",
 

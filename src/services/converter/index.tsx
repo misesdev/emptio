@@ -22,4 +22,9 @@ export const formatSats = (satoshis?: number) : string => {
     return value
 }
 
+export const toNumber = (text: string) => {
+    const number = text.replace(/[^0-9]/g, '')
+
+    return parseInt(number)
+}
 

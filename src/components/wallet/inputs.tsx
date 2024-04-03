@@ -1,7 +1,7 @@
 import { StyleSheet, TextInput, View, Text } from "react-native"
 import { useTranslate } from "@src/services/translate"
 import { useAuth } from "@src/providers/userProvider"
-import { formatSats } from "@/src/services/converter"
+import { formatSats, toNumber } from "@src/services/converter"
 import theme from "@src/theme"
 
 type AmountBoxProps = {
@@ -17,7 +17,7 @@ export const AmountBox = ({ value, placeholder, onChangeText, isValidHandle }: A
 
     const hadleValidateFormat = (text: string) => {
 
-        const textNumbers = parseInt(text.replace(/[^0-9]/g, ''))
+        const textNumbers = toNumber(text)
 
         onChangeText(formatSats(textNumbers))
 
@@ -40,6 +40,7 @@ export const AmountBox = ({ value, placeholder, onChangeText, isValidHandle }: A
                 onChangeText={hadleValidateFormat}
                 cursorColor={theme.colors.gray}
                 textAlign="center"
+                autoFocus
             />
             <Text style={styles.balance}>{useTranslate("wallet.subtitle.balance") + formatSats(wallet.lastBalance)}</Text>
         </View>
@@ -55,6 +56,7 @@ const styles = StyleSheet.create({
         margin: 10
     },
     amount: {
+        padding: 10,
         fontSize: 32,
         fontWeight: "bold",
         borderBottomWidth: 1,

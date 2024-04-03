@@ -12,7 +12,7 @@ export const signature = (txContent: string, privKeyHex: string): string => {
     return signatureHex.toCompactHex()
 }
 
-export const signTransaction = (txHex: string, privKeyHex: string): string => {
+export const signHex = (txHex: string, privKeyHex: string): string => {
 
     const signature = sign(txHex, privKeyHex)
 

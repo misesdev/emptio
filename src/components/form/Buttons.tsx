@@ -18,9 +18,9 @@ const TouchableEmptio = ({ label, style, leftIcon, rightIcon, onPress }: Props) 
     return (
         <TouchableOpacity style={style} onPress={onPress} activeOpacity={.7}>
             <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'center' }}>
-                {leftIcon && <Ionicons style={{ marginLeft: 10 }} name={leftIcon} size={18} color={theme.icons.white} />}
+                {leftIcon && <Ionicons style={{ marginLeft: 10, color: theme.icons.white }} name={leftIcon} size={18} />}
                 <Text style={styles.text}> {label} </Text>
-                {rightIcon && <Ionicons style={{ marginRight: 10 }} name={rightIcon} size={18} color={theme.icons.white} />}
+                {rightIcon && <Ionicons style={{ marginRight: 10, color: theme.icons.white }} name={rightIcon} size={18} />}
             </View>
         </TouchableOpacity>
     )
@@ -46,7 +46,7 @@ export const ButtonHead = ({ label, style, leftIcon, rightIcon, onPress }: Props
     return <TouchableEmptio label={label} leftIcon={leftIcon} rightIcon={rightIcon} onPress={onPress} style={[styles.button, styles.default, style]} />
 }
 
-export const ButtonLink = ({ label, style, leftIcon, rightIcon, onPress }: Props)  => {
+export const ButtonLink = ({ label, style, leftIcon, rightIcon, onPress }: Props) => {
     return (
         <TouchableOpacity onPress={onPress}>
             <Text style={styles.textLink}></Text>
@@ -82,6 +82,7 @@ const styles = StyleSheet.create({
     button: {
         margin: 10,
         minWidth: 150,
+        maxWidth: "96%",
         paddingVertical: 14,
         borderRadius: 25,
     },

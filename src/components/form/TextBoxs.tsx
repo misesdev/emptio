@@ -36,7 +36,7 @@ export const QRCodeTextBox = ({ value, placeholder, onChangeText }: TextBoxProps
                 placeholderTextColor={theme.colors.gray}
                 value={value}
             />
-            <TouchableOpacity style={styles.pastButton} onPress={() => { setQrReader(true) }}>
+            <TouchableOpacity style={styles.pastButton} onPress={() => { setQrReader(true) }} activeOpacity={.7}>
                 <Ionicons name="qr-code" size={theme.icons.medium} color="white" style={styles.pastIcon} />
             </TouchableOpacity>
             <QRCodeReaderModal setValue={onChangeText} visible={qrReader} runClose={setQrReader} />
