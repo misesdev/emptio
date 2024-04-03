@@ -2,10 +2,11 @@ import mempool from "@mempool/mempool.js"
 import { Tx } from "@mempool/mempool.js/lib/interfaces/bitcoin/transactions"
 import { Transaction, WalletInfo } from "../memory/types"
 import { useTranslate } from "../translate"
+import env from "@/env"
 
 const { bitcoin: { transactions, fees, addresses } } = mempool({
-    hostname: 'mempool.space',
-    network: 'testnet' // "mainnet"
+    hostname: env.mempool.hostname,
+    network: env.mempool.network
 })
 
 // post a transaction
@@ -59,8 +60,6 @@ export const getWalletInfo = async (address: string): Promise<WalletInfo> => {
     })
 
     response.balance = response.received - response.sended
-
-    console.log("wallet balance", response.balance)
 
     return response
 }

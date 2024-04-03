@@ -51,13 +51,13 @@ const styles = StyleSheet.create({
     linkIcon: {
         margin: 5,
         fontSize: theme.icons.mine,
-        color: theme.colors.gray,
+        color: theme.colors.white,
         backgroundColor: theme.colors.section, 
     },
     linkText: {
         fontSize: 18,
         fontWeight: '400',
         paddingHorizontal: 5,
-        color: theme.colors.gray
+        color: theme.colors.white
     }
 })

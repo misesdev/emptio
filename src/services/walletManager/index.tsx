@@ -12,8 +12,6 @@ type Props = {
 
 const create = async ({ name, type }: Props): Promise<Response> => {
     try {
-        const key = getRandomKey(10)
-
         const pairKey: PairKey = createWallet()
 
         const bitcoinAddress = getBitcoinAddress(pairKey.publicKey)
@@ -24,12 +22,10 @@ const create = async ({ name, type }: Props): Promise<Response> => {
             lastBalance: 0,
             lastReceived: 0,
             lastSended: 0,
-            pairkey: key,
+            pairkey: pairKey.key,
             key: getRandomKey(10),
             address: bitcoinAddress
         }
-
-        pairKey.key = key
 
         await insertPairKey(pairKey)
 

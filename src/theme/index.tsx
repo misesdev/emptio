@@ -15,7 +15,8 @@ const theme = {
         icons: "#FFFFFF",
         section: "#141414",
         transparent: "transparent",
-        link: "#0940e3"
+        link: "#0940e3",
+        disabled: "#26292e"
     },
     icons: {
         mine: 18,

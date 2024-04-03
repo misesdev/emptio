@@ -15,7 +15,8 @@ import ManageRelaysScreen from "@screens/root/settings/relays"
 import AboutScreen from "@screens/root/settings/about"
 import ManageSecurityScreen from "@screens/root/settings/security"
 import WalletManagerScreen from "@screens/root/wallet"
-import AddWalletScreen from "../screens/root/wallet/add"
+import AddWalletScreen from "@screens/root/wallet/add"
+import SendSatsScreen from "@screens/root/wallet/send"
 
 const Stack = createStackNavigator()
 
@@ -40,8 +41,9 @@ const AppRoutes = () => {
                 <Stack.Screen name="about-stack" component={AboutScreen} options={{ headerShown: true }} />     
 
                 <Stack.Screen name="add-wallet-stack" component={AddWalletScreen} options={{ headerShown: true, cardStyleInterpolator: CardStyleInterpolators.forVerticalIOS }} />
+                <Stack.Screen name="wallet-send-stack" component={SendSatsScreen} options={{ headerShown: false, cardStyleInterpolator: CardStyleInterpolators.forVerticalIOS }} />
                 <Stack.Screen name="wallet-stack" component={WalletManagerScreen} options={{ headerShown: true }} />
-                
+                                
             </Stack.Navigator>
         </NavigationContainer>
     )

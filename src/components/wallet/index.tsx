@@ -1,11 +1,16 @@
-import { View, Text, TouchableOpacity, Image, SafeAreaView, ScrollView } from "react-native";
+import { View, Text, TouchableOpacity, Image, SafeAreaView, ScrollView, Modal, StatusBar } from "react-native";
 import { Transaction, Wallet } from "@src/services/memory/types";
 import { formatSats, toBitcoin } from "@src/services/converter";
 import { useTranslate } from "@src/services/translate";
 import { IconNames } from "@src/services/types/icons";
 import { Ionicons } from "@expo/vector-icons"
+import QRCode from "react-native-qrcode-svg";
 import { styles } from "./style"
 import theme from "@src/theme";
+import { ButtonPrimary } from "../form/Buttons";
+import { setStringAsync } from "expo-clipboard";
+import { useEffect, useState } from "react";
+import { useAuth } from "@/src/providers/userProvider";
 
 type Props = {
     wallets: Wallet[],
@@ -13,6 +18,16 @@ type Props = {
 }
 
 export const WalletList = ({ wallets, navigation }: Props) => {
+
+    const { setWallet } = useAuth()
+
+    const handleOpenWallet = (wallet: Wallet) => {
+        
+        if (setWallet)
+            setWallet(wallet)
+
+        navigation.navigate("wallet-stack")
+    }
 
     return (
         <SafeAreaView style={{ width: "100%", height: 220 }}>
@@ -32,7 +47,7 @@ export const WalletList = ({ wallets, navigation }: Props) => {
                                 <Text style={styles.title}>{wallet.name}</Text>
                                 <Text style={{ marginHorizontal: 10, marginVertical: 6, color: theme.colors.white, fontSize: 18, fontWeight: "bold" }}>{balanceSats} Sats</Text>
                                 <Text style={[styles.description, { color: theme.colors.white }]}>{balanceBTC} BTC</Text>
-                                <TouchableOpacity activeOpacity={.7} style={[styles.button, { backgroundColor: baseColor }]} onPress={() => navigation.navigate("wallet-stack", { wallet })}>
+                                <TouchableOpacity activeOpacity={.7} style={[styles.button, { backgroundColor: baseColor }]} onPress={() => handleOpenWallet(wallet)}>
                                     <Text style={styles.buttonText}> {useTranslate("commons.open")} </Text>
                                 </TouchableOpacity>
 
@@ -110,7 +125,7 @@ export const WalletTransactions = ({ transactions, onPressTransaction }: WalletT
         let icon: IconNames = type == "received" ? "enter" : "exit"
 
 
-        if(type == "received")
+        if (type == "received")
             color = confirmed ? theme.colors.green : theme.colors.yellow
 
         return <Ionicons name={icon} size={theme.icons.medium} color={color} style={{ transform: [{ rotate: rotate }] }} />
@@ -118,7 +133,7 @@ export const WalletTransactions = ({ transactions, onPressTransaction }: WalletT
 
     return (
         <View style={styles.sectionTransactions}>
-            {transactions && 
+            {transactions &&
                 transactions.map((transaction, key) => {
                     return (
                         <TouchableOpacity style={styles.sectionTransaction} onPress={() => onPressTransaction(transaction)} key={key} activeOpacity={.7}>
@@ -159,18 +174,27 @@ export const WalletTransactions = ({ transactions, onPressTransaction }: WalletT
     )
 }
 
-export const WalletButtons = ({ wallet }: WalletProps) => {
+type WalletButtonProps = {
+    onSend?: () => void,
+    onReceive: (visible: boolean) => void
+}
+
+export const WalletButtons = ({ onReceive, onSend }: WalletButtonProps) => {
 
     return (
         <View style={styles.walletButtonsSection}>
             <View style={{ flexDirection: "row" }}>
-                <TouchableOpacity style={[styles.walletActionButton, { borderRightWidth: .2, borderBottomLeftRadius: 15, borderTopLeftRadius: 15 }]} activeOpacity={.7}>
-
+                <TouchableOpacity activeOpacity={.7}
+                    onPress={() => onReceive(true)}
+                    style={[styles.walletActionButton, { borderRightWidth: .2, borderBottomLeftRadius: 15, borderTopLeftRadius: 15 }]}
+                >
                     <Ionicons style={{ margin: 5 }} name="enter" color={theme.colors.white} size={theme.icons.medium} />
                     <Text style={styles.walletaAtionText} >{useTranslate("commons.receive")}</Text>
 
                 </TouchableOpacity>
-                <TouchableOpacity style={[styles.walletActionButton, { borderLeftWidth: .2, borderBottomRightRadius: 15, borderTopRightRadius: 15 }]} activeOpacity={.7} >
+                <TouchableOpacity activeOpacity={.7} onPress={onSend}
+                    style={[styles.walletActionButton, { borderLeftWidth: .2, borderBottomRightRadius: 15, borderTopRightRadius: 15 }]}
+                >
 
                     <Text style={styles.walletaAtionText} >{useTranslate("commons.send")}</Text>
                     <Ionicons style={{ margin: 5 }} name="exit" color={theme.colors.white} size={theme.icons.medium} />
@@ -178,5 +202,77 @@ export const WalletButtons = ({ wallet }: WalletProps) => {
                 </TouchableOpacity>
             </View>
         </View>
+    )
+}
+
+type ReceiveModalProps = {
+    address: string,
+    visible: boolean,
+    onClose: (visible: boolean) => void,
+}
+
+export const WalletReceiveModal = ({ visible, onClose, address }: ReceiveModalProps) => {
+
+    const [valueText, setValueText] = useState<string>(address)
+
+    const handleCopyValue = async () => {
+
+        await setStringAsync(address)
+
+        setValueText(useTranslate("commons.copied"))
+
+        setTimeout(() => setValueText(address), 1000)
+    }
+
+    const handleCloseModal = () => {
+        onClose(false)
+    }
+
+    return (
+        <>
+            <Modal visible={visible} animationType="slide" style={{ zIndex: 0 }}
+                onRequestClose={() => onClose(false)}
+            >
+                <StatusBar hidden />
+                <View style={{ width: "100%", height: "100%", justifyContent: "center", alignItems: "center", backgroundColor: theme.colors.black }}>
+
+                    <View style={{ flexDirection: "row", position: "absolute", top: 0, width: "100%" }}>
+                        <View style={{ width: "75%", padding: 6 }}>
+                            <Text style={{ color: theme.colors.white, fontSize: 20, fontWeight: "bold", margin: 15 }}>
+                                {useTranslate("wallet.title.receive")}
+                            </Text>
+                        </View>
+                        <View style={{ width: "25%", padding: 6, flexDirection: "row-reverse" }}>
+                            <TouchableOpacity onPress={handleCloseModal} activeOpacity={.7}
+                                style={{ borderRadius: 20, padding: 6, backgroundColor: theme.colors.gray, margin: 15 }}
+                            >
+                                <Ionicons name="close" size={theme.icons.medium} color={theme.colors.white} />
+                            </TouchableOpacity>
+                        </View>
+                    </View>
+
+                    <View style={{ padding: 8, borderRadius: 10, backgroundColor: theme.colors.white, marginVertical: 20 }}>
+                        <QRCode
+                            size={280}
+                            value={address}
+                            logoSize={75}
+                            logoBorderRadius={12}
+                            logo={require("assets/icon.png")}
+                            backgroundColor={theme.colors.white}
+                        />
+                    </View>
+
+                    <TouchableOpacity activeOpacity={.7} onPress={handleCopyValue}
+                        style={{ padding: 12, marginVertical: 10, borderRadius: 8, backgroundColor: theme.colors.gray }}
+                    >
+                        <Text style={{ color: theme.colors.white, fontSize: 10 }}>{valueText}</Text>
+                    </TouchableOpacity>
+
+                    <View style={{ position: "absolute", bottom: 10, justifyContent: "center" }}>
+                        <ButtonPrimary label={useTranslate("commons.copy")} onPress={handleCopyValue} leftIcon="copy" />
+                    </View>
+                </View>
+            </Modal>
+        </>
     )
 }

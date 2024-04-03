@@ -32,6 +32,8 @@ export default {
     "commons.authenticate.message": "Authenticate yourself using biometrics",
     "commons.detectedkey": "key detected",
     "commons.nodescription": "No description",
+    "commons.copy": "Copy",
+    "commons.copied": "Copied!",
 
     "labels.username": "User Name",
     "labels.privatekey": "Private Key",
@@ -66,6 +68,10 @@ export default {
     "section.title.transactions.empty": "Your transactions will paper here!",
     "wallet.lightning.tag": "Lightning Wallet",
     "wallet.bitcoin.tag": "Bitcoin Wallet",
+    "wallet.title.receive": "Receive",
+    "wallet.title.send": "Send",
+    "wallet.title.sendvalue": "How many sats do you want to send?",
+    "wallet.subtitle.balance": "Available balance of ",
 
     "screnn.title.addwallet": "Add Wallet",
 

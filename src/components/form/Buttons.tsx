@@ -58,7 +58,7 @@ type IconProps = {
     icon: IconNames,
     size?: number,
     style?: StyleProp<TextStyle>,
-    buttonStyle: StyleProp<TextStyle>,
+    buttonStyle?: StyleProp<TextStyle>,
     onPress: () => void
 }
 
@@ -98,11 +98,11 @@ const styles = StyleSheet.create({
         backgroundColor: theme.colors.gray
     },
     text: {
-        color: theme.colors.white,
         fontSize: 13,
         fontWeight: "500",
         textAlign: 'center',
-        marginHorizontal: 10
+        marginHorizontal: 10,
+        color: theme.colors.white
     },
     textLink: {
         color: theme.colors.link

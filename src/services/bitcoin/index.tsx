@@ -1,19 +1,22 @@
 import { getRandomBytes } from "expo-crypto"
 import { getPublicKey, } from "@noble/secp256k1"
 import { bytesToHex } from "@noble/hashes/utils"
-import { mnemonicToEntropy, entropyToMnemonic } from "bip39"
+import { mnemonicToEntropy, entropyToMnemonic, mnemonicToSeed } from "bip39"
 import { payments, Psbt, networks } from "bitcoinjs-lib"
 import { PairKey } from "../memory/types"
 import { getPairKey } from "../memory/pairkeys"
-import { signTransaction } from "./signature"
+import { getRandomKey, signTransaction } from "./signature"
 import { getTxsUtxos, sendUtxo } from "./mempool"
 import { trackException } from "../telemetry/telemetry"
 import { getWallet } from "../memory/wallets"
 import { useTranslate } from "../translate"
+import env from "@/env"
 
-const network = networks.testnet
+const network = env.mempool.network == "testnet" ? networks.testnet : networks.bitcoin
 
-export const createWallet = (passPhrase: string = ""): PairKey => {
+export const createWallet = (): PairKey => {
+
+    const key = getRandomKey(10)
 
     const secretBytes = getRandomBytes(32)
 
@@ -23,7 +26,22 @@ export const createWallet = (passPhrase: string = ""): PairKey => {
 
     const publicKey = bytesToHex(publicbytes)
 
-    return { key: "", privateKey, publicKey }
+    return { key, privateKey, publicKey }
+}
+
+export const importWallet = async (seedPhrase: string, password?: string): Promise<PairKey> => {
+
+    const key = getRandomKey(10)
+
+    const secretBytes = await mnemonicToSeed(seedPhrase, password)
+
+    const privateKey = bytesToHex(secretBytes)
+
+    const publicbytes = getPublicKey(privateKey)
+
+    const publicKey = bytesToHex(publicbytes)
+
+    return { key, privateKey, publicKey }
 }
 
 export const getBitcoinAddress = (pubkeyHex: string): string => {
@@ -80,7 +98,9 @@ export const sendTransaction = async ({ amount, destination, walletKey }: Transa
         if (utxos.reduce((acumulator, iterator) => acumulator + iterator.value, 0) < amount)
             throw new Error(useTranslate("message.transaction.insufficient_funds"))
 
-        for(let index = 0; index <= utxos.length; index++ ) {
+        const ordenedUtxos = utxos.sort((a, b) => a.value - b.value)
+
+        for (let index = 0; index <= ordenedUtxos.length; index++) {
             if (utxoAmount < amount) {
                 utxoAmount += utxos[index].value
                 // define the utxo entered -> buffer
@@ -103,7 +123,7 @@ export const sendTransaction = async ({ amount, destination, walletKey }: Transa
 
         return txid
 
-    } 
+    }
     catch (ex) { return trackException(ex) }
 }
 

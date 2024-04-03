@@ -49,7 +49,7 @@ export const QRCodeTextBox = ({ value, placeholder, onChangeText }: TextBoxProps
 const styles = StyleSheet.create({
     container: {
         width: "90%",
-        color: "#fff",
+        color: theme.colors.white,
         backgroundColor: theme.input.backGround,
         paddingHorizontal: 30,
         paddingVertical: 15,
