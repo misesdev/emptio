@@ -5,20 +5,20 @@ import { sha256 } from "@noble/hashes/sha256"
 etc.hmacSha256Sync = (k, ...m) => hmac(sha256, k, etc.concatBytes(...m))
 // etc.hmacSha256Async = (k, ...m) => Promise.resolve(etc.hmacSha256Sync(k, ...m))
 
-export const signature = (txContent: string, privKeyHex: string): string => {
-
-    const signatureHex = sign(txContent, privKeyHex)
-
-    return signatureHex.toCompactHex()
-}
-
 export const signHex = (txHex: string, privKeyHex: string): string => {
 
-    const signature = sign(txHex, privKeyHex)
+    const shaHash = sha256.create().update(txHex).digest()
 
-    const transaction = txHex + signature.toCompactHex()
+    const signature = sign(shaHash, privKeyHex)
 
-    return transaction
+    return signature.toCompactHex() //transaction
+}
+
+export const signOutPut = (signHash: Buffer, privateKey: string) => {
+
+    const signature = sign(signHash, privateKey)
+
+    return Buffer.from(signature.toCompactHex(), "hex")
 }
 
 export const getRandomKey = (length: number): string => {

@@ -4,7 +4,7 @@ import { useTranslate } from "@src/services/translate"
 import { ButtonScanQRCode } from "@components/wallet/buttons"
 import { TextBox } from "@components/form/TextBoxs"
 import { useAuth } from "@src/providers/userProvider"
-import { ButtonSuccess } from "@components/form/Buttons"
+import { ButtonDefault, ButtonSuccess } from "@components/form/Buttons"
 import { ValidateAddress, sendTransaction } from "@src/services/bitcoin"
 import AlertBox, { alertMessage } from "@components/general/AlertBox"
 import SplashScreen from "@components/general/SplashScreen"
@@ -34,14 +34,21 @@ const SendReceiverScreen = ({ navigation, route }: any) => {
     }
 
     const handleSend = async () => {
+
+        if(whoaddres.length < 28)
+            return alertMessage("Escaneie um QR code ou selecione um amigo!")
+
         if (!ValidateAddress(address))
             return alertMessage(`invalid bitcoin address: ${address}.`)
 
         setLoading(true)
-        const txid = await sendTransaction({ amount: toNumber(amount), destination: address, walletKey: wallet.key ?? "" })
+
+        const result = await sendTransaction({ amount: toNumber(amount), destination: address, walletKey: wallet.key ?? "" })
+
+        if(!result.success)
+            alertMessage(result.message)
 
         setLoading(false)
-        console.log("txid of transaction: ", txid)
     }
 
     if (loading)
@@ -64,7 +71,9 @@ const SendReceiverScreen = ({ navigation, route }: any) => {
 
             <TextBox value={whoaddres} placeholder={useTranslate("wallet.placeholder.addressuser")} onChangeText={setWhoaddress} />
 
-            <ButtonScanQRCode label={useTranslate("commons.scan")} onChangeText={handleRead} />
+            <View style={{ width: "96%", justifyContent: "center" }}>
+                <ButtonScanQRCode style={{ paddingVertical: 16 }} label={useTranslate("commons.scan")} onChangeText={handleRead} />
+            </View>
 
             <SectionHeader label={useTranslate("labels.friends")} icon="people" />
 
@@ -72,7 +81,7 @@ const SendReceiverScreen = ({ navigation, route }: any) => {
 
             {/* Footer */}
             <View style={{ position: "absolute", bottom: 0, width: "100%", justifyContent: "center", alignItems: "center" }}>
-                <ButtonSuccess label={useTranslate("commons.send")} leftIcon="exit" onPress={handleSend} />
+                <ButtonDefault label={useTranslate("commons.send")} rightIcon="exit" onPress={handleSend} />
             </View>
 
             <AlertBox />
@@ -82,7 +91,7 @@ const SendReceiverScreen = ({ navigation, route }: any) => {
 
 const styles = StyleSheet.create({
     title: {
-        fontSize: 30,
+        fontSize: 24,
         maxWidth: "90%",
         fontWeight: "bold",
         textAlign: "center",

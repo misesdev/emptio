@@ -2,6 +2,7 @@
 export type Response = {
     success: boolean,
     message: string,
+    data?: any
 }
 
 export const trackException = (ex: any) : Response => {

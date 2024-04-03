@@ -1,13 +1,13 @@
 import { getRandomBytes } from "expo-crypto"
-import { getPublicKey, } from "@noble/secp256k1"
+import { getPublicKey } from "@noble/secp256k1"
 import { bytesToHex } from "@noble/hashes/utils"
 import { mnemonicToEntropy, entropyToMnemonic, mnemonicToSeed } from "bip39"
 import { payments, Psbt, networks, address, Transaction } from "bitcoinjs-lib"
 import { PairKey } from "../memory/types"
 import { getPairKey } from "../memory/pairkeys"
-import { getRandomKey, signHex } from "./signature"
+import { getRandomKey, signHex, signOutPut } from "./signature"
 import { getTxsUtxos, sendUtxo } from "./mempool"
-import { trackException } from "../telemetry/telemetry"
+import { Response, trackException } from "../telemetry/telemetry"
 import { getWallet } from "../memory/wallets"
 import { useTranslate } from "../translate"
 import env from "@/env"
@@ -89,11 +89,10 @@ export const ValidateAddress = (btcAddress: string) => {
     } catch { return false }
 }
 
-export const sendTransaction = async ({ amount, destination, walletKey }: TransactionProps) => {
+export const sendTransaction = async ({ amount, destination, walletKey }: TransactionProps): Promise<Response> => {
 
     try {
         var utxoAmount = 0
-
         const transaction = new Psbt({ network })
 
         const { pairkey, address } = await getWallet(walletKey)
@@ -105,16 +104,18 @@ export const sendTransaction = async ({ amount, destination, walletKey }: Transa
         if (utxos.reduce((acumulator, iterator) => acumulator + iterator.value, 0) < amount)
             throw new Error(useTranslate("message.transaction.insufficient_funds"))
 
+        // ordenate for include all minimal value utxo of wallet
         const ordenedUtxos = utxos.sort((a, b) => a.value - b.value)
 
-        for (let index = 0; index <= ordenedUtxos.length; index++) {
+        ordenedUtxos.forEach((utxo, index) => {
             if (utxoAmount < amount) {
-                utxoAmount += utxos[index].value
+                utxoAmount += utxo.value
                 // define the utxo entered -> buffer
-                transaction.addInput({ hash: utxos[index].txid, index, nonWitnessUtxo: Buffer.from(utxos[index].txid, "hex") })
-            } else
-                break
-        }
+                transaction.addInput({ index, hash: utxo.txid })
+            }
+        })
+
+        console.log(transaction.data.inputs)
 
         // add destination address transaction -> buffer
         transaction.addOutput({ address: destination, value: amount })
@@ -123,21 +124,52 @@ export const sendTransaction = async ({ amount, destination, walletKey }: Transa
         if (utxoAmount > amount)
             transaction.addOutput({ address: address ?? "", value: utxoAmount - amount })
 
+        // sign transaction
+        // for(let i = 0; i <= transaction.data.inputs.length; i++) {
+        //     var input = transaction.data.inputs[1]
+        //     var prevOutScript = input.redeemScript ? input.redeemScript : input.witnessScript
+        //     var sighash = transaction.extractTransaction().hashForSignature(i, prevOutScript ?? new Buffer(""), 1)
+        //     var signature = signOutPut(sighash, privateKey)
+
+        //     console.log("hash to sign: ", sighash.toString("hex"))
+
+        //     input.partialSig?.push({ pubkey: Buffer.from(publicKey, "hex"), signature: signature })
+
+        //     transaction.data.inputs[1] = input;
+        // }
+
+        // transaction.data.inputs.forEach((input, index) => {   
+
+        //     var prevOutScript = input.redeemScript ? input.redeemScript : input.witnessScript
+
+        //     var sighash = transaction.extractTransaction().hashForSignature(index, prevOutScript ?? new Buffer(""), 1)
+
+        //     var signature = signOutPut(sighash, privateKey)
+
+        //     console.log("hash to sign: ", sighash.toString("hex"))
+
+        //     input.partialSig?.push({ pubkey: Buffer.from(publicKey, "hex"), signature: signature })
+        // })
+
         transaction.signAllInputs({
             publicKey: Buffer.from(publicKey, "hex"),
             sign: (hash: Buffer, lowR?: boolean): Buffer => {
 
-                var signed = signHex(hash.toString("hex"), privateKey)
+                var signature = signHex(hash.toString("hex"), privateKey)
 
-                return Buffer.from(signed, "hex")
+                console.log(signature)
+
+                return Buffer.from(signature, "hex")
             }
         })
 
         transaction.finalizeAllInputs()
 
-        var txHex = transaction.extractTransaction().toHex()
+        const txHex = transaction.extractTransaction().toHex()
 
-        return await sendUtxo(txHex)
+        const txid = await sendUtxo(txHex)
+
+        return { success: true, message: "", data: txid }
     }
     catch (ex) { return trackException(ex) }
 }

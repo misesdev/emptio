@@ -21,21 +21,23 @@ export const FriendList = ({ searchTerm, onPressFollow }: FriendListProps) => {
 
     const handleListFollows = async () => {
 
-        setRefreshing(true)
+        if (searchTerm.length < 20) {
+            setRefreshing(true)
 
-        setFollowList([
-            { name: "Marcos Vale", about: "Estou seguindo John Gault" },
-            { name: "Felipe Neves", about: "Don't trust, verify!" },
-            { name: "Lucas Botelho Neto", about: "desenvolvedor back end libertário" },
-            { name: "Marcos Vale", about: "Estou seguindo John Gault" },
-            { name: "Felipe Neves", about: "Don't trust, verify!" },
-            { name: "Lucas Botelho Neto", about: "desenvolvedor back end libertário" },
-            { name: "Marcos Vale", about: "Estou seguindo John Gault" },
-            { name: "Felipe Neves", about: "Don't trust, verify!" },
-            { name: "Marcos Botelho Neto", about: "desenvolvedor back end libertário" }
-        ])
+            setFollowList([
+                { name: "Marcos Vale", about: "Estou seguindo John Gault" },
+                { name: "Felipe Neves", about: "Don't trust, verify!" },
+                { name: "Lucas Botelho Neto", about: "desenvolvedor back end libertário" },
+                { name: "Marcos Vale", about: "Estou seguindo John Gault" },
+                { name: "Felipe Neves", about: "Don't trust, verify!" },
+                { name: "Lucas Botelho Neto", about: "desenvolvedor back end libertário" },
+                { name: "Marcos Vale", about: "Estou seguindo John Gault" },
+                { name: "Felipe Neves", about: "Don't trust, verify!" },
+                { name: "Marcos Botelho Neto", about: "desenvolvedor back end libertário" }
+            ])
 
-        setTimeout(() => setRefreshing(false), 1000)
+            setTimeout(() => setRefreshing(false), 1000)
+        }
     }
 
     return (
