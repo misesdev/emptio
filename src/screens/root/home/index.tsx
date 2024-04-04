@@ -40,7 +40,7 @@ const HomeScreen = ({ navigation }: any) => {
         // setPurchases(purchases)
         // setSales(sales)
 
-        // await UpdateUserProfile({ user: user ?? {}, setUser })
+        await UpdateUserProfile({ user: user ?? {}, setUser })
 
         setLoading(false)
 

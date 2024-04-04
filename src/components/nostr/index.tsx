@@ -1,18 +1,20 @@
-import { RefreshControl, SafeAreaView, ScrollView, StyleSheet, TouchableOpacity, View, Text, Image } from "react-native"
+import { RefreshControl, ScrollView, StyleSheet, TouchableOpacity, View, Text, Image } from "react-native"
 import { useAuth } from "@src/providers/userProvider"
 import { User } from "@src/services/memory/types"
 import { useEffect, useState } from "react"
 import theme from "@/src/theme"
 import { getPairKey } from "@/src/services/memory/pairkeys"
 import { listenerEvents } from "@/src/services/nostr/events"
+import { NDKRelay } from "@nostr-dev-kit/ndk"
 
 type FriendListProps = {
     searchTerm: string,
     onPressFollow: (user: User) => void,
-    loadCombo?: number
+    loadCombo?: number,
+    toPayment?: boolean
 }
 
-export const FriendList = ({ searchTerm, onPressFollow, loadCombo = 5 }: FriendListProps) => {
+export const FriendList = ({ searchTerm, onPressFollow, loadCombo = 30, toPayment = false }: FriendListProps) => {
 
     const { user } = useAuth()
     const [refreshing, setRefreshing] = useState(false)
@@ -30,7 +32,12 @@ export const FriendList = ({ searchTerm, onPressFollow, loadCombo = 5 }: FriendL
 
         const followspubkeys = follows[0].tags.map(tag => tag[1])
 
-        console.log(follows[0].content)
+        // if (follows[0].content) {
+        //     for (let relay in follows[0].content) {
+        //         if (relay.includes("wss://")) 
+        //             Nostr.addExplicitRelay(relay)
+        //     }
+        // }
 
         return followspubkeys
     }
@@ -43,40 +50,21 @@ export const FriendList = ({ searchTerm, onPressFollow, loadCombo = 5 }: FriendL
 
         var followspubkeys = await listFollowsPubkeys()
 
-        for (let i = 0; i <= followspubkeys.length; i += loadCombo) 
-        {
+        setFollowList(followspubkeys.slice(0, 5).map(i => { return {} }))
+
+        for (let i = 0; i <= followspubkeys.length; i += loadCombo) {
             let authors = followspubkeys.slice(i, i + loadCombo)
 
-            const events = await listenerEvents({ search: searchTerm, kinds: [0], authors, limit: 5 })
+            const events = await listenerEvents({ search: searchTerm, kinds: [0], authors, limit: loadCombo })
 
             let follows = events.map(event => event.content)
-
-            console.log("listened: ", follows.map(f => f.name).join(", "))
 
             followContents = followContents.concat(follows)
 
             setFollowList(followContents)
-
-            if (refreshing)
-                setRefreshing(false)
         }
 
-
-        // for (let follow of followspubkeys) {
-        //     let event = await listenerEvents({ search: searchTerm, kinds: [0], authors: [follow], limit: 1 })
-
-        //     if (event[0]?.content)
-        //         console.log("listened user: ", event[0]?.content.name, event[0]?.content.about)
-        // }
-
-        // for (let follow of followspubkeys) {
-        //     listenerEvents({ search: searchTerm, kinds: [0], authors: [follow], limit: 1 }).then(userEvent => {
-        //         let userContent = userEvent[0].content
-        //         if (userContent)
-        //             console.log("listened user: ", userContent.name)
-        //     })
-        // }
-
+        setRefreshing(false)
     }
 
     return (
@@ -86,6 +74,13 @@ export const FriendList = ({ searchTerm, onPressFollow, loadCombo = 5 }: FriendL
         >
             {followList &&
                 followList.map((follow, key) => {
+
+                    var userName = follow.name ? follow.name : follow.display_name
+                    var userAbout: string = ""
+
+                    if (follow.about)
+                        userAbout = follow.about.length > 80 ? `${follow.about?.substring(0, 80)}...` : follow.about
+
                     return (
                         <TouchableOpacity style={styles.sectionTransaction} onPress={() => onPressFollow(follow)} key={key} activeOpacity={.7}>
                             {/* Transaction Type */}
@@ -97,12 +92,12 @@ export const FriendList = ({ searchTerm, onPressFollow, loadCombo = 5 }: FriendL
                             <View style={{ width: "80%", minHeight: 75 }}>
                                 <View style={{ width: "100%" }}>
                                     <Text style={{ color: theme.colors.white, fontFamily: "", fontSize: 14, fontWeight: "600", margin: 2, marginTop: 12 }}>
-                                        {follow.name}
+                                        {userName}
                                     </Text>
                                 </View>
                                 <View style={{ width: "100%" }}>
-                                    <Text style={{ fontSize: 12, color: theme.colors.gray, margin: 2, fontWeight: "bold" }}>
-                                        {follow.about}
+                                    <Text style={{ fontSize: 12, color: theme.colors.gray, margin: 2, paddingRight: 8, paddingBottom: 8, fontWeight: "bold" }}>
+                                        {userAbout}
                                     </Text>
                                 </View>
                             </View>

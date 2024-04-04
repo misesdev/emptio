@@ -65,6 +65,7 @@ export type Transaction = {
 export type User = {
     name?: string,
     displayName?: string,
+    display_name?: string,
     picture?: string,
     image?: string,
     about?: string,
