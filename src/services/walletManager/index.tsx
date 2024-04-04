@@ -1,8 +1,8 @@
-import { getBitcoinAddress, createWallet } from "../bitcoin"
+import { generateAddress, createTransaction, createWallet, ValidateAddress, sendTransaction } from "../bitcoin"
 import { getRandomKey } from "../bitcoin/signature"
-import { deletePairKey, insertPairKey } from "../memory/pairkeys"
+import { deletePairKey, getPairKey, insertPairKey } from "../memory/pairkeys"
 import { PairKey, Wallet } from "../memory/types"
-import { deleteWallet, insertWallet } from "../memory/wallets"
+import { deleteWallet, getWallet, insertWallet } from "../memory/wallets"
 import { Response, trackException } from "../telemetry/telemetry"
 
 type Props = {
@@ -14,7 +14,7 @@ const create = async ({ name, type }: Props): Promise<Response> => {
     try {
         const pairKey: PairKey = createWallet()
 
-        const bitcoinAddress = getBitcoinAddress(pairKey.publicKey)
+        const bitcoinAddress = generateAddress(pairKey.publicKey)
 
         const wallet: Wallet = {
             name: name,
@@ -44,7 +44,7 @@ const exclude = async (wallet: Wallet): Promise<Response> => {
         await deleteWallet(wallet.key ?? "")
 
         return { success: true, message: "" }
-    } 
+    }
     catch (ex) {
         return trackException(ex)
     }
@@ -54,8 +54,36 @@ const update = async () => {
 
 }
 
+type TransactionProps = { amount: number, destination: string, walletKey: string }
+
+const transaction = {
+    get: async ({ amount, destination, walletKey }: TransactionProps): Promise<Response> => {
+
+        const wallet = await getWallet(walletKey)
+
+        const pairkey = await getPairKey(wallet.pairkey ?? "")
+
+        const transaction = await createTransaction({
+            amount,
+            destination,
+            wallet,
+            pairkey
+        })
+
+        return transaction
+    },
+    send: async (txHex: string): Promise<Response> => sendTransaction(txHex)
+}
+
+const address = {
+    validate: (address: string) => ValidateAddress(address)
+}
+
+
 export const walletService = {
     create,
     update,
-    exclude
+    exclude,
+    address,
+    transaction
 }

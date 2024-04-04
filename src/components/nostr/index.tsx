@@ -3,41 +3,80 @@ import { useAuth } from "@src/providers/userProvider"
 import { User } from "@src/services/memory/types"
 import { useEffect, useState } from "react"
 import theme from "@/src/theme"
+import { getPairKey } from "@/src/services/memory/pairkeys"
+import { listenerEvents } from "@/src/services/nostr/events"
 
 type FriendListProps = {
     searchTerm: string,
-    onPressFollow: (user: User) => void
+    onPressFollow: (user: User) => void,
+    loadCombo?: number
 }
 
-export const FriendList = ({ searchTerm, onPressFollow }: FriendListProps) => {
+export const FriendList = ({ searchTerm, onPressFollow, loadCombo = 5 }: FriendListProps) => {
 
     const { user } = useAuth()
-    const [refreshing, setRefreshing] = useState(true)
+    const [refreshing, setRefreshing] = useState(false)
     const [followList, setFollowList] = useState<User[]>([])
 
     useEffect(() => {
         handleListFollows()
-    }, [searchTerm])
+    }, [])
+
+    const listFollowsPubkeys = async (): Promise<string[]> => {
+
+        const { publicKey } = await getPairKey(user.keychanges ?? "")
+
+        const follows = await listenerEvents({ limit: 1, authors: [publicKey], kinds: [3] })
+
+        const followspubkeys = follows[0].tags.map(tag => tag[1])
+
+        console.log(follows[0].content)
+
+        return followspubkeys
+    }
 
     const handleListFollows = async () => {
 
-        if (searchTerm.length < 20) {
-            setRefreshing(true)
+        setRefreshing(true)
 
-            setFollowList([
-                { name: "Marcos Vale", about: "Estou seguindo John Gault" },
-                { name: "Felipe Neves", about: "Don't trust, verify!" },
-                { name: "Lucas Botelho Neto", about: "desenvolvedor back end libertário" },
-                { name: "Marcos Vale", about: "Estou seguindo John Gault" },
-                { name: "Felipe Neves", about: "Don't trust, verify!" },
-                { name: "Lucas Botelho Neto", about: "desenvolvedor back end libertário" },
-                { name: "Marcos Vale", about: "Estou seguindo John Gault" },
-                { name: "Felipe Neves", about: "Don't trust, verify!" },
-                { name: "Marcos Botelho Neto", about: "desenvolvedor back end libertário" }
-            ])
+        var followContents: User[] = []
 
-            setTimeout(() => setRefreshing(false), 1000)
+        var followspubkeys = await listFollowsPubkeys()
+
+        for (let i = 0; i <= followspubkeys.length; i += loadCombo) 
+        {
+            let authors = followspubkeys.slice(i, i + loadCombo)
+
+            const events = await listenerEvents({ search: searchTerm, kinds: [0], authors, limit: 5 })
+
+            let follows = events.map(event => event.content)
+
+            console.log("listened: ", follows.map(f => f.name).join(", "))
+
+            followContents = followContents.concat(follows)
+
+            setFollowList(followContents)
+
+            if (refreshing)
+                setRefreshing(false)
         }
+
+
+        // for (let follow of followspubkeys) {
+        //     let event = await listenerEvents({ search: searchTerm, kinds: [0], authors: [follow], limit: 1 })
+
+        //     if (event[0]?.content)
+        //         console.log("listened user: ", event[0]?.content.name, event[0]?.content.about)
+        // }
+
+        // for (let follow of followspubkeys) {
+        //     listenerEvents({ search: searchTerm, kinds: [0], authors: [follow], limit: 1 }).then(userEvent => {
+        //         let userContent = userEvent[0].content
+        //         if (userContent)
+        //             console.log("listened user: ", userContent.name)
+        //     })
+        // }
+
     }
 
     return (

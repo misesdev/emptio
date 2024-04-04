@@ -36,7 +36,6 @@ export const WalletList = ({ wallets, navigation }: Props) => {
                     wallets.map((wallet, key) => {
                         let balanceSats = formatSats(wallet.lastBalance)
                         let balanceBTC = toBitcoin(wallet.lastBalance)
-                        let baseColor = wallet.type === "bitcoin" ? theme.colors.orange : theme.colors.blue
                         let typyWallet = wallet.type === "bitcoin" ? useTranslate("wallet.bitcoin.tag") : useTranslate("wallet.lightning.tag")
                         return (
                             <TouchableOpacity style={[styles.wallet, { paddingHorizontal: 5 }]} key={key} activeOpacity={1}>
@@ -47,7 +46,7 @@ export const WalletList = ({ wallets, navigation }: Props) => {
                                 <Text style={styles.title}>{wallet.name}</Text>
                                 <Text style={{ marginHorizontal: 10, marginVertical: 6, color: theme.colors.white, fontSize: 18, fontWeight: "bold" }}>{balanceSats} Sats</Text>
                                 <Text style={[styles.description, { color: theme.colors.white }]}>{balanceBTC} BTC</Text>
-                                <TouchableOpacity activeOpacity={.7} style={[styles.button, { backgroundColor: baseColor }]} onPress={() => handleOpenWallet(wallet)}>
+                                <TouchableOpacity activeOpacity={.7} style={[styles.button, { backgroundColor: theme.colors.orange }]} onPress={() => handleOpenWallet(wallet)}>
                                     <Text style={styles.buttonText}> {useTranslate("commons.open")} </Text>
                                 </TouchableOpacity>
 

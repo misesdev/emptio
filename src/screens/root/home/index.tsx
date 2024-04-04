@@ -10,6 +10,7 @@ import { WalletList } from "@components/wallet"
 import { useEffect, useState } from "react"
 import { HeaderHome } from "../headers"
 import theme from "@src/theme"
+import { FriendList } from "@/src/components/nostr"
 
 const HomeScreen = ({ navigation }: any) => {
 
@@ -39,7 +40,7 @@ const HomeScreen = ({ navigation }: any) => {
         // setPurchases(purchases)
         // setSales(sales)
 
-        await UpdateUserProfile({ user: user ?? {}, setUser })
+        // await UpdateUserProfile({ user: user ?? {}, setUser })
 
         setLoading(false)
 
@@ -67,6 +68,7 @@ const HomeScreen = ({ navigation }: any) => {
                 {/* Sales and Shopping */}
                 <SectionHeader icon="cash-outline" label={useTranslate("section.title.sales")} />
 
+                <FriendList searchTerm="" onPressFollow={user => console.log(user)} />
                 {/* Wallets section  */}
                 {/* <WalletList  wallets={wallets} /> */}
 

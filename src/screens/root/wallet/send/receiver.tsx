@@ -4,8 +4,7 @@ import { useTranslate } from "@src/services/translate"
 import { ButtonScanQRCode } from "@components/wallet/buttons"
 import { TextBox } from "@components/form/TextBoxs"
 import { useAuth } from "@src/providers/userProvider"
-import { ButtonDefault, ButtonSuccess } from "@components/form/Buttons"
-import { ValidateAddress, createTransaction, sendTransaction } from "@src/services/bitcoin"
+import { ButtonDefault } from "@components/form/Buttons"
 import AlertBox, { alertMessage } from "@components/general/AlertBox"
 import SplashScreen from "@components/general/SplashScreen"
 import { toNumber } from "@src/services/converter"
@@ -13,6 +12,7 @@ import { useEffect, useState } from "react"
 import theme from "@src/theme"
 import { SectionHeader } from "@/src/components/general/section/headers"
 import { FriendList } from "@/src/components/nostr"
+import { walletService } from "@/src/services/walletManager"
 
 const SendReceiverScreen = ({ navigation, route }: any) => {
 
@@ -38,18 +38,20 @@ const SendReceiverScreen = ({ navigation, route }: any) => {
         if (whoaddres.length < 28)
             return alertMessage("Escaneie um QR code ou selecione um amigo!")
 
-        if (!ValidateAddress(address))
+        if (!walletService.address.validate(address))
             return alertMessage(`invalid bitcoin address: ${address}.`)
 
         setLoading(true)
 
-        const result = await createTransaction({ amount: toNumber(amount), destination: address, walletKey: wallet.key ?? "" })
+        const result = await walletService.transaction.get({ amount: toNumber(amount), destination: address, walletKey: wallet.key ?? "" })
 
-        if(result.success)
-            await sendTransaction(result.data)
+        if (result.success)
+            await walletService.transaction.send(result.data)
 
-        if (!result.success) 
+        if (!result.success) {
+            setLoading(false)
             return alertMessage(result.message)
+        }
 
         console.log("sign transaction: ", result.data)
 
