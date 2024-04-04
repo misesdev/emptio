@@ -124,3 +124,21 @@ export const IsLogged = async ({ setUser }: loggedProps) => {
 
     return !!privateKey
 }
+
+export const listFollowsPubkeys = async (user: User): Promise<string[]> => {
+
+    const { publicKey } = await getPairKey(user.keychanges ?? "")
+
+    const follows = await listenerEvents({ limit: 1, authors: [publicKey], kinds: [3] })
+
+    const followspubkeys = follows[0].tags.map(tag => tag[1])
+
+    // if (follows[0].content) {
+    //     for (let relay in follows[0].content) {
+    //         if (relay.includes("wss://")) 
+    //             Nostr.addExplicitRelay(relay)
+    //     }
+    // }
+
+    return followspubkeys
+}

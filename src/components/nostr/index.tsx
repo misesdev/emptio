@@ -1,15 +1,15 @@
 import { RefreshControl, ScrollView, StyleSheet, TouchableOpacity, View, Text, Image } from "react-native"
+import { listenerEvents } from "@src/services/nostr/events"
+import { listFollowsPubkeys } from "@src/services/userManager"
 import { useAuth } from "@src/providers/userProvider"
 import { User } from "@src/services/memory/types"
+import { NDKRelay } from "@nostr-dev-kit/ndk"
 import { useEffect, useState } from "react"
 import theme from "@/src/theme"
-import { getPairKey } from "@/src/services/memory/pairkeys"
-import { listenerEvents } from "@/src/services/nostr/events"
-import { NDKRelay } from "@nostr-dev-kit/ndk"
 
 type FriendListProps = {
     searchTerm: string,
-    onPressFollow: (user: User) => void,
+    onPressFollow?: (user: User) => void,
     loadCombo?: number,
     toPayment?: boolean
 }
@@ -24,31 +24,13 @@ export const FriendList = ({ searchTerm, onPressFollow, loadCombo = 30, toPaymen
         handleListFollows()
     }, [])
 
-    const listFollowsPubkeys = async (): Promise<string[]> => {
-
-        const { publicKey } = await getPairKey(user.keychanges ?? "")
-
-        const follows = await listenerEvents({ limit: 1, authors: [publicKey], kinds: [3] })
-
-        const followspubkeys = follows[0].tags.map(tag => tag[1])
-
-        // if (follows[0].content) {
-        //     for (let relay in follows[0].content) {
-        //         if (relay.includes("wss://")) 
-        //             Nostr.addExplicitRelay(relay)
-        //     }
-        // }
-
-        return followspubkeys
-    }
-
     const handleListFollows = async () => {
 
         setRefreshing(true)
 
         var followContents: User[] = []
 
-        var followspubkeys = await listFollowsPubkeys()
+        var followspubkeys = await listFollowsPubkeys(user)
 
         setFollowList(followspubkeys.slice(0, 5).map(i => { return {} }))
 
@@ -67,6 +49,11 @@ export const FriendList = ({ searchTerm, onPressFollow, loadCombo = 30, toPaymen
         setRefreshing(false)
     }
 
+    const handleClickUser = (follow: User) => {
+        if (onPressFollow)
+            onPressFollow(follow)
+    }
+
     return (
         <ScrollView
             contentContainerStyle={theme.styles.scroll_container}
@@ -82,7 +69,7 @@ export const FriendList = ({ searchTerm, onPressFollow, loadCombo = 30, toPaymen
                         userAbout = follow.about.length > 80 ? `${follow.about?.substring(0, 80)}...` : follow.about
 
                     return (
-                        <TouchableOpacity style={styles.sectionTransaction} onPress={() => onPressFollow(follow)} key={key} activeOpacity={.7}>
+                        <TouchableOpacity style={styles.sectionTransaction} onPress={() => handleClickUser(follow)} key={key} activeOpacity={.7}>
                             {/* Transaction Type */}
                             <View style={{ width: "20%", minHeight: 75, justifyContent: "center", alignItems: "center" }}>
                                 {follow.picture && <Image source={{ uri: follow.picture }} style={styles.profile} />}
