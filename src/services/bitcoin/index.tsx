@@ -6,7 +6,7 @@ import { payments, Psbt, networks, address } from "bitcoinjs-lib"
 import { PairKey, Wallet } from "../memory/types"
 import { getRandomKey, signBuffer, verifySign } from "./signature"
 import { getTxsUtxos, getUtxo, sendUtxo } from "./mempool"
-import { Response, trackException } from "../telemetry/telemetry"
+import { Response, trackException } from "../telemetry"
 import env from "@/env"
 
 const network = env.mempool.network == "testnet" ? networks.testnet : networks.bitcoin

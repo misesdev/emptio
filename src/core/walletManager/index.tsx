@@ -1,9 +1,9 @@
-import { generateAddress, createTransaction, createWallet, ValidateAddress, sendTransaction } from "../bitcoin"
-import { getRandomKey } from "../bitcoin/signature"
-import { deletePairKey, getPairKey, insertPairKey } from "../memory/pairkeys"
-import { PairKey, Wallet } from "../memory/types"
-import { deleteWallet, getWallet, insertWallet } from "../memory/wallets"
-import { Response, trackException } from "../telemetry/telemetry"
+import { generateAddress, createTransaction, createWallet, ValidateAddress, sendTransaction } from "@src/services/bitcoin"
+import { getRandomKey } from "@src/services/bitcoin/signature"
+import { deletePairKey, getPairKey, insertPairKey } from "@src/services/memory/pairkeys"
+import { PairKey, Wallet } from "@src/services/memory/types"
+import { deleteWallet, getWallet, insertWallet } from "@src/services/memory/wallets"
+import { Response, trackException } from "@src/services/telemetry"
 
 type Props = {
     name: string,

@@ -6,7 +6,7 @@ import SplashScreen from "@components/general/SplashScreen"
 import { useAuth } from "@src/providers/userProvider"
 import { ButtonDanger } from "@components/form/Buttons"
 import { useTranslate } from "@src/services/translate"
-import { SignOut } from "@src/services/userManager"
+import { userService } from "@/src/core/userManager"
 import { hexToBytes } from "@noble/hashes/utils"
 import { useState } from "react"
 import { nip19 } from "nostr-tools";
@@ -25,7 +25,7 @@ const UserMenuScreen = ({ navigation }: any) => {
         setLoading(true)
 
         setTimeout(async () => { 
-            const result = await SignOut()
+            const result = await userService.signOut()
 
             if(result.success)
                 navigation.reset({ index: 0, routes: [{ name: "initial-stack" }] })

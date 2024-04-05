@@ -10,7 +10,7 @@ import { View, ScrollView, Modal, RefreshControl, TouchableOpacity } from "react
 import { useEffect, useState } from "react"
 import { Ionicons } from "@expo/vector-icons"
 import theme from "@src/theme"
-import { walletService } from "@/src/services/walletManager"
+import { walletService } from "@/src/core/walletManager"
 import SplashScreen from "@/src/components/general/SplashScreen"
 import { useAuth } from "@/src/providers/userProvider"
 

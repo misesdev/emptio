@@ -1,18 +1,19 @@
-import { clearStorage } from "../memory"
-import { createPairKeys, getHexKeys } from "../nostr"
-import { getUserData, pushUserData } from "../nostr/pool"
-import { PairKey, User } from "../memory/types"
-import { listenerEvents } from "../nostr/events"
-import { Response, trackException } from "../telemetry/telemetry"
-import { getUser, insertUpdateUser } from "../memory/user"
-import { getPairKey, insertPairKey } from "../memory/pairkeys"
+import { clearStorage } from "../../services/memory"
+import { createPairKeys, getHexKeys } from "../../services/nostr"
+import { getUserData, pushUserData } from "../../services/nostr/pool"
+import { PairKey, User } from "../../services/memory/types"
+import { listenerEvents } from "../../services/nostr/events"
+import { Response, trackException } from "../../services/telemetry"
+import { getUser, insertUpdateUser } from "../../services/memory/user"
+import { getPairKey, insertPairKey } from "../../services/memory/pairkeys"
+import { nip19 } from "nostr-tools"
 
 type SignUpProps = {
     userName: string,
     setUser?: (user: User) => void
 }
 
-export const SignUp = async ({ userName, setUser }: SignUpProps): Promise<Response> => {
+const signUp = async ({ userName, setUser }: SignUpProps): Promise<Response> => {
     try {
 
         const pairKey: PairKey = createPairKeys()
@@ -44,7 +45,7 @@ type SignProps = {
     setUser?: (user: User) => void
 }
 
-export const SignIn = async ({ secretKey, setUser }: SignProps) => {
+const signIn = async ({ secretKey, setUser }: SignProps) => {
 
     try {
         const pairKey: PairKey = getHexKeys(secretKey)
@@ -72,7 +73,7 @@ type UpdateProfileProps = {
     setUser?: (user: User) => void
 }
 
-export const UpdateUserProfile = async ({ user, setUser }: UpdateProfileProps) => {
+const updateProfile = async ({ user, setUser }: UpdateProfileProps) => {
 
     const pairKey: PairKey = await getPairKey(user.keychanges ?? "")
 
@@ -97,7 +98,7 @@ export const UpdateUserProfile = async ({ user, setUser }: UpdateProfileProps) =
         setUser(user)
 }
 
-export const SignOut = async (): Promise<Response> => {
+const signOut = async (): Promise<Response> => {
 
     try {
         await clearStorage()
@@ -113,7 +114,7 @@ type loggedProps = {
     setUser?: (user: User) => void
 }
 
-export const IsLogged = async ({ setUser }: loggedProps) => {
+const isLogged = async ({ setUser }: loggedProps) => {
 
     const user: User = await getUser()
 
@@ -125,7 +126,7 @@ export const IsLogged = async ({ setUser }: loggedProps) => {
     return !!privateKey
 }
 
-export const listFollowsPubkeys = async (user: User): Promise<string[]> => {
+const listFollowsPubkeys = async (user: User): Promise<string[]> => {
 
     const { publicKey } = await getPairKey(user.keychanges ?? "")
 
@@ -141,4 +142,16 @@ export const listFollowsPubkeys = async (user: User): Promise<string[]> => {
     // }
 
     return followspubkeys
+}
+
+const convertPubkey = (pubkey: string) => nip19.npubEncode(pubkey)
+
+export const userService = {
+    signUp,
+    signIn,
+    signOut,
+    isLogged,
+    updateProfile,
+    convertPubkey,
+    listFollowsPubkeys
 }

@@ -5,7 +5,7 @@ import { ButtonPrimary } from "@components/form/Buttons";
 import { useTranslate } from "@src/services/translate";
 import SplashScreen from "@components/general/SplashScreen";
 import { validatePrivateKey } from "@src/services/nostr";
-import { SignIn } from "@/src/services/userManager";
+import { userService } from "@/src/core/userManager";
 import { useAuth } from "@/src/providers/userProvider";
 import { useEffect, useState } from "react";
 import * as ClipBoard from 'expo-clipboard'
@@ -55,7 +55,7 @@ const LoginScreen = ({ navigation }: any) => {
 
         setTimeout(async () => {
             if (validatePrivateKey(secretKey)) {
-                const result = await SignIn({ secretKey, setUser })
+                const result = await userService.signIn({ secretKey, setUser })
                 if (result.success)
                     navigation.reset({ index: 0, routes: [{ name: "core-stack" }] })
             } else

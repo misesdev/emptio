@@ -2,7 +2,7 @@ import { StyleSheet, View, ScrollView, RefreshControl } from "react-native"
 import { ActionHeader, SectionHeader } from "@components/general/section/headers"
 import AlertBox, { alertMessage } from "@components/general/AlertBox"
 import { Purchase, Sales, Wallet } from "@src/services/memory/types"
-import { UpdateUserProfile } from "@src/services/userManager"
+import { userService } from "@/src/core/userManager"
 import { getWallets } from "@src/services/memory/wallets"
 import { useTranslate } from "@src/services/translate"
 import { useAuth } from "@src/providers/userProvider"
@@ -27,7 +27,6 @@ const HomeScreen = ({ navigation }: any) => {
     }, [])
 
     // search for SafeAreaView to scoll horizontal wallets
-
     const handleData = async () => {
         setLoading(true)
 
@@ -40,7 +39,7 @@ const HomeScreen = ({ navigation }: any) => {
         // setPurchases(purchases)
         // setSales(sales)
 
-        await UpdateUserProfile({ user: user ?? {}, setUser })
+        await userService.updateProfile({ user: user ?? {}, setUser })
 
         setLoading(false)
 
@@ -68,7 +67,7 @@ const HomeScreen = ({ navigation }: any) => {
                 {/* Sales and Shopping */}
                 <SectionHeader icon="cash-outline" label={useTranslate("section.title.sales")} />
 
-                <FriendList searchTerm="" onPressFollow={user => console.log(user)} />
+                <FriendList onPressFollow={user => console.log(user)} />
                 {/* Wallets section  */}
                 {/* <WalletList  wallets={wallets} /> */}
 

@@ -4,7 +4,7 @@ import { Image, StyleSheet, Text, View } from "react-native";
 import { ButtonPrimary } from "@components/form/Buttons";
 import { TextBox } from "@components/form/TextBoxs";
 import MessageBox, { showMessage } from "@components/general/MessageBox";
-import { SignUp } from "@src/services/userManager";
+import { userService } from "@/src/core/userManager";
 import { useTranslate } from "@src/services/translate";
 import { useAuth } from "@/src/providers/userProvider";
 import theme from "@src/theme";
@@ -24,7 +24,7 @@ const RegisterScreen = ({ navigation }: any) => {
             setLoading(true)
             setTimeout(async () => {
 
-                const result = await SignUp({ userName, setUser })
+                const result = await userService.signUp({ userName, setUser })
 
                 if (result.success)
                     return navigation.reset({ index: 0, routes: [{ name: "core-stack" }] })

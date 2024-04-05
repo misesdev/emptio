@@ -12,7 +12,7 @@ import { useEffect, useState } from "react"
 import theme from "@src/theme"
 import { SectionHeader } from "@/src/components/general/section/headers"
 import { FriendList } from "@/src/components/nostr"
-import { walletService } from "@/src/services/walletManager"
+import { walletService } from "@/src/core/walletManager"
 
 const SendReceiverScreen = ({ navigation, route }: any) => {
 

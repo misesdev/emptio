@@ -8,7 +8,7 @@ import { ButtonPrimary } from "@components/form/Buttons"
 import { Ionicons } from "@expo/vector-icons"
 import AlertBox, { alertMessage } from "@components/general/AlertBox"
 import SplashScreen from "@components/general/SplashScreen"
-import { walletService } from "@src/services/walletManager"
+import { walletService } from "@src/core/walletManager"
 
 const AddWalletScreen = ({ navigation }: any) => {
 

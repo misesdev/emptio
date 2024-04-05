@@ -3,7 +3,7 @@ import { Image, StyleSheet, Text, View } from "react-native"
 import SplashScreen from "@components/general/SplashScreen"
 import { getNostrInstance } from "../services/nostr/events"
 import { useTranslate } from "../services/translate"
-import { IsLogged } from "../services/userManager"
+import { userService } from "../core/userManager"
 import { useEffect, useState } from "react"
 import theme from "@src/theme"
 import { useAuth } from "../providers/userProvider"
@@ -23,7 +23,7 @@ const InitializeScreen = ({ navigation }: any) => {
 
         Nostr = await getNostrInstance()
 
-        if (await IsLogged({ setUser }))
+        if (await userService.isLogged({ setUser }))
             navigation.reset({ index: 0, routes: [{ name: "authenticate-stack" }] })
         else
             setLoading(false)

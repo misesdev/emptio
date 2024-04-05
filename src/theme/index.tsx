@@ -13,7 +13,7 @@ const theme = {
         yellow: "#d4a91e",
 
         icons: "#FFFFFF",
-        section: "#141414",
+        section: "#0c1e21",
         transparent: "transparent",
         link: "#0940e3",
         disabled: "#26292e"

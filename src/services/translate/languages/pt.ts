@@ -66,10 +66,13 @@ export default {
     "settings.account.edit": "Minha Conta",
     "settings.chooselanguage": "Idioma",
     "settings.security": "Segurança",
+
     "section.title.wallets": "Carteiras",
     "section.title.sales": "Compas & Vendas",
     "section.title.transactions": "Transações",
     "section.title.transactions.empty": "Suas transações serão exibidas aqui",
+    "section.title.frends.empty": "Seus amigos serão exibidos aqui",
+
     "wallet.lightning.tag": "Carteira Lightning",
     "wallet.bitcoin.tag": "Carteira Bitcoin",
     "wallet.title.receive": "Receber",

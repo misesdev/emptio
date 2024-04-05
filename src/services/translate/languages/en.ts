@@ -66,10 +66,13 @@ export default {
     "settings.secretkey.copy": "Copy secret key",
     "settings.chooselanguage": "Language",
     "settings.security": "Security",
+    
     "section.title.wallets": "Wallets",
     "section.title.sales": "Purchasing & Sales",
     "section.title.transactions": "Transactions",
     "section.title.transactions.empty": "Your transactions will paper here!",
+    "section.title.frends.empty": "Your friends will be displayed here",
+
     "wallet.lightning.tag": "Lightning Wallet",
     "wallet.bitcoin.tag": "Bitcoin Wallet",
     "wallet.title.receive": "Receive",
