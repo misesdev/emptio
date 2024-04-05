@@ -6,7 +6,8 @@ import { useAuth } from "@src/providers/userProvider"
 import { User } from "@src/services/memory/types"
 import { NDKRelay } from "@nostr-dev-kit/ndk"
 import { useEffect, useState } from "react"
-import theme from "@/src/theme"
+import theme from "@src/theme"
+import { walletService } from "@src/core/walletManager"
 
 type FriendListProps = {
     searchTerm?: string,
@@ -24,7 +25,7 @@ export const FriendList = ({ searchTerm, onPressFollow, loadCombo = 20, toPaymen
 
     useEffect(() => {
         // search and filter
-        if (searchTerm) {
+        if (searchTerm && !walletService.address.validate(searchTerm)) {
             const searchResult = followListData.filter(follow => {
                 let filterLower = searchTerm.toLowerCase()
                 let filterNameLower = `${follow.name}${follow.display_name}${follow.displayName}`.toLowerCase()
@@ -51,8 +52,7 @@ export const FriendList = ({ searchTerm, onPressFollow, loadCombo = 20, toPaymen
 
         setFollowList(followspubkeys.slice(0, 5).map(i => { return { name: userService.convertPubkey(i) } }))
 
-        for (let i = 0; i <= followspubkeys.length; i += loadCombo) 
-        {
+        for (let i = 0; i <= followspubkeys.length; i += loadCombo) {
             let authors = followspubkeys.slice(i, i + loadCombo)
 
             let events = await listenerEvents({ search: searchTerm, kinds: [0], authors, limit: loadCombo })
@@ -92,11 +92,13 @@ export const FriendList = ({ searchTerm, onPressFollow, loadCombo = 20, toPaymen
                         userAbout = follow.about.length > 80 ? `${follow.about?.substring(0, 80)}...` : follow.about
 
                     return (
-                        <TouchableOpacity style={styles.sectionTransaction} onPress={() => handleClickUser(follow)} key={key} activeOpacity={.7}>
+                        <TouchableOpacity style={styles.sectionUser} onPress={() => handleClickUser(follow)} key={key} activeOpacity={.7}>
                             {/* Transaction Type */}
                             <View style={{ width: "20%", minHeight: 75, justifyContent: "center", alignItems: "center" }}>
-                                {follow.picture && <Image source={{ uri: follow.picture }} style={styles.profile} />}
-                                {!follow.picture && <Image source={require("assets/images/defaultProfile.png")} style={styles.profile} />}
+                                <View style={styles.profileView}>
+                                    {follow.picture && <Image source={{ uri: follow.picture }} style={styles.profile} />}
+                                    {!follow.picture && <Image source={require("assets/images/defaultProfile.png")} style={styles.profileView} />}
+                                </View>
                             </View>
                             {/* Transaction Description and Date */}
                             <View style={{ width: "80%", minHeight: 75 }}>
@@ -116,7 +118,7 @@ export const FriendList = ({ searchTerm, onPressFollow, loadCombo = 20, toPaymen
                 })
             }
 
-            {!followList &&
+            {!followList.length &&
                 <Text style={{ color: theme.colors.gray, textAlign: "center" }}>
                     {useTranslate("section.title.frends.empty")}
                 </Text>
@@ -128,11 +130,15 @@ export const FriendList = ({ searchTerm, onPressFollow, loadCombo = 20, toPaymen
 
 const styles = StyleSheet.create({
     profile: {
+        flex: 1,
+    },
+    profileView: {
         width: 50,
         height: 50,
-        borderRadius: 50
+        borderRadius: 50,
+        overflow: 'hidden'
     },
-    sectionTransaction: {
+    sectionUser: {
         width: "96%",
         minHeight: 75,
         maxHeight: 120,

@@ -1,22 +1,40 @@
-import theme from "@src/theme"
-import { StyleSheet, TextInput, TouchableOpacity, View } from "react-native"
-import { Ionicons } from "@expo/vector-icons"
+import { StyleSheet, TextInput, TouchableOpacity, View, Keyboard } from "react-native"
 import QRCodeReaderModal from "@components/modal/QRCodeReaderModal"
-import { useState } from "react"
+import { Ionicons } from "@expo/vector-icons"
+import { useEffect, useRef, useState } from "react"
+import theme from "@src/theme"
 
 type TextBoxProps = {
     value?: string | ""
     placeholder?: string,
-    onChangeText: (text: string) => void
+    onChangeText: (text: string) => void,
+    onFocus?: () => void,
+    onBlur?: () => void
 }
 
-export const TextBox = ({ value, placeholder, onChangeText }: TextBoxProps) => {
+export const TextBox = ({ value, placeholder, onChangeText, onFocus, onBlur }: TextBoxProps) => {
+
+    const textInputRef = useRef<TextInput>(null)
+
+    useEffect(() => {
+        const keyboardDidHideListener = Keyboard.addListener('keyboardDidHide', () => {
+            if (textInputRef.current) {
+                textInputRef.current.blur();
+            }
+        })
+        return () => {
+            keyboardDidHideListener.remove();
+        };
+    }, [])
 
     return (
         <View style={styles.container}>
-            <TextInput style={styles.input}
+            <TextInput style={styles.input} ref={textInputRef}
                 placeholder={placeholder}
+                onFocus={onFocus}
+                onBlur={onBlur}
                 onChangeText={onChangeText}
+                clearTextOnFocus={true}
                 placeholderTextColor={theme.colors.gray}
                 value={value}
             />

@@ -252,7 +252,7 @@ export const WalletReceiveModal = ({ visible, onClose, address }: ReceiveModalPr
 
                     <View style={{ padding: 8, borderRadius: 10, backgroundColor: theme.colors.white, marginVertical: 20 }}>
                         <QRCode
-                            size={280}
+                            size={250}
                             value={address}
                             logoSize={75}
                             logoBorderRadius={12}

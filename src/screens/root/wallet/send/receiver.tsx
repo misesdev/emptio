@@ -1,27 +1,24 @@
-import { View, Text, StyleSheet } from "react-native"
-import { HeaderPageSend } from "./components"
+import { View, Text, StyleSheet, TouchableOpacity } from "react-native"
 import { useTranslate } from "@src/services/translate"
 import { ButtonScanQRCode } from "@components/wallet/buttons"
 import { TextBox } from "@components/form/TextBoxs"
-import { useAuth } from "@src/providers/userProvider"
-import { ButtonDefault } from "@components/form/Buttons"
 import AlertBox, { alertMessage } from "@components/general/AlertBox"
 import SplashScreen from "@components/general/SplashScreen"
-import { toNumber } from "@src/services/converter"
+import { SectionHeader } from "@components/general/section/headers"
+import { FriendList } from "@components/nostr"
+import { walletService } from "@src/core/walletManager"
+import { Ionicons } from "@expo/vector-icons"
+import { HeaderPageSend } from "./components"
 import { useEffect, useState } from "react"
 import theme from "@src/theme"
-import { SectionHeader } from "@/src/components/general/section/headers"
-import { FriendList } from "@/src/components/nostr"
-import { walletService } from "@/src/core/walletManager"
 
 const SendReceiverScreen = ({ navigation, route }: any) => {
 
-    const { wallet } = useAuth()
-
     const [loading, setLoading] = useState(true)
+    const [searching, setSearching] = useState(false)
+    const [nextDisabled, setNextDisabled] = useState(true)
     const [amount, setAmount] = useState<string>("")
     const [address, setAddress] = useState<string>("")
-    const [whoaddres, setWhoaddress] = useState<string>("")
 
     useEffect(() => {
         setAmount(route.params?.amount)
@@ -30,33 +27,15 @@ const SendReceiverScreen = ({ navigation, route }: any) => {
 
     const handleRead = (value: string) => {
         setAddress(value)
-        setWhoaddress(value)
+        setNextDisabled(!walletService.address.validate(value))
     }
 
-    const handleSend = async () => {
-
-        if (whoaddres.length < 28)
-            return alertMessage("Escaneie um QR code ou selecione um amigo!")
-
-        if (!walletService.address.validate(address))
-            return alertMessage(`invalid bitcoin address: ${address}.`)
-
-        setLoading(true)
-
-        const result = await walletService.transaction.get({ amount: toNumber(amount), destination: address, walletKey: wallet.key ?? "" })
-
-        if (result.success)
-            await walletService.transaction.send(result.data)
-
-        if (!result.success) {
-            setLoading(false)
-            return alertMessage(result.message)
-        }
-
-        console.log("sign transaction: ", result.data)
-
-        setLoading(false)
+    const onChangeText = (value: string) => {
+        setAddress(value)
+        setNextDisabled(!walletService.address.validate(value))
     }
+
+    const handleSendToFee = async () => navigation.navigate("wallet-send-final-stack", { amount, address })
 
     if (loading)
         return <SplashScreen />
@@ -74,21 +53,29 @@ const SendReceiverScreen = ({ navigation, route }: any) => {
             />
 
             {/* Body */}
-            <Text style={styles.title}>{`${useTranslate("wallet.title.sendreceiver")}${route.params?.amount} sats?`}</Text>
+            <Text style={[styles.title, { display: searching ? "none" : "flex" }]}>{`${useTranslate("wallet.title.sendreceiver")}${route.params?.amount} sats?`}</Text>
 
-            <TextBox value={whoaddres} placeholder={useTranslate("wallet.placeholder.addressuser")} onChangeText={setWhoaddress} />
+            <TextBox value={address}
+                onChangeText={onChangeText}
+                onFocus={() => setSearching(true)}
+                onBlur={() => setSearching(false)}
+                placeholder={useTranslate("wallet.placeholder.addressuser")}
+            />
 
-            <View style={{ width: "96%", justifyContent: "center" }}>
+            <View style={{ width: "96%", justifyContent: "center", display: searching ? "none" : "flex" }}>
                 <ButtonScanQRCode style={{ paddingVertical: 16 }} label={useTranslate("commons.scan")} onChangeText={handleRead} />
             </View>
 
             <SectionHeader label={useTranslate("labels.friends")} icon="people" />
 
-            <FriendList searchTerm={whoaddres} onPressFollow={user => { console.log(user) }} />
+            <FriendList searchTerm={address} onPressFollow={user => { console.log(user) }} />
 
-            {/* Footer */}
-            <View style={{ position: "absolute", bottom: 0, width: "100%", justifyContent: "center", alignItems: "center" }}>
-                <ButtonDefault label={useTranslate("commons.send")} rightIcon="exit" onPress={handleSend} />
+            <View style={{ position: "absolute", bottom: 0, padding: 10, width: "100%", flexDirection: "row-reverse" }}>
+                <TouchableOpacity activeOpacity={.7} onPress={handleSendToFee} disabled={nextDisabled}
+                    style={{ borderRadius: 50, padding: 14, margin: 10, backgroundColor: nextDisabled ? theme.colors.disabled : theme.colors.blue }}
+                >
+                    <Ionicons name="arrow-forward-outline" size={theme.icons.large} color={nextDisabled ? theme.colors.gray : theme.colors.white} />
+                </TouchableOpacity>
             </View>
 
             <AlertBox />
