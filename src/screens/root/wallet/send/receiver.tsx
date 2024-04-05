@@ -1,17 +1,15 @@
 import { View, Text, StyleSheet, TouchableOpacity } from "react-native"
+import { FollowList } from "@components/nostr/follow/FollowList"
 import { useTranslate } from "@src/services/translate"
 import { ButtonScanQRCode } from "@components/wallet/buttons"
 import { TextBox } from "@components/form/TextBoxs"
 import AlertBox, { alertMessage } from "@components/general/AlertBox"
 import SplashScreen from "@components/general/SplashScreen"
-import { SectionHeader } from "@components/general/section/headers"
 import { Hidable } from "@components/general/Hidable"
-import { FriendList } from "@components/nostr"
 import { walletService } from "@src/core/walletManager"
 import { Ionicons } from "@expo/vector-icons"
-import { HeaderPageSend } from "./components"
+import { HeaderPageSend } from "../components"
 import { useEffect, useState } from "react"
-
 import theme from "@src/theme"
 
 const SendReceiverScreen = ({ navigation, route }: any) => {
@@ -72,9 +70,7 @@ const SendReceiverScreen = ({ navigation, route }: any) => {
                 <ButtonScanQRCode label={useTranslate("commons.scan")} onChangeText={handleRead} />
             </Hidable>
 
-            <SectionHeader label={useTranslate("labels.friends")} icon="people" />
-
-            <FriendList loadCombo={15} searchable searchTerm={address} onPressFollow={user => { console.log(user) }} />
+            <FollowList searchable searchTerm={address} onPressFollow={user => { console.log(user) }} />
 
             <View style={{ position: "absolute", bottom: 0, padding: 10, width: "100%", flexDirection: "row-reverse" }}>
                 <TouchableOpacity activeOpacity={.7} onPress={handleSendToFee} disabled={nextDisabled}

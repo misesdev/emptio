@@ -1,7 +1,7 @@
 import { useTranslate } from "@src/services/translate"
 import { StyleSheet, Text, TouchableOpacity, View } from "react-native"
 import { AmountBox } from "@components/wallet/inputs"
-import { HeaderPageSend } from "./components"
+import { HeaderPageSend } from "../components"
 import { Ionicons } from "@expo/vector-icons"
 import { useState } from "react"
 import theme from "@src/theme"

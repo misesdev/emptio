@@ -1,5 +1,5 @@
 import { View, Text, StyleSheet, TouchableOpacity } from "react-native"
-import { HeaderPageSend } from "./components"
+import { HeaderPageSend } from "../components"
 import { useTranslate } from "@src/services/translate"
 import { ButtonScanQRCode } from "@components/wallet/buttons"
 import { TextBox } from "@components/form/TextBoxs"

@@ -78,7 +78,6 @@ export type User = {
     zapService?: string,
     website?: string,
     keychanges?: string,
-    pairKey?: PairKey
 }
 
 export type Relays = Relay[]

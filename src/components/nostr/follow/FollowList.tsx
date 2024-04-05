@@ -5,8 +5,8 @@ import { useAuth } from "@src/providers/userProvider"
 import { User } from "@src/services/memory/types"
 import { useCallback, useEffect, useState } from "react"
 import { walletService } from "@src/core/walletManager"
-import { SectionHeader } from "../general/section/headers"
-import { FollowItem } from "./follow/FollowItem"
+import { SectionHeader } from "@components/general/section/headers"
+import { FollowItem } from "./FollowItem"
 import theme from "@src/theme"
 
 type FriendListProps = {
@@ -17,7 +17,7 @@ type FriendListProps = {
     onPressFollow?: (user: User) => void,
 }
 
-export const FriendList = ({ searchTerm, onPressFollow, loadCombo = 20, toPayment = false, searchable }: FriendListProps) => {
+export const FollowList = ({ searchTerm, onPressFollow, loadCombo = 20, toPayment = false, searchable }: FriendListProps) => {
 
     const { user } = useAuth()
     const [listCounter, setListCounter] = useState(loadCombo)

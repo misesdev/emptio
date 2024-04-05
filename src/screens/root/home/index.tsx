@@ -1,7 +1,6 @@
-import { StyleSheet, View, ScrollView, RefreshControl } from "react-native"
+import { StyleSheet, View, } from "react-native"
 import { ActionHeader, SectionHeader } from "@components/general/section/headers"
 import AlertBox, { alertMessage } from "@components/general/AlertBox"
-import { Purchase, Sales, Wallet } from "@src/services/memory/types"
 import { userService } from "@/src/core/userManager"
 import { getWallets } from "@src/services/memory/wallets"
 import { useTranslate } from "@src/services/translate"
@@ -10,41 +9,26 @@ import { WalletList } from "@components/wallet"
 import { useEffect, useState } from "react"
 import { HeaderHome } from "../headers"
 import theme from "@src/theme"
-import { FriendList } from "@/src/components/nostr"
+import { Wallet } from "@src/services/memory/types"
+import { FollowList } from "@components/nostr/follow/FollowList"
 
 const HomeScreen = ({ navigation }: any) => {
 
     const { user, setUser } = useAuth()
-    const [loading, setLoading] = useState(true)
-    const [sales, setSales] = useState<Sales[]>()
-    const [purchases, setPurchases] = useState<Purchase[]>()
     const [wallets, setWallets] = useState<Wallet[]>([])
 
-    useEffect(() => {
+    useEffect(() => { handleData() }, [])
 
-        handleData()
-
-    }, [])
-
-    // search for SafeAreaView to scoll horizontal wallets
     const handleData = async () => {
-        setLoading(true)
 
         const wallets = await getWallets()
-        // const purchases = await getPurchase()
-        // const sales = await getSales()
-
-        setWallets(wallets)
-
-        // setPurchases(purchases)
-        // setSales(sales)
-
-        await userService.updateProfile({ user: user ?? {}, setUser })
-
-        setLoading(false)
 
         if (wallets.length <= 0)
             alertMessage(useTranslate("message.wallet.alertcreate"))
+        
+        setWallets(wallets)
+
+        await userService.updateProfile({ user: user ?? {}, setUser })
     }
 
     const actionWallet: ActionHeader = {
@@ -54,24 +38,23 @@ const HomeScreen = ({ navigation }: any) => {
     return (
         <View style={styles.container}>
             <HeaderHome navigation={navigation} />
-            <ScrollView
-                contentContainerStyle={theme.styles.scroll_container}
+            {/* <ScrollView
+                contentContainerStyle={[theme.styles.scroll_container, { }]}
                 refreshControl={<RefreshControl refreshing={loading} onRefresh={handleData} />}
-            >
-                {/* Wallets */}
-                <SectionHeader icon="wallet" label={useTranslate("section.title.wallets")} actions={[actionWallet]} />
+            > */}
+            {/* Wallets */}
+            <SectionHeader icon="wallet" label={useTranslate("section.title.wallets")} actions={[actionWallet]} />
 
-                {/* Wallets section  */}
-                <WalletList wallets={wallets} navigation={navigation} />
+            {/* Wallets section  */}
+            <WalletList wallets={wallets} navigation={navigation} />
 
-                {/* Sales and Shopping */}
-                <SectionHeader icon="cash-outline" label={useTranslate("section.title.sales")} />
+            {/* Sales and Shopping */}
+            {/* <SectionHeader icon="cash-outline" label={useTranslate("section.title.sales")} /> */}
 
-                <FriendList loadCombo={10} onPressFollow={user => console.log(user)} />
-                {/* Wallets section  */}
-                {/* <WalletList  wallets={wallets} /> */}
+            {/* </ScrollView> */}
 
-            </ScrollView>
+            <FollowList onPressFollow={user => console.log(user)} />
+
             <AlertBox />
         </View>
     )
