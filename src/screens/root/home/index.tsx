@@ -39,7 +39,7 @@ const HomeScreen = ({ navigation }: any) => {
         // setPurchases(purchases)
         // setSales(sales)
 
-        // await userService.updateProfile({ user: user ?? {}, setUser })
+        await userService.updateProfile({ user: user ?? {}, setUser })
 
         setLoading(false)
 
@@ -67,7 +67,7 @@ const HomeScreen = ({ navigation }: any) => {
                 {/* Sales and Shopping */}
                 <SectionHeader icon="cash-outline" label={useTranslate("section.title.sales")} />
 
-                <FriendList onPressFollow={user => console.log(user)} />
+                <FriendList loadCombo={10} onPressFollow={user => console.log(user)} />
                 {/* Wallets section  */}
                 {/* <WalletList  wallets={wallets} /> */}
 

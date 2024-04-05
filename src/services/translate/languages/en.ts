@@ -81,7 +81,7 @@ export default {
     "wallet.subtitle.balance": "Available balance of ",
     "wallet.title.sendfor": "For whom?",
     "wallet.title.sendreceiver": "For those who want to send ",
-    "wallet.placeholder.addressuser": "Address bc1.. or Friend",
+    "wallet.placeholder.addressuser": "Address bc1.. or friend",
 
     "screnn.title.addwallet": "Add Wallet",
 

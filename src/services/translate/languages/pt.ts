@@ -81,7 +81,7 @@ export default {
     "wallet.subtitle.balance": "Saldo disponível de ",
     "wallet.title.sendfor": "Para quem?",
     "wallet.title.sendreceiver": "Para quem deseja enviar ",
-    "wallet.placeholder.addressuser": "Endereço: bc1.. ou Amigo",
+    "wallet.placeholder.addressuser": "Endereço: bc1.. ou amigo",
 
     "screnn.title.addwallet": "Adicionar Carteira",
 

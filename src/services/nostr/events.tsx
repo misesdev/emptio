@@ -5,6 +5,15 @@ import { PairKey } from "../memory/types"
 import { getRelays } from "../memory/relays"
 import { NostrEventKinds } from "@/src/constants/Events"
 
+type NostrEvent = {
+    id: string,
+    kind: number,
+    pubkey: string,
+    content: any,
+    created_at: number,
+    tags: string[][]
+}
+
 export const getNostrInstance = async (): Promise<NDK> => {
 
     const relays = await getRelays()
@@ -12,12 +21,12 @@ export const getNostrInstance = async (): Promise<NDK> => {
     const ndk = new NDK({ explicitRelayUrls: relays })
 
     await ndk.connect()
-    
+
     return ndk
 }
 
 export const publishUser = async (profile: NDKUserProfile, keys: PairKey) => {
-       
+
     Nostr.signer = new NDKPrivateKeySigner(keys.privateKey)
 
     const user = Nostr.getUser({ hexpubkey: keys.publicKey })
@@ -36,11 +45,11 @@ export const publishEvent = async (event: { kind: number, content: string }, key
     const eventSend = new NDKEvent(Nostr);
 
     eventSend.content = event.content
-    
-    eventSend.kind = event.kind 
 
-    await eventSend.sign()  
-    
+    eventSend.kind = event.kind
+
+    await eventSend.sign()
+
     await eventSend.publish()
 }
 
@@ -48,14 +57,7 @@ export const listenerEvents = async (filters: Filter) => {
 
     const events = await Nostr.fetchEvents(filters)
 
-    const eventsResut: {
-        id: string,
-        kind: number,
-        pubkey: string,
-        content: any,
-        created_at: number,
-        tags: string[][] 
-    }[] = []
+    const eventsResut: NostrEvent[] = []
 
     events.forEach((event: Event) => {
 
@@ -76,18 +78,24 @@ export const listenerEvents = async (filters: Filter) => {
 
 export const getEvent = async (filters: Filter) => {
 
+    var eventResut: NostrEvent 
+
     const event = await Nostr.fetchEvent(filters)
 
-    const eventsResut: {
-        kind: number,
-        pubkey: string,
-        content: string
-    } = {
-        kind: event?.kind ? event?.kind : 0,
-        pubkey: event?.pubkey ? event?.pubkey : "",
-        content: event?.content ? event?.content : ""
-    }
+    if (event) {
+        let jsonContent = [NostrEventKinds.metadata].includes(event.kind)
 
-    return eventsResut
+        eventResut = {
+            id: event.id,
+            kind: event.kind,
+            pubkey: event.pubkey,
+            content: jsonContent ? JSON.parse(event.content) : event.content,
+            created_at: event.created_at,
+            tags: event.tags
+        }
+
+        return eventResut
+    } else 
+        return null
 }
 

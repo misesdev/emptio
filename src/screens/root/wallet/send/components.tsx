@@ -1,16 +1,17 @@
 import theme from "@src/theme"
-import { View, Text, TouchableOpacity } from "react-native"
+import { View, Text, TouchableOpacity, StyleProp, ViewStyle } from "react-native"
 import { Ionicons } from "@expo/vector-icons"
 
 type HeaderProps = {
     title: string,
-    onClose: () => void
+    onClose: () => void,
+    style?: StyleProp<ViewStyle>
 }
 
-export const HeaderPageSend = ({ title, onClose }: HeaderProps) => {
+export const HeaderPageSend = ({ title, onClose, style }: HeaderProps) => {
 
     return (
-        <View style={{ flexDirection: "row", width: "100%" }}>
+        <View style={[{ flexDirection: "row", width: "100%" }, style]}>
             <View style={{ width: "75%", padding: 6 }}>
                 <Text style={{ color: theme.colors.white, fontSize: 20, fontWeight: "bold", margin: 15 }}>
                     {title}

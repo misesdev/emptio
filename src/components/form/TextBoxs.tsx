@@ -9,10 +9,11 @@ type TextBoxProps = {
     placeholder?: string,
     onChangeText: (text: string) => void,
     onFocus?: () => void,
-    onBlur?: () => void
+    onBlur?: () => void,
+    center?: boolean
 }
 
-export const TextBox = ({ value, placeholder, onChangeText, onFocus, onBlur }: TextBoxProps) => {
+export const TextBox = ({ value, placeholder, onChangeText, onFocus, onBlur, center }: TextBoxProps) => {
 
     const textInputRef = useRef<TextInput>(null)
 
@@ -29,7 +30,7 @@ export const TextBox = ({ value, placeholder, onChangeText, onFocus, onBlur }: T
 
     return (
         <View style={styles.container}>
-            <TextInput style={styles.input} ref={textInputRef}
+            <TextInput style={[styles.input, { textAlign: center ? "center" : "auto" }]} ref={textInputRef}
                 placeholder={placeholder}
                 onFocus={onFocus}
                 onBlur={onBlur}
@@ -75,7 +76,6 @@ const styles = StyleSheet.create({
         margin: 10
     },
     input: {
-        textAlign: "center",
         color: theme.input.textColor,
     },
     pastButton: {

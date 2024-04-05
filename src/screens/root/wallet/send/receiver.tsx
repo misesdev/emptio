@@ -5,11 +5,13 @@ import { TextBox } from "@components/form/TextBoxs"
 import AlertBox, { alertMessage } from "@components/general/AlertBox"
 import SplashScreen from "@components/general/SplashScreen"
 import { SectionHeader } from "@components/general/section/headers"
+import { Hidable } from "@components/general/Hidable"
 import { FriendList } from "@components/nostr"
 import { walletService } from "@src/core/walletManager"
 import { Ionicons } from "@expo/vector-icons"
 import { HeaderPageSend } from "./components"
 import { useEffect, useState } from "react"
+
 import theme from "@src/theme"
 
 const SendReceiverScreen = ({ navigation, route }: any) => {
@@ -47,13 +49,17 @@ const SendReceiverScreen = ({ navigation, route }: any) => {
             backgroundColor: theme.colors.black
         }}>
             {/* Header */}
-            <HeaderPageSend
-                title={useTranslate("wallet.title.sendfor")}
-                onClose={() => navigation.navigate("wallet-send-stack")}
-            />
+            {/* <Hidable visible={!searching}> */}
+                <HeaderPageSend
+                    title={useTranslate("wallet.title.sendfor")}
+                    onClose={() => navigation.navigate("wallet-send-stack")}
+                />
+            {/* </Hidable> */}
 
             {/* Body */}
-            <Text style={[styles.title, { display: searching ? "none" : "flex" }]}>{`${useTranslate("wallet.title.sendreceiver")}${route.params?.amount} sats?`}</Text>
+            <Hidable visible={!searching}>
+                <Text style={styles.title}>{`${useTranslate("wallet.title.sendreceiver")}${route.params?.amount} sats?`}</Text>
+            </Hidable>
 
             <TextBox value={address}
                 onChangeText={onChangeText}
@@ -62,13 +68,13 @@ const SendReceiverScreen = ({ navigation, route }: any) => {
                 placeholder={useTranslate("wallet.placeholder.addressuser")}
             />
 
-            <View style={{ width: "96%", justifyContent: "center", display: searching ? "none" : "flex" }}>
-                <ButtonScanQRCode style={{ paddingVertical: 16 }} label={useTranslate("commons.scan")} onChangeText={handleRead} />
-            </View>
+            <Hidable visible={!searching}>
+                <ButtonScanQRCode label={useTranslate("commons.scan")} onChangeText={handleRead} />
+            </Hidable>
 
             <SectionHeader label={useTranslate("labels.friends")} icon="people" />
 
-            <FriendList searchTerm={address} onPressFollow={user => { console.log(user) }} />
+            <FriendList loadCombo={15} searchable searchTerm={address} onPressFollow={user => { console.log(user) }} />
 
             <View style={{ position: "absolute", bottom: 0, padding: 10, width: "100%", flexDirection: "row-reverse" }}>
                 <TouchableOpacity activeOpacity={.7} onPress={handleSendToFee} disabled={nextDisabled}

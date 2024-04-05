@@ -44,6 +44,11 @@ const theme = {
             alignContent: "center",
             alignItems: "center"
         },
+        hidden: {
+            opacity: 0,
+            height: 0,
+            overflow: 'hidden',
+        },
     })
 };
 

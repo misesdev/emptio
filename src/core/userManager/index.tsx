@@ -126,22 +126,33 @@ const isLogged = async ({ setUser }: loggedProps) => {
     return !!privateKey
 }
 
-const listFollowsPubkeys = async (user: User): Promise<string[]> => {
+const listFollowsPubkeys = async (user: User, iNot: boolean = true): Promise<User[]> => {
+
+    var follows: User[] = []
 
     const { publicKey } = await getPairKey(user.keychanges ?? "")
 
-    const follows = await listenerEvents({ limit: 1, authors: [publicKey], kinds: [3] })
+    const events = await listenerEvents({ limit: 1, authors: [publicKey], kinds: [3] })
 
-    const followspubkeys = follows[0].tags.map(tag => tag[1])
-
-    // if (follows[0].content) {
-    //     for (let relay in follows[0].content) {
+    // if (events[0]?.content) {
+    //     for (let relay in events[0].content) {
     //         if (relay.includes("wss://")) 
     //             Nostr.addExplicitRelay(relay)
     //     }
     // }
 
-    return followspubkeys
+    follows = events[0].tags.map(tag => { return { pubkey: tag[1] } })
+    
+    follows = follows.filter(f => (f.pubkey ?? "").length >= 64)
+
+    if (iNot)
+        return follows.filter(pubkey => pubkey != publicKey)
+
+    return follows.map(follow => { 
+        follow.name = convertPubkey(follow.pubkey ?? "")
+
+        return { ...follow } 
+    })
 }
 
 const convertPubkey = (pubkey: string) => nip19.npubEncode(pubkey)
