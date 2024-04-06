@@ -3,7 +3,7 @@ import { SectionHeader } from "@components/general/section/headers"
 import { updateWallet } from "@src/services/memory/wallets"
 import { useTranslate } from "@src/services/translate"
 import { Transaction } from "@src/services/memory/types"
-import { View, ScrollView, Modal, RefreshControl, TouchableOpacity, StyleSheet } from "react-native"
+import { View, ScrollView, RefreshControl, TouchableOpacity, StyleSheet } from "react-native"
 import { useEffect, useState } from "react"
 import { Ionicons } from "@expo/vector-icons"
 import SplashScreen from "@components/general/SplashScreen"
@@ -92,9 +92,5 @@ const WalletManagerScreen = ({ navigation, route }: any) => {
         </>
     )
 }
-
-const styles = StyleSheet.create({
-
-})
 
 export default WalletManagerScreen

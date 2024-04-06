@@ -1,11 +1,9 @@
 import { ActivityIndicator, FlatList } from "react-native"
 import { userService } from "@/src/core/userManager"
-import { useTranslate } from "@/src/services/translate"
 import { useAuth } from "@src/providers/userProvider"
 import { User } from "@src/services/memory/types"
 import { useCallback, useEffect, useState } from "react"
 import { walletService } from "@src/core/walletManager"
-import { SectionHeader } from "@components/general/section/headers"
 import { FollowItem } from "./FollowItem"
 import theme from "@src/theme"
 

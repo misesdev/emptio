@@ -1,5 +1,5 @@
 import { useAuth } from "@src/providers/userProvider"
-import { ScrollView, StyleSheet, Text, View } from "react-native"
+import { ScrollView, StyleSheet, Text, TouchableOpacity, View } from "react-native"
 import { HeaderPageWallet } from "../components"
 import { ButtonPrimary } from "@components/form/Buttons"
 import { useTranslate } from "@src/services/translate"
@@ -44,20 +44,24 @@ const WalletSttings = ({ navigation, route }: any) => {
                 onClose={() => navigation.navigate("wallet-stack")}
             />
 
-            <ScrollView contentContainerStyle={theme.styles.scroll_container}>
+            <ScrollView contentContainerStyle={[theme.styles.scroll_container, { justifyContent: "center" }]}>
 
                 <TextBox value={walletName} onChangeText={setWalletName} placeholder={useTranslate("labels.wallet.name")} />
 
-                <SectionContainer>
+                <SectionContainer style={{ maxWidth: "90%" }}>
                     <LinkSection icon="copy" label="copy address" onPress={() => { }} />
                     <LinkSection icon="copy" label="copy address" onPress={() => { }} />
                     <LinkSection icon="copy" label="copy address" onPress={() => { }} />
                 </SectionContainer>
 
-                <SectionContainer>
+                <SectionContainer style={{ maxWidth: "90%" }}>
                     <LinkSection icon="copy" label="copy address" onPress={() => { }} />
                     <LinkSection icon="copy" label="copy address" onPress={() => { }} />
                 </SectionContainer>
+
+                <TouchableOpacity style={{ margin: 15, padding: 10 }} >
+                    <Text style={{ color: theme.colors.red,  }}>{useTranslate("commons.delete")}</Text>
+                </TouchableOpacity>
 
             </ScrollView>
 

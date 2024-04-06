@@ -16,12 +16,13 @@ export const Events = {
 export const NostrEventKinds = {
     metadata: 0,
     note: 1,
-    contactList: 3,
+    followList: 3,
     privateChat: 4,
+    delete: 5,
     repost: 6,
     reaction: 7,
     classifiedListening: 30402,
-    zap: 9734
+    zap: 9734,    
 }
 
 

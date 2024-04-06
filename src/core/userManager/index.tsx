@@ -6,6 +6,7 @@ import { getEvent, listenerEvents } from "../../services/nostr/events"
 import { Response, trackException } from "../../services/telemetry"
 import { getUser, insertUpdateUser } from "../../services/memory/user"
 import { getPairKey, insertPairKey } from "../../services/memory/pairkeys"
+import { NostrEventKinds } from "@/src/constants/Events"
 import { nip19 } from "nostr-tools"
 
 type SignUpProps = {
@@ -75,7 +76,7 @@ type UpdateProfileProps = {
 
 const updateProfile = async ({ user, setUser }: UpdateProfileProps) => {
 
-    const event = await getEvent({ kinds: [0], authors: [user.pubkey ?? ""] })
+    const event = await getEvent({ limit: 2, kinds: [NostrEventKinds.metadata], authors: [user.pubkey ?? ""] })
 
     if (event) {
         user.displayName = event.content?.displayName
@@ -132,7 +133,7 @@ const listFollows = async (user: User, iNot: boolean = true): Promise<User[]> =>
 
     var follows: User[] = []
 
-    const event = await getEvent({ limit: 1, authors: [user.pubkey ?? ""], kinds: [3] })
+    const event = await getEvent({ limit: 1, authors: [user.pubkey ?? ""], kinds: [NostrEventKinds.followList] })
 
     // if (events[0]?.content) {
     //     for (let relay in events[0].content) {
