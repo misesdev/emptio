@@ -7,10 +7,11 @@ import { userService } from "../core/userManager"
 import { useEffect, useState } from "react"
 import theme from "@src/theme"
 import { useAuth } from "../providers/userProvider"
+import { emptioService } from "../core/emptio"
 
 const InitializeScreen = ({ navigation }: any) => {
 
-    const { setUser } = useAuth()
+    const { setUser, setEmptioData } = useAuth()
     const [loading, setLoading] = useState(true)
 
     useEffect(() => {
@@ -23,8 +24,12 @@ const InitializeScreen = ({ navigation }: any) => {
 
         Nostr = await getNostrInstance()
 
-        if (await userService.isLogged({ setUser }))
+        if (await userService.isLogged({ setUser })) {
+            if (setEmptioData)
+                setEmptioData(await emptioService.getInitalData())
+
             navigation.reset({ index: 0, routes: [{ name: "authenticate-stack" }] })
+        }
         else
             setLoading(false)
     }

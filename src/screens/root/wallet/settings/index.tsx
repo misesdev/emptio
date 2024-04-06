@@ -22,8 +22,11 @@ const WalletSttings = ({ navigation, route }: any) => {
         navigation.navigate("core-stack")
     }
 
-    const handleSave = () => {
+    const handleSave = async () => {
+        
         wallet.name = walletName
+
+        await walletService.update(wallet)
 
         if (setWallet)
             setWallet(wallet)

@@ -21,6 +21,7 @@
     "@react-navigation/native": "^6.1.17",
     "@react-navigation/stack": "^6.3.29",
     "assert": "^2.1.0",
+    "axios": "^1.6.8",
     "bip39": "^3.1.0",
     "bitcoinjs-lib": "^6.1.5",
     "buffer": "^6.0.3",

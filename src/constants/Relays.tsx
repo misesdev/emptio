@@ -4,11 +4,11 @@ export const DefaultRelays = [
     "wss://nostr.liberty.fans",
     "wss://filter.nostr.wine",
     "wss://relay.nostr.band",
-    "wss://relay.nostr.bg",
-    "wss://nostr.wine",
-    "wss://relay.noswhere.com",
-    "wss://nostr-pub.semisol.dev",
-    "wss://paid.no.str.cr",
+    // "wss://relay.nostr.bg",
+    // "wss://nostr.wine",
+    // "wss://relay.noswhere.com",
+    // "wss://nostr-pub.semisol.dev",
+    // "wss://paid.no.str.cr",
     // "wss://nostr.pklhome.net",  // error non listener users
     // "wss://relay.orangepill.dev",  // error non listener users
     // "wss://puravida.nostr.land",  // error non listener users

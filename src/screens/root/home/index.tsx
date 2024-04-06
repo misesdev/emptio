@@ -14,12 +14,14 @@ import theme from "@src/theme"
 
 const HomeScreen = ({ navigation }: any) => {
 
-    const { user, setUser } = useAuth()
+    const { user, emptioData, setUser } = useAuth()
     const [wallets, setWallets] = useState<Wallet[]>([])
 
     useEffect(() => { handleData() }, [])
 
     const handleData = async () => {
+
+        console.log(emptioData)
 
         const wallets = await getWallets()
 

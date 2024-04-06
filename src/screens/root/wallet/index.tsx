@@ -1,19 +1,16 @@
 import { WalletButtons, WalletHeader, WalletTransactions } from "@components/wallet"
-import { LinkSection, SectionContainer } from "@components/general/section"
 import { SectionHeader } from "@components/general/section/headers"
 import { updateWallet } from "@src/services/memory/wallets"
-import { getWalletInfo } from "@src/services/bitcoin/mempool"
-import { ButtonDanger } from "@components/form/Buttons"
 import { useTranslate } from "@src/services/translate"
 import { Transaction } from "@src/services/memory/types"
 import { View, ScrollView, Modal, RefreshControl, TouchableOpacity, StyleSheet } from "react-native"
 import { useEffect, useState } from "react"
 import { Ionicons } from "@expo/vector-icons"
-import { walletService } from "@src/core/walletManager"
 import SplashScreen from "@components/general/SplashScreen"
 import { useAuth } from "@/src/providers/userProvider"
 import WalletReceiveModal from "@components/wallet/WalletReceiveModal"
 import theme from "@src/theme"
+import { walletService } from "@/src/core/walletManager"
 
 const WalletManagerScreen = ({ navigation, route }: any) => {
 
@@ -28,7 +25,7 @@ const WalletManagerScreen = ({ navigation, route }: any) => {
         // add to header menu wallet options 
         navigation.setOptions({
             headerRight: () => (
-                <TouchableOpacity style={{ marginHorizontal: 10 }} onPress={() => navigation.navigate("wallet-settings-stack")}>
+                <TouchableOpacity style={{ paddingHorizontal: 5, marginHorizontal: 10 }} onPress={() => navigation.navigate("wallet-settings-stack")}>
                     <Ionicons name="ellipsis-vertical-sharp" color={theme.colors.white} size={theme.icons.large} />
                 </TouchableOpacity>
             )
@@ -45,7 +42,7 @@ const WalletManagerScreen = ({ navigation, route }: any) => {
         const address = wallet.address ?? ""
 
         // search transactions and update wallet lastBalance
-        const walletInfo = await getWalletInfo(address)
+        const walletInfo = await walletService.listTransactions(address)
 
         setTransactions(walletInfo.transactions)
 
