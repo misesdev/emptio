@@ -6,9 +6,19 @@ export type EmptioMessage = {
     message: string,
 }
 
+export type EmptioDeveloper = {
+    pubkey: string,
+    hierarchy: number
+}
+
+export type EmptioSecureSeller = {
+    pubkey: string,
+    hierarchy: number
+}
+
 export type EmptioData = {
-    developers?: string[],
-    securesellers?: string[],
+    developers?: EmptioDeveloper[],
+    securesellers?: EmptioSecureSeller[],
     messages?: EmptioMessage[]
 }
 
