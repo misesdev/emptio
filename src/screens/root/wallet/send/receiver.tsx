@@ -8,14 +8,15 @@ import SplashScreen from "@components/general/SplashScreen"
 import { Hidable } from "@components/general/Hidable"
 import { walletService } from "@src/core/walletManager"
 import { Ionicons } from "@expo/vector-icons"
-import { HeaderPageSend } from "../components"
+import { HeaderPageWallet } from "../components"
 import { useEffect, useState } from "react"
 import theme from "@src/theme"
+import { SectionHeader } from "@/src/components/general/section/headers"
 
 const SendReceiverScreen = ({ navigation, route }: any) => {
 
     const [loading, setLoading] = useState(true)
-    const [searching, setSearching] = useState(false)
+    // const [searching, setSearching] = useState(false)
     const [nextDisabled, setNextDisabled] = useState(true)
     const [amount, setAmount] = useState<string>("")
     const [address, setAddress] = useState<string>("")
@@ -47,28 +48,28 @@ const SendReceiverScreen = ({ navigation, route }: any) => {
             backgroundColor: theme.colors.black
         }}>
             {/* Header */}
-            {/* <Hidable visible={!searching}> */}
-                <HeaderPageSend
-                    title={useTranslate("wallet.title.sendfor")}
-                    onClose={() => navigation.navigate("wallet-send-stack")}
-                />
-            {/* </Hidable> */}
+            <HeaderPageWallet
+                title={useTranslate("wallet.title.sendfor")}
+                onClose={() => navigation.navigate("wallet-send-stack")}
+            />
 
             {/* Body */}
-            <Hidable visible={!searching}>
-                <Text style={styles.title}>{`${useTranslate("wallet.title.sendreceiver")}${route.params?.amount} sats?`}</Text>
-            </Hidable>
+            {/* <Hidable visible={!searching}> */}
+            <Text style={styles.title}>{`${useTranslate("wallet.title.sendreceiver")}${route.params?.amount} sats?`}</Text>
+            {/* </Hidable> */}
 
             <TextBox value={address}
                 onChangeText={onChangeText}
-                onFocus={() => setSearching(true)}
-                onBlur={() => setSearching(false)}
+                // onFocus={() => setSearching(true)}
+                // onBlur={() => setSearching(false)}
                 placeholder={useTranslate("wallet.placeholder.addressuser")}
             />
 
-            <Hidable visible={!searching}>
-                <ButtonScanQRCode label={useTranslate("commons.scan")} onChangeText={handleRead} />
-            </Hidable>
+            {/* <Hidable visible={!searching}> */}
+            <ButtonScanQRCode label={useTranslate("commons.scan")} onChangeText={handleRead} />
+            {/* </Hidable> */}
+
+            <SectionHeader label={useTranslate("labels.friends")} icon="people" />
 
             <FollowList searchable searchTerm={address} onPressFollow={user => { console.log(user) }} />
 
@@ -86,14 +87,7 @@ const SendReceiverScreen = ({ navigation, route }: any) => {
 }
 
 const styles = StyleSheet.create({
-    title: {
-        fontSize: 24,
-        maxWidth: "90%",
-        fontWeight: "bold",
-        textAlign: "center",
-        marginVertical: 10,
-        color: theme.colors.white
-    }
+    title: { fontSize: 24, maxWidth: "90%", fontWeight: "bold", textAlign: "center", marginVertical: 10, color: theme.colors.white }
 })
 
 export default SendReceiverScreen

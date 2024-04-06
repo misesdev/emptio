@@ -83,7 +83,7 @@ const address = {
 export const walletService = {
     create,
     update,
-    exclude,
+    delete: exclude,
     address,
     transaction
 }

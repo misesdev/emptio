@@ -15,17 +15,21 @@ export const FollowItem = memo(({ follow, handleClickFollow }: UserItemProps) =>
     const [followData, setUserData] = useState<User>(follow)
 
     useEffect(() => {
-        loadProfile()
-    }, [])
-
-    const loadProfile = async () => {
-        if (!follow.about) {
-            let event = await getEvent({ kinds: [0], authors: [follow.pubkey ?? ""] })
-
+        // loadProfile()
+        getEvent({ kinds: [0], authors: [follow.pubkey ?? ""] }).then(event => {
             if (event)
                 setUserData({ ...event.content, pubkey: event.pubkey })
-        }
-    }
+        })
+    }, [])
+
+    // const loadProfile = async () => {
+    //     if (!follow.about) {
+    //         let event = await getEvent({ kinds: [0], authors: [follow.pubkey ?? ""] })
+
+    //         if (event)
+    //             setUserData({ ...event.content, pubkey: event.pubkey })
+    //     }
+    // }
 
     return (
         <TouchableOpacity

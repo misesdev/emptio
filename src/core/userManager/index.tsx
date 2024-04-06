@@ -132,8 +132,6 @@ const listFollows = async (user: User, iNot: boolean = true): Promise<User[]> =>
 
     var follows: User[] = []
 
-    console.log(user.pubkey)
-
     const event = await getEvent({ limit: 1, authors: [user.pubkey ?? ""], kinds: [3] })
 
     // if (events[0]?.content) {

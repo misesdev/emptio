@@ -1,7 +1,7 @@
 import { useTranslate } from "@src/services/translate"
 import { StyleSheet, Text, TouchableOpacity, View } from "react-native"
 import { AmountBox } from "@components/wallet/inputs"
-import { HeaderPageSend } from "../components"
+import { HeaderPageWallet } from "../components"
 import { Ionicons } from "@expo/vector-icons"
 import { useState } from "react"
 import theme from "@src/theme"
@@ -18,7 +18,7 @@ const SendScreen = ({ navigation }: any) => {
             backgroundColor: theme.colors.black
         }}>
             {/* Hader */}
-            <HeaderPageSend title={useTranslate("wallet.title.send")} onClose={() => navigation.navigate("wallet-stack")} />
+            <HeaderPageWallet title={useTranslate("wallet.title.send")} onClose={() => navigation.navigate("wallet-stack")} />
 
             {/* Body */}
             <Text style={styles.title}>{useTranslate("wallet.title.sendvalue")}</Text>

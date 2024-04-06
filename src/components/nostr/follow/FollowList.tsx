@@ -68,7 +68,7 @@ export const FollowList = ({ searchTerm, onPressFollow, itemsPerPage = 24, toPay
             setFollowList([...followList, ...followListData.slice(listCounter, listCounter + itemsPerPage)])
             setListCounter(listCounter + itemsPerPage)
         }
-        setRefreshing(false)
+        setTimeout(() => setRefreshing(false), 300)        
     }
 
     const handleRenderItem = ({ item }: { item: User }) => <FollowItem key={item.pubkey} follow={item} handleClickFollow={handleClickFollow} />
@@ -80,7 +80,6 @@ export const FollowList = ({ searchTerm, onPressFollow, itemsPerPage = 24, toPay
     }
     return (
         <>
-            <SectionHeader label={useTranslate("labels.friends")} icon="people" actions={[{ label: followListData.length.toString(), action: () => { } }]} />
             <FlatList
                 data={followList}
                 renderItem={handleRenderItem}

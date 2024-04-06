@@ -53,7 +53,9 @@ const HomeScreen = ({ navigation }: any) => {
 
             {/* </ScrollView> */}
 
-            <FollowList onPressFollow={user => console.log(user)} />
+            <SectionHeader label={useTranslate("labels.friends")} icon="people" />
+
+            {/* <FollowList itemsPerPage={15} onPressFollow={user => console.log(user)} /> */}
 
             <AlertBox />
         </View>

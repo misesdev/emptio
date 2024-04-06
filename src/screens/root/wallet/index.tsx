@@ -6,7 +6,7 @@ import { getWalletInfo } from "@src/services/bitcoin/mempool"
 import { ButtonDanger } from "@components/form/Buttons"
 import { useTranslate } from "@src/services/translate"
 import { Transaction } from "@src/services/memory/types"
-import { View, ScrollView, Modal, RefreshControl, TouchableOpacity } from "react-native"
+import { View, ScrollView, Modal, RefreshControl, TouchableOpacity, StyleSheet } from "react-native"
 import { useEffect, useState } from "react"
 import { Ionicons } from "@expo/vector-icons"
 import { walletService } from "@src/core/walletManager"
@@ -20,7 +20,6 @@ const WalletManagerScreen = ({ navigation, route }: any) => {
     const { wallet, setWallet } = useAuth()
     const [loading, setLoading] = useState(true)
     const [refreshing, setRefreshing] = useState(false)
-    const [optionsVisible, setOptionsVisible] = useState(false)
     const [receiveVisible, setReceiveVisible] = useState(false)
     const [transactions, setTransactions] = useState<Transaction[]>([])
 
@@ -29,14 +28,14 @@ const WalletManagerScreen = ({ navigation, route }: any) => {
         // add to header menu wallet options 
         navigation.setOptions({
             headerRight: () => (
-                <TouchableOpacity style={{ marginHorizontal: 10 }} onPress={() => setOptionsVisible(true)}>
+                <TouchableOpacity style={{ marginHorizontal: 10 }} onPress={() => navigation.navigate("wallet-settings-stack")}>
                     <Ionicons name="ellipsis-vertical-sharp" color={theme.colors.white} size={theme.icons.large} />
                 </TouchableOpacity>
             )
         })
-        
+
         handleLoadTransactions()
-        
+
         setLoading(false)
     }, [])
 
@@ -55,18 +54,11 @@ const WalletManagerScreen = ({ navigation, route }: any) => {
         wallet.lastSended = walletInfo.sended
 
         await updateWallet(wallet)
-        
+
         if (setWallet)
             setWallet(wallet)
 
         setRefreshing(false)
-    }
-
-    const hadleDeleteWallet = async () => {
-
-        await walletService.exclude(wallet ?? {})
-
-        navigation.navigate("core-stack")
     }
 
     const openTransaction = (transaction: Transaction) => {
@@ -78,7 +70,7 @@ const WalletManagerScreen = ({ navigation, route }: any) => {
 
     return (
         <>
-            <WalletHeader wallet={wallet} showOptions={() => setOptionsVisible(true)} />
+            <WalletHeader wallet={wallet} showOptions={() => navigation.navigate("wallet-settings-stack", { wallet })} />
 
             <SectionHeader
                 icon="repeat-outline"
@@ -96,35 +88,16 @@ const WalletManagerScreen = ({ navigation, route }: any) => {
                 <View style={{ width: "100%", height: 62 }}></View>
 
             </ScrollView>
+
             <WalletButtons onReceive={setReceiveVisible} onSend={() => navigation.navigate("wallet-send-stack")} />
-
-            <Modal
-                transparent
-                animationType="slide"
-                visible={optionsVisible}
-                onRequestClose={() => console.log("close modal")}
-            >
-                <View style={{ width: "100%", height: "100%", justifyContent: "center", alignItems: "center", backgroundColor: "rgba(0,0,0,.5)" }}>
-                    <SectionContainer style={{ maxWidth: "75%" }}>
-                        <LinkSection label="compiar endereço" icon="trash" onPress={() => { }} />
-                        <LinkSection label={useTranslate("commons.delete")} icon="trash" onPress={hadleDeleteWallet} />
-                        {/* <LinkSection label={useTranslate("commons.close")} icon="close-circle" onPress={() => setOptionsVisible(false)} /> */}
-                    </SectionContainer>
-
-                    <View style={{ width: "100%", position: "absolute", bottom: 75, alignItems: "center" }}>
-                        <ButtonDanger
-                            leftIcon="close-circle"
-                            label={useTranslate("commons.close")}
-                            onPress={() => setOptionsVisible(false)}
-                        />
-                    </View>
-                </View>
-            </Modal>
 
             <WalletReceiveModal visible={receiveVisible} onClose={setReceiveVisible} address={wallet.address ?? ""} />
         </>
     )
 }
 
+const styles = StyleSheet.create({
+
+})
 
 export default WalletManagerScreen

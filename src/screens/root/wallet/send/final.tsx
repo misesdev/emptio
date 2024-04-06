@@ -1,8 +1,6 @@
 import { View, Text, StyleSheet, TouchableOpacity } from "react-native"
-import { HeaderPageSend } from "../components"
+import { HeaderPageWallet } from "../components"
 import { useTranslate } from "@src/services/translate"
-import { ButtonScanQRCode } from "@components/wallet/buttons"
-import { TextBox } from "@components/form/TextBoxs"
 import { useAuth } from "@src/providers/userProvider"
 import { ButtonDefault } from "@components/form/Buttons"
 import AlertBox, { alertMessage } from "@components/general/AlertBox"
@@ -59,7 +57,7 @@ const SendFinalScreen = ({ navigation, route }: any) => {
             backgroundColor: theme.colors.black
         }}>
             {/* Header */}
-            <HeaderPageSend
+            <HeaderPageWallet
                 title={useTranslate("wallet.title.sendfor")}
                 onClose={() => navigation.navigate("wallet-send-stack")}
             />
@@ -78,14 +76,7 @@ const SendFinalScreen = ({ navigation, route }: any) => {
 }
 
 const styles = StyleSheet.create({
-    title: {
-        fontSize: 24,
-        maxWidth: "90%",
-        fontWeight: "bold",
-        textAlign: "center",
-        marginVertical: 10,
-        color: theme.colors.white
-    }
+    title: { fontSize: 24, maxWidth: "90%", fontWeight: "bold", textAlign: "center", marginVertical: 10, color: theme.colors.white }
 })
 
 export default SendFinalScreen

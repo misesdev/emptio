@@ -28,6 +28,7 @@ export default {
     "commons.add": "Adicionar",
     "commons.update": "Atualizar",
     "commons.delete": "Excluir",
+    "commons.save": "Salvar",
     "commons.delete.account": "Excluir Conta",
     "commons.authenticate": "Autenticar",
     "commons.authenticate.message": "Autentique-se com a biometria",
@@ -53,6 +54,7 @@ export default {
     "message.wallet.create": "Adicione quantas carteiras desejar. Para comprar ou vender, você pode selecionar uma carteira na ordem de compra ou venda.",
     "message.wallet.alertcreate": "Adicione uma carteira bitcoin para comprar e vender!", 
     "message.wallet.notfound": "Carteira não encontrada!",
+    "message.wallet.saved": "Alterações salvas!",
     "message.transaction.insufficient_funds": "Fundos insuficientes!",
     "message.transaction.confirmed": "Transação confirmada!",
     "message.transaction.notconfirmed": "Transação não confirmada!",
@@ -81,6 +83,7 @@ export default {
     "wallet.subtitle.balance": "Saldo disponível de ",
     "wallet.title.sendfor": "Para quem?",
     "wallet.title.sendreceiver": "Para quem deseja enviar ",
+    "wallet.title.settings": "Configurações da Carteira",
     "wallet.placeholder.addressuser": "Endereço: bc1.. ou amigo",
 
     "screnn.title.addwallet": "Adicionar Carteira",
