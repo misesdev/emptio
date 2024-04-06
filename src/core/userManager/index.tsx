@@ -76,7 +76,7 @@ type UpdateProfileProps = {
 
 const updateProfile = async ({ user, setUser }: UpdateProfileProps) => {
 
-    const event = await getEvent({ limit: 2, kinds: [NostrEventKinds.metadata], authors: [user.pubkey ?? ""] })
+    const event = await getEvent({ kinds: [NostrEventKinds.metadata], authors: [user.pubkey ?? ""] })
 
     if (event) {
         user.displayName = event.content?.displayName

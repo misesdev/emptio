@@ -71,7 +71,7 @@ const SendReceiverScreen = ({ navigation, route }: any) => {
 
             <SectionHeader label={useTranslate("labels.friends")} icon="people" />
 
-            <FollowList searchable searchTerm={address} onPressFollow={user => { console.log(user) }} />
+            <FollowList searchable searchTerm={address} itemsPerPage={30} onPressFollow={user => { console.log(user) }} />
 
             <View style={{ position: "absolute", bottom: 0, padding: 10, width: "100%", flexDirection: "row-reverse" }}>
                 <TouchableOpacity activeOpacity={.7} onPress={handleSendToFee} disabled={nextDisabled}

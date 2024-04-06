@@ -66,7 +66,7 @@ export const FollowList = ({ searchTerm, onPressFollow, itemsPerPage = 24, toPay
             setFollowList([...followList, ...followListData.slice(listCounter, listCounter + itemsPerPage)])
             setListCounter(listCounter + itemsPerPage)
         }
-        setTimeout(() => setRefreshing(false), 300)        
+        setTimeout(() => setRefreshing(false), 1200)        
     }
 
     const handleRenderItem = ({ item }: { item: User }) => <FollowItem key={item.pubkey} follow={item} handleClickFollow={handleClickFollow} />

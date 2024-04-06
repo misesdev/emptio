@@ -7,6 +7,7 @@ import { walletService } from "@src/core/walletManager"
 import { TextBox } from "@components/form/TextBoxs"
 import { LinkSection, SectionContainer } from "@components/general/section"
 import AlertBox, { alertMessage } from "@components/general/AlertBox"
+import { Ionicons } from "@expo/vector-icons"
 import { useState } from "react"
 import theme from "@src/theme"
 
@@ -59,8 +60,9 @@ const WalletSttings = ({ navigation, route }: any) => {
                     <LinkSection icon="copy" label="copy address" onPress={() => { }} />
                 </SectionContainer>
 
-                <TouchableOpacity style={{ margin: 15, padding: 10 }} >
-                    <Text style={{ color: theme.colors.red,  }}>{useTranslate("commons.delete")}</Text>
+                <TouchableOpacity style={{ marginVertical: 20, padding: 15, flexDirection: "row" }} >
+                    <Ionicons name="trash" color={theme.colors.red} size={theme.icons.mine} />
+                    <Text style={{ color: theme.colors.red, fontSize: 18, fontWeight: "400", marginHorizontal: 5 }}>{useTranslate("commons.delete")}</Text>
                 </TouchableOpacity>
 
             </ScrollView>

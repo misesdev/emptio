@@ -1,4 +1,4 @@
-import { StyleSheet, View, } from "react-native"
+import { RefreshControl, ScrollView, StyleSheet, View, } from "react-native"
 import { ActionHeader, SectionHeader } from "@components/general/section/headers"
 import AlertBox, { alertMessage } from "@components/general/AlertBox"
 import { FollowList } from "@components/nostr/follow/FollowList"
@@ -14,23 +14,23 @@ import theme from "@src/theme"
 
 const HomeScreen = ({ navigation }: any) => {
 
-    const { user, emptioData, setUser } = useAuth()
+    const { user, setUser } = useAuth()
+    const [loading, setLoading] = useState(false)
     const [wallets, setWallets] = useState<Wallet[]>([])
 
     useEffect(() => { handleData() }, [])
 
     const handleData = async () => {
-
-        console.log(emptioData)
-
+        setLoading(true)
         const wallets = await getWallets()
 
         if (wallets.length <= 0)
             alertMessage(useTranslate("message.wallet.alertcreate"))
-        
+
         setWallets(wallets)
 
         await userService.updateProfile({ user: user ?? {}, setUser })
+        setLoading(false)
     }
 
     const actionWallet: ActionHeader = {
@@ -40,26 +40,21 @@ const HomeScreen = ({ navigation }: any) => {
     return (
         <View style={styles.container}>
             <HeaderHome navigation={navigation} />
-            {/* <ScrollView
-                contentContainerStyle={[theme.styles.scroll_container, { }]}
+            <ScrollView
+                contentContainerStyle={[theme.styles.scroll_container, {}]}
                 refreshControl={<RefreshControl refreshing={loading} onRefresh={handleData} />}
-            > */}
-            {/* Wallets */}
-            <SectionHeader icon="wallet" label={useTranslate("section.title.wallets")} actions={[actionWallet]} />
+            >
+                {/* Wallets */}
+                <SectionHeader icon="wallet" label={useTranslate("section.title.wallets")} actions={[actionWallet]} />
 
-            {/* Wallets section  */}
-            <WalletList wallets={wallets} navigation={navigation} />
+                {/* Wallets section  */}
+                <WalletList wallets={wallets} navigation={navigation} />
 
-            {/* Sales and Shopping */}
-            {/* <SectionHeader icon="cash-outline" label={useTranslate("section.title.sales")} /> */}
+                {/* Sales and Shopping */}
+                <SectionHeader icon="cash-outline" label={useTranslate("section.title.sales")} />
 
-            {/* </ScrollView> */}
-
-            <SectionHeader label={useTranslate("labels.friends")} icon="people" />
-
-            {/* <FollowList itemsPerPage={15} onPressFollow={user => console.log(user)} /> */}
-
-            <AlertBox />
+                <AlertBox />
+            </ScrollView>
         </View>
     )
 }
