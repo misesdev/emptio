@@ -1,16 +1,16 @@
 import { StyleSheet, View, } from "react-native"
 import { ActionHeader, SectionHeader } from "@components/general/section/headers"
 import AlertBox, { alertMessage } from "@components/general/AlertBox"
+import { FollowList } from "@components/nostr/follow/FollowList"
 import { userService } from "@/src/core/userManager"
+import { Wallet } from "@src/services/memory/types"
 import { getWallets } from "@src/services/memory/wallets"
 import { useTranslate } from "@src/services/translate"
 import { useAuth } from "@src/providers/userProvider"
-import { WalletList } from "@components/wallet"
+import WalletList from "@components/wallet/WalletList"
 import { useEffect, useState } from "react"
 import { HeaderHome } from "../headers"
 import theme from "@src/theme"
-import { Wallet } from "@src/services/memory/types"
-import { FollowList } from "@components/nostr/follow/FollowList"
 
 const HomeScreen = ({ navigation }: any) => {
 
@@ -61,12 +61,6 @@ const HomeScreen = ({ navigation }: any) => {
 }
 
 const styles = StyleSheet.create({
-    title: {
-        padding: 10,
-        fontSize: 22,
-        fontWeight: 'bold',
-        color: theme.colors.gray,
-    },
     container: {
         backgroundColor: theme.colors.black,
         height: "100%"

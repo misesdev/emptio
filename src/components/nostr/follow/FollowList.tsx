@@ -11,16 +11,16 @@ import theme from "@src/theme"
 
 type FriendListProps = {
     searchTerm?: string,
-    loadCombo?: number,
+    itemsPerPage?: number,
     toPayment?: boolean,
     searchable?: boolean,
     onPressFollow?: (user: User) => void,
 }
 
-export const FollowList = ({ searchTerm, onPressFollow, loadCombo = 20, toPayment = false, searchable }: FriendListProps) => {
+export const FollowList = ({ searchTerm, onPressFollow, itemsPerPage = 24, toPayment = false, searchable }: FriendListProps) => {
 
     const { user } = useAuth()
-    const [listCounter, setListCounter] = useState(loadCombo)
+    const [listCounter, setListCounter] = useState(itemsPerPage)
     const [refreshing, setRefreshing] = useState(true)
     const [followList, setFollowList] = useState<User[]>([])
     const [followListData, setFollowListData] = useState<User[]>([])
@@ -50,7 +50,7 @@ export const FollowList = ({ searchTerm, onPressFollow, loadCombo = 20, toPaymen
 
         var follows = await userService.listFollows(user)
 
-        setFollowList(follows.slice(0, loadCombo))
+        setFollowList(follows.slice(0, itemsPerPage))
 
         setFollowListData(follows)
 
@@ -60,13 +60,13 @@ export const FollowList = ({ searchTerm, onPressFollow, loadCombo = 20, toPaymen
     const handleClickFollow = useCallback((follow: User) => {
         if (onPressFollow)
             onPressFollow(follow)
-    }, [])
+    }, [onPressFollow])
 
     const handleLoadScroll = () => {
         setRefreshing(true)
         if (followListData.length > listCounter) {
-            setFollowList([...followList, ...followListData.slice(listCounter, listCounter + loadCombo)])
-            setListCounter(listCounter + loadCombo)
+            setFollowList([...followList, ...followListData.slice(listCounter, listCounter + itemsPerPage)])
+            setListCounter(listCounter + itemsPerPage)
         }
         setRefreshing(false)
     }
@@ -85,7 +85,7 @@ export const FollowList = ({ searchTerm, onPressFollow, loadCombo = 20, toPaymen
                 data={followList}
                 renderItem={handleRenderItem}
                 onEndReached={handleLoadScroll}
-                onEndReachedThreshold={.3}
+                onEndReachedThreshold={2}
                 contentContainerStyle={theme.styles.scroll_container}
                 ListFooterComponent={handleLoaderEnd}
             />

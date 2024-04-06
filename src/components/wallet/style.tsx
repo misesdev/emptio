@@ -2,43 +2,6 @@ import theme from "@src/theme";
 import { StyleSheet } from "react-native";
 
 export const styles = StyleSheet.create({
-    // Wallet List Item
-    section: {
-        width: "100%",
-        padding: 10
-    },
-    wallet: {
-        width: 360,
-        marginVertical: 10,
-        marginHorizontal: 6,
-        borderRadius: 18,
-    },
-    title: {
-        color: theme.colors.white,
-        fontSize: 24,
-        fontWeight: "bold",
-        marginTop: 20,
-        marginHorizontal: 10
-    },
-    description: {
-        fontSize: 12,
-        marginHorizontal: 10,
-        marginVertical: 6
-    },
-    button: {
-        margin: 10,
-        maxWidth: 150,
-        paddingVertical: 14,
-        borderRadius: 15,
-    },
-    buttonText: {
-        color: theme.colors.white,
-        fontSize: 13,
-        fontWeight: "bold",
-        textAlign: 'center',
-        marginHorizontal: 28
-    },
-
     // Wallet Scren
     headerWallet: {
         top: 0,

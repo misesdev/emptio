@@ -1,16 +1,16 @@
-import { useEffect, useState } from "react"
-import { User } from "@src/services/memory/types"
 import { TouchableOpacity, View, Image, Text, StyleSheet } from "react-native"
+import { memo, useEffect, useState } from "react"
+import { User } from "@src/services/memory/types"
 import { getEvent } from "@src/services/nostr/events"
-import theme from "@src/theme"
 import { nip19 } from "nostr-tools"
+import theme from "@src/theme"
 
 type UserItemProps = {
     follow: User,
     handleClickFollow: (follow: User) => void
 }
 
-export const FollowItem = ({ follow, handleClickFollow }: UserItemProps) => {
+export const FollowItem = memo(({ follow, handleClickFollow }: UserItemProps) => {
 
     const [followData, setUserData] = useState<User>(follow)
 
@@ -19,18 +19,19 @@ export const FollowItem = ({ follow, handleClickFollow }: UserItemProps) => {
     }, [])
 
     const loadProfile = async () => {
-        
-        let event = await getEvent({ kinds: [0], authors: [follow.pubkey ?? ""] })
-        
-        if(event) 
-            setUserData({ ...event.content, pubkey: event.pubkey })
+        if (!follow.about) {
+            let event = await getEvent({ kinds: [0], authors: [follow.pubkey ?? ""] })
+
+            if (event)
+                setUserData({ ...event.content, pubkey: event.pubkey })
+        }
     }
 
     return (
-        <TouchableOpacity 
-            activeOpacity={.7} 
-            style={styles.sectionUser} 
-            onPress={() => handleClickFollow(followData)} 
+        <TouchableOpacity
+            activeOpacity={.7}
+            style={styles.sectionUser}
+            onPress={() => handleClickFollow(followData)}
         >
             {/* Transaction Type */}
             <View style={styles.profileArea}>
@@ -56,7 +57,7 @@ export const FollowItem = ({ follow, handleClickFollow }: UserItemProps) => {
             </View>
         </TouchableOpacity>
     )
-}
+})
 
 const styles = StyleSheet.create({
     profile: { flex: 1 },
@@ -66,5 +67,3 @@ const styles = StyleSheet.create({
     userAbout: { fontSize: 12, color: theme.colors.gray, margin: 2, paddingRight: 8, paddingBottom: 8, fontWeight: "bold" },
     sectionUser: { width: "96%", minHeight: 75, maxHeight: 120, borderRadius: 23, marginVertical: 4, flexDirection: "row", backgroundColor: "rgba(0, 55, 55, .2)" }
 })
-
-export default FollowItem
