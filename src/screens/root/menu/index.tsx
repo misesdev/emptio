@@ -18,20 +18,19 @@ const UserMenuScreen = ({ navigation }: any) => {
 
     const opacity = .6
     const { user } = useAuth()
-    const [loading, setLoading] = useState(false)    
+    const [loading, setLoading] = useState(false)
 
     const handleDeleteAccount = async () => {
 
         setLoading(true)
 
-        setTimeout(async () => { 
+        setTimeout(async () => {
             const result = await userService.signOut()
 
-            if(result.success)
+            if (result.success)
                 navigation.reset({ index: 0, routes: [{ name: "initial-stack" }] })
             else
                 alertMessage(result.message)
-            
         }, 300)
     }
 
@@ -42,14 +41,14 @@ const UserMenuScreen = ({ navigation }: any) => {
             const { success } = await authenticateAsync({
                 promptMessage: useTranslate("commons.authenticate.message"),
             })
-    
+
             return success
-        }            
+        }
         else
             return true
     };
 
-    const handleCopyKeys = async () => { 
+    const handleCopyKeys = async () => {
         const biometrics = await checkBiometric()
 
         const { privateKey } = await getPairKey(user?.keychanges ?? "")
@@ -78,10 +77,12 @@ const UserMenuScreen = ({ navigation }: any) => {
 
     return (
         <>
-            {user?.banner && <Image style={styles.banner} source={{ uri: user?.banner }} />}
-            <View style={{ width: "100%", height: 58 }}></View>
+            <View style={styles.banner}>
+                {user?.banner && <Image style={{ flex: 1 }} source={{ uri: user?.banner }} />}
+            </View>
+            <View style={{ height: 60 }}></View>
             <View style={styles.area}>
-                <TouchableOpacity activeOpacity={opacity} onPress={() => navigation.navigate("user-edit-stack")}>
+                <TouchableOpacity activeOpacity={opacity} onPress={() => navigation.navigate("manage-account-stack")}>
                     <View style={styles.image}>
                         {user?.picture && <Image source={{ uri: user?.picture }} style={styles.picture} />}
                         {!user?.picture && <Image source={require("assets/images/defaultProfile.png")} style={styles.picture} />}
@@ -91,7 +92,7 @@ const UserMenuScreen = ({ navigation }: any) => {
             </View>
             <ScrollView contentContainerStyle={theme.styles.scroll_container}>
                 <SectionContainer>
-                    <LinkSection label={useTranslate("settings.account.edit")} icon="person" onPress={() => navigation.navigate("user-edit-stack")} />
+                    <LinkSection label={useTranslate("settings.account.edit")} icon="person" onPress={() => navigation.navigate("manage-account-stack")} />
                     <LinkSection label={useTranslate("settings.nostrkey.copy")} icon="document-lock-outline" onPress={handleCopyNostrKey} />
                     <LinkSection label={useTranslate("settings.secretkey.copy")} icon="document-lock-outline" onPress={handleCopyKeys} />
                     <LinkSection label={useTranslate("settings.security")} icon="settings" onPress={() => navigation.navigate("manage-security-stack")} />
@@ -99,7 +100,7 @@ const UserMenuScreen = ({ navigation }: any) => {
 
                 <SectionContainer>
                     {/* <LinkSection label="Wallet" icon="settings" onPress={() => navigation.navigate("wallet-stack")} /> */}
-                    <LinkSection label={useTranslate("settings.chooselanguage")} icon="language" onPress={() => { }} />                   
+                    <LinkSection label={useTranslate("settings.chooselanguage")} icon="language" onPress={() => { }} />
                     <LinkSection label={useTranslate("settings.relays")} icon="earth" onPress={() => navigation.navigate("manage-relays-stack")} />
                     <LinkSection label={useTranslate("settings.about")} icon="settings" onPress={() => navigation.navigate("about-stack")} />
                 </SectionContainer>
@@ -145,7 +146,7 @@ const styles = StyleSheet.create({
     },
     banner: {
         width: "100%",
-        height: 120,
+        height: 140,
         position: "absolute",
         top: 0,
         zIndex: 0

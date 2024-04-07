@@ -10,7 +10,7 @@ import HomeSearchScreen from "@screens/root/home/search/HomeSearch"
 import FeedSearchScreen from "@screens/root/feed/search/FeedSearch"
 import AuthenticateScreen from "@screens/initialize"
 import { stackOptions } from "../constants/RouteSettings"
-import UserEditScreen from "@screens/root/menu/user/edit"
+import UserEditScreen from "@screens/root/settings/user"
 import ManageRelaysScreen from "@screens/root/settings/relays"
 import AboutScreen from "@screens/root/settings/about"
 import ManageSecurityScreen from "@screens/root/settings/security"
@@ -37,7 +37,7 @@ const AppRoutes = () => {
                 <Stack.Screen name="search-feed-stack" component={FeedSearchScreen} options={{ headerShown: true }} />   
 
                 <Stack.Screen name="user-menu-stack" component={UserMenuScreen} options={{ headerShown: true }} />  
-                <Stack.Screen name="user-edit-stack" component={UserEditScreen} options={{ headerShown: true }} />   
+                <Stack.Screen name="manage-account-stack" component={UserEditScreen} options={{ headerShown: true }} />   
 
                 <Stack.Screen name="manage-relays-stack" component={ManageRelaysScreen} options={{ headerShown: true }} />
                 <Stack.Screen name="manage-security-stack" component={ManageSecurityScreen} options={{ headerShown: true }} />

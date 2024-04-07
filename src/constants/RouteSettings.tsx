@@ -16,6 +16,8 @@ export const stackOptions: StackNavigationOptions = {
     headerTransparent: true,
     headerTintColor: theme.colors.white,
     cardStyle: { backgroundColor: theme.colors.black },
-    cardStyleInterpolator: CardStyleInterpolators.forHorizontalIOS
+    cardStyleInterpolator: CardStyleInterpolators.forHorizontalIOS,
+    // headerStyle: { backgroundColor: theme.colors.black },
+    headerShadowVisible: false,
 }
 

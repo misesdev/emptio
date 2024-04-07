@@ -39,6 +39,9 @@ export default {
 
     "labels.friends": "Amigos",
     "labels.username": "Nome de Usuário",
+    "labels.about": "Sobre min",
+    "labels.mywebsite": "Meu Website",
+    "labels.lnaddress": "Endereço LN",
     "labels.privatekey": "Chave Privada",
     "labels.wallet.add": "Adicionar carteira!",
     "labels.wallet.name": "Nome da Carteira",
@@ -59,6 +62,7 @@ export default {
     "message.transaction.confirmed": "Transação confirmada!",
     "message.transaction.notconfirmed": "Transação não confirmada!",
     "message.shortly": "Essa funcionalidade estará disponível em breve!",
+    "message.error.notaccessgallery": "Sem acesso a galeria de imagens!",
     "message.wallet.nameempty": "Por favor preencha o nome com mais de 5 caracteres!",
     "message.copied": "Copiado para área de transferência!",
 

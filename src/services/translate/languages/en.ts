@@ -39,6 +39,9 @@ export default {
 
     "labels.friends": "Friends",
     "labels.username": "User Name",
+    "labels.about": "About me",
+    "labels.mywebsite": "My Website",
+    "labels.lnaddress": "LN address",
     "labels.privatekey": "Private Key",
     "labels.wallet.add": "Add a wallet!",
     "labels.wallet.name": "Wallet Name",
@@ -60,6 +63,7 @@ export default {
     "message.transaction.confirmed": "Confirmed transaction!",
     "message.transaction.notconfirmed": "Transaction not confirmed!",
     "message.shortly": "This feature will be available soon!",
+    "message.error.notaccessgallery": "No access to image gallery!",
     "message.copied": "Copied to clipboard!",
 
     "settings.relays": "Relays",

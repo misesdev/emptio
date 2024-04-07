@@ -2,7 +2,7 @@ import { clearStorage } from "../../services/memory"
 import { createPairKeys, getHexKeys } from "../../services/nostr"
 import { getUserData, pushUserData } from "../../services/nostr/pool"
 import { PairKey, User } from "../../services/memory/types"
-import { getEvent, listenerEvents } from "../../services/nostr/events"
+import { getEvent, publishEvent } from "../../services/nostr/events"
 import { Response, trackException } from "../../services/telemetry"
 import { getUser, insertUpdateUser } from "../../services/memory/user"
 import { getPairKey, insertPairKey } from "../../services/memory/pairkeys"
@@ -71,26 +71,35 @@ const signIn = async ({ secretKey, setUser }: SignProps) => {
 
 type UpdateProfileProps = {
     user: User,
-    setUser?: (user: User) => void
+    setUser?: (user: User) => void,
+    upNostr?: boolean
 }
 
-const updateProfile = async ({ user, setUser }: UpdateProfileProps) => {
+const updateProfile = async ({ user, setUser, upNostr = false }: UpdateProfileProps) => {
 
-    const event = await getEvent({ kinds: [NostrEventKinds.metadata], authors: [user.pubkey ?? ""] })
+    if (!upNostr) {
+        const event = await getEvent({ kinds: [NostrEventKinds.metadata], authors: [user.pubkey ?? ""] })
 
-    if (event) {
-        user.displayName = event.content?.displayName
-        user.picture = event.content?.picture
-        user.image = event.content?.image
-        user.banner = event.content?.banner
-        user.lud06 = event.content?.lud06
-        user.lud16 = event.content?.lud16
-        user.nip05 = event.content?.nip05
-        user.bio = event.content?.bio
-        user.name = event.content?.name
-        user.website = event.content?.website
-        user.about = event.content?.about
-        user.zapService = event.content?.zapService
+        if (event) {
+            user.displayName = event.content?.displayName
+            user.picture = event.content?.picture
+            user.image = event.content?.image
+            user.banner = event.content?.banner
+            user.lud06 = event.content?.lud06
+            user.lud16 = event.content?.lud16
+            user.nip05 = event.content?.nip05
+            user.bio = event.content?.bio
+            user.name = event.content?.name
+            user.website = event.content?.website
+            user.about = event.content?.about
+            user.zapService = event.content?.zapService
+        }
+    } else {
+        const pairkey = await getPairKey(user.keychanges ?? "")
+        await publishEvent({ 
+            kind: NostrEventKinds.metadata,
+            content: JSON.stringify(user)
+        }, pairkey)
     }
 
     await insertUpdateUser(user)
@@ -146,8 +155,7 @@ const listFollows = async (user: User, iNot: boolean = true): Promise<User[]> =>
 
     follows = follows.filter(f => (f.pubkey ?? "").length >= 64)
 
-    if (iNot) 
-    {
+    if (iNot) {
         return follows.filter(pubkey => pubkey != user.pubkey).map(follow => {
             follow.name = convertPubkey(follow.pubkey ?? "")
             return follow
