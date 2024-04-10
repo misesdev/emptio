@@ -65,7 +65,6 @@ export type Transaction = {
 export type User = {
     name?: string,
     pubkey?: string,
-    displayName?: string,
     display_name?: string,
     picture?: string,
     image?: string,
@@ -78,6 +77,8 @@ export type User = {
     zapService?: string,
     website?: string,
     keychanges?: string,
+    default_wallet?: string,
+    bitcoin_address?: string
 }
 
 export type Relays = Relay[]

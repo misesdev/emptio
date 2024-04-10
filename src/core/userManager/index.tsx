@@ -21,7 +21,7 @@ const signUp = async ({ userName, setUser }: SignUpProps): Promise<Response> => 
 
         const userData: User = {
             name: userName.trim(),
-            displayName: userName.trim(),
+            display_name: userName.trim(),
             keychanges: pairKey.key,
         }
 
@@ -81,7 +81,6 @@ const updateProfile = async ({ user, setUser, upNostr = false }: UpdateProfilePr
         const event = await getEvent({ kinds: [NostrEventKinds.metadata], authors: [user.pubkey ?? ""] })
 
         if (event) {
-            user.displayName = event.content?.displayName
             user.picture = event.content?.picture
             user.image = event.content?.image
             user.banner = event.content?.banner
@@ -93,9 +92,11 @@ const updateProfile = async ({ user, setUser, upNostr = false }: UpdateProfilePr
             user.website = event.content?.website
             user.about = event.content?.about
             user.zapService = event.content?.zapService
+            user.bitcoin_address = event.content?.bitcoin_address
         }
     } else {
         const pairkey = await getPairKey(user.keychanges ?? "")
+        
         await publishEvent({ 
             kind: NostrEventKinds.metadata,
             content: JSON.stringify(user)

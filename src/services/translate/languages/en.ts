@@ -65,6 +65,7 @@ export default {
     "message.shortly": "This feature will be available soon!",
     "message.error.notaccessgallery": "No access to image gallery!",
     "message.copied": "Copied to clipboard!",
+    "message.profile.saved": "Profile data updated!",
 
     "settings.relays": "Relays",
     "settings.account.edit": "My Account",

@@ -63,12 +63,12 @@ const UserEditScreen = ({ navigation }: any) => {
         setLoading(true)
 
         // upload image of banner
-        if(banner && banner != user.banner) {
-            
+        if (banner && banner != user.banner) {
+
         }
 
         // upload image of profile
-        if(prifile && prifile != user.picture) {
+        if (prifile && prifile != user.picture) {
 
         }
 
@@ -76,10 +76,10 @@ const UserEditScreen = ({ navigation }: any) => {
 
         setLoading(false)
 
-        navigation.reset({ index: 0, routes: [{ name: "user-menu-stack" }] })
+        alertMessage(useTranslate("message.profile.saved"))
     }
 
-    if(loading)
+    if (loading)
         return <SplashScreen />
 
     return (

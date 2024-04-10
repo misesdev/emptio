@@ -62,8 +62,8 @@ const MessageBox = () => {
     }, [visible])
 
     return (
-        <Modal animationType="slide" onRequestClose={handleClose} visible={visible} transparent>
-            <View style={{ flex: 1, alignItems: "center", justifyContent: "center" }}>
+        <Modal animationType="slide" onRequestClose={handleClose} visible={visible} transparent >
+            <View style={{ flex: 1, alignItems: "center", justifyContent: "center", backgroundColor: "rgba(0,0,0, .6)" }}>
                 <View style={styles.box}>
 
                     <Text style={{ color: baseColor, fontSize: 28, marginVertical: 10, fontWeight: 'bold' }}> {title ?? useTranslate("commons.oops")} </Text>
