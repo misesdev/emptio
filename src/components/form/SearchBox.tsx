@@ -1,0 +1,58 @@
+import theme from "@src/theme"
+import { useState } from "react"
+import { Ionicons } from "@expo/vector-icons"
+import { StyleSheet, TextInput, View } from "react-native"
+import { TouchableOpacity } from "react-native-gesture-handler"
+
+type SearchBoxProps = {
+    label: string,
+    textCenter?: boolean,
+    onSearch: (value: string) => void
+}
+
+export const SearchBox = ({ label, textCenter, onSearch }: SearchBoxProps) => {
+
+    const [search, setSearch] = useState<string>()
+
+    var TimeOutSearch = setTimeout(() => { }, 10)
+
+    const handleSearch = (value: string) => {
+        setSearch(value)
+        if (value) {
+            clearTimeout(TimeOutSearch)
+            TimeOutSearch = setTimeout(() => onSearch(value), 800)
+        }
+    }
+
+    return (
+        <View style={styles.control}>
+            <View style={[styles.container, { flexDirection: "row" }]}>
+                <View style={styles.searchIcon}>
+                    <Ionicons name="search" size={theme.icons.large} color={theme.colors.gray} />
+                </View>
+                <TextInput style={[styles.input, { textAlign: textCenter ? "center" : "auto", width: "72%" }]}
+                    placeholder={label}
+                    onChangeText={handleSearch}
+                    clearTextOnFocus={true}
+                    placeholderTextColor={theme.colors.gray}
+                    value={search}
+                />
+                {search &&
+                    <View style={styles.searchButton}>
+                        <TouchableOpacity activeOpacity={.7} onPress={() => setSearch("")}>
+                            <Ionicons name="close" size={theme.icons.large} color={theme.colors.gray} />
+                        </TouchableOpacity>
+                    </View>
+                }
+            </View>
+        </View>
+    )
+}
+
+const styles = StyleSheet.create({
+    control: { width: "100%", alignItems: "center", paddingVertical: 5 },
+    container: { width: "94%", color: theme.colors.white, backgroundColor: theme.input.backGround, borderRadius: 24, margin: 5 },
+    input: { paddingVertical: 15, paddingHorizontal: 10, color: theme.input.textColor },
+    searchIcon: { width: "14%", justifyContent: "center", alignItems: "center" },
+    searchButton: { width: "14%", justifyContent: "center", alignItems: "center" }
+})

@@ -8,10 +8,10 @@ import SplashScreen from "@components/general/SplashScreen"
 import { Hidable } from "@components/general/Hidable"
 import { walletService } from "@src/core/walletManager"
 import { Ionicons } from "@expo/vector-icons"
-import { HeaderPageWallet } from "../components"
 import { useEffect, useState } from "react"
+import { SectionHeader } from "@components/general/section/headers"
+import { HeaderPage } from "@components/general/HeaderPage"
 import theme from "@src/theme"
-import { SectionHeader } from "@/src/components/general/section/headers"
 
 const SendReceiverScreen = ({ navigation, route }: any) => {
 
@@ -48,7 +48,7 @@ const SendReceiverScreen = ({ navigation, route }: any) => {
             backgroundColor: theme.colors.black
         }}>
             {/* Header */}
-            <HeaderPageWallet
+            <HeaderPage
                 title={useTranslate("wallet.title.sendfor")}
                 onClose={() => navigation.navigate("wallet-send-stack")}
             />

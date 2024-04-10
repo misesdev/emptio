@@ -9,6 +9,7 @@ import { Ionicons } from "@expo/vector-icons"
 import AlertBox, { alertMessage } from "@components/general/AlertBox"
 import SplashScreen from "@components/general/SplashScreen"
 import { walletService } from "@src/core/walletManager"
+import { HeaderPage } from "@/src/components/general/HeaderPage"
 
 const AddWalletScreen = ({ navigation }: any) => {
 
@@ -44,8 +45,10 @@ const AddWalletScreen = ({ navigation }: any) => {
 
     return (
         <>
+            <HeaderPage title={useTranslate("screnn.title.addwallet")} onClose={() => navigation.navigate("core-stack")} />
             <View style={theme.styles.container} >
-                <Text style={styles.title}>{useTranslate("screnn.title.addwallet")}</Text>
+
+                {/* <Text style={styles.title}>{useTranslate("screnn.title.addwallet")}</Text> */}
 
                 <TextBox placeholder={useTranslate("labels.wallet.name")} value={walletName} onChangeText={setWalletName} />
 

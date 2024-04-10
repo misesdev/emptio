@@ -24,7 +24,7 @@ const theme = {
         large: 26,
         extra: 34,
         white: "#FFFFFF",
-        gray: "525B5F",
+        gray: "#525B5F",
         default: "#2D3138",
     },
     input: {

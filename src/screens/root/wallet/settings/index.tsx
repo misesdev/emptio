@@ -1,6 +1,5 @@
 import { useAuth } from "@src/providers/userProvider"
 import { ScrollView, StyleSheet, Text, TouchableOpacity, View } from "react-native"
-import { HeaderPageWallet } from "../components"
 import { ButtonPrimary } from "@components/form/Buttons"
 import { useTranslate } from "@src/services/translate"
 import { walletService } from "@src/core/walletManager"
@@ -12,6 +11,7 @@ import { userService } from "@src/core/userManager"
 import { FormControl, FormControlSwitch } from "@components/form/FormControl"
 import { useState } from "react"
 import theme from "@src/theme"
+import { HeaderPage } from "@components/general/HeaderPage"
 
 const WalletSttings = ({ navigation, route }: any) => {
 
@@ -63,7 +63,7 @@ const WalletSttings = ({ navigation, route }: any) => {
     return (
         <View style={styles.container}>
             {/* Header */}
-            <HeaderPageWallet
+            <HeaderPage
                 title={useTranslate("wallet.title.settings")}
                 onClose={() => navigation.navigate("wallet-stack")}
             />

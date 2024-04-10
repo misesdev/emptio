@@ -1,5 +1,4 @@
-import { View, Text, StyleSheet, TouchableOpacity } from "react-native"
-import { HeaderPageWallet } from "../components"
+import { View, Text, StyleSheet } from "react-native"
 import { useTranslate } from "@src/services/translate"
 import { useAuth } from "@src/providers/userProvider"
 import { ButtonDefault } from "@components/form/Buttons"
@@ -8,9 +7,8 @@ import SplashScreen from "@components/general/SplashScreen"
 import { toNumber } from "@src/services/converter"
 import { useEffect, useState } from "react"
 import theme from "@src/theme"
-import { SectionHeader } from "@components/general/section/headers"
-import { walletService } from "@/src/core/walletManager"
-import { Ionicons } from "@expo/vector-icons"
+import { walletService } from "@src/core/walletManager"
+import { HeaderPage } from "@src/components/general/HeaderPage"
 
 const SendFinalScreen = ({ navigation, route }: any) => {
 
@@ -57,7 +55,7 @@ const SendFinalScreen = ({ navigation, route }: any) => {
             backgroundColor: theme.colors.black
         }}>
             {/* Header */}
-            <HeaderPageWallet
+            <HeaderPage
                 title={useTranslate("wallet.title.sendfor")}
                 onClose={() => navigation.navigate("wallet-send-stack")}
             />

@@ -8,7 +8,7 @@ type HeaderProps = {
     style?: StyleProp<ViewStyle>
 }
 
-export const HeaderPageWallet = ({ title, onClose, style }: HeaderProps) => {
+export const HeaderPage = ({ title, onClose, style }: HeaderProps) => {
 
     return (
         <View style={[{ flexDirection: "row", width: "100%" }, style]}>

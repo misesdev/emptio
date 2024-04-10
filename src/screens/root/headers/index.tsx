@@ -26,8 +26,8 @@ export const HeaderHome = ({ navigation }: any) => {
                 </TouchableOpacity>
             </View>
             <View style={{ width: "15%", alignItems: "center", justifyContent: "center" }}>
-                <TouchableOpacity onPress={() => navigation.navigate("user-menu-stack")}>
-                    <Ionicons name="notifications-circle" color={theme.colors.gray} size={theme.icons.extra} />
+                <TouchableOpacity onPress={() => navigation.navigate("add-follow-stack")}>
+                    <Ionicons name="person-add" color={theme.colors.gray} size={theme.icons.extra} />
                 </TouchableOpacity>
             </View>
         </View>

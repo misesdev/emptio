@@ -33,7 +33,7 @@ export const FriendList = ({ searchTerm, onPressFollow, loadCombo = 20, toPaymen
             if (searchTerm && !walletService.address.validate(searchTerm)) {
                 const searchResult = followListData.filter(follow => {
                     let filterLower = searchTerm.toLowerCase()
-                    let filterNameLower = `${follow.name}${follow.display_name}${follow.displayName}`.toLowerCase()
+                    let filterNameLower = `${follow.name}${follow.display_name}`.toLowerCase()
                     return filterNameLower.includes(filterLower)
                 })
 

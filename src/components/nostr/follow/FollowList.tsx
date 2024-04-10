@@ -31,7 +31,7 @@ export const FollowList = ({ searchTerm, onPressFollow, itemsPerPage = 24, toPay
             if (searchTerm && !walletService.address.validate(searchTerm)) {
                 const searchResult = followListData.filter(follow => {
                     let filterLower = searchTerm.toLowerCase()
-                    let filterNameLower = `${follow.name}${follow.display_name}${follow.displayName}`.toLowerCase()
+                    let filterNameLower = `${follow.name}${follow.display_name}`.toLowerCase()
                     return filterNameLower.includes(filterLower)
                 })
 
