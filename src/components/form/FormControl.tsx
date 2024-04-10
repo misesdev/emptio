@@ -60,7 +60,7 @@ export const FormControlSwitch = ({ label, value, onChangeValue }: FormSwitchPro
 }
 
 const styles = StyleSheet.create({
-    control: { width: "100%", alignItems: "center", paddingVertical: 6 },
+    control: { width: "100%", alignItems: "center", paddingVertical: 5 },
     container: { width: "94%", color: theme.colors.white, backgroundColor: theme.input.backGround, borderRadius: 24, margin: 5 },
     label: { width: "100%", fontSize: 12, fontWeight: "400", marginTop: 10, paddingHorizontal: 20, color: theme.colors.white },
     labelSwitch: { width: "100%", fontSize: 15, fontWeight: "400", marginTop: 10, paddingHorizontal: 20, color: theme.colors.white },
