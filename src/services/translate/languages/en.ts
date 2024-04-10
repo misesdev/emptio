@@ -92,6 +92,7 @@ export default {
     "wallet.placeholder.addressuser": "Address bc1.. or friend",
 
     "screnn.title.addwallet": "Add Wallet",
+    "screnn.title.addfriend": "Add Friend",
 
 
     "settings.about": "About"

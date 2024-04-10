@@ -9,9 +9,9 @@ import MessageBox, { showMessage } from "@components/general/MessageBox"
 import SplashScreen from "@components/general/SplashScreen"
 import { userService } from "@src/core/userManager"
 import { FormControl, FormControlSwitch } from "@components/form/FormControl"
+import { HeaderScreen } from "@components/general/HeaderPage"
 import { useState } from "react"
 import theme from "@src/theme"
-import { HeaderPage } from "@components/general/HeaderPage"
 
 const WalletSttings = ({ navigation, route }: any) => {
 
@@ -63,7 +63,7 @@ const WalletSttings = ({ navigation, route }: any) => {
     return (
         <View style={styles.container}>
             {/* Header */}
-            <HeaderPage
+            <HeaderScreen
                 title={useTranslate("wallet.title.settings")}
                 onClose={() => navigation.navigate("wallet-stack")}
             />

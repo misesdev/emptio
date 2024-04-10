@@ -86,4 +86,5 @@ export type TranslateWords = "initial.message"
     | "wallet.subtitle.balance"
     | "wallet.placeholder.addressuser"
     | "screnn.title.addwallet"
+    | "screnn.title.addfriend"
 

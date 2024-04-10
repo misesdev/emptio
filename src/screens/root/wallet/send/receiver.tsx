@@ -10,7 +10,7 @@ import { walletService } from "@src/core/walletManager"
 import { Ionicons } from "@expo/vector-icons"
 import { useEffect, useState } from "react"
 import { SectionHeader } from "@components/general/section/headers"
-import { HeaderPage } from "@components/general/HeaderPage"
+import { HeaderScreen } from "@components/general/HeaderPage"
 import theme from "@src/theme"
 
 const SendReceiverScreen = ({ navigation, route }: any) => {
@@ -48,7 +48,7 @@ const SendReceiverScreen = ({ navigation, route }: any) => {
             backgroundColor: theme.colors.black
         }}>
             {/* Header */}
-            <HeaderPage
+            <HeaderScreen
                 title={useTranslate("wallet.title.sendfor")}
                 onClose={() => navigation.navigate("wallet-send-stack")}
             />

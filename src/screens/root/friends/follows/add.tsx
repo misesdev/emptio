@@ -1,5 +1,5 @@
 import { SearchBox } from "@components/form/SearchBox"
-import { HeaderPage } from "@components/general/HeaderPage"
+import { HeaderScreen } from "@components/general/HeaderPage"
 import { FollowList } from "@components/nostr/follow/FollowList"
 import { useTranslate } from "@src/services/translate"
 import { StyleSheet, View } from "react-native"
@@ -14,7 +14,7 @@ const AddFolowScreen = ({ navigation }: any) => {
     return (
         <View style={theme.styles.container}>
             
-            <HeaderPage title="Add Friend" onClose={() => navigation.navigate("core-stack")} />
+            <HeaderScreen title={useTranslate("screnn.title.addfriend")} onClose={() => navigation.navigate("core-stack")} />
 
             <SearchBox label={`${useTranslate("commons.search")} npub..`} onSearch={handleSearch} />
 

@@ -34,8 +34,8 @@ const AppRoutes = () => {
 
                 <Stack.Screen name="authenticate-stack" component={AuthenticateScreen} options={{ headerShown: false }} />
                 <Stack.Screen name="core-stack" component={TabRoutes} />                
-                <Stack.Screen name="search-home-stack" component={HomeSearchScreen} options={{ headerShown: true }}/>
-                <Stack.Screen name="search-feed-stack" component={FeedSearchScreen} options={{ headerShown: true }} />   
+                <Stack.Screen name="search-home-stack" component={HomeSearchScreen} options={{ headerShown: false, cardStyleInterpolator: CardStyleInterpolators.forVerticalIOS }}/>
+                <Stack.Screen name="search-feed-stack" component={FeedSearchScreen} options={{ headerShown: false, cardStyleInterpolator: CardStyleInterpolators.forVerticalIOS }} />   
 
                 <Stack.Screen name="user-menu-stack" component={UserMenuScreen} options={{ headerShown: true }} />  
                 <Stack.Screen name="manage-account-stack" component={UserEditScreen} options={{ headerShown: true }} />   

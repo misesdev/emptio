@@ -8,7 +8,7 @@ import { toNumber } from "@src/services/converter"
 import { useEffect, useState } from "react"
 import theme from "@src/theme"
 import { walletService } from "@src/core/walletManager"
-import { HeaderPage } from "@src/components/general/HeaderPage"
+import { HeaderScreen } from "@components/general/HeaderPage"
 
 const SendFinalScreen = ({ navigation, route }: any) => {
 
@@ -55,7 +55,7 @@ const SendFinalScreen = ({ navigation, route }: any) => {
             backgroundColor: theme.colors.black
         }}>
             {/* Header */}
-            <HeaderPage
+            <HeaderScreen
                 title={useTranslate("wallet.title.sendfor")}
                 onClose={() => navigation.navigate("wallet-send-stack")}
             />
