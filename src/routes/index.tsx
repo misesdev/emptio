@@ -20,7 +20,8 @@ import SendScreen from "@screens/root/wallet/send"
 import SendReceiverScreen from "@screens/root/wallet/send/receiver"
 import SendFinalScreen from "@screens/root/wallet/send/final"
 import WalletSettings from "@screens/root/wallet/settings"
-import AddFolowScreen from "../screens/root/friends/follows/add"
+import AddFolowScreen from "@screens/root/friends/follows/add"
+import DonateScreen from "@screens/root/donate"
 
 const Stack = createStackNavigator()
 
@@ -28,14 +29,15 @@ const AppRoutes = () => {
     return (
         <NavigationContainer >  
              <Stack.Navigator screenOptions={stackOptions} initialRouteName="initial-stack">
-                <Stack.Screen name="initial-stack" component={InitializeScreen} options={{ headerShown: false }} />
+                <Stack.Screen name="initial-stack" component={InitializeScreen} />
+                <Stack.Screen name="authenticate-stack" component={AuthenticateScreen} />
                 <Stack.Screen name="register-stack" component={RegisterScreen} options={{ headerShown: true }} />
                 <Stack.Screen name="login-stack" component={LoginScreen} options={{ headerShown: true }} />
 
-                <Stack.Screen name="authenticate-stack" component={AuthenticateScreen} options={{ headerShown: false }} />
-                <Stack.Screen name="core-stack" component={TabRoutes} />                
-                <Stack.Screen name="search-home-stack" component={HomeSearchScreen} options={{ headerShown: false, cardStyleInterpolator: CardStyleInterpolators.forVerticalIOS }}/>
-                <Stack.Screen name="search-feed-stack" component={FeedSearchScreen} options={{ headerShown: false, cardStyleInterpolator: CardStyleInterpolators.forVerticalIOS }} />   
+                <Stack.Screen name="core-stack" component={TabRoutes} />   
+                <Stack.Screen name="user-donate-stack" component={DonateScreen} options={{ cardStyleInterpolator: CardStyleInterpolators.forVerticalIOS }}/>
+                <Stack.Screen name="search-home-stack" component={HomeSearchScreen} options={{ cardStyleInterpolator: CardStyleInterpolators.forVerticalIOS }}/>
+                <Stack.Screen name="search-feed-stack" component={FeedSearchScreen} options={{ cardStyleInterpolator: CardStyleInterpolators.forVerticalIOS }} />   
 
                 <Stack.Screen name="user-menu-stack" component={UserMenuScreen} options={{ headerShown: true }} />  
                 <Stack.Screen name="manage-account-stack" component={UserEditScreen} options={{ headerShown: true }} />   
@@ -45,13 +47,13 @@ const AppRoutes = () => {
                 <Stack.Screen name="about-stack" component={AboutScreen} options={{ headerShown: true }} />   
 
                 <Stack.Screen name="wallet-stack" component={WalletManagerScreen} options={{ headerShown: true }} />
-                <Stack.Screen name="add-wallet-stack" component={AddWalletScreen} options={{ headerShown: false, cardStyleInterpolator: CardStyleInterpolators.forVerticalIOS }} />
-                <Stack.Screen name="wallet-send-stack" component={SendScreen} options={{ headerShown: false, cardStyleInterpolator: CardStyleInterpolators.forVerticalIOS }} />
-                <Stack.Screen name="wallet-send-receiver-stack" component={SendReceiverScreen} options={{ headerShown: false, cardStyleInterpolator: CardStyleInterpolators.forVerticalIOS }} />
-                <Stack.Screen name="wallet-send-final-stack" component={SendFinalScreen} options={{ headerShown: false, cardStyleInterpolator: CardStyleInterpolators.forVerticalIOS }} />
-                <Stack.Screen name="wallet-settings-stack" component={WalletSettings} options={{ headerShown: false, cardStyleInterpolator: CardStyleInterpolators.forVerticalIOS }} />
+                <Stack.Screen name="add-wallet-stack" component={AddWalletScreen} options={{ cardStyleInterpolator: CardStyleInterpolators.forVerticalIOS }} />
+                <Stack.Screen name="wallet-send-stack" component={SendScreen} options={{ cardStyleInterpolator: CardStyleInterpolators.forVerticalIOS }} />
+                <Stack.Screen name="wallet-send-receiver-stack" component={SendReceiverScreen} options={{ cardStyleInterpolator: CardStyleInterpolators.forVerticalIOS }} />
+                <Stack.Screen name="wallet-send-final-stack" component={SendFinalScreen} options={{ cardStyleInterpolator: CardStyleInterpolators.forVerticalIOS }} />
+                <Stack.Screen name="wallet-settings-stack" component={WalletSettings} options={{ cardStyleInterpolator: CardStyleInterpolators.forVerticalIOS }} />
 
-                <Stack.Screen name="add-follow-stack" component={AddFolowScreen} options={{ headerShown: false, cardStyleInterpolator: CardStyleInterpolators.forVerticalIOS }} />
+                <Stack.Screen name="add-follow-stack" component={AddFolowScreen} options={{ cardStyleInterpolator: CardStyleInterpolators.forVerticalIOS }} />
                                 
             </Stack.Navigator>
         </NavigationContainer>

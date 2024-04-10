@@ -50,6 +50,8 @@ export default {
     "menu.buy&sell": "buy & sell",
     "menu.donate": "donate",
     "menu.setting": "settings",
+    "menu.chats": "chats",
+    "menu.notificatios": "notifications",
 
     "message.invalidkey": "Invalid private key, please check if the key entered is in the correct format starting with 'nsec'. If you do not have a Nostr private key, consider creating an account.",
     "message.detectedkey": "Private key detected in your clipboard, do you want to enter with the detected private key?",
@@ -93,6 +95,7 @@ export default {
 
     "screnn.title.addwallet": "Add Wallet",
     "screnn.title.addfriend": "Add Friend",
+    "screen.title.donate": "Contribute to this Project",
 
 
     "settings.about": "About"

@@ -1,11 +1,11 @@
 import { createMaterialBottomTabNavigator } from '@react-navigation/material-bottom-tabs';
 import { useTranslate } from "../services/translate"
-import SettingsScreen from "@screens/root/settings"
 import { Ionicons } from "@expo/vector-icons"
-import DonateScreen from "@screens/root/donate"
 import HomeScreen from "@screens/root/home"
 import FeedScreen from "@screens/root/feed"
 import theme from "@src/theme"
+import ChatsScreen from '@screens/root/chats';
+import NotificationScreen from '@screens/root/notifications';
 
 const Tab = createMaterialBottomTabNavigator()
 
@@ -37,19 +37,19 @@ const TabRoutes = () => {
                 }}
             />
             <Tab.Screen
-                name="donate"
-                component={DonateScreen}
+                name="chats"
+                component={ChatsScreen}
                 options={{
-                    tabBarLabel: useTranslate("menu.donate"),
-                    tabBarIcon: ({ color }) => <Ionicons name="heart" color={color} size={theme.icons.medium} />,
+                    tabBarLabel: useTranslate("menu.chats"),
+                    tabBarIcon: ({ color }) => <Ionicons name="chatbox" color={color} size={theme.icons.medium} />,
                 }}
             />
             <Tab.Screen
-                name="settings"
-                component={SettingsScreen}
+                name="notifications"
+                component={NotificationScreen}
                 options={{
-                    tabBarLabel: useTranslate("menu.setting"),
-                    tabBarIcon: ({ color }) => <Ionicons name="settings" color={color} size={theme.icons.medium} />,
+                    tabBarLabel: useTranslate("menu.notifications"),
+                    tabBarIcon: ({ color }) => <Ionicons name="notifications" color={color} size={theme.icons.medium} />,
                 }}
             />
         </Tab.Navigator>

@@ -21,13 +21,13 @@ export const HeaderHome = ({ navigation }: any) => {
                 <SearchButton label={useTranslate("commons.search")} onPress={() => navigation.navigate("search-home-stack")} />
             </View>
             <View style={{ width: "15%", alignItems: "center", justifyContent: "center" }}>
-                <TouchableOpacity onPress={() => navigation.navigate("user-menu-stack")}>
-                    <Ionicons name="pie-chart" color={theme.colors.gray} size={theme.icons.extra} />
+                <TouchableOpacity onPress={() => navigation.navigate("user-donate-stack")}>
+                    <Ionicons name="heart" color={theme.colors.gray} size={theme.icons.extra} />
                 </TouchableOpacity>
             </View>
             <View style={{ width: "15%", alignItems: "center", justifyContent: "center" }}>
                 <TouchableOpacity onPress={() => navigation.navigate("add-follow-stack")}>
-                    <Ionicons name="person-add" color={theme.colors.gray} size={theme.icons.extra} />
+                    <Ionicons name="person-add-sharp" color={theme.colors.gray} size={theme.icons.extra} />
                 </TouchableOpacity>
             </View>
         </View>

@@ -50,6 +50,8 @@ export default {
     "menu.buy&sell": "comprar & vender",
     "menu.donate": "doar",
     "menu.setting": "configurações",
+    "menu.chats": "chats",
+    "menu.notificatios": "notificações",
 
     "message.invalidkey": "Chave privada inválida, verifique se a chave digitada está no formato correto começando com 'nsec', caso você não possua uma chave privada nostr considere criar uma conta.",
     "message.detectedkey": "Chave privada detectada em sua area de transferência, deseja entrar com a chave privada detectada?",
@@ -93,7 +95,7 @@ export default {
 
     "screnn.title.addwallet": "Adicionar Carteira",
     "screnn.title.addfriend": "Adicionar Amigo",
-
+    "screen.title.donate": "Contribuir com o Projeto",
 
     "settings.about": "Sobre",
 
