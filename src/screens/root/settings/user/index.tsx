@@ -12,6 +12,7 @@ import { useEffect, useState } from "react"
 import { userService } from "@src/core/userManager"
 import SplashScreen from "@components/general/SplashScreen"
 import theme from "@src/theme"
+import { uploadImage } from "@/src/services/blob"
 
 const UserEditScreen = ({ navigation }: any) => {
 
@@ -47,6 +48,8 @@ const UserEditScreen = ({ navigation }: any) => {
                 setBanner(result.assets[0].uri)
             else
                 setProfile(result.assets[0].uri)
+
+            await uploadImage(result.assets[0].uri)
         }
     }
 
