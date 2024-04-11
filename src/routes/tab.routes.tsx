@@ -33,7 +33,7 @@ const TabRoutes = () => {
                 component={FeedScreen}
                 options={{
                     tabBarLabel: useTranslate("menu.buy&sell"),
-                    tabBarIcon: ({ color }) => <Ionicons name="wallet" color={color} size={theme.icons.medium} />,
+                    tabBarIcon: ({ color }) => <Ionicons name="storefront" color={color} size={theme.icons.medium} />,
                 }}
             />
             <Tab.Screen

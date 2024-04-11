@@ -11,6 +11,7 @@ import { useAuth } from "@/src/providers/userProvider"
 import WalletReceiveModal from "@components/wallet/WalletReceiveModal"
 import theme from "@src/theme"
 import { walletService } from "@/src/core/walletManager"
+import { address } from "bitcoinjs-lib"
 
 const WalletManagerScreen = ({ navigation, route }: any) => {
 
@@ -86,9 +87,12 @@ const WalletManagerScreen = ({ navigation, route }: any) => {
 
             </ScrollView>
 
-            <WalletButtons onReceive={setReceiveVisible} onSend={() => navigation.navigate("wallet-send-stack")} />
+            <WalletButtons
+                onReceive={() => navigation.navigate("add-wallet-receive-stack", { address: wallet.address })}
+                onSend={() => navigation.navigate("wallet-send-stack")}
+            />
 
-            <WalletReceiveModal visible={receiveVisible} onClose={setReceiveVisible} address={wallet.address ?? ""} />
+            {/* <WalletReceiveModal visible={receiveVisible} onClose={setReceiveVisible} address={wallet.address ?? ""} /> */}
         </>
     )
 }

@@ -17,17 +17,17 @@ export const HeaderHome = ({ navigation }: any) => {
                     {!!!user?.picture && <Image source={require("assets/images/defaultProfile.png")} style={styles.userMenu} />}
                 </TouchableOpacity>
             </View>
-            <View style={{ width: "55%", alignItems: "center", justifyContent: "center" }}>
+            <View style={{ width: "60%", alignItems: "center", justifyContent: "center" }}>
                 <SearchButton label={useTranslate("commons.search")} onPress={() => navigation.navigate("search-home-stack")} />
             </View>
-            <View style={{ width: "15%", alignItems: "center", justifyContent: "center" }}>
+            <View style={{ width: "12%", alignItems: "center", justifyContent: "center" }}>
                 <TouchableOpacity onPress={() => navigation.navigate("user-donate-stack")}>
-                    <Ionicons name="heart" color={theme.colors.gray} size={theme.icons.extra} />
+                    <Ionicons name="heart" color={theme.colors.gray} size={theme.icons.large} />
                 </TouchableOpacity>
             </View>
-            <View style={{ width: "15%", alignItems: "center", justifyContent: "center" }}>
+            <View style={{ width: "13%", alignItems: "center", justifyContent: "center" }}>
                 <TouchableOpacity onPress={() => navigation.navigate("add-follow-stack")}>
-                    <Ionicons name="person-add-sharp" color={theme.colors.gray} size={theme.icons.extra} />
+                    <Ionicons name="person-add-sharp" color={theme.colors.gray} size={theme.icons.large} />
                 </TouchableOpacity>
             </View>
         </View>

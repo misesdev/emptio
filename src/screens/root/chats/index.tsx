@@ -3,6 +3,7 @@ import { ActivityIndicator, ScrollView, StyleSheet, View } from "react-native"
 import { TouchableOpacity } from "react-native-gesture-handler"
 import { Ionicons } from "@expo/vector-icons"
 import { useEffect, useState } from "react"
+import { HeaderChats } from "./header"
 
 const ChatsScreen = ({ navigation }: any) => {
     
@@ -19,7 +20,11 @@ const ChatsScreen = ({ navigation }: any) => {
     }
 
     return (
+
         <View style={theme.styles.container}>
+
+            <HeaderChats navigation={navigation} />
+
             <ScrollView contentContainerStyle={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
                 {loading && <ActivityIndicator color={theme.colors.gray} size={50} />}
 
