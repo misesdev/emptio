@@ -13,6 +13,7 @@ import { nip19 } from "nostr-tools";
 import theme from "@src/theme"
 import { setStringAsync } from "expo-clipboard";
 import AlertBox, { alertMessage } from "@components/general/AlertBox";
+import { Ionicons } from "@expo/vector-icons"
 
 const UserMenuScreen = ({ navigation }: any) => {
 
@@ -84,13 +85,31 @@ const UserMenuScreen = ({ navigation }: any) => {
             <View style={styles.area}>
                 <TouchableOpacity activeOpacity={opacity} onPress={() => navigation.navigate("manage-account-stack")}>
                     <View style={styles.image}>
-                        {user?.picture && <Image source={{ uri: user?.picture }} style={styles.picture} />}
-                        {!user?.picture && <Image source={require("assets/images/defaultProfile.png")} style={styles.picture} />}
+                        {user?.picture && <Image source={{ uri: user?.picture }} style={{ flex: 1 }} />}
+                        {!user?.picture && <Image source={require("assets/images/defaultProfile.png")} style={{ flex: 1 }} />}
                     </View>
                 </TouchableOpacity>
                 <Text style={styles.name}>{user?.name}</Text>
             </View>
             <ScrollView contentContainerStyle={theme.styles.scroll_container}>
+
+                <View style={{ width: "96%", flexDirection: "row" }}>
+                    <TouchableOpacity style={{ width: "50%" }} activeOpacity={.7}>
+                        <SectionContainer style={{ padding: 10 }}>
+                            <Ionicons name="people" color={theme.colors.white} size={20} style={{ marginVertical: 10 }} />
+                            <Text style={{ color: theme.colors.white }}>Convidar Amigos.</Text>
+                            <Text style={{ color: theme.colors.gray, fontSize: 12 }}>Convide seus amigos para o app, compartilhe a jornada bitconheira!</Text>
+                        </SectionContainer>
+                    </TouchableOpacity>
+                    <TouchableOpacity style={{ width: "50%" }} activeOpacity={.7}>
+                        <SectionContainer style={{ padding: 10 }}>
+                            <Ionicons name="paper-plane" color={theme.colors.white} size={20} style={{ marginVertical: 10 }} />
+                            <Text style={{ color: theme.colors.white }}>Convidar Amigos.</Text>
+                            <Text style={{ color: theme.colors.gray, fontSize: 12 }}>Convide seus amigos para o app, compartilhe a jornada bitconheira!</Text>
+                        </SectionContainer>
+                    </TouchableOpacity>
+                </View>
+
                 <SectionContainer>
                     <LinkSection label={useTranslate("settings.account.edit")} icon="person" onPress={() => navigation.navigate("manage-account-stack")} />
                     <LinkSection label={useTranslate("settings.nostrkey.copy")} icon="document-lock-outline" onPress={handleCopyNostrKey} />
@@ -115,42 +134,10 @@ const UserMenuScreen = ({ navigation }: any) => {
 }
 
 const styles = StyleSheet.create({
-    area: {
-        width: "100%",
-        alignItems: "center",
-        marginVertical: 10
-    },
-    name: {
-        fontSize: 22,
-        fontWeight: 'bold',
-        color: theme.colors.white,
-        backgroundColor: theme.colors.section,
-        paddingHorizontal: 18,
-        marginVertical: 10,
-        borderRadius: 25,
-        padding: 10,
-    },
-    image: {
-        width: 100,
-        height: 100,
-        borderRadius: 50,
-        backgroundColor: theme.colors.gray,
-    },
-    picture: {
-        zIndex: 99,
-        width: "100%",
-        height: "100%",
-        borderRadius: 50,
-        borderWidth: 2,
-        borderColor: theme.colors.section,
-    },
-    banner: {
-        width: "100%",
-        height: 140,
-        position: "absolute",
-        top: 0,
-        zIndex: 0
-    }
+    area: { width: "100%", alignItems: "center", marginVertical: 10 },
+    name: { fontSize: 22, fontWeight: 'bold', color: theme.colors.white, backgroundColor: theme.colors.section, paddingHorizontal: 18, marginVertical: 10, borderRadius: 25, padding: 10 },
+    image: { width: 100, height: 100, borderRadius: 50, backgroundColor: theme.colors.gray, overflow: "hidden", borderWidth: 2, borderColor: theme.colors.section },
+    banner: { width: "100%", height: 140, position: "absolute", top: 0 }
 })
 
 export default UserMenuScreen

@@ -1,7 +1,6 @@
 import { RefreshControl, ScrollView, StyleSheet, View, } from "react-native"
 import { ActionHeader, SectionHeader } from "@components/general/section/headers"
 import AlertBox, { alertMessage } from "@components/general/AlertBox"
-import { FollowList } from "@components/nostr/follow/FollowList"
 import { userService } from "@/src/core/userManager"
 import { Wallet } from "@src/services/memory/types"
 import { getWallets } from "@src/services/memory/wallets"
