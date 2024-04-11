@@ -97,8 +97,8 @@ const UserEditScreen = ({ navigation }: any) => {
             <View style={styles.profileArea}>
                 <TouchableOpacity activeOpacity={.7} onPress={() => handlePickImage("profile")}>
                     <View style={styles.image}>
-                        {prifile && <Image source={{ uri: prifile }} style={styles.picture} />}
-                        {!prifile && <Image source={require("assets/images/defaultProfile.png")} style={styles.picture} />}
+                        {prifile && <Image source={{ uri: prifile }} style={{ flex: 1 }} />}
+                        {!prifile && <Image source={require("assets/images/defaultProfile.png")} style={{ flex: 1 }} />}
                     </View>
                     <Ionicons
                         size={theme.icons.mine}
@@ -121,10 +121,9 @@ const UserEditScreen = ({ navigation }: any) => {
 }
 
 const styles = StyleSheet.create({
-    image: { width: 100, height: 100, borderRadius: 50, backgroundColor: theme.colors.gray },
+    image: { width: 100, height: 100, borderRadius: 50, backgroundColor: theme.colors.gray, borderWidth: 2, borderColor: theme.colors.section, overflow: "hidden" },
     profileArea: { width: "100%", alignItems: "center", marginVertical: 10, marginBottom: 20 },
-    picture: { zIndex: 99, width: "100%", height: "100%", borderRadius: 50, borderWidth: 2, borderColor: theme.colors.section },
-    banner: { width: "100%", height: 140, position: "absolute", top: 0, zIndex: 0 },
+    banner: { width: "100%", height: 140, position: "absolute", top: 0 },
     buttonBanner: { position: "absolute", top: 10, right: 10, backgroundColor: theme.colors.default, padding: 10, borderRadius: 10 },
     buttonProfile: { position: "absolute", padding: 5, bottom: 5, right: 5, zIndex: 999, backgroundColor: theme.colors.default, borderRadius: 15 }
 })

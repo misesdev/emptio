@@ -62,9 +62,10 @@ const styles = StyleSheet.create({
         backgroundColor: theme.colors.transparent,
     },
     linkText: {
-        fontSize: 18,
+        fontSize: 14,
         fontWeight: '400',
-        paddingHorizontal: 5,
+        paddingHorizontal: 8,
+        paddingVertical: 5,
         color: theme.colors.white
     }
 })

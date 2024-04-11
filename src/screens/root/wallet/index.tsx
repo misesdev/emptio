@@ -3,22 +3,19 @@ import { SectionHeader } from "@components/general/section/headers"
 import { updateWallet } from "@src/services/memory/wallets"
 import { useTranslate } from "@src/services/translate"
 import { Transaction } from "@src/services/memory/types"
-import { View, ScrollView, RefreshControl, TouchableOpacity, StyleSheet } from "react-native"
+import { View, ScrollView, RefreshControl, TouchableOpacity } from "react-native"
 import { useEffect, useState } from "react"
 import { Ionicons } from "@expo/vector-icons"
 import SplashScreen from "@components/general/SplashScreen"
 import { useAuth } from "@/src/providers/userProvider"
-import WalletReceiveModal from "@components/wallet/WalletReceiveModal"
 import theme from "@src/theme"
 import { walletService } from "@/src/core/walletManager"
-import { address } from "bitcoinjs-lib"
 
 const WalletManagerScreen = ({ navigation, route }: any) => {
 
     const { wallet, setWallet } = useAuth()
     const [loading, setLoading] = useState(true)
     const [refreshing, setRefreshing] = useState(false)
-    const [receiveVisible, setReceiveVisible] = useState(false)
     const [transactions, setTransactions] = useState<Transaction[]>([])
 
     useEffect(() => {
@@ -91,8 +88,6 @@ const WalletManagerScreen = ({ navigation, route }: any) => {
                 onReceive={() => navigation.navigate("add-wallet-receive-stack", { address: wallet.address })}
                 onSend={() => navigation.navigate("wallet-send-stack")}
             />
-
-            {/* <WalletReceiveModal visible={receiveVisible} onClose={setReceiveVisible} address={wallet.address ?? ""} /> */}
         </>
     )
 }

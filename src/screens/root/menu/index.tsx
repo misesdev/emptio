@@ -93,15 +93,15 @@ const UserMenuScreen = ({ navigation }: any) => {
             </View>
             <ScrollView contentContainerStyle={theme.styles.scroll_container}>
 
-                <View style={{ width: "96%", flexDirection: "row" }}>
-                    <TouchableOpacity style={{ width: "50%" }} activeOpacity={.7}>
+                <View style={{ width: "98%", flexDirection: "row", alignItems: "center" }}>
+                    <TouchableOpacity style={{ width: "50%", alignItems: "center" }} activeOpacity={.7}>
                         <SectionContainer style={{ padding: 10 }}>
                             <Ionicons name="people" color={theme.colors.white} size={20} style={{ marginVertical: 10 }} />
                             <Text style={{ color: theme.colors.white }}>Convidar Amigos.</Text>
                             <Text style={{ color: theme.colors.gray, fontSize: 12 }}>Convide seus amigos para o app, compartilhe a jornada bitconheira!</Text>
                         </SectionContainer>
                     </TouchableOpacity>
-                    <TouchableOpacity style={{ width: "50%" }} activeOpacity={.7}>
+                    <TouchableOpacity style={{ width: "50%", alignItems: "center" }} activeOpacity={.7}>
                         <SectionContainer style={{ padding: 10 }}>
                             <Ionicons name="paper-plane" color={theme.colors.white} size={20} style={{ marginVertical: 10 }} />
                             <Text style={{ color: theme.colors.white }}>Convidar Amigos.</Text>
@@ -135,7 +135,7 @@ const UserMenuScreen = ({ navigation }: any) => {
 
 const styles = StyleSheet.create({
     area: { width: "100%", alignItems: "center", marginVertical: 10 },
-    name: { fontSize: 22, fontWeight: 'bold', color: theme.colors.white, backgroundColor: theme.colors.section, paddingHorizontal: 18, marginVertical: 10, borderRadius: 25, padding: 10 },
+    name: { fontSize: 18, fontWeight: 'bold', color: theme.colors.white, marginVertical: 10 },
     image: { width: 100, height: 100, borderRadius: 50, backgroundColor: theme.colors.gray, overflow: "hidden", borderWidth: 2, borderColor: theme.colors.section },
     banner: { width: "100%", height: 140, position: "absolute", top: 0 }
 })

@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react"
 import { Modal, StyleSheet, Text, View } from "react-native"
-import { ButtonDanger, ButtonSuccess } from "@components/form/Buttons"
+import { ButtonDanger, ButtonDefault, ButtonSuccess } from "@components/form/Buttons"
 import { useTranslate } from "@src/services/translate"
 import theme from "@src/theme"
 
@@ -73,7 +73,7 @@ const MessageBox = () => {
                     {infolog && <Text style={styles.infolog}>{infolog}</Text>}
 
                     <View style={styles.sectionButtons}>
-                        <ButtonDanger label={useTranslate("commons.close")} onPress={handleClose} />
+                        <ButtonDefault label={useTranslate("commons.close")} onPress={handleClose} />
                         {action && <ButtonSuccess label={action.label} onPress={handleAction} />}
                     </View>
 
