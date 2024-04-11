@@ -26,7 +26,7 @@ export const AmountBox = ({ value, placeholder, onChangeText, isValidHandle }: A
             if (wallet?.lastBalance)
                 isValidHandle(textNumbers > 0 && wallet?.lastBalance >= textNumbers)
             else
-                isValidHandle(textNumbers > 0)
+                isValidHandle(false)
         }
     }
 
