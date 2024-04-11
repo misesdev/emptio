@@ -96,7 +96,7 @@ export default {
     "screnn.title.addwallet": "Add Wallet",
     "screnn.title.addfriend": "Add Friend",
     "screen.title.donate": "Contribute to this Project",
-
+    "screen.title.newchat": "New Conversation",
 
     "settings.about": "About"
 

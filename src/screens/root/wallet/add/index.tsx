@@ -45,7 +45,7 @@ const AddWalletScreen = ({ navigation }: any) => {
 
     return (
         <>
-            <HeaderScreen title={useTranslate("screnn.title.addwallet")} onClose={() => navigation.navigate("core-stack")} />
+            <HeaderScreen title={useTranslate("screen.title.addwallet")} onClose={() => navigation.navigate("core-stack")} />
             <View style={theme.styles.container} >
 
                 {/* <Text style={styles.title}>{useTranslate("screnn.title.addwallet")}</Text> */}

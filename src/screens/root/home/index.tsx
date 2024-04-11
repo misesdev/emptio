@@ -9,7 +9,7 @@ import { useTranslate } from "@src/services/translate"
 import { useAuth } from "@src/providers/userProvider"
 import WalletList from "@components/wallet/WalletList"
 import { useEffect, useState } from "react"
-import { HeaderHome } from "../headers"
+import { HeaderHome } from "./header"
 import theme from "@src/theme"
 
 const HomeScreen = ({ navigation }: any) => {

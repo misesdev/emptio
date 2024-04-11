@@ -74,17 +74,6 @@ const WalletSttings = ({ navigation, route }: any) => {
 
                 <FormControl label={useTranslate("labels.wallet.name")} value={walletName} onChangeText={setWalletName} />
 
-                <SectionContainer style={{ maxWidth: "90%" }}>
-                    <LinkSection icon="copy" label="copy address" onPress={() => { }} />
-                    <LinkSection icon="copy" label="copy address" onPress={() => { }} />
-                    <LinkSection icon="copy" label="copy address" onPress={() => { }} />
-                </SectionContainer>
-
-                <SectionContainer style={{ maxWidth: "90%" }}>
-                    <LinkSection icon="copy" label="copy address" onPress={() => { }} />
-                    <LinkSection icon="copy" label="copy address" onPress={() => { }} />
-                </SectionContainer>
-
                 <TouchableOpacity style={{ marginVertical: 20, padding: 15, flexDirection: "row" }} onPress={hadleDeleteWallet} >
                     {/* <Ionicons name="trash" color={theme.colors.red} size={theme.icons.mine} /> */}
                     <Text style={{ color: theme.colors.red, fontSize: 18, fontWeight: "400", marginHorizontal: 5 }}>{useTranslate("commons.delete")}</Text>

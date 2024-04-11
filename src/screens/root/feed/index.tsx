@@ -5,7 +5,7 @@ import { listenerEvents } from "@src/services/nostr/events"
 import { getPairKey } from "@src/services/memory/pairkeys"
 import { NostrEventKinds } from "@src/constants/Events"
 import { useAuth } from "@src/providers/userProvider"
-import { HeaderFeed } from "../headers"
+import { HeaderFeed } from "./header"
 import { useState } from "react"
 import theme from "@src/theme"
 

@@ -22,6 +22,7 @@ import SendFinalScreen from "@screens/root/wallet/send/final"
 import WalletSettings from "@screens/root/wallet/settings"
 import AddFolowScreen from "@screens/root/friends/follows/add"
 import DonateScreen from "@screens/root/donate"
+import NewChatScreen from "@screens/root/chats/new"
 
 const Stack = createStackNavigator()
 
@@ -39,6 +40,8 @@ const AppRoutes = () => {
                 <Stack.Screen name="search-home-stack" component={HomeSearchScreen} options={{ cardStyleInterpolator: CardStyleInterpolators.forVerticalIOS }}/>
                 <Stack.Screen name="search-feed-stack" component={FeedSearchScreen} options={{ cardStyleInterpolator: CardStyleInterpolators.forVerticalIOS }} />   
 
+                <Stack.Screen name="new-chat-stack" component={NewChatScreen} options={{ cardStyleInterpolator: CardStyleInterpolators.forVerticalIOS }} />
+
                 <Stack.Screen name="user-menu-stack" component={UserMenuScreen} options={{ headerShown: true }} />  
                 <Stack.Screen name="manage-account-stack" component={UserEditScreen} options={{ headerShown: true }} />   
 
@@ -55,6 +58,7 @@ const AppRoutes = () => {
 
                 <Stack.Screen name="add-follow-stack" component={AddFolowScreen} options={{ cardStyleInterpolator: CardStyleInterpolators.forVerticalIOS }} />
                                 
+            
             </Stack.Navigator>
         </NavigationContainer>
     )
