@@ -1,15 +1,15 @@
 
-import { StyleSheet, View, Text, TouchableOpacity, Image } from "react-native"
+import { StyleSheet, View, Text, TouchableOpacity } from "react-native"
 import { useTranslate } from "@src/services/translate"
-import theme from "@src/theme"
 import { TextBox } from "@components/form/TextBoxs"
-import { useState } from "react"
 import { ButtonPrimary } from "@components/form/Buttons"
 import { Ionicons } from "@expo/vector-icons"
 import AlertBox, { alertMessage } from "@components/general/AlertBox"
 import SplashScreen from "@components/general/SplashScreen"
 import { walletService } from "@src/core/walletManager"
 import { HeaderScreen } from "@components/general/HeaderPage"
+import { useState } from "react"
+import theme from "@src/theme"
 
 const AddWalletScreen = ({ navigation }: any) => {
 
@@ -45,7 +45,11 @@ const AddWalletScreen = ({ navigation }: any) => {
 
     return (
         <>
-            <HeaderScreen title={useTranslate("screen.title.addwallet")} onClose={() => navigation.navigate("core-stack")} />
+            <HeaderScreen
+                title={useTranslate("screen.title.addwallet")}
+                onClose={() => navigation.navigate("core-stack")}
+            />
+
             <View style={theme.styles.container} >
 
                 <TextBox placeholder={useTranslate("labels.wallet.name")} value={walletName} onChangeText={setWalletName} />

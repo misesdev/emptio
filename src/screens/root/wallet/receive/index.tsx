@@ -2,13 +2,11 @@ import { Image, TouchableOpacity, View, Text, StyleSheet } from "react-native"
 import { useTranslate } from "@src/services/translate"
 import { setStringAsync } from "expo-clipboard"
 import QRCode from "react-native-qrcode-svg"
-import { Ionicons } from "@expo/vector-icons"
-import { useState } from "react"
-import theme from "@src/theme"
 import { HeaderScreen } from "@components/general/HeaderPage"
 import { ButtonPrimary } from "@components/form/Buttons"
 import { useAuth } from "@src/providers/userProvider"
-
+import { useState } from "react"
+import theme from "@src/theme"
 
 const WalletReceiveScreen = ({ navigation, route }: any) => {
 
@@ -18,6 +16,8 @@ const WalletReceiveScreen = ({ navigation, route }: any) => {
     const [valueText, setValueText] = useState<string>(route.params?.address)
 
     const handleCopyValue = async () => {
+
+        console.log(address)
 
         await setStringAsync(address)
 
@@ -43,9 +43,10 @@ const WalletReceiveScreen = ({ navigation, route }: any) => {
                 {/* Profile Name */}
                 <Text style={styles.userName}>{user.name}</Text>
 
+                {/* Qrcode */}
                 <View style={styles.qrcode}>
                     <QRCode
-                        size={230}
+                        size={240}
                         value={address}
                         logoSize={75}
                         logoBorderRadius={12}

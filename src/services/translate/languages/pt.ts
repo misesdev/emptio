@@ -93,8 +93,8 @@ export default {
     "wallet.title.settings": "Configurações da Carteira",
     "wallet.placeholder.addressuser": "Endereço: bc1.. ou amigo",
 
-    "screnn.title.addwallet": "Adicionar Carteira",
-    "screnn.title.addfriend": "Adicionar Amigo",
+    "screen.title.addwallet": "Adicionar Carteira",
+    "screen.title.addfriend": "Adicionar Amigo",
     "screen.title.donate": "Contribuir com o Projeto",
     "screen.title.newchat": "Nova Conversa",
 

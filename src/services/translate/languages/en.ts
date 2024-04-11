@@ -93,8 +93,8 @@ export default {
     "wallet.title.settings": "Wallet Settings",
     "wallet.placeholder.addressuser": "Address bc1.. or friend",
 
-    "screnn.title.addwallet": "Add Wallet",
-    "screnn.title.addfriend": "Add Friend",
+    "screen.title.addwallet": "Add Wallet",
+    "screen.title.addfriend": "Add Friend",
     "screen.title.donate": "Contribute to this Project",
     "screen.title.newchat": "New Conversation",
 
