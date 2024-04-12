@@ -10,7 +10,7 @@ import { walletService } from "@src/core/walletManager"
 import { Ionicons } from "@expo/vector-icons"
 import { useEffect, useState } from "react"
 import { SectionHeader } from "@components/general/section/headers"
-import { HeaderScreen } from "@components/general/HeaderPage"
+import { HeaderScreen } from "@components/general/HeaderScreen"
 import theme from "@src/theme"
 
 const SendReceiverScreen = ({ navigation, route }: any) => {

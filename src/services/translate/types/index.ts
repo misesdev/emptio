@@ -66,6 +66,8 @@ export type TranslateWords = "initial.message"
     | "section.title.transactions"
     | "section.title.transactions.empty"
     | "section.title.frends.empty"
+    | "section.title.sharefriend"
+    | "section.title.talkdevelopers"
     | "message.wallet.alertcreate"
     | "message.wallet.notfound"
     | "message.wallet.nameempty"
@@ -91,4 +93,6 @@ export type TranslateWords = "initial.message"
     | "screen.title.addfriend"
     | "screen.title.donate"
     | "screen.title.newchat"
+
+
 

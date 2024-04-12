@@ -1,6 +1,6 @@
 import { useTranslate } from "@src/services/translate"
 import { StyleSheet, Text, TouchableOpacity, View } from "react-native"
-import { HeaderScreen } from "@components/general/HeaderPage"
+import { HeaderScreen } from "@components/general/HeaderScreen"
 import { AmountBox } from "@components/wallet/inputs"
 import { Ionicons } from "@expo/vector-icons"
 import { useState } from "react"

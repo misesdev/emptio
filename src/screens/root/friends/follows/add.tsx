@@ -1,5 +1,5 @@
 import { SearchBox } from "@components/form/SearchBox"
-import { HeaderScreen } from "@components/general/HeaderPage"
+import { HeaderScreen } from "@components/general/HeaderScreen"
 import { FollowList } from "@components/nostr/follow/FollowList"
 import { useTranslate } from "@src/services/translate"
 import { ActivityIndicator, ScrollView, StyleSheet, View } from "react-native"

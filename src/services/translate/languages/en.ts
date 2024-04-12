@@ -81,6 +81,8 @@ export default {
     "section.title.transactions": "Transactions",
     "section.title.transactions.empty": "Your transactions will paper here!",
     "section.title.frends.empty": "Your friends will be displayed here",
+    "section.title.sharefriend": "Invite Friends",
+    "section.title.talkdevelopers": "Talk to Developers",
 
     "wallet.lightning.tag": "Lightning Wallet",
     "wallet.bitcoin.tag": "Bitcoin Wallet",

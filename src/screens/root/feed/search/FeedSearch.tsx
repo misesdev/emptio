@@ -1,6 +1,6 @@
 import { StyleSheet, View, Text } from "react-native"
 import { SearchBox } from "@components/form/SearchBox"
-import { HeaderScreen } from "@components/general/HeaderPage"
+import { HeaderScreen } from "@components/general/HeaderScreen"
 import { useTranslate } from "@src/services/translate"
 import { useEffect } from "react"
 import theme from "@src/theme"

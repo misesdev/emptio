@@ -7,7 +7,7 @@ import { Ionicons } from "@expo/vector-icons"
 import AlertBox, { alertMessage } from "@components/general/AlertBox"
 import SplashScreen from "@components/general/SplashScreen"
 import { walletService } from "@src/core/walletManager"
-import { HeaderScreen } from "@components/general/HeaderPage"
+import { HeaderScreen } from "@components/general/HeaderScreen"
 import { useState } from "react"
 import theme from "@src/theme"
 

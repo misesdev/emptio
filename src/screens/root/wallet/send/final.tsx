@@ -8,7 +8,7 @@ import { toNumber } from "@src/services/converter"
 import { useEffect, useState } from "react"
 import theme from "@src/theme"
 import { walletService } from "@src/core/walletManager"
-import { HeaderScreen } from "@components/general/HeaderPage"
+import { HeaderScreen } from "@components/general/HeaderScreen"
 
 const SendFinalScreen = ({ navigation, route }: any) => {
 

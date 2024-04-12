@@ -2,7 +2,7 @@ import { Image, TouchableOpacity, View, Text, StyleSheet } from "react-native"
 import { useTranslate } from "@src/services/translate"
 import { setStringAsync } from "expo-clipboard"
 import QRCode from "react-native-qrcode-svg"
-import { HeaderScreen } from "@components/general/HeaderPage"
+import { HeaderScreen } from "@components/general/HeaderScreen"
 import { ButtonPrimary } from "@components/form/Buttons"
 import { useAuth } from "@src/providers/userProvider"
 import { useState } from "react"
@@ -16,8 +16,6 @@ const WalletReceiveScreen = ({ navigation, route }: any) => {
     const [valueText, setValueText] = useState<string>(route.params?.address)
 
     const handleCopyValue = async () => {
-
-        console.log(address)
 
         await setStringAsync(address)
 

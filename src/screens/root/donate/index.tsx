@@ -1,5 +1,5 @@
 import { StyleSheet, View, Text, TouchableOpacity } from "react-native"
-import { HeaderScreen } from "@components/general/HeaderPage"
+import { HeaderScreen } from "@components/general/HeaderScreen"
 import { useTranslate } from "@src/services/translate"
 import { useAuth } from "@src/providers/userProvider"
 import { getWallet } from "@src/services/memory/wallets"

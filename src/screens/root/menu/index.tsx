@@ -94,17 +94,17 @@ const UserMenuScreen = ({ navigation }: any) => {
             <ScrollView contentContainerStyle={theme.styles.scroll_container}>
 
                 <View style={{ width: "98%", flexDirection: "row", alignItems: "center" }}>
-                    <TouchableOpacity style={{ width: "50%", alignItems: "center" }} activeOpacity={.7}>
-                        <SectionContainer style={{ padding: 10 }}>
-                            <Ionicons name="people" color={theme.colors.white} size={20} style={{ marginVertical: 10 }} />
-                            <Text style={{ color: theme.colors.white }}>Convidar Amigos.</Text>
-                            <Text style={{ color: theme.colors.gray, fontSize: 12 }}>Convide seus amigos para o app, compartilhe a jornada bitconheira!</Text>
+                    <TouchableOpacity style={{ width: "50%", alignItems: "center", height: "100%" }} activeOpacity={.7}>
+                        <SectionContainer style={{ padding: 10, height: 135 }}>
+                            <Ionicons name="people" color={theme.colors.white} size={theme.icons.large} style={{ marginVertical: 10 }} />
+                            <Text style={{ color: theme.colors.white }}>{useTranslate("section.title.talkdevelopers")}</Text>
+                            <Text style={{ color: theme.colors.gray, fontSize: 12 }}>Convide seus amigos para o app, compartilhe!</Text>
                         </SectionContainer>
                     </TouchableOpacity>
-                    <TouchableOpacity style={{ width: "50%", alignItems: "center" }} activeOpacity={.7}>
-                        <SectionContainer style={{ padding: 10 }}>
-                            <Ionicons name="paper-plane" color={theme.colors.white} size={20} style={{ marginVertical: 10 }} />
-                            <Text style={{ color: theme.colors.white }}>Convidar Amigos.</Text>
+                    <TouchableOpacity style={{ width: "50%", alignItems: "center", height: "100%" }} activeOpacity={.7}>
+                        <SectionContainer style={{ padding: 10, height: 135 }}>
+                            <Ionicons name="paper-plane" color={theme.colors.white} size={theme.icons.large} style={{ marginVertical: 10 }} />
+                            <Text style={{ color: theme.colors.white }}>{useTranslate("section.title.sharefriend")}</Text>
                             <Text style={{ color: theme.colors.gray, fontSize: 12 }}>Convide seus amigos para o app, compartilhe a jornada bitconheira!</Text>
                         </SectionContainer>
                     </TouchableOpacity>
