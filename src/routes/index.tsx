@@ -25,6 +25,7 @@ import DonateScreen from "@screens/root/donate"
 import NewChatScreen from "@screens/root/chats/new"
 import WalletReceiveScreen from "@screens/root/wallet/receive"
 import ImportWalletScreen from "@screens/root/wallet/add/import"
+import CreatedSeedScren from "../screens/root/wallet/add/seed"
 
 const Stack = createStackNavigator()
 
@@ -53,6 +54,7 @@ const AppRoutes = () => {
 
                 <Stack.Screen name="wallet-stack" component={WalletManagerScreen} options={{ headerShown: true }} />
                 <Stack.Screen name="add-wallet-stack" component={AddWalletScreen} options={{ cardStyleInterpolator: CardStyleInterpolators.forVerticalIOS }} />
+                <Stack.Screen name="seed-wallet-stack" component={CreatedSeedScren} options={{ cardStyleInterpolator: CardStyleInterpolators.forVerticalIOS }} />
                 <Stack.Screen name="import-wallet-stack" component={ImportWalletScreen} options={{ cardStyleInterpolator: CardStyleInterpolators.forVerticalIOS }} />
                 <Stack.Screen name="add-wallet-receive-stack" component={WalletReceiveScreen} options={{ cardStyleInterpolator: CardStyleInterpolators.forVerticalIOS }} />
                 <Stack.Screen name="wallet-send-stack" component={SendScreen} options={{ cardStyleInterpolator: CardStyleInterpolators.forVerticalIOS }} />
