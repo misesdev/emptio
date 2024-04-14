@@ -1,7 +1,7 @@
 import { getUtxos } from "@/src/services/bitcoin/mempool"
 import { useTranslate } from "@/src/services/translate"
 import { Tx } from "@mempool/mempool.js/lib/interfaces/bitcoin/transactions"
-import { generateAddress, createTransaction, createWallet, ValidateAddress, sendTransaction } from "@src/services/bitcoin"
+import { generateAddress, createTransaction, createWallet, ValidateAddress, sendTransaction, importWallet } from "@src/services/bitcoin"
 import { getRandomKey } from "@src/services/bitcoin/signature"
 import { deletePairKey, getPairKey, insertPairKey } from "@src/services/memory/pairkeys"
 import { PairKey, Transaction, Wallet, WalletInfo } from "@src/services/memory/types"
@@ -37,6 +37,37 @@ const create = async ({ name, type }: Props): Promise<Response> => {
         return { success: true, message: "success" }
     }
     catch (ex) { return trackException(ex) }
+}
+
+type ImportProps = {
+    name: string,
+    seedphrase: string,
+    passphrase?: string,
+    type?: "bitcoin" | "lightning"
+}
+
+const require = async ({ name, type = "bitcoin", seedphrase, passphrase }: ImportProps): Promise<Wallet> => {
+
+    const pairKey = await importWallet(seedphrase, passphrase)
+
+    const bitcoinAddress = generateAddress(pairKey.publicKey)
+
+    const wallet: Wallet = {
+        name: name,
+        type: type,
+        lastBalance: 0,
+        lastReceived: 0,
+        lastSended: 0,
+        pairkey: pairKey.key,
+        key: getRandomKey(10),
+        address: bitcoinAddress
+    }
+
+    await insertPairKey(pairKey)
+
+    await insertWallet(wallet)
+
+    return wallet
 }
 
 const exclude = async (wallet: Wallet): Promise<Response> => {
@@ -125,6 +156,7 @@ const address = {
 export const walletService = {
     create,
     update,
+    import: require,
     delete: exclude,
     listTransactions,
     address,

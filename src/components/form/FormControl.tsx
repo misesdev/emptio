@@ -3,7 +3,8 @@ import theme from "@/src/theme"
 
 type FormControlProps = {
     label: string,
-    value?: string,    
+    value?: string,   
+    type?: "none" | "password", 
     isTextArea?: boolean,
     textCenter?: boolean,
     onBlur?: () => void,
@@ -11,7 +12,7 @@ type FormControlProps = {
     onChangeText: (value: string) => void,
 }
 
-export const FormControl = ({ label, value, onChangeText, onFocus, onBlur, textCenter, isTextArea }: FormControlProps) => {
+export const FormControl = ({ label, value, onChangeText, onFocus, onBlur, textCenter, isTextArea, type = "none" }: FormControlProps) => {
 
     return (
         <View style={styles.control}>
@@ -27,6 +28,7 @@ export const FormControl = ({ label, value, onChangeText, onFocus, onBlur, textC
                     numberOfLines={isTextArea ? 3 : 1}
                     multiline={isTextArea}
                     value={value}
+                    textContentType={type}
                 />
             </View>
         </View>
