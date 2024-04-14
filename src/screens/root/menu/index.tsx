@@ -17,39 +17,25 @@ import { Ionicons } from "@expo/vector-icons"
 
 const UserMenuScreen = ({ navigation }: any) => {
 
-    const opacity = .6
+    const opacity = .7
     const { user } = useAuth()
     const [loading, setLoading] = useState(false)
-
-    const handleDeleteAccount = async () => {
-
-        setLoading(true)
-
-        setTimeout(async () => {
-            const result = await userService.signOut()
-
-            if (result.success)
-                navigation.reset({ index: 0, routes: [{ name: "initial-stack" }] })
-            else
-                alertMessage(result.message)
-        }, 300)
-    }
 
     const checkBiometric = async () => {
         const isBiometricAvailable = await hasHardwareAsync()
 
         if (isBiometricAvailable) {
             const { success } = await authenticateAsync({
-                promptMessage: useTranslate("commons.authenticate.message"),
+                promptMessage: useTranslate("commons.authenticate.message")
             })
 
             return success
         }
         else
             return true
-    };
+    }
 
-    const handleCopyKeys = async () => {
+    const handleCopySecretKey = async () => {
         const biometrics = await checkBiometric()
 
         const { privateKey } = await getPairKey(user?.keychanges ?? "")
@@ -63,7 +49,7 @@ const UserMenuScreen = ({ navigation }: any) => {
         }
     }
 
-    const handleCopyNostrKey = async () => {
+    const handleCopyPublicKey = async () => {
         const { publicKey } = await getPairKey(user?.keychanges ?? "")
 
         const pubKey = nip19.npubEncode(publicKey)
@@ -71,6 +57,20 @@ const UserMenuScreen = ({ navigation }: any) => {
         await setStringAsync(pubKey)
 
         alertMessage(useTranslate("message.copied"))
+    }
+
+    const handleDeleteAccount = async () => {
+
+        setLoading(true)
+
+        setTimeout(async () => {
+            const result = await userService.signOut()
+
+            if (result.success)
+                navigation.reset({ index: 0, routes: [{ name: "initial-stack" }] })
+            else
+                alertMessage(result.message)
+        }, 300)
     }
 
     if (loading)
@@ -93,16 +93,16 @@ const UserMenuScreen = ({ navigation }: any) => {
             </View>
             <ScrollView contentContainerStyle={theme.styles.scroll_container}>
 
-                <View style={{ width: "98%", flexDirection: "row", alignItems: "center" }}>
-                    <TouchableOpacity style={{ width: "50%", alignItems: "center", height: "100%" }} activeOpacity={.7}>
-                        <SectionContainer style={{ padding: 10, height: 135 }}>
+                <View style={styles.sectiontop}>
+                    <TouchableOpacity style={styles.mediumsection} activeOpacity={.7}>
+                        <SectionContainer style={styles.mediumcontainer}>
                             <Ionicons name="people" color={theme.colors.white} size={theme.icons.large} style={{ marginVertical: 10 }} />
                             <Text style={{ color: theme.colors.white }}>{useTranslate("section.title.talkdevelopers")}</Text>
                             <Text style={{ color: theme.colors.gray, fontSize: 12 }}>Convide seus amigos para o app, compartilhe!</Text>
                         </SectionContainer>
                     </TouchableOpacity>
-                    <TouchableOpacity style={{ width: "50%", alignItems: "center", height: "100%" }} activeOpacity={.7}>
-                        <SectionContainer style={{ padding: 10, height: 135 }}>
+                    <TouchableOpacity style={styles.mediumsection} activeOpacity={.7}>
+                        <SectionContainer style={styles.mediumcontainer}>
                             <Ionicons name="paper-plane" color={theme.colors.white} size={theme.icons.large} style={{ marginVertical: 10 }} />
                             <Text style={{ color: theme.colors.white }}>{useTranslate("section.title.sharefriend")}</Text>
                             <Text style={{ color: theme.colors.gray, fontSize: 12 }}>Convide seus amigos para o app, compartilhe a jornada bitconheira!</Text>
@@ -112,8 +112,8 @@ const UserMenuScreen = ({ navigation }: any) => {
 
                 <SectionContainer>
                     <LinkSection label={useTranslate("settings.account.edit")} icon="person" onPress={() => navigation.navigate("manage-account-stack")} />
-                    <LinkSection label={useTranslate("settings.nostrkey.copy")} icon="document-lock-outline" onPress={handleCopyNostrKey} />
-                    <LinkSection label={useTranslate("settings.secretkey.copy")} icon="document-lock-outline" onPress={handleCopyKeys} />
+                    <LinkSection label={useTranslate("settings.nostrkey.copy")} icon="document-lock-outline" onPress={handleCopyPublicKey} />
+                    <LinkSection label={useTranslate("settings.secretkey.copy")} icon="document-lock-outline" onPress={handleCopySecretKey} />
                     <LinkSection label={useTranslate("settings.security")} icon="settings" onPress={() => navigation.navigate("manage-security-stack")} />
                 </SectionContainer>
 
@@ -134,6 +134,9 @@ const UserMenuScreen = ({ navigation }: any) => {
 }
 
 const styles = StyleSheet.create({
+    mediumcontainer: { padding: 10, height: 135 },
+    sectiontop: { width: "98%", flexDirection: "row", alignItems: "center" },
+    mediumsection: { width: "50%", alignItems: "center", height: "100%" },
     area: { width: "100%", alignItems: "center", marginVertical: 10 },
     name: { fontSize: 18, fontWeight: 'bold', color: theme.colors.white, marginVertical: 10 },
     image: { width: 100, height: 100, borderRadius: 50, backgroundColor: theme.colors.gray, overflow: "hidden", borderWidth: 2, borderColor: theme.colors.section },

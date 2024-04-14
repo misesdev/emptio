@@ -38,13 +38,7 @@ const SendScreen = ({ navigation }: any) => {
 }
 
 const styles = StyleSheet.create({
-    title: {
-        fontSize: 30,
-        maxWidth: "90%",
-        fontWeight: "bold",
-        textAlign: "center",
-        color: theme.colors.white
-    },
+    title: { fontSize: 30, maxWidth: "90%", fontWeight: "bold", textAlign: "center", color: theme.colors.white },
 })
 
 export default SendScreen

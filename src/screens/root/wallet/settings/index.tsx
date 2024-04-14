@@ -1,6 +1,6 @@
 import { useAuth } from "@src/providers/userProvider"
 import { ScrollView, StyleSheet, Text, TouchableOpacity, View } from "react-native"
-import { ButtonPrimary } from "@components/form/Buttons"
+import { ButtonLink, ButtonPrimary } from "@components/form/Buttons"
 import { useTranslate } from "@src/services/translate"
 import { walletService } from "@src/core/walletManager"
 import AlertBox, { alertMessage } from "@components/general/AlertBox"
@@ -12,7 +12,7 @@ import { HeaderScreen } from "@components/general/HeaderScreen"
 import { useState } from "react"
 import theme from "@src/theme"
 
-const WalletSttings = ({ navigation, route }: any) => {
+const WalletSettings = ({ navigation, route }: any) => {
 
     const { wallet, setWallet, user, setUser } = useAuth()
     const [loading, setLoading] = useState(false)
@@ -73,10 +73,11 @@ const WalletSttings = ({ navigation, route }: any) => {
 
                 <FormControl label={useTranslate("labels.wallet.name")} value={walletName} onChangeText={setWalletName} />
 
-                <TouchableOpacity style={{ marginVertical: 20, padding: 15, flexDirection: "row" }} onPress={hadleDeleteWallet} >
-                    {/* <Ionicons name="trash" color={theme.colors.red} size={theme.icons.mine} /> */}
+                <ButtonLink label={useTranslate("commons.delete")} color={theme.colors.red} onPress={hadleDeleteWallet}/>
+                {/* <TouchableOpacity style={{ marginVertical: 20, padding: 15, flexDirection: "row" }} onPress={hadleDeleteWallet} >
+                    <Ionicons name="trash" color={theme.colors.red} size={theme.icons.mine} />
                     <Text style={{ color: theme.colors.red, fontSize: 18, fontWeight: "400", marginHorizontal: 5 }}>{useTranslate("commons.delete")}</Text>
-                </TouchableOpacity>
+                </TouchableOpacity> */}
 
             </ScrollView>
 
@@ -103,4 +104,4 @@ const styles = StyleSheet.create({
     footer: { width: "100%", position: "absolute", bottom: 10, alignItems: "center" }
 })
 
-export default WalletSttings
+export default WalletSettings

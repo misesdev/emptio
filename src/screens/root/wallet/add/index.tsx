@@ -1,13 +1,13 @@
 
 import { StyleSheet, View, Text, TouchableOpacity } from "react-native"
 import { useTranslate } from "@src/services/translate"
-import { TextBox } from "@components/form/TextBoxs"
-import { ButtonPrimary } from "@components/form/Buttons"
+import { ButtonLink, ButtonPrimary } from "@components/form/Buttons"
 import { Ionicons } from "@expo/vector-icons"
 import AlertBox, { alertMessage } from "@components/general/AlertBox"
 import SplashScreen from "@components/general/SplashScreen"
 import { walletService } from "@src/core/walletManager"
 import { HeaderScreen } from "@components/general/HeaderScreen"
+import { FormControl } from "@components/form/FormControl"
 import { useState } from "react"
 import theme from "@src/theme"
 
@@ -52,7 +52,7 @@ const AddWalletScreen = ({ navigation }: any) => {
 
             <View style={theme.styles.container} >
 
-                <TextBox placeholder={useTranslate("labels.wallet.name")} value={walletName} onChangeText={setWalletName} />
+                <FormControl label={useTranslate("labels.wallet.name")} value={walletName} onChangeText={setWalletName} />
 
                 <View style={{ width: "100%", alignItems: "center", marginVertical: 30 }}>
                     <TouchableOpacity activeOpacity={.7}
@@ -84,6 +84,10 @@ const AddWalletScreen = ({ navigation }: any) => {
                     </TouchableOpacity>
                 </View>
 
+                {/* Import wallet from seed phrase */}
+
+                <ButtonLink label={useTranslate("commons.import")} onPress={() => navigation.navigate("import-wallet-stack")} color={theme.colors.gray} />
+
                 <View style={styles.buttonArea}>
                     <ButtonPrimary label={useTranslate("commons.create")} onPress={() => handleCreate()} />
                 </View>
@@ -95,41 +99,11 @@ const AddWalletScreen = ({ navigation }: any) => {
 }
 
 const styles = StyleSheet.create({
-    title: {
-        top: 50,
-        fontSize: 22,
-        fontWeight: 'bold',
-        position: "absolute",
-        color: theme.colors.white
-    },
-    selection: {
-        width: "90%",
-        minHeight: 20,
-        maxHeight: 100,
-        borderRadius: 16,
-        marginVertical: 10,
-        flexDirection: "row",
-        borderColor: theme.colors.white,
-        backgroundColor: theme.colors.default
-    },
-    typeTitle: {
-        fontSize: 16,
-        fontWeight: "bold",
-        marginTop: 15,
-        color: theme.colors.white
-    },
-    typeDescription: {
-        marginBottom: 15,
-        color: theme.colors.gray
-    },
-    buttonArea: {
-        width: '100%',
-        position: 'absolute',
-        justifyContent: 'center',
-        marginVertical: 10,
-        flexDirection: "row",
-        bottom: 10,
-    }
+    title: { top: 50, fontSize: 22, fontWeight: 'bold', position: "absolute", color: theme.colors.white },
+    selection: { width: "90%", minHeight: 20, maxHeight: 100, borderRadius: 16, marginVertical: 10, flexDirection: "row", borderColor: theme.colors.white, backgroundColor: theme.colors.default },
+    typeTitle: { fontSize: 16, fontWeight: "bold", marginTop: 15, color: theme.colors.white },
+    typeDescription: { marginBottom: 15, color: theme.colors.gray },
+    buttonArea: { width: '100%', position: 'absolute', justifyContent: 'center', marginVertical: 10, flexDirection: "row", bottom: 10 }
 })
 
 export default AddWalletScreen

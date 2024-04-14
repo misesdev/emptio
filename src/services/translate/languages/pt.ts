@@ -25,6 +25,7 @@ export default {
     "commons.scan": "Escanear",
     "commons.receive": "Receber",
     "commons.create": "Criar",
+    "commons.import": "Importar",
     "commons.add": "Adicionar",
     "commons.update": "Atualizar",
     "commons.delete": "Excluir",
@@ -89,6 +90,7 @@ export default {
     "wallet.title.receive": "Receber",
     "wallet.title.send": "Enviar",
     "wallet.title.sendvalue": "Quantos sats deseja enviar?",
+    "wallet.title.import": "Import sua carteira a partir da seedphrase!",
     "wallet.subtitle.balance": "Saldo disponível de ",
     "wallet.title.sendfor": "Para quem?",
     "wallet.title.sendreceiver": "Para quem deseja enviar ",
@@ -96,6 +98,7 @@ export default {
     "wallet.placeholder.addressuser": "Endereço: bc1.. ou amigo",
 
     "screen.title.addwallet": "Adicionar Carteira",
+    "screen.title.importwallet": "Importar Carteira",
     "screen.title.addfriend": "Adicionar Amigo",
     "screen.title.donate": "Contribuir com o Projeto",
     "screen.title.newchat": "Nova Conversa",

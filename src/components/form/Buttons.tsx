@@ -10,7 +10,8 @@ type Props = {
     leftIcon?: IconNames,
     rightIcon?: IconNames,
     style?: StyleProp<ViewStyle>,
-    onPress: () => void
+    onPress: () => void,
+    color?: string
 }
 
 const TouchableEmptio = ({ label, style, leftIcon, rightIcon, onPress }: Props) => {
@@ -25,6 +26,8 @@ const TouchableEmptio = ({ label, style, leftIcon, rightIcon, onPress }: Props) 
         </TouchableOpacity>
     )
 }
+
+
 
 export const ButtonSuccess = ({ label, style, leftIcon, rightIcon, onPress }: Props) => {
     return <TouchableEmptio label={label} leftIcon={leftIcon} rightIcon={rightIcon} onPress={onPress} style={[styles.button, styles.succes, style]} />
@@ -46,10 +49,10 @@ export const ButtonHead = ({ label, style, leftIcon, rightIcon, onPress }: Props
     return <TouchableEmptio label={label} leftIcon={leftIcon} rightIcon={rightIcon} onPress={onPress} style={[styles.button, styles.default, style]} />
 }
 
-export const ButtonLink = ({ label, style, leftIcon, rightIcon, onPress }: Props) => {
+export const ButtonLink = ({ label, color, onPress }: Props) => {
     return (
-        <TouchableOpacity onPress={onPress}>
-            <Text style={styles.textLink}></Text>
+        <TouchableOpacity style={styles.buttonLink} onPress={onPress} >
+            <Text style={[styles.textLink, { color: color }]}>{label}</Text>
         </TouchableOpacity>
     )
 }
@@ -79,34 +82,13 @@ export const ButtonIcon = ({ icon, size, style, buttonStyle, onPress }: IconProp
 }
 
 const styles = StyleSheet.create({
-    button: {
-        margin: 10,
-        minWidth: 150,
-        maxWidth: "96%",
-        paddingVertical: 14,
-        borderRadius: 25,
-    },
-    succes: {
-        backgroundColor: theme.colors.green
-    },
-    primary: {
-        backgroundColor: theme.colors.blue
-    },
-    danger: {
-        backgroundColor: theme.colors.red
-    },
-    default: {
-        backgroundColor: theme.colors.gray
-    },
-    text: {
-        fontSize: 13,
-        fontWeight: "500",
-        textAlign: 'center',
-        marginHorizontal: 10,
-        color: theme.colors.white
-    },
-    textLink: {
-        color: theme.colors.link
-    }
+    button: { margin: 10, minWidth: 150, maxWidth: "96%", paddingVertical: 14, borderRadius: 25 },
+    succes: { backgroundColor: theme.colors.green },
+    primary: { backgroundColor: theme.colors.blue },
+    danger: { backgroundColor: theme.colors.red },
+    default: { backgroundColor: theme.colors.gray },
+    text: { fontSize: 13, fontWeight: "500", textAlign: 'center', marginHorizontal: 10, color: theme.colors.white },
+    buttonLink: { marginVertical: 20, padding: 15, flexDirection: "row" },
+    textLink: { fontSize: 16, fontWeight: "400", marginHorizontal: 5 },
 })
 
