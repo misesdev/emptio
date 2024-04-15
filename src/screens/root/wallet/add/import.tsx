@@ -21,13 +21,13 @@ const ImportWalletScreen = ({ navigation }: any) => {
         var words = seedPhrase?.split(" ")
 
         if (!walletName)
-            return alertMessage("Please define the wallet name!")
+            return alertMessage(useTranslate("message.wallet.nameempty"))
 
         if (words && words?.length < 12)
-            return alertMessage(`Sua seed deve conter ao menos 12 palavras, a seed digitada contém ${words.length}.`)
+            return alertMessage(`${useTranslate("message.wallet.invalidseed")} ${words.length}.`)
 
         if (words && words?.length < 24 && words?.length > 12)
-            return alertMessage(`Sua seed deve conter 24 palavras, a seed digitada contém ${words.length}.`)
+            return alertMessage(`${useTranslate("message.wallet.invalidseed")} ${words.length}.`)
 
         setLoading(true)
 

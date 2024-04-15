@@ -67,6 +67,7 @@ export default {
     "message.shortly": "Essa funcionalidade estará disponível em breve!",
     "message.error.notaccessgallery": "Sem acesso a galeria de imagens!",
     "message.wallet.nameempty": "Por favor preencha o nome com mais de 5 caracteres!",
+    "message.wallet.invalidseed": "Sua seed deve conter 12 ou 24 palavras, a seed digitada contém",
     "message.copied": "Copiado para área de transferência!",
     "message.profile.saved": "Dados do perfil atualizados!",
 

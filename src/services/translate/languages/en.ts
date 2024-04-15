@@ -60,6 +60,7 @@ export default {
     "message.wallet.create": "Add as many wallets as you want. To buy or sell, you can select a wallet in the purchase or sale order.",
     "message.wallet.alertcreate": "Add a Bitcoin wallet for buying and selling!",
     "message.wallet.nameempty": "Please fill in the name with more than 5 characters!",
+    "message.wallet.invalidseed": "Your seed must contain 12 or 24 words, the typed seed contains",
     "message.wallet.notfound": "Wallet not found!",
     "message.wallet.saved": "Changes saved!",
     "message.transaction.insufficient_funds": "Insufficient funds!",

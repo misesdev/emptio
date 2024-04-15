@@ -25,7 +25,7 @@ import DonateScreen from "@screens/root/donate"
 import NewChatScreen from "@screens/root/chats/new"
 import WalletReceiveScreen from "@screens/root/wallet/receive"
 import ImportWalletScreen from "@screens/root/wallet/add/import"
-import CreatedSeedScren from "../screens/root/wallet/add/seed"
+import CreatedSeedScren from "@screens/root/wallet/add/seed"
 
 const Stack = createStackNavigator()
 
@@ -35,8 +35,8 @@ const AppRoutes = () => {
             <Stack.Navigator screenOptions={stackOptions} initialRouteName="initial-stack">
                 <Stack.Screen name="initial-stack" component={InitializeScreen} />
                 <Stack.Screen name="authenticate-stack" component={AuthenticateScreen} />
-                <Stack.Screen name="register-stack" component={RegisterScreen} options={{ headerShown: true }} />
                 <Stack.Screen name="login-stack" component={LoginScreen} options={{ headerShown: true }} />
+                <Stack.Screen name="register-stack" component={RegisterScreen} options={{ headerShown: true }} />
 
                 <Stack.Screen name="core-stack" component={TabRoutes} />
                 <Stack.Screen name="user-donate-stack" component={DonateScreen} options={{ cardStyleInterpolator: CardStyleInterpolators.forVerticalIOS }} />
@@ -63,7 +63,6 @@ const AppRoutes = () => {
                 <Stack.Screen name="wallet-settings-stack" component={WalletSettings} options={{ cardStyleInterpolator: CardStyleInterpolators.forVerticalIOS }} />
 
                 <Stack.Screen name="add-follow-stack" component={AddFolowScreen} options={{ cardStyleInterpolator: CardStyleInterpolators.forVerticalIOS }} />
-
 
             </Stack.Navigator>
         </NavigationContainer>
