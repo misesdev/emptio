@@ -45,7 +45,7 @@ const ImportWalletScreen = ({ navigation }: any) => {
     return (
         <>
             {/* Header */}
-            <HeaderScreen
+            <HeaderScreen 
                 title={useTranslate("screen.title.importwallet")}
                 onClose={() => navigation.navigate("add-wallet-stack")}
             />
@@ -59,7 +59,7 @@ const ImportWalletScreen = ({ navigation }: any) => {
 
             <FormControl label="PassPhrase" value={passPhrase} onChangeText={setPassPhrase} type="password" />
 
-            {/* Body */}
+            {/* Footer */}
             <View style={styles.buttonArea}>
                 <ButtonPrimary label={useTranslate("commons.import")} onPress={() => handleImport()} />
             </View>
