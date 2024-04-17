@@ -31,7 +31,7 @@ const ChatsScreen = ({ navigation }: any) => {
             </ScrollView>
             <View style={styles.rightButton}>
                 <TouchableOpacity activeOpacity={.7} style={styles.newChatButton} onPress={() => navigation.navigate("new-chat-stack")}>
-                    <Ionicons name="add" size={theme.icons.extra} color={theme.colors.white} />
+                    <Ionicons name="pencil" size={theme.icons.medium} color={theme.colors.white} />
                 </TouchableOpacity>
             </View>
         </View>
@@ -39,7 +39,7 @@ const ChatsScreen = ({ navigation }: any) => {
 }
 
 const styles = StyleSheet.create({
-    newChatButton: { backgroundColor: theme.colors.blue, padding: 10, borderRadius: 50 },
+    newChatButton: { backgroundColor: theme.colors.blue, padding: 18, borderRadius: 50 },
     rightButton: { position: "absolute", bottom: 0, right: 0, width: 100, height: 70, justifyContent: "center", alignItems: "center" }
 })
 
