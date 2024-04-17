@@ -49,7 +49,7 @@ const HomeScreen = ({ navigation }: any) => {
                 {/* Wallets section  */}
                 <WalletList wallets={wallets} navigation={navigation} />
 
-                {/* Sales and Shopping */}
+                {/* Sales and Shopping section*/}
                 <SectionHeader icon="cash-outline" label={useTranslate("section.title.sales")} />
 
                 <AlertBox />
