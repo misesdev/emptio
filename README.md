@@ -13,9 +13,9 @@ To facilitate the buying and selling of Bitcoin, it will also utilize payment pr
 ### Features in development and completed
 
 - [x] Create a Nostr account or log in with the npub nip19.
-- [ ] List users to follow and add users to friends.
+- [x] List users to follow and add users to friends.
 - [ ] Create session for developers, donations, trusted sellers, and other related items.
-- [x] Add wallet to receive and send bitcoin.
+- [x] Create, delete and import wallet to receive and send bitcoin.
 - [ ] Integrate with mempool.space to send Bitcoin transactions and list transactions.
 - [ ] Create and list sell orders.
 - [ ] Add and manage payment processor to receive feat currency and send bitcoins.
