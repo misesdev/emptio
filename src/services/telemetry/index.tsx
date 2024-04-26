@@ -1,11 +1,11 @@
 
-export type Response = {
+export type Response<T> = {
     success: boolean,
     message: string,
-    data?: any
+    data?: T
 }
 
-export const trackException = (ex: any) : Response => {
+export const trackException = (ex: any) : Response<any> => {
 
     // track the exception for server manager error
 

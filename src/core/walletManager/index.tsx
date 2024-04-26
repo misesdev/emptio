@@ -13,7 +13,7 @@ type Props = {
     type: "bitcoin" | "lightning"
 }
 
-const create = async ({ name, type }: Props): Promise<Response> => {
+const create = async ({ name, type }: Props): Promise<Response<any>> => {
     try {
         const pairKey: PairKey = createWallet()
 
@@ -46,31 +46,36 @@ type ImportProps = {
     type?: "bitcoin" | "lightning"
 }
 
-const require = async ({ name, type = "bitcoin", seedphrase, passphrase }: ImportProps): Promise<Wallet> => {
+const require = async ({ name, type = "bitcoin", seedphrase, passphrase }: ImportProps): Promise<Response<Wallet>> => {
 
-    const pairKey = await importWallet(seedphrase, passphrase)
+    try {
+        const pairKey = await importWallet(seedphrase, passphrase)
 
-    const bitcoinAddress = generateAddress(pairKey.publicKey)
+        const bitcoinAddress = generateAddress(pairKey.publicKey)
 
-    const wallet: Wallet = {
-        name: name,
-        type: type,
-        lastBalance: 0,
-        lastReceived: 0,
-        lastSended: 0,
-        pairkey: pairKey.key,
-        key: getRandomKey(10),
-        address: bitcoinAddress
+        const wallet: Wallet = {
+            name: name,
+            type: type,
+            lastBalance: 0,
+            lastReceived: 0,
+            lastSended: 0,
+            pairkey: pairKey.key,
+            key: getRandomKey(10),
+            address: bitcoinAddress
+        }
+
+        await insertPairKey(pairKey)
+
+        await insertWallet(wallet)
+
+        return { success: true, message: "", data: wallet }
     }
-
-    await insertPairKey(pairKey)
-
-    await insertWallet(wallet)
-
-    return wallet
+    catch (ex) {
+        return trackException(ex)
+    }
 }
 
-const exclude = async (wallet: Wallet): Promise<Response> => {
+const exclude = async (wallet: Wallet): Promise<Response<any>> => {
 
     try {
         await deletePairKey(wallet.pairkey ?? "")
@@ -130,7 +135,7 @@ const listTransactions = async (address: string): Promise<WalletInfo> => {
 type TransactionProps = { amount: number, destination: string, walletKey: string }
 
 const transaction = {
-    get: async ({ amount, destination, walletKey }: TransactionProps): Promise<Response> => {
+    get: async ({ amount, destination, walletKey }: TransactionProps): Promise<Response<any>> => {
 
         const wallet = await getWallet(walletKey)
 
@@ -145,7 +150,7 @@ const transaction = {
 
         return transaction
     },
-    send: async (txHex: string): Promise<Response> => sendTransaction(txHex)
+    send: async (txHex: string): Promise<Response<any>> => sendTransaction(txHex)
 }
 
 const address = {

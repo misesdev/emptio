@@ -18,15 +18,15 @@ const ImportWalletScreen = ({ navigation }: any) => {
 
     const handleImport = async () => {
 
-        var words = seedPhrase?.split(" ")
+        var words = seedPhrase?.trim().split(" ")
 
         if (!walletName)
             return alertMessage(useTranslate("message.wallet.nameempty"))
 
-        if (words && words?.length < 12)
-            return alertMessage(`${useTranslate("message.wallet.invalidseed")} ${words.length}.`)
+        // if (words && words?.length < 12)
+        //     return alertMessage(`${useTranslate("message.wallet.invalidseed")} ${words.length}.`)
 
-        if (words && words?.length < 24 && words?.length > 12)
+        if (words && words?.length < 24 || words?.length > 24)
             return alertMessage(`${useTranslate("message.wallet.invalidseed")} ${words.length}.`)
 
         setLoading(true)
@@ -35,8 +35,10 @@ const ImportWalletScreen = ({ navigation }: any) => {
 
         setLoading(false)
 
-        if (wallet.key)
-            navigation.navigate("wallet-stack")
+        if (wallet.success)
+            navigation.reset({ index: 0, routes: [{ name: "core-stack" }] })
+        else
+            alertMessage(wallet.message)
     }
 
     if (loading)
@@ -45,7 +47,7 @@ const ImportWalletScreen = ({ navigation }: any) => {
     return (
         <>
             {/* Header */}
-            <HeaderScreen 
+            <HeaderScreen
                 title={useTranslate("screen.title.importwallet")}
                 onClose={() => navigation.navigate("add-wallet-stack")}
             />
@@ -55,9 +57,9 @@ const ImportWalletScreen = ({ navigation }: any) => {
 
             <FormControl label={useTranslate("labels.wallet.name")} value={walletName} onChangeText={setWalletName} />
 
-            <FormControl label="Seed Phrase" value={seedPhrase} onChangeText={setSeedPhrase} isTextArea />
+            <FormControl label="Seed Phrase" value={seedPhrase} onChangeText={value => setSeedPhrase(value.toLowerCase())} isTextArea />
 
-            <FormControl label="PassPhrase" value={passPhrase} onChangeText={setPassPhrase} type="password" />
+            {/* <FormControl label="PassPhrase" value={passPhrase} onChangeText={setPassPhrase} type="password" /> */}
 
             {/* Footer */}
             <View style={styles.buttonArea}>
@@ -71,7 +73,7 @@ const ImportWalletScreen = ({ navigation }: any) => {
 
 const styles = StyleSheet.create({
     title: { fontSize: 30, maxWidth: "90%", fontWeight: "bold", textAlign: "center", color: theme.colors.white, marginVertical: 20 },
-    buttonArea: { width: '100%', position: 'absolute', justifyContent: 'center', marginVertical: 10, flexDirection: "row", bottom: 10 }
+    buttonArea: { width: '100%', justifyContent: 'center', marginVertical: 10, flexDirection: "row", marginTop: 50 }
 })
 
 export default ImportWalletScreen

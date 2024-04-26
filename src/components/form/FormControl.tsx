@@ -7,12 +7,13 @@ type FormControlProps = {
     type?: "none" | "password", 
     isTextArea?: boolean,
     textCenter?: boolean,
+    autoComplete?: boolean,
     onBlur?: () => void,
     onFocus?: () => void,
     onChangeText: (value: string) => void,
 }
 
-export const FormControl = ({ label, value, onChangeText, onFocus, onBlur, textCenter, isTextArea, type = "none" }: FormControlProps) => {
+export const FormControl = ({ label, value, onChangeText, onFocus, onBlur, textCenter, isTextArea, autoComplete = false, type = "none" }: FormControlProps) => {
 
     return (
         <View style={styles.control}>
@@ -29,6 +30,7 @@ export const FormControl = ({ label, value, onChangeText, onFocus, onBlur, textC
                     multiline={isTextArea}
                     value={value}
                     textContentType={type}
+                    autoComplete={autoComplete ? undefined : "off" }
                 />
             </View>
         </View>

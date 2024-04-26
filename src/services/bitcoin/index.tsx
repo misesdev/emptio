@@ -26,20 +26,7 @@ export const createWallet = (): PairKey => {
     return { key, privateKey, publicKey }
 }
 
-export const importWallet = async (seedPhrase: string, password?: string): Promise<PairKey> => {
-
-    const key = getRandomKey(10)
-
-    const secretBytes = await mnemonicToSeed(seedPhrase, password)
-
-    const privateKey = bytesToHex(secretBytes)
-
-    const publicbytes = getPublicKey(privateKey)
-
-    const publicKey = bytesToHex(publicbytes)
-
-    return { key, privateKey, publicKey }
-}
+export const importWallet = async (seedPhrase: string, password?: string): Promise<PairKey> => seedToWallet(seedPhrase)
 
 export type SeedProps = {
     seed: string, // phrase with 12 or 24 words
@@ -48,13 +35,15 @@ export type SeedProps = {
 
 export const seedToWallet = (seedPhrase: string): PairKey => {
 
+    const key = getRandomKey(10)
+
     const privateKey = mnemonicToEntropy(seedPhrase)
 
     const publicbytes = getPublicKey(privateKey)
 
     const publicKey = bytesToHex(publicbytes)
 
-    return { key: "", privateKey, publicKey }
+    return { key, privateKey, publicKey }
 }
 
 export const getSeedPhrase = (privateKey: string): string => entropyToMnemonic(privateKey)
@@ -80,7 +69,7 @@ type TransactionProps = {
     pairkey: PairKey
 }
 
-export const createTransaction = async ({ amount, destination, wallet, pairkey }: TransactionProps): Promise<Response> => {
+export const createTransaction = async ({ amount, destination, wallet, pairkey }: TransactionProps): Promise<Response<any>> => {
     try 
     {
         var utxoAmount = 0
@@ -139,7 +128,7 @@ export const createTransaction = async ({ amount, destination, wallet, pairkey }
     }
 }
 
-export const sendTransaction = async (transactionHex: string): Promise<Response> => {
+export const sendTransaction = async (transactionHex: string): Promise<Response<any>> => {
 
     try {
         const txid = await sendUtxo(transactionHex)
