@@ -8,6 +8,7 @@ export default {
 
     "commons.yes": "Yes",
     "commons.no": "No",
+    "commons.ok": "Ok",
     "commons.open": "Open",
     "commons.close": "Close",
     "commons.oops": "Oops!",
@@ -37,6 +38,7 @@ export default {
     "commons.nodescription": "No description",
     "commons.copy": "Copy",
     "commons.copied": "Copied!",
+    "commons.options": "Options",
 
     "labels.friends": "Friends",
     "labels.username": "User Name",
@@ -46,6 +48,7 @@ export default {
     "labels.privatekey": "Private Key",
     "labels.wallet.add": "Add a wallet!",
     "labels.wallet.name": "Wallet Name",
+    "labels.wallet.getseed": "View Seed",
 
     "menu.home": "home",
     "menu.buy&sell": "buy & sell",
@@ -63,6 +66,7 @@ export default {
     "message.wallet.invalidseed": "Your seed must contain 24 words, the typed seed contains",
     "message.wallet.notfound": "Wallet not found!",
     "message.wallet.saved": "Changes saved!",
+    "message.wallet.saveseed": "Save your Seed!",
     "message.transaction.insufficient_funds": "Insufficient funds!",
     "message.transaction.confirmed": "Confirmed transaction!",
     "message.transaction.notconfirmed": "Transaction not confirmed!",
@@ -97,6 +101,7 @@ export default {
     "wallet.title.sendreceiver": "For those who want to send ",
     "wallet.title.settings": "Wallet Settings",
     "wallet.placeholder.addressuser": "Address bc1.. or friend",
+    "wallet.title.seed": "Sua Seed",
 
     "screen.title.addwallet": "Add Wallet",
     "screen.title.importwallet": "Import Wallet",

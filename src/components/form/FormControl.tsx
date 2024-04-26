@@ -1,5 +1,5 @@
 import { View, Text, StyleSheet, TextInput, Switch } from "react-native"
-import theme from "@/src/theme"
+import theme from "@src/theme"
 
 type FormControlProps = {
     label: string,

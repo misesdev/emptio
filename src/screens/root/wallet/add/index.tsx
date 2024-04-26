@@ -32,7 +32,8 @@ const AddWalletScreen = ({ navigation }: any) => {
             const response = await walletService.create({ name: walletName, type: walletType })
 
             if (response.success)
-                navigation.reset({ index: 0, routes: [{ name: "core-stack" }] })
+                // navigation.reset({ index: 0, routes: [{ name: "core-stack" }] })
+                navigation.navigate("seed-wallet-stack", { origin: "create", pairkey: response.data?.pairkey })
             else
                 alertMessage(response.message)
 

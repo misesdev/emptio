@@ -1,5 +1,5 @@
 import { useAuth } from "@src/providers/userProvider"
-import { ScrollView, StyleSheet, Text, TouchableOpacity, View } from "react-native"
+import { ScrollView, StyleSheet, View } from "react-native"
 import { ButtonLink, ButtonPrimary } from "@components/form/Buttons"
 import { useTranslate } from "@src/services/translate"
 import { walletService } from "@src/core/walletManager"
@@ -11,6 +11,9 @@ import { FormControl, FormControlSwitch } from "@components/form/FormControl"
 import { HeaderScreen } from "@components/general/HeaderScreen"
 import { useState } from "react"
 import theme from "@src/theme"
+import { SectionHeader } from "@/src/components/general/section/headers"
+import { LinkSection, SectionContainer } from "@/src/components/general/section"
+import { authService } from "@/src/core/authManager"
 
 const WalletSettings = ({ navigation, route }: any) => {
 
@@ -31,6 +34,13 @@ const WalletSettings = ({ navigation, route }: any) => {
                 }
             }
         })
+    }
+
+    const handleViewSeed = async () => {
+        const biometrics = await authService.checkBiometric()
+
+        if(biometrics)
+            navigation.navigate("seed-wallet-stack", { origin: "options", pairkey: wallet.pairkey })
     }
 
     const handleSave = async () => {
@@ -72,12 +82,14 @@ const WalletSettings = ({ navigation, route }: any) => {
                 <FormControlSwitch label="Default Wallet" value={defaultWallet} onChangeValue={setDefaultWallet} />
 
                 <FormControl label={useTranslate("labels.wallet.name")} value={walletName} onChangeText={setWalletName} />
+                
+                <SectionHeader label={useTranslate("commons.options")} />
+
+                <SectionContainer>
+                    <LinkSection icon="eye" label={useTranslate("labels.wallet.getseed")} onPress={handleViewSeed}/>
+                </SectionContainer>
 
                 <ButtonLink label={useTranslate("commons.delete")} color={theme.colors.red} onPress={hadleDeleteWallet}/>
-                {/* <TouchableOpacity style={{ marginVertical: 20, padding: 15, flexDirection: "row" }} onPress={hadleDeleteWallet} >
-                    <Ionicons name="trash" color={theme.colors.red} size={theme.icons.mine} />
-                    <Text style={{ color: theme.colors.red, fontSize: 18, fontWeight: "400", marginHorizontal: 5 }}>{useTranslate("commons.delete")}</Text>
-                </TouchableOpacity> */}
 
             </ScrollView>
 

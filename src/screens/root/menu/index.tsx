@@ -1,5 +1,4 @@
 import { StyleSheet, View, Text, Image, ScrollView, TouchableOpacity } from "react-native"
-import { hasHardwareAsync, authenticateAsync } from 'expo-local-authentication';
 import { LinkSection, SectionContainer } from "@components/general/section"
 import { getPairKey } from "@src/services/memory/pairkeys"
 import SplashScreen from "@components/general/SplashScreen"
@@ -14,6 +13,7 @@ import theme from "@src/theme"
 import { setStringAsync } from "expo-clipboard";
 import AlertBox, { alertMessage } from "@components/general/AlertBox";
 import { Ionicons } from "@expo/vector-icons"
+import { authService } from "@/src/core/authManager";
 
 const UserMenuScreen = ({ navigation }: any) => {
 
@@ -21,22 +21,8 @@ const UserMenuScreen = ({ navigation }: any) => {
     const { user } = useAuth()
     const [loading, setLoading] = useState(false)
 
-    const checkBiometric = async () => {
-        const isBiometricAvailable = await hasHardwareAsync()
-
-        if (isBiometricAvailable) {
-            const { success } = await authenticateAsync({
-                promptMessage: useTranslate("commons.authenticate.message")
-            })
-
-            return success
-        }
-        else
-            return true
-    }
-
     const handleCopySecretKey = async () => {
-        const biometrics = await checkBiometric()
+        const biometrics = await authService.checkBiometric()
 
         const { privateKey } = await getPairKey(user?.keychanges ?? "")
 

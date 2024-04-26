@@ -18,7 +18,7 @@ export const getWallet = async (key: string): Promise<Wallet> => {
 
     const wallets = await getWallets()
 
-    const walletFiltered = wallets.filter(x => x.key)
+    const walletFiltered = wallets.filter(x => x.key === key)
 
     if (walletFiltered.length <= 0)
         throw new Error(useTranslate("message.wallet.notfound"))

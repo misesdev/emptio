@@ -1,7 +1,7 @@
 import { getUtxos } from "@/src/services/bitcoin/mempool"
 import { useTranslate } from "@/src/services/translate"
 import { Tx } from "@mempool/mempool.js/lib/interfaces/bitcoin/transactions"
-import { generateAddress, createTransaction, createWallet, ValidateAddress, sendTransaction, importWallet } from "@src/services/bitcoin"
+import { generateAddress, createTransaction, createWallet, ValidateAddress, sendTransaction, importWallet, getSeedPhrase } from "@src/services/bitcoin"
 import { getRandomKey } from "@src/services/bitcoin/signature"
 import { deletePairKey, getPairKey, insertPairKey } from "@src/services/memory/pairkeys"
 import { PairKey, Transaction, Wallet, WalletInfo } from "@src/services/memory/types"
@@ -13,7 +13,7 @@ type Props = {
     type: "bitcoin" | "lightning"
 }
 
-const create = async ({ name, type }: Props): Promise<Response<any>> => {
+const create = async ({ name, type }: Props): Promise<Response<Wallet>> => {
     try {
         const pairKey: PairKey = createWallet()
 
@@ -34,7 +34,7 @@ const create = async ({ name, type }: Props): Promise<Response<any>> => {
 
         await insertWallet(wallet)
 
-        return { success: true, message: "success" }
+        return { success: true, message: "success", data: wallet }
     }
     catch (ex) { return trackException(ex) }
 }
@@ -71,6 +71,20 @@ const require = async ({ name, type = "bitcoin", seedphrase, passphrase }: Impor
         return { success: true, message: "", data: wallet }
     }
     catch (ex) {
+        return trackException(ex)
+    }
+}
+
+const seedphrase = async (pairkey: string): Promise<Response<string>> => {
+
+    try 
+    {
+        const pairKey = await getPairKey(pairkey)
+
+        const seedphrase = getSeedPhrase(pairKey.privateKey)
+
+        return { success: true, message: "", data: seedphrase }
+    } catch (ex) {
         return trackException(ex)
     }
 }
@@ -163,6 +177,7 @@ export const walletService = {
     update,
     import: require,
     delete: exclude,
+    seed: seedphrase,
     listTransactions,
     address,
     transaction

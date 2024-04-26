@@ -14,7 +14,7 @@ type SignUpProps = {
     setUser?: (user: User) => void
 }
 
-const signUp = async ({ userName, setUser }: SignUpProps): Promise<Response> => {
+const signUp = async ({ userName, setUser }: SignUpProps): Promise<Response<any>> => {
     try {
 
         const pairKey: PairKey = createPairKeys()
@@ -109,7 +109,7 @@ const updateProfile = async ({ user, setUser, upNostr = false }: UpdateProfilePr
         setUser(user)
 }
 
-const signOut = async (): Promise<Response> => {
+const signOut = async (): Promise<Response<any>> => {
 
     try {
         await clearStorage()

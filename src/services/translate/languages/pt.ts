@@ -8,6 +8,7 @@ export default {
 
     "commons.yes": "Sim",
     "commons.no": "Não",
+    "commons.ok": "Ok",
     "commons.open": "Abrir",
     "commons.close": "Fechar",
     "commons.oops": "Oops!",
@@ -37,6 +38,7 @@ export default {
     "commons.nodescription": "Sem descrição",
     "commons.copy": "Copiar",
     "commons.copied": "Copiado!",
+    "commons.options": "Opções",
 
     "labels.friends": "Amigos",
     "labels.username": "Nome de Usuário",
@@ -46,6 +48,7 @@ export default {
     "labels.privatekey": "Chave Privada",
     "labels.wallet.add": "Adicionar carteira!",
     "labels.wallet.name": "Nome da Carteira",
+    "labels.wallet.getseed": "Visualizar Seed",
 
     "menu.home": "início",
     "menu.buy&sell": "comprar & vender",
@@ -61,6 +64,7 @@ export default {
     "message.wallet.alertcreate": "Adicione uma carteira bitcoin para comprar e vender!", 
     "message.wallet.notfound": "Carteira não encontrada!",
     "message.wallet.saved": "Alterações salvas!",
+    "message.wallet.saveseed": "Guarde a sua Seed!",
     "message.transaction.insufficient_funds": "Fundos insuficientes!",
     "message.transaction.confirmed": "Transação confirmada!",
     "message.transaction.notconfirmed": "Transação não confirmada!",
@@ -97,6 +101,7 @@ export default {
     "wallet.title.sendreceiver": "Para quem deseja enviar ",
     "wallet.title.settings": "Configurações da Carteira",
     "wallet.placeholder.addressuser": "Endereço: bc1.. ou amigo",
+    "wallet.title.seed": "Sua Seed",
 
     "screen.title.addwallet": "Adicionar Carteira",
     "screen.title.importwallet": "Importar Carteira",
