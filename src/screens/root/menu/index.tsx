@@ -96,14 +96,14 @@ const UserMenuScreen = ({ navigation }: any) => {
                         <SectionContainer style={styles.mediumcontainer}>
                             <Ionicons name="people" color={theme.colors.white} size={theme.icons.large} style={{ marginVertical: 10 }} />
                             <Text style={{ color: theme.colors.white }}>{useTranslate("section.title.talkdevelopers")}</Text>
-                            {/* <Text style={{ color: theme.colors.gray, fontSize: 12 }}>Convide seus amigos para o app, compartilhe!</Text> */}
+                            <Text style={{ color: theme.colors.gray, fontSize: 12 }}>{useTranslate("section.description.talkdevelopers")}</Text>
                         </SectionContainer>
                     </TouchableOpacity>
                     <TouchableOpacity style={styles.mediumsection} activeOpacity={.7}>
                         <SectionContainer style={styles.mediumcontainer}>
                             <Ionicons name="paper-plane" color={theme.colors.white} size={theme.icons.large} style={{ marginVertical: 10 }} />
                             <Text style={{ color: theme.colors.white }}>{useTranslate("section.title.sharefriend")}</Text>
-                            {/* <Text style={{ color: theme.colors.gray, fontSize: 12 }}>Convide seus amigos para o app, compartilhe a jornada bitconheira!</Text> */}
+                            <Text style={{ color: theme.colors.gray, fontSize: 12 }}>{useTranslate("section.description.sharefriend")}</Text>
                         </SectionContainer>
                     </TouchableOpacity>
                 </View>

@@ -95,7 +95,9 @@ export default {
     "section.title.transactions.empty": "Suas transações serão exibidas aqui",
     "section.title.frends.empty": "Seus amigos serão exibidos aqui",
     "section.title.sharefriend": "Convidar amigos",
-    "section.title.talkdevelopers": "Falar com Desenvolvedores",
+    "section.description.sharefriend": "Convide seus amigos para o app, compartilhe a jornada bitconheira!",
+    "section.title.talkdevelopers": "Fale com Desenvolvedores",
+    "section.description.talkdevelopers": "Proponha melhorias, reporte erros e converse com os desenvolvedores da comunidade!",
 
     "wallet.lightning.tag": "Carteira Lightning",
     "wallet.bitcoin.tag": "Carteira Bitcoin",
