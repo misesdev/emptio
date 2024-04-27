@@ -15,7 +15,7 @@ import { SectionHeader } from "@/src/components/general/section/headers"
 import { LinkSection, SectionContainer } from "@/src/components/general/section"
 import { authService } from "@/src/core/authManager"
 
-const WalletSettings = ({ navigation, route }: any) => {
+const WalletSettings = ({ navigation }: any) => {
 
     const { wallet, setWallet, user, setUser } = useAuth()
     const [loading, setLoading] = useState(false)
@@ -24,8 +24,9 @@ const WalletSettings = ({ navigation, route }: any) => {
 
     const hadleDeleteWallet = async () => {
         showMessage({
-            title: "Deletar Carteira?",
-            message: "Esta é uma ação irreverssível, as chaves pública e privada serão deletadas permanentemente, verifique se guardou sua seed!", action: {
+            title: useTranslate("message.wallet.wantdelete"),
+            message: useTranslate("message.wallet.alertdelete"), 
+            action: {
                 label: useTranslate("commons.delete"),
                 onPress: async () => {
 
@@ -105,15 +106,8 @@ const WalletSettings = ({ navigation, route }: any) => {
 }
 
 const styles = StyleSheet.create({
-    title: {
-        fontSize: 20,
-        textAlign: "center",
-        color: theme.colors.white
-    },
-    container: {
-        backgroundColor: theme.colors.black,
-        height: "100%"
-    },
+    title: { fontSize: 20, textAlign: "center", color: theme.colors.white },
+    container: { backgroundColor: theme.colors.black, height: "100%" },
     footer: { width: "100%", position: "absolute", bottom: 10, alignItems: "center" }
 })
 

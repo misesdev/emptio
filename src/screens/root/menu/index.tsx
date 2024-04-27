@@ -14,6 +14,7 @@ import { setStringAsync } from "expo-clipboard";
 import AlertBox, { alertMessage } from "@components/general/AlertBox";
 import { Ionicons } from "@expo/vector-icons"
 import { authService } from "@/src/core/authManager";
+import MessageBox, { showMessage } from "@components/general/MessageBox"
 
 const UserMenuScreen = ({ navigation }: any) => {
 
@@ -46,17 +47,26 @@ const UserMenuScreen = ({ navigation }: any) => {
     }
 
     const handleDeleteAccount = async () => {
+        showMessage({
+            title: useTranslate("message.profile.wantleave"),
+            message: "Tem certeza que deseja sair? Todos os dados de usuário e carteiras serão permanetemente excluídos.",
+            action: {
+                label: useTranslate("commons.exit"),
+                onPress: () => {
+                    setLoading(true)
+                    setTimeout(async () => {
+                        const result = await userService.signOut()
 
-        setLoading(true)
-
-        setTimeout(async () => {
-            const result = await userService.signOut()
-
-            if (result.success)
-                navigation.reset({ index: 0, routes: [{ name: "initial-stack" }] })
-            else
-                alertMessage(result.message)
-        }, 300)
+                        if (result.success)
+                            navigation.reset({ index: 0, routes: [{ name: "initial-stack" }] })
+                        else {
+                            alertMessage(result.message)
+                            setLoading(false)
+                        }
+                    }, 100)
+                }
+            }
+        })
     }
 
     if (loading)
@@ -115,6 +125,7 @@ const UserMenuScreen = ({ navigation }: any) => {
                 </View>
             </ScrollView>
             <AlertBox />
+            <MessageBox />
         </>
     )
 }
