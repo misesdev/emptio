@@ -24,7 +24,8 @@ const WalletSettings = ({ navigation, route }: any) => {
 
     const hadleDeleteWallet = async () => {
         showMessage({
-            message: "Deseja realmente deletar está carteira? Esta é uma ação irreverssível, todos os dados dessa carteira serão perdidos!", action: {
+            title: "Deletar Carteira?",
+            message: "Esta é uma ação irreverssível, as chaves pública e privada serão deletadas permanentemente, verifique se guardou sua seed!", action: {
                 label: useTranslate("commons.delete"),
                 onPress: async () => {
 
@@ -85,7 +86,7 @@ const WalletSettings = ({ navigation, route }: any) => {
                 
                 <SectionHeader label={useTranslate("commons.options")} />
 
-                <SectionContainer>
+                <SectionContainer style={{ width: "94%" }}>
                     <LinkSection icon="eye" label={useTranslate("labels.wallet.getseed")} onPress={handleViewSeed}/>
                 </SectionContainer>
 

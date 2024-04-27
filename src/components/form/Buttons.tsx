@@ -27,8 +27,6 @@ const TouchableEmptio = ({ label, style, leftIcon, rightIcon, onPress }: Props) 
     )
 }
 
-
-
 export const ButtonSuccess = ({ label, style, leftIcon, rightIcon, onPress }: Props) => {
     return <TouchableEmptio label={label} leftIcon={leftIcon} rightIcon={rightIcon} onPress={onPress} style={[styles.button, styles.succes, style]} />
 }

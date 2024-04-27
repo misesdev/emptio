@@ -1,6 +1,5 @@
-import { useEffect, useState } from "react"
-import { Modal, StyleSheet, Text, View } from "react-native"
-import { ButtonDanger, ButtonDefault, ButtonSuccess } from "@components/form/Buttons"
+import { useState } from "react"
+import { Modal, StyleSheet, Text, TouchableOpacity, View } from "react-native"
 import { useTranslate } from "@src/services/translate"
 import theme from "@src/theme"
 
@@ -19,21 +18,36 @@ type alertBoxProps = {
     type?: typeMessage
 }
 
+type ButtonProps = {
+    label: string,
+    onPress: () => void,
+}
+
 var showMessageFunction: (config: alertBoxProps) => void
+
+const ButtonLight = ({ label, onPress }: ButtonProps) => {
+    const [backColor, setBackColor] = useState(theme.colors.transparent)
+    return (
+        <TouchableOpacity onPress={onPress}
+            onPressIn={() => setBackColor("rgba(255, 255, 255, .2)")}
+            onPressOut={() => setBackColor(theme.colors.transparent)}
+            style={{ padding: 10, paddingHorizontal: 15, borderRadius: 8, backgroundColor: backColor }}
+        >
+            <Text style={{ fontSize: 14, fontWeight: "bold", color: theme.colors.white }}>{label}</Text>
+        </TouchableOpacity>
+    )
+}
 
 const MessageBox = () => {
 
     const [title, setTitle] = useState<string>()
-    const [type, setType] = useState<typeMessage>()
     const [message, setMessage] = useState<string>()
     const [infolog, setInfolog] = useState<string>()
     const [action, setAction] = useState<MessageAction>()
-    const [baseColor, setBaseColor] = useState<string>(theme.colors.red)
 
     const [visible, setVisible] = useState(false)
 
-    showMessageFunction = ({ title, message, infolog, type, action }: alertBoxProps) => {
-        setType(type)
+    showMessageFunction = ({ title, message, infolog, action }: alertBoxProps) => {
         setTitle(title)
         setMessage(message)
         setInfolog(infolog)
@@ -50,31 +64,22 @@ const MessageBox = () => {
         action?.onPress()
     }
 
-    useEffect(() => {
-        switch (type) {
-            case "alert":
-                setBaseColor(theme.colors.white)
-                break
-            case "success":
-                setBaseColor(theme.colors.white)
-                break
-        }
-    }, [visible])
-
     return (
-        <Modal animationType="slide" onRequestClose={handleClose} visible={visible} transparent >
+        <Modal animationType="fade" onRequestClose={handleClose} visible={visible} transparent >
             <View style={{ flex: 1, alignItems: "center", justifyContent: "center", backgroundColor: "rgba(0,0,0, .6)" }}>
                 <View style={styles.box}>
 
-                    <Text style={{ color: baseColor, fontSize: 28, marginVertical: 10, fontWeight: 'bold' }}> {title ?? useTranslate("commons.oops")} </Text>
-
-                    <Text style={styles.message}> {message} </Text>
+                    <Text style={{ color: theme.colors.white, fontSize: 20, marginVertical: 10, fontWeight: 'bold' }}>{title ?? useTranslate("commons.oops")}</Text>
+                    
+                    <View style={{ width: "100%", marginTop: 10, marginBottom: 20, padding: 5 }}>
+                        <Text style={styles.message}>{message}</Text>
+                    </View>
 
                     {infolog && <Text style={styles.infolog}>{infolog}</Text>}
 
                     <View style={styles.sectionButtons}>
-                        <ButtonDefault label={useTranslate("commons.close")} onPress={handleClose} />
-                        {action && <ButtonSuccess label={action.label} onPress={handleAction} />}
+                        {action && <ButtonLight label={action.label} onPress={handleAction} />}
+                        <ButtonLight label={useTranslate("commons.close")} onPress={handleClose} />
                     </View>
 
                 </View>
@@ -84,43 +89,15 @@ const MessageBox = () => {
 }
 
 export const showMessage = ({ title, message, infolog, type, action }: alertBoxProps) => {
-    setTimeout(() => { showMessageFunction({ title, message, infolog, type, action }) }, 100)
+    setTimeout(() => { showMessageFunction({ title, message, infolog, action }) }, 50)
 }
 
 const styles = StyleSheet.create({
-    box: {
-        width: "90%",
-        borderRadius: 30,
-        alignItems: 'center',
-        justifyContent: 'center',      
-        backgroundColor: theme.colors.blue,
-    },
-    message: {
-        fontSize: 16,
-        marginHorizontal: 10,
-        paddingVertical: 30,
-        paddingBottom: 20,
-        marginVertical: 10,
-        color: theme.colors.white,
-        textAlign: 'center'
-    },
-    infolog: {
-        maxWidth: "80%",
-        paddingHorizontal: 15, 
-        paddingVertical: 8,
-        marginVertical: 18,
-        borderRadius: 10,
-        backgroundColor: theme.colors.gray
-    },
-    sectionButtons: {
-        bottom: 10,
-        flexDirection: "row"
-    },
-    close: {
-        top: 20,
-        left: 20,
-        position: "absolute"
-    }
+    box: { padding: 10, paddingHorizontal: 12, width: "85%", borderRadius: 8, backgroundColor: theme.colors.section },
+    message: { fontSize: 14, color: theme.colors.gray },
+    infolog: { maxWidth: "80%", paddingHorizontal: 15, paddingVertical: 8, marginVertical: 18, borderRadius: 10, backgroundColor: theme.colors.gray },
+    sectionButtons: { width: "100%", flexDirection: "row-reverse" },
+    close: { top: 20, left: 20, position: "absolute" }
 })
 
 export default MessageBox
