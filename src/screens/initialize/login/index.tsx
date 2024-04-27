@@ -71,12 +71,15 @@ const LoginScreen = ({ navigation }: any) => {
     return (
         <>
             <View style={theme.styles.container}>
+
                 <Image style={styles.logo} source={require("@assets/emptio.png")} />
 
                 <Text style={styles.title}>{useTranslate("login.message")}</Text>
 
                 <QRCodeTextBox placeholder={useTranslate("labels.privatekey")} onChangeText={setSecretKey} value={secretKey} />
 
+                <View style={{ height: 100 }}></View>
+                
                 <View style={styles.buttonArea}>
                     <ButtonPrimary label={useTranslate("commons.signin")} onPress={handlerLogin} />
                 </View>
@@ -87,25 +90,9 @@ const LoginScreen = ({ navigation }: any) => {
 }
 
 const styles = StyleSheet.create({
-    logo: {
-        maxWidth: "90%",
-        height: "35%",
-        marginTop: -100
-    },
-    title: {
-        marginVertical: 25,
-        color: theme.colors.gray,
-        textAlign: "center",
-        width: "85%"
-    },
-    buttonArea: {
-        width: '100%',
-        position: 'absolute',
-        justifyContent: 'center',
-        marginVertical: 30,
-        flexDirection: "row",
-        bottom: 10,
-    }
+    logo: { width: 200, height: 200 },
+    title: { marginVertical: 25, color: theme.colors.gray, textAlign: "center", width: "85%" },
+    buttonArea: { width: '100%', position: 'absolute', justifyContent: 'center', marginVertical: 30, flexDirection: "row", bottom: 10 }
 })
 
 export default LoginScreen

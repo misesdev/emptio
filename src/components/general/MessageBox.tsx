@@ -71,7 +71,7 @@ const MessageBox = () => {
 
                     <Text style={{ color: theme.colors.white, fontSize: 20, marginVertical: 10, fontWeight: 'bold' }}>{title ?? useTranslate("commons.oops")}</Text>
                     
-                    <View style={{ width: "100%", marginTop: 10, marginBottom: 20, padding: 5 }}>
+                    <View style={{ width: "100%", marginTop: 10, marginBottom: 20 }}>
                         <Text style={styles.message}>{message}</Text>
                     </View>
 
@@ -93,9 +93,9 @@ export const showMessage = ({ title, message, infolog, type, action }: alertBoxP
 }
 
 const styles = StyleSheet.create({
-    box: { padding: 10, paddingHorizontal: 12, width: "85%", borderRadius: 8, backgroundColor: theme.colors.section },
+    box: { padding: 10, paddingHorizontal: 15, width: "85%", borderRadius: 8, backgroundColor: theme.colors.section },
     message: { fontSize: 14, color: theme.colors.gray },
-    infolog: { maxWidth: "80%", paddingHorizontal: 15, paddingVertical: 8, marginVertical: 18, borderRadius: 10, backgroundColor: theme.colors.gray },
+    infolog: { paddingHorizontal: 15, paddingVertical: 8, marginVertical: 18, borderRadius: 10, backgroundColor: theme.colors.gray },
     sectionButtons: { width: "100%", flexDirection: "row-reverse" },
     close: { top: 20, left: 20, position: "absolute" }
 })
