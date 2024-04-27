@@ -15,11 +15,13 @@ import AlertBox, { alertMessage } from "@components/general/AlertBox";
 import { Ionicons } from "@expo/vector-icons"
 import { authService } from "@/src/core/authManager";
 import MessageBox, { showMessage } from "@components/general/MessageBox"
+import SelectLanguageBox, { showSelectLanguage } from "@components/modal/SelectLanguageBox"
 
 const UserMenuScreen = ({ navigation }: any) => {
 
     const opacity = .7
     const { user } = useAuth()
+    const [update, forceUpdate] = useState()
     const [loading, setLoading] = useState(false)
 
     const handleCopySecretKey = async () => {
@@ -49,7 +51,7 @@ const UserMenuScreen = ({ navigation }: any) => {
     const handleDeleteAccount = async () => {
         showMessage({
             title: useTranslate("message.profile.wantleave"),
-            message: "Tem certeza que deseja sair? Todos os dados de usuário e carteiras serão permanetemente excluídos.",
+            message: useTranslate("message.profile.alertleave"),
             action: {
                 label: useTranslate("commons.exit"),
                 onPress: () => {
@@ -94,14 +96,14 @@ const UserMenuScreen = ({ navigation }: any) => {
                         <SectionContainer style={styles.mediumcontainer}>
                             <Ionicons name="people" color={theme.colors.white} size={theme.icons.large} style={{ marginVertical: 10 }} />
                             <Text style={{ color: theme.colors.white }}>{useTranslate("section.title.talkdevelopers")}</Text>
-                            <Text style={{ color: theme.colors.gray, fontSize: 12 }}>Convide seus amigos para o app, compartilhe!</Text>
+                            {/* <Text style={{ color: theme.colors.gray, fontSize: 12 }}>Convide seus amigos para o app, compartilhe!</Text> */}
                         </SectionContainer>
                     </TouchableOpacity>
                     <TouchableOpacity style={styles.mediumsection} activeOpacity={.7}>
                         <SectionContainer style={styles.mediumcontainer}>
                             <Ionicons name="paper-plane" color={theme.colors.white} size={theme.icons.large} style={{ marginVertical: 10 }} />
                             <Text style={{ color: theme.colors.white }}>{useTranslate("section.title.sharefriend")}</Text>
-                            <Text style={{ color: theme.colors.gray, fontSize: 12 }}>Convide seus amigos para o app, compartilhe a jornada bitconheira!</Text>
+                            {/* <Text style={{ color: theme.colors.gray, fontSize: 12 }}>Convide seus amigos para o app, compartilhe a jornada bitconheira!</Text> */}
                         </SectionContainer>
                     </TouchableOpacity>
                 </View>
@@ -115,7 +117,7 @@ const UserMenuScreen = ({ navigation }: any) => {
 
                 <SectionContainer>
                     {/* <LinkSection label="Wallet" icon="settings" onPress={() => navigation.navigate("wallet-stack")} /> */}
-                    <LinkSection label={useTranslate("settings.chooselanguage")} icon="language" onPress={() => { }} />
+                    <LinkSection label={useTranslate("settings.chooselanguage")} icon="language" onPress={showSelectLanguage} />
                     <LinkSection label={useTranslate("settings.relays")} icon="earth" onPress={() => navigation.navigate("manage-relays-stack")} />
                     <LinkSection label={useTranslate("settings.about")} icon="settings" onPress={() => navigation.navigate("about-stack")} />
                 </SectionContainer>
@@ -126,6 +128,8 @@ const UserMenuScreen = ({ navigation }: any) => {
             </ScrollView>
             <AlertBox />
             <MessageBox />
+            <SelectLanguageBox forceUpdate={forceUpdate} />
+            <View key={update}></View>
         </>
     )
 }

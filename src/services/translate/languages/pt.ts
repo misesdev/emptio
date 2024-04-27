@@ -56,7 +56,7 @@ export default {
     "menu.donate": "doar",
     "menu.setting": "configurações",
     "menu.chats": "chats",
-    "menu.notificatios": "notificações",
+    "menu.notifications": "notificações",
 
     "message.invalidkey": "Chave privada inválida, verifique se a chave digitada está no formato correto começando com 'nsec', caso você não possua uma chave privada nostr considere criar uma conta.",
     "message.detectedkey": "Chave privada detectada em sua area de transferência, deseja entrar com a chave privada detectada?",
@@ -79,6 +79,8 @@ export default {
     "message.profile.saved": "Dados do perfil atualizados!",
     "message.profile.wantleave": "Deseja Sair?",
     "message.profile.alertleave": "Tem certeza que deseja sair? Todos os dados de usuário e carteiras serão permanetemente excluídos.",
+    "message.profile.alertname": "Ops, parece que o nome de usuário é muito curto, por favor digite um nome de usuário com mais caracteres!",
+    "message.request.error": "Ocorreu um erro inesperado durante a requisição:",
 
     "settings.relays": "Relays", 
     "settings.nostrkey.copy": "Copiar Nostr ID",
@@ -116,4 +118,8 @@ export default {
 
     "settings.about": "Sobre",
 
+
+
+    "en": "Inglês",
+    "pt": "Português"
 }

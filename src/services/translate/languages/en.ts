@@ -56,7 +56,7 @@ export default {
     "menu.donate": "donate",
     "menu.setting": "settings",
     "menu.chats": "chats",
-    "menu.notificatios": "notifications",
+    "menu.notifications": "notifications",
 
     "message.invalidkey": "Invalid private key, please check if the key entered is in the correct format starting with 'nsec'. If you do not have a Nostr private key, consider creating an account.",
     "message.detectedkey": "Private key detected in your clipboard, do you want to enter with the detected private key?",
@@ -79,6 +79,8 @@ export default {
     "message.profile.saved": "Profile data updated!",
     "message.profile.wantleave": "Do you want to leave?",
     "message.profile.alertleave": "Are you sure you want to leave? All user data and wallets will be permanently deleted.",
+    "message.profile.alertname": "Oops, it looks like the username is too short. Please enter a username with more characters!",
+    "message.request.error": "An unexpected error occurred during the request:",
 
     "settings.relays": "Relays",
     "settings.account.edit": "My Account",
@@ -114,6 +116,11 @@ export default {
     "screen.title.donate": "Contribute to this Project",
     "screen.title.newchat": "New Conversation",
 
-    "settings.about": "About"
+    "settings.about": "About",
 
+
+
+
+    "en": "English",
+    "pt": "Portuguese"
 }

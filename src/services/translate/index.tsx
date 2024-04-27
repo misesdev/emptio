@@ -7,7 +7,7 @@ export const useTranslate = (words: TranslateWords): string => {
     
     const languages = { pt, en }
 
-    const language=  getLanguage()
+    const language = getLanguage()
 
-    return languages[language][words]
+    return languages[language.selector][words]
 } 

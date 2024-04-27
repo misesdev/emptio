@@ -19,7 +19,7 @@ const RegisterScreen = ({ navigation }: any) => {
         if (userName) {
 
             if (userName.length <= 5)
-                return showMessage({ message: "Ops, parece que o nome de usuário é muito curto, por favor digite um nome de usuário com mais caracteres!" })
+                return showMessage({ message: useTranslate("message.profile.alertname") })
 
             setLoading(true)
             setTimeout(async () => {
@@ -29,7 +29,7 @@ const RegisterScreen = ({ navigation }: any) => {
                 if (result.success)
                     return navigation.reset({ index: 0, routes: [{ name: "core-stack" }] })
                 else {
-                    showMessage({ message: `Ocorreu um erro inesperado durante a regisição: ${result.message}` })
+                    showMessage({ message: `${useTranslate("message.request.error")} ${result.message}` })
                     setLoading(false)
                 }
             }, 100)

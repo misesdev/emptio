@@ -1,5 +1,8 @@
 
-export type Language = "pt" | "en"
+export type Language = { 
+    label: string,
+    selector: "pt" | "en"
+}
 
 export type TranslateWords = "initial.message"
     | "login.title"
@@ -90,6 +93,8 @@ export type TranslateWords = "initial.message"
     | "message.profile.saved"
     | "message.profile.wantleave"
     | "message.profile.alertleave"
+    | "message.profile.alertname"
+    | "message.request.error"
     | "wallet.lightning.tag"
     | "wallet.bitcoin.tag"
     | "wallet.title.receive"
@@ -107,6 +112,16 @@ export type TranslateWords = "initial.message"
     | "screen.title.addfriend"
     | "screen.title.donate"
     | "screen.title.newchat"
+
+
+
+
+
+
+
+
+    | "en"
+    | "pt"
 
 
 

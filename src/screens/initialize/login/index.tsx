@@ -37,8 +37,7 @@ const LoginScreen = ({ navigation }: any) => {
     const handlerClipboard = (key: string) => {
         if (validatePrivateKey(key)) {
             showMessage({
-                type: "alert",
-                // title: useTranslate("commons.detectedkey"),
+                title: useTranslate("commons.detectedkey"),
                 message: useTranslate("message.detectedkey"),
                 infolog: useTranslate("message.detectedkey.value") + key,
                 action: {
