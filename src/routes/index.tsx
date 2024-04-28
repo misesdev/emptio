@@ -26,6 +26,7 @@ import NewChatScreen from "@screens/root/chats/new"
 import WalletReceiveScreen from "@screens/root/wallet/receive"
 import ImportWalletScreen from "@screens/root/wallet/add/import"
 import CreatedSeedScren from "@screens/root/wallet/add/seed"
+import TransactionScreen from "../screens/root/wallet/transaction"
 
 const Stack = createStackNavigator()
 
@@ -61,6 +62,7 @@ const AppRoutes = () => {
                 <Stack.Screen name="wallet-send-receiver-stack" component={SendReceiverScreen} options={{ cardStyleInterpolator: CardStyleInterpolators.forVerticalIOS }} />
                 <Stack.Screen name="wallet-send-final-stack" component={SendFinalScreen} options={{ cardStyleInterpolator: CardStyleInterpolators.forVerticalIOS }} />
                 <Stack.Screen name="wallet-settings-stack" component={WalletSettings} options={{ cardStyleInterpolator: CardStyleInterpolators.forVerticalIOS }} />
+                <Stack.Screen name="wallet-transaction-stack" component={TransactionScreen} options={{ cardStyleInterpolator: CardStyleInterpolators.forVerticalIOS }} />
 
                 <Stack.Screen name="add-follow-stack" component={AddFolowScreen} options={{ cardStyleInterpolator: CardStyleInterpolators.forVerticalIOS }} />
 

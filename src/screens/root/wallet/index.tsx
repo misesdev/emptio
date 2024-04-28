@@ -57,7 +57,7 @@ const WalletManagerScreen = ({ navigation, route }: any) => {
     }
 
     const openTransaction = (transaction: Transaction) => {
-        console.log(transaction)
+        navigation.navigate("wallet-transaction-stack", transaction)
     }
 
     if (loading)
