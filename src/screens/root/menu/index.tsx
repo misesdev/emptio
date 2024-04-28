@@ -135,8 +135,8 @@ const UserMenuScreen = ({ navigation }: any) => {
 }
 
 const styles = StyleSheet.create({
-    mediumcontainer: { padding: 10, height: 135 },
-    sectiontop: { width: "98%", flexDirection: "row", alignItems: "center" },
+    mediumcontainer: { padding: 10, height: 160 },
+    sectiontop: { width: "98%", flexDirection: "row", alignItems: "center", paddingVertical: 10 },
     mediumsection: { width: "50%", alignItems: "center", height: "100%" },
     area: { width: "100%", alignItems: "center", marginVertical: 10 },
     name: { fontSize: 18, fontWeight: 'bold', color: theme.colors.white, marginVertical: 10 },
