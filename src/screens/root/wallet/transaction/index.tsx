@@ -1,10 +1,11 @@
 import theme from "@/src/theme"
 import { HeaderScreen } from "@components/general/HeaderScreen"
+import { useState } from "react"
 import { ScrollView, StyleSheet, Text, View } from "react-native"
 
 const TransactionScreen = ({ navigation, route }: any) => {
 
-    console.log(route.params)
+    const [transaction, setTransaction] = useState(route.params)
 
     return (
         <>

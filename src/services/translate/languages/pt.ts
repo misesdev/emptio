@@ -104,7 +104,7 @@ export default {
     "wallet.title.receive": "Receber",
     "wallet.title.send": "Enviar",
     "wallet.title.sendvalue": "Quantos sats deseja enviar?",
-    "wallet.title.import": "Import sua carteira a partir da seedphrase!",
+    "wallet.title.import": "Importe sua carteira a partir da seed!",
     "wallet.subtitle.balance": "Saldo disponível de ",
     "wallet.title.sendfor": "Para quem?",
     "wallet.title.sendreceiver": "Para quem deseja enviar ",
