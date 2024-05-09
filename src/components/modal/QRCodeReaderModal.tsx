@@ -1,5 +1,5 @@
 import { View, StyleSheet, TouchableOpacity, Modal } from 'react-native';
-import { CameraView, useCameraPermissions } from "expo-camera/next"
+import { CameraView, useCameraPermissions } from "expo-camera"
 import { Ionicons } from '@expo/vector-icons';
 import theme from '@src/theme';
 
