@@ -19,10 +19,10 @@ import SelectLanguageBox, { showSelectLanguage } from "@components/modal/SelectL
 
 const UserMenuScreen = ({ navigation }: any) => {
 
-    const opacity = .7
-    const { user } = useAuth()
+    const opacity = .7 
+    const { user } = useAuth() 
     const [update, forceUpdate] = useState()
-    const [loading, setLoading] = useState(false)
+    const [loading, setLoading] = useState(false) 
 
     const handleCopySecretKey = async () => {
         const biometrics = await authService.checkBiometric()
