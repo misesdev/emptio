@@ -8,14 +8,16 @@ const AboutScreen = ({ navigation }: any) => {
 
     return (
         <>
-            <HeaderScreen title={useTranslate("settings.about")} onClose={() => navigation.navigate("user-menu-stack")}/>
+            <HeaderScreen title={useTranslate("settings.about")} onClose={() => navigation.navigate("user-menu-stack")} />
             <ScrollView contentContainerStyle={theme.styles.scroll_container} >
-           
-                <Image source={require("assets/emptio.png")} style={styles.logo}/>
 
-                <Text style={{ color: theme.colors.gray, marginVertical: 20, marginHorizontal: 10 }}>
-                    {useTranslate("settings.about.content")}
-                </Text>
+                <Image source={require("assets/emptio.png")} style={styles.logo} />
+
+                <View style={{ width: "90%", marginVertical: 20 }}>
+                    <Text style={{ color: theme.colors.gray, fontSize: 18, textAlign: "center" }}>
+                        {useTranslate("settings.about.content")}
+                    </Text>
+                </View>
 
             </ScrollView>
         </>
