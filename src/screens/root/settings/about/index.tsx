@@ -1,10 +1,15 @@
 
-import { StyleSheet, View, Text, ScrollView, Image } from "react-native"
+import { StyleSheet, View, Text, ScrollView, Image, TouchableOpacity, Linking } from "react-native"
 import theme from "@src/theme"
-import { HeaderScreen } from "@/src/components/general/HeaderScreen"
+import { HeaderScreen } from "@components/general/HeaderScreen"
 import { useTranslate } from "@/src/services/translate"
+import { Ionicons } from "@expo/vector-icons"
 
 const AboutScreen = ({ navigation }: any) => {
+
+    const handleToGithub = () => Linking.openURL("https://github.com/emptioapp/emptio")
+
+    const hndleToDiscord = () => Linking.openURL("https://discord.gg/pUxPZHPu")
 
     return (
         <>
@@ -13,10 +18,23 @@ const AboutScreen = ({ navigation }: any) => {
 
                 <Image source={require("assets/emptio.png")} style={styles.logo} />
 
-                <View style={{ width: "90%", marginVertical: 20 }}>
+                <View style={{ padding: 15, marginVertical: 20 }}>
                     <Text style={{ color: theme.colors.gray, fontSize: 18, textAlign: "center" }}>
                         {useTranslate("settings.about.content")}
                     </Text>
+                </View>
+
+                <View style={{ flexDirection: "row", marginVertical: 10 }}>
+                    <TouchableOpacity activeOpacity={.7} onPress={handleToGithub} style={styles.itemContact}>
+                        <Ionicons name="logo-github" size={theme.icons.extra} color={theme.colors.white} />
+                    </TouchableOpacity>
+                    <TouchableOpacity activeOpacity={.7} onPress={hndleToDiscord} style={styles.itemContact}>
+                        <Ionicons name="logo-discord" size={theme.icons.extra} color={theme.colors.white} />
+                    </TouchableOpacity>
+                </View>
+
+                <View style={{ flexDirection: "row", marginVertical: 10 }}>
+                    <Text style={{ textAlign: "center", color: theme.colors.gray, fontWeight: "bold", fontSize: 13 }}>version 0.0.1</Text>
                 </View>
 
             </ScrollView>
@@ -25,14 +43,19 @@ const AboutScreen = ({ navigation }: any) => {
 }
 
 const styles = StyleSheet.create({
-    title: {
-        fontSize: 22,
-        fontWeight: 'bold',
-        color: theme.colors.gray
-    },
     logo: {
-        maxWidth: "80%",
-        height: "25%",
+        width: "60%",
+        height: 180,
+    },
+    itemContact: {
+        borderRadius: 10, 
+        borderWidth: 1,
+        borderColor: theme.colors.gray,
+        width: 100,
+        height: 100,
+        justifyContent: "center",
+        alignItems: "center",
+        margin: 10
     }
 })
 
