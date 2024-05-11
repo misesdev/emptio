@@ -51,7 +51,7 @@ const AppRoutes = () => {
 
                 <Stack.Screen name="manage-relays-stack" component={ManageRelaysScreen} options={{ headerShown: true }} />
                 <Stack.Screen name="manage-security-stack" component={ManageSecurityScreen} options={{ headerShown: true }} />
-                <Stack.Screen name="about-stack" component={AboutScreen} options={{ headerShown: true }} />
+                <Stack.Screen name="about-stack" component={AboutScreen} options={{ cardStyleInterpolator: CardStyleInterpolators.forVerticalIOS }} />
 
                 <Stack.Screen name="wallet-stack" component={WalletManagerScreen} options={{ headerShown: true }} />
                 <Stack.Screen name="add-wallet-stack" component={AddWalletScreen} options={{ cardStyleInterpolator: CardStyleInterpolators.forVerticalIOS }} />

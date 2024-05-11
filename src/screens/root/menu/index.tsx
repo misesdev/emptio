@@ -92,14 +92,14 @@ const UserMenuScreen = ({ navigation }: any) => {
             <ScrollView contentContainerStyle={theme.styles.scroll_container}>
 
                 <View style={styles.sectiontop}>
-                    <TouchableOpacity style={styles.mediumsection} activeOpacity={.7}>
+                    <TouchableOpacity style={styles.mediumsection} activeOpacity={opacity}>
                         <SectionContainer style={styles.mediumcontainer}>
                             <Ionicons name="people" color={theme.colors.white} size={theme.icons.large} style={{ marginVertical: 10 }} />
                             <Text style={{ color: theme.colors.white }}>{useTranslate("section.title.talkdevelopers")}</Text>
                             <Text style={{ color: theme.colors.gray, fontSize: 12 }}>{useTranslate("section.description.talkdevelopers")}</Text>
                         </SectionContainer>
                     </TouchableOpacity>
-                    <TouchableOpacity style={styles.mediumsection} activeOpacity={.7}>
+                    <TouchableOpacity style={styles.mediumsection} activeOpacity={opacity}>
                         <SectionContainer style={styles.mediumcontainer}>
                             <Ionicons name="paper-plane" color={theme.colors.white} size={theme.icons.large} style={{ marginVertical: 10 }} />
                             <Text style={{ color: theme.colors.white }}>{useTranslate("section.title.sharefriend")}</Text>

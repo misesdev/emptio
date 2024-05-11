@@ -119,6 +119,13 @@ export default {
     "screen.title.newchat": "Nova Conversa",
 
     "settings.about": "Sobre",
+    "settings.about.content": `Emptio P2P é uma aplicação de código aberto que tem o objetivo de permitir inicialmente a compra e venda de bitcoin de pessoa para pessoa de forma descentralizada utilizando o protocolo Nostr.
+
+    Para permitir a comunicação entre usuário de forma descentralizada é utilizado o protocolo Nostr, para enviar e receber satoshis é utilizada a API aberta da Mempool e para pagamentos em moeda fiat são utilizadas APIS de processador de pagamento.
+    
+    O objetivo é resolver o problema da centralização da comprae venda de bitcoin nas mão de bancos e corretoras, assim reduzindo o nível de captura e centralização em entidades bancarias ou governamentais.
+    
+    Contribua com essa iniciativa doando, compartilhando o App com amigos, ou codificando melhorias.`,
 
 
 

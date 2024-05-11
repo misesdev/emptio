@@ -65,6 +65,7 @@ export type TranslateWords = "initial.message"
     | "settings.relays"
     | "settings.account.edit"
     | "settings.about"
+    | "settings.about.content"
     | "settings.nostrkey.copy"
     | "settings.secretkey.copy"
     | "settings.chooselanguage"
@@ -114,9 +115,6 @@ export type TranslateWords = "initial.message"
     | "screen.title.addfriend"
     | "screen.title.donate"
     | "screen.title.newchat"
-
-
-
 
 
 
