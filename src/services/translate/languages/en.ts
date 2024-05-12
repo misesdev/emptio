@@ -40,6 +40,9 @@ export default {
     "commons.copy": "Copy",
     "commons.copied": "Copied!",
     "commons.options": "Options",
+    "commons.name": "Name",
+    "commons.description": "Description",
+    "commons.version": "Version",
 
     "labels.friends": "Friends",
     "labels.username": "User Name",

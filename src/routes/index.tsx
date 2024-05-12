@@ -49,7 +49,7 @@ const AppRoutes = () => {
                 <Stack.Screen name="user-menu-stack" component={UserMenuScreen} options={{ headerShown: true }} />
                 <Stack.Screen name="manage-account-stack" component={UserEditScreen} options={{ headerShown: true }} />
 
-                <Stack.Screen name="manage-relays-stack" component={ManageRelaysScreen} options={{ headerShown: true }} />
+                <Stack.Screen name="manage-relays-stack" component={ManageRelaysScreen} options={{ cardStyleInterpolator: CardStyleInterpolators.forVerticalIOS }} />
                 <Stack.Screen name="manage-security-stack" component={ManageSecurityScreen} options={{ headerShown: true }} />
                 <Stack.Screen name="about-stack" component={AboutScreen} options={{ cardStyleInterpolator: CardStyleInterpolators.forVerticalIOS }} />
 
