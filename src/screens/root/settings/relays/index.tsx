@@ -11,6 +11,14 @@ import theme from "@src/theme"
 import AddRelay from "./add"
 import * as Notifications from "expo-notifications"
 
+Notifications.setNotificationHandler({
+    handleNotification: async () => ({
+        shouldShowAlert: true,
+        shouldPlaySound: true,
+        shouldSetBadge: true
+    }),
+})
+
 const ManageRelaysScreen = ({ navigation }: any) => {
 
     const [visible, setVisible] = useState(false)
@@ -24,7 +32,7 @@ const ManageRelaysScreen = ({ navigation }: any) => {
 
     const verificarPermissoes = async () => {
         const { status } = await Notifications.getPermissionsAsync()
-        if(status != 'granted') {
+        if (status != 'granted') {
             const result = await Notifications.requestPermissionsAsync()
             setPermissoes(result.status === 'granted')
         }
@@ -43,17 +51,7 @@ const ManageRelaysScreen = ({ navigation }: any) => {
                 title: "adicionado relay",
                 body: "relay adicionado com sucesso!"
             },
-            trigger: null,            
-        })
-    }
-
-    const notificar = async () => {
-        const result = await Notifications.scheduleNotificationAsync({
-            content: {
-                title: "adicionado relay",
-                body: "relay adicionado com sucesso!"
-            },
-            trigger: null
+            trigger: null,
         })
     }
 
@@ -83,7 +81,7 @@ const ManageRelaysScreen = ({ navigation }: any) => {
 
             </ScrollView>
             <View style={styles.buttonarea}>
-                <ButtonPrimary label="Add Relay" onPress={notificar} />
+                <ButtonPrimary label="Add Relay" onPress={handleAddRelay} />
             </View>
             <MessageBox />
             <AddRelay visible={visible} onClose={() => setVisible(false)} onSaveRelay={handleSaveRelay} />
