@@ -9,6 +9,8 @@ export const getRelays = async (): Promise<string[]> => {
 
     if (data)
         relays = JSON.parse(data)
+    else 
+        await setRelays(relays)
  
     return relays
 }

@@ -1,23 +1,38 @@
 
-import { StyleSheet, View, Text, ScrollView } from "react-native"
+import { StyleSheet, View, ScrollView } from "react-native"
 import { HeaderScreen } from "@components/general/HeaderScreen"
 import { useTranslate } from "@/src/services/translate"
 import MessageBox, { showMessage } from "@components/general/MessageBox"
 import { ButtonPrimary } from "@components/form/Buttons"
 import { RelayList } from "@components/nostr/relays/RelayList"
+import { deleteRelay } from "@/src/services/memory/relays"
+import { useEffect, useState } from "react"
 import theme from "@src/theme"
 
 const ManageRelaysScreen = ({ navigation }: any) => {
+
+    const [relays, setRelays] = useState<string[]>([])
+
+    useEffect(() => {
+        setRelays(Nostr.explicitRelayUrls)
+    }, [])
 
     const handleAddRelay = () => {
 
     }
 
-    const handleDeleteRelay = () => {
+    const handleDeleteRelay = (relay: string) => {
         showMessage({
             title: "Excluir Relay?",
             message: "O Relay será permanentemente excluído, deseja continuar?",
-            action: { label: useTranslate("commons.delete"), onPress: () => { } }
+            action: {
+                label: useTranslate("commons.delete"), 
+                onPress: async () => {
+                    relays.splice(relays.indexOf(relay), 1)
+                    await deleteRelay(relay)
+                    setRelays(relays)
+                }
+            }
         })
     }
 
@@ -25,8 +40,8 @@ const ManageRelaysScreen = ({ navigation }: any) => {
         <>
             <HeaderScreen title={useTranslate("settings.relays")} onClose={() => navigation.navigate("user-menu-stack")} />
             <ScrollView contentContainerStyle={theme.styles.scroll_container} >
-
-                <RelayList />
+                
+                <RelayList relays={relays} onDelete={handleDeleteRelay} />
 
                 <View style={{ height: 80 }}></View>
 
@@ -48,7 +63,6 @@ const styles = StyleSheet.create({
     buttonarea: {
         width: "100%",
         position: "absolute",
-        // justifyContent: "center",
         alignItems: "center",
         bottom: 10,
     }
