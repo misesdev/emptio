@@ -11,13 +11,14 @@ type FormControlProps = {
     onBlur?: () => void,
     onFocus?: () => void,
     onChangeText: (value: string) => void,
+    fullScreen?: boolean
 }
 
-export const FormControl = ({ label, value, onChangeText, onFocus, onBlur, textCenter, isTextArea, autoComplete = false, type = "none" }: FormControlProps) => {
+export const FormControl = ({ label, value, onChangeText, onFocus, onBlur, textCenter, isTextArea, autoComplete = false, type = "none", fullScreen = false }: FormControlProps) => {
 
     return (
         <View style={styles.control}>
-            <View style={styles.container}>
+            <View style={[styles.container, { width: fullScreen ? "100%" : "94%" }]}>
                 <Text style={styles.label}>{label}</Text>
                 <TextInput style={[styles.input, { textAlign: textCenter ? "center" : "auto" }]}
                     placeholder={label}
@@ -41,12 +42,13 @@ type FormSwitchProps = {
     label: string,
     value?: boolean,  
     onChangeValue: (value: boolean) => void,  
+    fullScreen?: boolean
 }
 
-export const FormControlSwitch = ({ label, value, onChangeValue }: FormSwitchProps) => {
+export const FormControlSwitch = ({ label, value, onChangeValue, fullScreen = false }: FormSwitchProps) => {
     return (
         <View style={styles.control}>
-            <View style={[styles.container, { flexDirection: "row", paddingVertical: 16 }]}>
+            <View style={[styles.container, { width: fullScreen ? "100%" : "94%", flexDirection: "row", paddingVertical: 16 }]}>
                 <View style={{ width: "70%" }}>
                     <Text style={styles.labelSwitch}>{label}</Text>
                 </View>
@@ -65,7 +67,7 @@ export const FormControlSwitch = ({ label, value, onChangeValue }: FormSwitchPro
 
 const styles = StyleSheet.create({
     control: { width: "100%", alignItems: "center", paddingVertical: 5 },
-    container: { width: "94%", color: theme.colors.white, backgroundColor: theme.input.backGround, borderRadius: 24, margin: 5 },
+    container: { color: theme.colors.white, backgroundColor: theme.input.backGround, borderRadius: 24, margin: 5 },
     label: { width: "100%", fontSize: 12, fontWeight: "400", marginTop: 10, paddingHorizontal: 20, color: theme.colors.white },
     labelSwitch: { width: "100%", fontSize: 15, fontWeight: "400", marginTop: 10, paddingHorizontal: 20, color: theme.colors.white },
     input: { paddingVertical: 15, paddingHorizontal: 30, color: theme.input.textColor }
