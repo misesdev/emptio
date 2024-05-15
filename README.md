@@ -14,6 +14,7 @@ To facilitate the buying and selling of Bitcoin, it will also utilize payment pr
 
 - [x] Create a Nostr account or log in with the npub nip19.
 - [x] List users to follow and add users to friends.
+- [x] Managing the Nostr relays, adding and removing relays.
 - [ ] Create session for developers, donations, trusted sellers, and other related items.
 - [x] Create, delete and import wallet to receive and send bitcoin.
 - [ ] Integrate with mempool.space to send Bitcoin transactions and list transactions.
