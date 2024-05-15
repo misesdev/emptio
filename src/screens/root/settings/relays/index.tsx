@@ -46,13 +46,13 @@ const ManageRelaysScreen = ({ navigation }: any) => {
 
     const handleSaveRelay = async (relay: string) => {
         setVisible(false)
-        await Notifications.scheduleNotificationAsync({
-            content: {
-                title: "adicionado relay",
-                body: "relay adicionado com sucesso!"
-            },
-            trigger: null,
-        })
+        // await Notifications.scheduleNotificationAsync({
+        //     content: {
+        //         title: "adicionado relay",
+        //         body: "relay adicionado com sucesso!"
+        //     },
+        //     trigger: null,
+        // })
     }
 
     const handleDeleteRelay = (relay: string) => {
