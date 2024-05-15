@@ -5,54 +5,42 @@ import { useTranslate } from "@/src/services/translate"
 import MessageBox, { showMessage } from "@components/general/MessageBox"
 import { ButtonPrimary } from "@components/form/Buttons"
 import { RelayList } from "@components/nostr/relays/RelayList"
-import { deleteRelay } from "@/src/services/memory/relays"
+import { deleteRelay, insertRelay } from "@/src/services/memory/relays"
 import { useEffect, useState } from "react"
 import theme from "@src/theme"
 import AddRelay from "./add"
-import * as Notifications from "expo-notifications"
-
-Notifications.setNotificationHandler({
-    handleNotification: async () => ({
-        shouldShowAlert: true,
-        shouldPlaySound: true,
-        shouldSetBadge: true
-    }),
-})
+import axios from "axios"
+import { alertMessage } from "@/src/components/general/AlertBox"
 
 const ManageRelaysScreen = ({ navigation }: any) => {
 
     const [visible, setVisible] = useState(false)
     const [relays, setRelays] = useState<string[]>([])
-    const [permissoes, setPermissoes] = useState(false)
 
     useEffect(() => {
         setRelays(Nostr.explicitRelayUrls)
-        verificarPermissoes()
     }, [])
-
-    const verificarPermissoes = async () => {
-        const { status } = await Notifications.getPermissionsAsync()
-        if (status != 'granted') {
-            const result = await Notifications.requestPermissionsAsync()
-            setPermissoes(result.status === 'granted')
-        }
-        else
-            setPermissoes(true)
-
-        console.log(permissoes)
-    };
 
     const handleAddRelay = () => setVisible(true)
 
     const handleSaveRelay = async (relay: string) => {
+
+        const httpClient = axios.create({ headers: { Accept: "application/nostr+json" } })
+
+        const response = await httpClient.get(relay)
+
+        if(response.status != 200)
+            return alertMessage("relay inválido")
+
+        Nostr.addExplicitRelay(relay, undefined, true)
+        
+        await insertRelay(relay)
+
+        setRelays([...relays, relay])
+
         setVisible(false)
-        // await Notifications.scheduleNotificationAsync({
-        //     content: {
-        //         title: "adicionado relay",
-        //         body: "relay adicionado com sucesso!"
-        //     },
-        //     trigger: null,
-        // })
+
+        alertMessage("relay adicionaro com sucesso!")
     }
 
     const handleDeleteRelay = (relay: string) => {
