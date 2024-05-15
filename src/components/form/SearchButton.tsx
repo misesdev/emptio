@@ -20,26 +20,10 @@ const SearchButton = ({ label, onPress }: Props) => {
 }
 
 const styles = StyleSheet.create({
-    sarchArea: {
-        width: "95%",
-        padding: 4.5,
-        paddingVertical: 5,
-        borderRadius: 25,
-        backgroundColor: theme.input.backGround
-    },
-    content: {
-        flexDirection: "row"
-    },
-    text: {
-        fontSize: 16,
-        marginHorizontal: 10,
-        marginVertical: 2, 
-        color: theme.colors.gray
-    },
-    icon: {
-        marginHorizontal: 5,
-        marginVertical: 1
-    }
+    sarchArea: { width: "95%", padding: 4.5, paddingVertical: 5, borderRadius: 25, backgroundColor: theme.input.backGround },
+    text: { fontSize: 16, marginHorizontal: 10, marginVertical: 2, color: theme.colors.gray },
+    icon: { marginHorizontal: 5, marginVertical: 1 },
+    content: { flexDirection: "row" }
 })
 
 export default SearchButton

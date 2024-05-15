@@ -4,8 +4,8 @@ import { useEffect, useState } from "react"
 import { ScrollView, StyleSheet, Text, View } from "react-native"
 import { useTranslate } from "@src/services/translate"
 import { walletService } from "@src/core/walletManager"
-import AlertBox, { alertMessage } from "@components/general/AlertBox"
 import { ButtonPrimary } from "@components/form/Buttons"
+import { pushMessage } from "@src/services/notification"
 import theme from "@src/theme"
 
 const CreatedSeedScren = ({ navigation, route }: any) => {
@@ -22,7 +22,7 @@ const CreatedSeedScren = ({ navigation, route }: any) => {
         if (seed.success)
             setWordList(seed.data?.split(" "))
         else
-            alertMessage(seed.message)
+            pushMessage(seed.message)
 
         setLoading(false)
     }
@@ -58,7 +58,6 @@ const CreatedSeedScren = ({ navigation, route }: any) => {
             <View style={styles.buttonarea}>
                 <ButtonPrimary label={useTranslate("commons.ok")} onPress={handleClose} />
             </View>
-            <AlertBox />
         </>
     )
 }

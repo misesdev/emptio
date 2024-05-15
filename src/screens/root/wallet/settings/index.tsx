@@ -3,17 +3,17 @@ import { ScrollView, StyleSheet, View } from "react-native"
 import { ButtonLink, ButtonPrimary } from "@components/form/Buttons"
 import { useTranslate } from "@src/services/translate"
 import { walletService } from "@src/core/walletManager"
-import AlertBox, { alertMessage } from "@components/general/AlertBox"
 import MessageBox, { showMessage } from "@components/general/MessageBox"
 import SplashScreen from "@components/general/SplashScreen"
 import { userService } from "@src/core/userManager"
 import { FormControl, FormControlSwitch } from "@components/form/FormControl"
 import { HeaderScreen } from "@components/general/HeaderScreen"
+import { SectionHeader } from "@components/general/section/headers"
+import { LinkSection, SectionContainer } from "@components/general/section"
+import { authService } from "@src/core/authManager"
+import { pushMessage } from "@src/services/notification"
 import { useState } from "react"
 import theme from "@src/theme"
-import { SectionHeader } from "@/src/components/general/section/headers"
-import { LinkSection, SectionContainer } from "@/src/components/general/section"
-import { authService } from "@/src/core/authManager"
 
 const WalletSettings = ({ navigation }: any) => {
 
@@ -65,7 +65,7 @@ const WalletSettings = ({ navigation }: any) => {
 
         setLoading(false)
 
-        alertMessage(useTranslate("message.wallet.saved"))
+        pushMessage(useTranslate("message.wallet.saved"))
     }
 
     if (loading)
@@ -100,7 +100,6 @@ const WalletSettings = ({ navigation }: any) => {
                 <ButtonPrimary label={useTranslate("commons.save")} onPress={handleSave} />
             </View>
             <MessageBox />
-            <AlertBox />
         </View>
     )
 }

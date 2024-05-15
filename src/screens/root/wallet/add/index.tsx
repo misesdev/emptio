@@ -3,11 +3,11 @@ import { StyleSheet, View, Text, TouchableOpacity } from "react-native"
 import { useTranslate } from "@src/services/translate"
 import { ButtonLink, ButtonPrimary } from "@components/form/Buttons"
 import { Ionicons } from "@expo/vector-icons"
-import AlertBox, { alertMessage } from "@components/general/AlertBox"
 import SplashScreen from "@components/general/SplashScreen"
 import { walletService } from "@src/core/walletManager"
 import { HeaderScreen } from "@components/general/HeaderScreen"
 import { FormControl } from "@components/form/FormControl"
+import { pushMessage } from "@src/services/notification"
 import { useState } from "react"
 import theme from "@src/theme"
 
@@ -23,7 +23,7 @@ const AddWalletScreen = ({ navigation }: any) => {
 
     const handleCreate = async () => {
         if (!walletName || walletName.length <= 5)
-            return alertMessage(useTranslate("message.wallet.nameempty"))
+            return pushMessage(useTranslate("message.wallet.nameempty"))
 
         setLoading(true)
 
@@ -35,7 +35,7 @@ const AddWalletScreen = ({ navigation }: any) => {
                 // navigation.reset({ index: 0, routes: [{ name: "core-stack" }] })
                 navigation.navigate("seed-wallet-stack", { origin: "create", pairkey: response.data?.pairkey })
             else
-                alertMessage(response.message)
+                pushMessage(response.message)
 
             setLoading(false)
         }, 100)
@@ -94,7 +94,6 @@ const AddWalletScreen = ({ navigation }: any) => {
                 </View>
 
             </View>
-            <AlertBox />
         </>
     )
 }

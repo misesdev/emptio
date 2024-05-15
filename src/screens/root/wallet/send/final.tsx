@@ -2,13 +2,13 @@ import { View, Text, StyleSheet } from "react-native"
 import { useTranslate } from "@src/services/translate"
 import { useAuth } from "@src/providers/userProvider"
 import { ButtonDefault } from "@components/form/Buttons"
-import AlertBox, { alertMessage } from "@components/general/AlertBox"
 import SplashScreen from "@components/general/SplashScreen"
 import { toNumber } from "@src/services/converter"
 import { useEffect, useState } from "react"
 import theme from "@src/theme"
 import { walletService } from "@src/core/walletManager"
 import { HeaderScreen } from "@components/general/HeaderScreen"
+import { pushMessage } from "@src/services/notification"
 
 const SendFinalScreen = ({ navigation, route }: any) => {
 
@@ -37,7 +37,7 @@ const SendFinalScreen = ({ navigation, route }: any) => {
 
         if (!result.success) {
             setLoading(false)
-            return alertMessage(result.message)
+            return pushMessage(result.message)
         }
 
         console.log("sign transaction: ", result.data)
@@ -67,8 +67,6 @@ const SendFinalScreen = ({ navigation, route }: any) => {
             <View style={{ position: "absolute", bottom: 0, width: "100%", justifyContent: "center", alignItems: "center" }}>
                 <ButtonDefault label={useTranslate("commons.send")} rightIcon="exit" onPress={handleSend} />
             </View>
-
-            <AlertBox />
         </View>
     )
 }

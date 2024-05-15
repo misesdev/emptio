@@ -1,6 +1,5 @@
 import { RefreshControl, ScrollView, StyleSheet, View, } from "react-native"
 import { ActionHeader, SectionHeader } from "@components/general/section/headers"
-import AlertBox, { alertMessage } from "@components/general/AlertBox"
 import { userService } from "@/src/core/userManager"
 import { Wallet } from "@src/services/memory/types"
 import { getWallets } from "@src/services/memory/wallets"
@@ -10,6 +9,7 @@ import WalletList from "@components/wallet/WalletList"
 import { useEffect, useState } from "react"
 import { HeaderHome } from "./header"
 import theme from "@src/theme"
+import { pushMessage } from "@src/services/notification"
 
 const HomeScreen = ({ navigation }: any) => {
 
@@ -24,7 +24,7 @@ const HomeScreen = ({ navigation }: any) => {
         const wallets = await getWallets()
 
         if (wallets.length <= 0)
-            alertMessage(useTranslate("message.wallet.alertcreate"))
+            pushMessage(useTranslate("message.wallet.alertcreate"))
 
         setWallets(wallets)
 
@@ -52,7 +52,6 @@ const HomeScreen = ({ navigation }: any) => {
                 {/* Sales and Shopping section*/}
                 <SectionHeader icon="cash-outline" label={useTranslate("section.title.sales")} />
 
-                <AlertBox />
             </ScrollView>
         </View>
     )

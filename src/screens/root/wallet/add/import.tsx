@@ -3,11 +3,11 @@ import { StyleSheet, View, Text } from "react-native"
 import { useTranslate } from "@/src/services/translate"
 import { FormControl } from "@components/form/FormControl"
 import { ButtonPrimary } from "@components/form/Buttons"
-import AlertBox, { alertMessage } from "@components/general/AlertBox"
 import { useState } from "react"
 import theme from "@src/theme"
 import SplashScreen from "@components/general/SplashScreen"
 import { walletService } from "@/src/core/walletManager"
+import { pushMessage } from "@/src/services/notification"
 
 const ImportWalletScreen = ({ navigation }: any) => {
 
@@ -21,13 +21,13 @@ const ImportWalletScreen = ({ navigation }: any) => {
         var words = seedPhrase?.trim().split(" ")
 
         if (!walletName)
-            return alertMessage(useTranslate("message.wallet.nameempty"))
+            return pushMessage(useTranslate("message.wallet.nameempty"))
 
         // if (words && words?.length < 12)
-        //     return alertMessage(`${useTranslate("message.wallet.invalidseed")} ${words.length}.`)
+        //     return pushMessage(`${useTranslate("message.wallet.invalidseed")} ${words.length}.`)
 
         if (words && words?.length < 24 || words?.length > 24)
-            return alertMessage(`${useTranslate("message.wallet.invalidseed")} ${words.length}.`)
+            return pushMessage(`${useTranslate("message.wallet.invalidseed")} ${words.length}.`)
 
         setLoading(true)
 
@@ -38,7 +38,7 @@ const ImportWalletScreen = ({ navigation }: any) => {
         if (wallet.success)
             navigation.reset({ index: 0, routes: [{ name: "core-stack" }] })
         else
-            alertMessage(wallet.message)
+            pushMessage(wallet.message)
     }
 
     if (loading)
@@ -65,8 +65,6 @@ const ImportWalletScreen = ({ navigation }: any) => {
             <View style={styles.buttonArea}>
                 <ButtonPrimary label={useTranslate("commons.import")} onPress={() => handleImport()} />
             </View>
-
-            <AlertBox />
         </>
     )
 }

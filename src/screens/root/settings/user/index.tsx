@@ -3,7 +3,6 @@ import { StyleSheet, View, TouchableOpacity, Image } from "react-native"
 import { MediaTypeOptions, launchImageLibraryAsync, requestMediaLibraryPermissionsAsync } from "expo-image-picker"
 import { useAuth } from "@src/providers/userProvider"
 import { useTranslate } from "@src/services/translate"
-import AlertBox, { alertMessage } from "@components/general/AlertBox"
 import { ButtonPrimary } from "@components/form/Buttons"
 import { FormControl } from "@components/form/FormControl"
 import { ScrollView } from "react-native-gesture-handler"
@@ -12,7 +11,8 @@ import { useEffect, useState } from "react"
 import { userService } from "@src/core/userManager"
 import SplashScreen from "@components/general/SplashScreen"
 import theme from "@src/theme"
-import { uploadImage } from "@/src/services/blob"
+import { uploadImage } from "@src/services/blob"
+import { pushMessage } from "@src/services/notification"
 
 const UserEditScreen = ({ navigation }: any) => {
 
@@ -29,7 +29,7 @@ const UserEditScreen = ({ navigation }: any) => {
         (async () => {
             const { status } = await requestMediaLibraryPermissionsAsync()
             if (status !== 'granted')
-                alertMessage(useTranslate("message.error.notaccessgallery"))
+                pushMessage(useTranslate("message.error.notaccessgallery"))
         })
     }, [])
 
@@ -76,7 +76,7 @@ const UserEditScreen = ({ navigation }: any) => {
 
         setLoading(false)
 
-        alertMessage(useTranslate("message.profile.saved"))
+        pushMessage(useTranslate("message.profile.saved"))
     }
 
     if (loading)
@@ -115,7 +115,6 @@ const UserEditScreen = ({ navigation }: any) => {
             <FormControl label={useTranslate("labels.lnaddress")} value={lnAddress} onChangeText={setLnAddress} />
 
             <ButtonPrimary label={useTranslate("commons.save")} onPress={handleSave} />
-            <AlertBox />
         </ScrollView>
     )
 }

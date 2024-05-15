@@ -3,7 +3,6 @@ import { FollowList } from "@components/nostr/follow/FollowList"
 import { useTranslate } from "@src/services/translate"
 import { ButtonScanQRCode } from "@components/wallet/buttons"
 import { TextBox } from "@components/form/TextBoxs"
-import AlertBox, { alertMessage } from "@components/general/AlertBox"
 import SplashScreen from "@components/general/SplashScreen"
 import { Hidable } from "@components/general/Hidable"
 import { walletService } from "@src/core/walletManager"
@@ -80,8 +79,6 @@ const SendReceiverScreen = ({ navigation, route }: any) => {
                     <Ionicons name="arrow-forward-outline" size={theme.icons.large} color={nextDisabled ? theme.colors.gray : theme.colors.white} />
                 </TouchableOpacity>
             </View>
-
-            <AlertBox />
         </View>
     )
 }
