@@ -8,5 +8,5 @@ type Props = {
 export const RelayList = ({ relays, onDelete }: Props) => {
 
     if (relays)
-        return relays.map((relay, key) => <RelayItem key={key} relay={relay} onDelete={onDelete} />)
+        return relays.map((relay, key) => <RelayItem key={relay} relay={relay} onDelete={onDelete} />)
 }

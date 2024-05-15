@@ -1,11 +1,11 @@
 
-import { StyleSheet, View, ScrollView } from "react-native"
+import { StyleSheet, View, ScrollView, ActivityIndicator } from "react-native"
 import { HeaderScreen } from "@components/general/HeaderScreen"
 import { useTranslate } from "@/src/services/translate"
 import MessageBox, { showMessage } from "@components/general/MessageBox"
 import { ButtonPrimary } from "@components/form/Buttons"
 import { RelayList } from "@components/nostr/relays/RelayList"
-import { deleteRelay, insertRelay } from "@/src/services/memory/relays"
+import { deleteRelay, getRelays, insertRelay } from "@/src/services/memory/relays"
 import { pushMessage } from "@src/services/notification"
 import { useEffect, useState } from "react"
 import theme from "@src/theme"
@@ -17,9 +17,14 @@ const ManageRelaysScreen = ({ navigation }: any) => {
     const [visible, setVisible] = useState(false)
     const [relays, setRelays] = useState<string[]>([])
 
-    useEffect(() => {
-        setRelays(Nostr.explicitRelayUrls)
-    }, [])
+    useEffect(() => { loadDataRelays() }, [])
+
+    const loadDataRelays = async () => { 
+
+        const relayList = await getRelays()
+
+        setRelays(relayList)
+    }
 
     const handleAddRelay = () => setVisible(true)
 
@@ -53,9 +58,14 @@ const ManageRelaysScreen = ({ navigation }: any) => {
             message: "O Relay será permanentemente excluído, deseja continuar?",
             action: {
                 label: useTranslate("commons.delete"),
-                onPress: async () => {                    
+                onPress: async () => {       
+
                     await deleteRelay(relay)
+                    
                     setRelays(prevItems => prevItems.filter(item => item != relay))
+
+                    Nostr.explicitRelayUrls?.splice(Nostr.explicitRelayUrls.indexOf(relay), 1)
+
                     pushMessage("Relay removido com sucesso!")
                 }
             }
@@ -66,6 +76,8 @@ const ManageRelaysScreen = ({ navigation }: any) => {
         <>
             <HeaderScreen title={useTranslate("settings.relays")} onClose={() => navigation.navigate("user-menu-stack")} />
             <ScrollView contentContainerStyle={theme.styles.scroll_container} >
+
+                {relays.length <= 0 && <ActivityIndicator color={theme.colors.gray} size={theme.icons.extra} />}
 
                 <RelayList relays={relays} onDelete={handleDeleteRelay} />
 

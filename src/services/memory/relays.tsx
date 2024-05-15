@@ -7,8 +7,9 @@ export const getRelays = async (): Promise<string[]> => {
 
     const data = await AsyncStorage.getItem("relays")
 
-    if (data)
+    if (data && JSON.parse(data).length > 0) {
         relays = JSON.parse(data)
+    }
     else 
         await setRelays(relays)
  
