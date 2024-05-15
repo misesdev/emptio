@@ -1,8 +1,9 @@
+import { Modal, StyleSheet, View, Text, TouchableOpacity, ActivityIndicator } from "react-native"
 import { FormControl } from "@/src/components/form/FormControl"
 import { useTranslate } from "@/src/services/translate"
 import theme from "@/src/theme"
 import React, { useState } from "react"
-import { Modal, StyleSheet, View, Text, TouchableOpacity } from "react-native"
+import { pushMessage } from "@/src/services/notification"
 
 type ButtonProps = {
     label: string,
@@ -24,28 +25,17 @@ const ButtonLight = ({ label, onPress }: ButtonProps) => {
 
 type Props = {
     visible: boolean,
+    relays: string[],
     onClose: () => void,
-    onSaveRelay: (relay: string) => void
+    onSaveRelay: (relay: string) => Promise<void>
 }
 
-const AddRelay = ({ visible, onClose, onSaveRelay }: Props) => {
+const AddRelay = ({ visible, relays, onClose, onSaveRelay }: Props) => {
 
-    const [isValid, setIsValid] = useState(true)
+    const [loading, setLoading] = useState(false)
     const [relayAddress, setRelayAddress] = useState("wss://")
 
-    const onChangeTextRelay = async (relay_address: string) => {
-
-        var relay = relay_address.toLowerCase()
-
-        setRelayAddress(relay_address.toLowerCase())
-
-        if (relay.includes("wss://")) {
-            const validRelay = await verifyRelay(relay)
-            setIsValid(validRelay)
-        }
-        else
-            setIsValid(false)
-    }
+    const onChangeTextRelay = async (relay_address: string) => setRelayAddress(relay_address.toLowerCase())
 
     const verifyRelay = async (relay: string): Promise<boolean> => {
 
@@ -54,9 +44,18 @@ const AddRelay = ({ visible, onClose, onSaveRelay }: Props) => {
         return regex.test(relay.replace("wss://", ""))
     }
 
-    const handleAddRelay = () => {
-        if (isValid) 
-            onSaveRelay(relayAddress)
+    const handleAddRelay = async () => {
+        
+        if (relays.includes(relayAddress))
+            return pushMessage("Relay já adicionado!")
+
+        if (await verifyRelay(relayAddress)) {
+            setLoading(true)
+            await onSaveRelay(relayAddress)
+            setLoading(false)
+            handleClose()
+        } else
+            await pushMessage("O relay está em um formato inválido!")
     }
 
     const handleClose = () => {
@@ -68,18 +67,23 @@ const AddRelay = ({ visible, onClose, onSaveRelay }: Props) => {
         <Modal animationType="slide" onRequestClose={handleClose} visible={visible} transparent >
             <View style={{ flex: 1, alignItems: "center", justifyContent: "center", backgroundColor: "rgba(0,0,0, .6)" }}>
                 <View style={styles.box}>
+                    <View style={{ padding: 10, paddingHorizontal: 15 }}>
+                        <Text style={styles.title}>Adicionar Relay</Text>
 
-                    <Text style={styles.title}>Adicionar Relay</Text>
+                        <View style={{ width: "100%", marginTop: 10, marginBottom: 20 }}>
+                            <FormControl label="Relay" value={relayAddress} onChangeText={onChangeTextRelay} fullScreen />
+                        </View>
 
-                    <View style={{ width: "100%", marginTop: 10, marginBottom: 20 }}>
-                        <FormControl label="Relay" value={relayAddress} onChangeText={onChangeTextRelay} fullScreen />
-                        {!isValid && <Text style={styles.validation_message}>relay inválido!</Text>}
+                        <View style={styles.section_buttons}>
+                            <ButtonLight label={useTranslate("commons.add")} onPress={handleAddRelay} />
+                            <ButtonLight label={useTranslate("commons.close")} onPress={handleClose} />
+                        </View>
                     </View>
-
-                    <View style={styles.section_buttons}>
-                        <ButtonLight label={useTranslate("commons.add")} onPress={handleAddRelay} />
-                        <ButtonLight label={useTranslate("commons.close")} onPress={handleClose} />
-                    </View>
+                    {loading &&
+                        <View style={styles.load_box}>
+                            <ActivityIndicator color={theme.colors.gray} size={theme.icons.extra} />
+                        </View>
+                    }
                 </View>
             </View>
         </Modal>
@@ -88,9 +92,18 @@ const AddRelay = ({ visible, onClose, onSaveRelay }: Props) => {
 
 const styles = StyleSheet.create({
     title: { color: theme.colors.white, fontSize: 18, marginVertical: 10, fontWeight: 'bold' },
-    box: { padding: 10, paddingHorizontal: 15, width: "90%", borderRadius: 8, backgroundColor: theme.colors.section },
+    box: { width: "90%", borderRadius: 8, backgroundColor: theme.colors.section },
     validation_message: { color: theme.colors.red, fontWeight: "bold" },
     section_buttons: { width: "100%", flexDirection: "row-reverse" },
+    load_box: {
+        position: "absolute",
+        width: "100%",
+        height: "100%",
+        borderRadius: 8,
+        justifyContent: "center",
+        alignItems: "center",
+        backgroundColor: "rgba(255, 255, 255, .1)"
+    }
 })
 
 export default AddRelay

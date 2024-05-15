@@ -1,4 +1,5 @@
 import * as Notifications from "expo-notifications"
+import { ToastAndroid } from "react-native"
 
 Notifications.setNotificationHandler({
     handleNotification: async () => ({
@@ -30,13 +31,14 @@ const getPermission = async () => {
         return true
 }
 
-export const PushNotification = async (props: NotificationProps) => {
+export const pushNotification = async (props: NotificationProps) => {
 
     if (await getPermission())
         await notifyMessage(props)
     // else -> not permissioned
 }
 
-export const PushMessage = async () => {
-    
-}
+export const pushMessage = async (message: string) => ToastAndroid.show(message, ToastAndroid.BOTTOM)
+
+
+

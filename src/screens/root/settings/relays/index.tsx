@@ -6,11 +6,11 @@ import MessageBox, { showMessage } from "@components/general/MessageBox"
 import { ButtonPrimary } from "@components/form/Buttons"
 import { RelayList } from "@components/nostr/relays/RelayList"
 import { deleteRelay, insertRelay } from "@/src/services/memory/relays"
+import { pushMessage } from "@src/services/notification"
 import { useEffect, useState } from "react"
 import theme from "@src/theme"
 import AddRelay from "./add"
 import axios from "axios"
-import { alertMessage } from "@/src/components/general/AlertBox"
 
 const ManageRelaysScreen = ({ navigation }: any) => {
 
@@ -24,23 +24,27 @@ const ManageRelaysScreen = ({ navigation }: any) => {
     const handleAddRelay = () => setVisible(true)
 
     const handleSaveRelay = async (relay: string) => {
+        try {
+            const relayList = [...relays, relay]
 
-        const httpClient = axios.create({ headers: { Accept: "application/nostr+json" } })
+            const httpClient = axios.create({ headers: { Accept: "application/nostr+json" } })
 
-        const response = await httpClient.get(relay)
+            const response = await httpClient.get(relay.replace("wss://", "https://"))
 
-        if(response.status != 200)
-            return alertMessage("relay inválido")
+            if (response.status != 200)
+                return await pushMessage("relay inválido")
 
-        Nostr.addExplicitRelay(relay, undefined, true)
-        
-        await insertRelay(relay)
+            Nostr.addExplicitRelay(relay, undefined, true)
 
-        setRelays([...relays, relay])
+            await insertRelay(relay)
 
-        setVisible(false)
+            setRelays(relayList)
+        } 
+        catch(ex) { 
+            return await pushMessage("Ocorreu um erro inesperado dutante o processamento.") 
+        }
 
-        alertMessage("relay adicionaro com sucesso!")
+        await pushMessage("relay adicionado com sucesso!")
     }
 
     const handleDeleteRelay = (relay: string) => {
@@ -49,10 +53,10 @@ const ManageRelaysScreen = ({ navigation }: any) => {
             message: "O Relay será permanentemente excluído, deseja continuar?",
             action: {
                 label: useTranslate("commons.delete"),
-                onPress: async () => {
-                    relays.splice(relays.indexOf(relay), 1)
+                onPress: async () => {                    
                     await deleteRelay(relay)
-                    setRelays(relays)
+                    setRelays(prevItems => prevItems.filter(item => item != relay))
+                    pushMessage("Relay removido com sucesso!")
                 }
             }
         })
@@ -70,9 +74,9 @@ const ManageRelaysScreen = ({ navigation }: any) => {
             </ScrollView>
             <View style={styles.buttonarea}>
                 <ButtonPrimary label="Add Relay" onPress={handleAddRelay} />
-            </View>
+            </View>            
+            <AddRelay visible={visible} relays={relays} onClose={() => setVisible(false)} onSaveRelay={handleSaveRelay} />
             <MessageBox />
-            <AddRelay visible={visible} onClose={() => setVisible(false)} onSaveRelay={handleSaveRelay} />
         </>
     )
 }
