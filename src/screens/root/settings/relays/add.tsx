@@ -1,9 +1,9 @@
 import { Modal, StyleSheet, View, Text, TouchableOpacity, ActivityIndicator } from "react-native"
-import { FormControl } from "@/src/components/form/FormControl"
-import { useTranslate } from "@/src/services/translate"
-import theme from "@/src/theme"
+import { FormControl } from "@components/form/FormControl"
+import { useTranslate } from "@src/services/translate"
+import theme from "@src/theme"
 import React, { useState } from "react"
-import { pushMessage } from "@/src/services/notification"
+import { pushMessage } from "@src/services/notification"
 
 type ButtonProps = {
     label: string,
@@ -45,7 +45,7 @@ const AddRelay = ({ visible, relays, onClose, onSaveRelay }: Props) => {
     }
 
     const handleAddRelay = async () => {
-        
+
         if (relays.includes(relayAddress))
             return pushMessage("Relay já adicionado!")
 

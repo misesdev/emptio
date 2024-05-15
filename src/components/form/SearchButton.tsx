@@ -25,7 +25,7 @@ const styles = StyleSheet.create({
         padding: 4.5,
         paddingVertical: 5,
         borderRadius: 25,
-        backgroundColor: theme.colors.default
+        backgroundColor: theme.input.backGround
     },
     content: {
         flexDirection: "row"

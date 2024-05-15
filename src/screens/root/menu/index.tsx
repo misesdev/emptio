@@ -11,16 +11,16 @@ import { useState } from "react"
 import { nip19 } from "nostr-tools";
 import theme from "@src/theme"
 import { setStringAsync } from "expo-clipboard";
-import AlertBox, { alertMessage } from "@components/general/AlertBox";
 import { Ionicons } from "@expo/vector-icons"
-import { authService } from "@/src/core/authManager";
+import { authService } from "@src/core/authManager";
 import MessageBox, { showMessage } from "@components/general/MessageBox"
 import SelectLanguageBox, { showSelectLanguage } from "@components/modal/SelectLanguageBox"
+import { pushMessage } from "@src/services/notification"
 
 const UserMenuScreen = ({ navigation }: any) => {
 
     const opacity = .7 
-    const { user } = useAuth() 
+    const { user } = useAuth()
     const [update, forceUpdate] = useState()
     const [loading, setLoading] = useState(false) 
 
@@ -34,7 +34,7 @@ const UserMenuScreen = ({ navigation }: any) => {
 
             await setStringAsync(secretkey)
 
-            alertMessage(useTranslate("message.copied"))
+            pushMessage(useTranslate("message.copied"))
         }
     }
 
@@ -45,7 +45,7 @@ const UserMenuScreen = ({ navigation }: any) => {
 
         await setStringAsync(pubKey)
 
-        alertMessage(useTranslate("message.copied"))
+        pushMessage(useTranslate("message.copied"))
     }
 
     const handleDeleteAccount = async () => {
@@ -62,7 +62,7 @@ const UserMenuScreen = ({ navigation }: any) => {
                         if (result.success)
                             navigation.reset({ index: 0, routes: [{ name: "initial-stack" }] })
                         else {
-                            alertMessage(result.message)
+                            pushMessage(result.message)
                             setLoading(false)
                         }
                     }, 100)
@@ -126,7 +126,6 @@ const UserMenuScreen = ({ navigation }: any) => {
                     <ButtonDanger label={useTranslate("commons.signout")} onPress={handleDeleteAccount} />
                 </View>
             </ScrollView>
-            <AlertBox />
             <MessageBox />
             <SelectLanguageBox forceUpdate={forceUpdate} />
             <View key={update}></View>

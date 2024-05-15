@@ -51,7 +51,7 @@ const styles = StyleSheet.create({
     link: {
         width: '100%',
         padding: 8,
-        margin: 2,
+        marginVertical: 2,
         borderRadius: 10,
         flexDirection: "row",
     },
