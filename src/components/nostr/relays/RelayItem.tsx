@@ -47,16 +47,6 @@ export const RelayItem = ({ relay, onDelete }: RelayProps) => {
                             </TouchableOpacity>
                         </View>
                     </View>
-                    {/* {metadata.name &&
-                        <View style={styles.relay_row}>
-                            <View style={{ width: "50%" }}>
-                                <Text style={{ color: theme.colors.white }}>{useTranslate("commons.name")}</Text>
-                            </View>
-                            <View style={{ width: "50%" }}>
-                                <Text style={{ color: theme.colors.gray }}>{metadata.name}</Text>
-                            </View>
-                        </View>
-                    } */}
                     {metadata.description &&
                         <View style={styles.relay_row}>
                             <View style={{ width: "50%" }}>
