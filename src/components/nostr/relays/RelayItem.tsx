@@ -85,7 +85,7 @@ export const RelayItem = ({ relay, onDelete }: RelayProps) => {
                             <View style={{}}>
                                 <Text style={{ color: theme.colors.white }}>Nips suportados pelo relay</Text>
                             </View>
-                            <ScrollView contentContainerStyle={{ width: "100%", padding: 10, flexDirection: "row" }} horizontal>
+                            <ScrollView contentContainerStyle={{ padding: 10, flexDirection: "row" }} horizontal>
                                 {metadata.supported_nips.map((nip, index) => <View key={index} style={styles.nip}><Text style={styles.nip_text}>{nip}</Text></View>)}
                             </ScrollView>
                         </View>

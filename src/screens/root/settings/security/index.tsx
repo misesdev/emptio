@@ -1,8 +1,8 @@
 
-import { StyleSheet, View, Text, ScrollView } from "react-native"
+import { StyleSheet, ScrollView } from "react-native"
 import { HeaderScreen } from "@components/general/HeaderScreen"
 import { FormControlSwitch } from "@components/form/FormControl"
-import { useEffect, useState } from "react"
+import { useState } from "react"
 import { authService } from "@src/core/authManager"
 import { pushMessage } from "@src/services/notification"
 import { getSettings, saveSettings } from "@src/services/memory/settings"
@@ -10,17 +10,8 @@ import theme from "@src/theme"
 
 const ManageSecurityScreen = ({ navigation }: any) => {
 
-    const [useBiometrics, setUseBiometrics] = useState<boolean>()
-
-    useEffect(() => {
-        // load data
-        loadDataSettings()
-    }, [])
-
-    const loadDataSettings = async () => {
-        const settings = getSettings()
-        setUseBiometrics(settings.useBiometrics)
-    }
+    const settings = getSettings()
+    const [useBiometrics, setUseBiometrics] = useState<boolean>(settings.useBiometrics ?? false)
 
     const onHandleSetAuthenticate = async (value: boolean) => {
 
@@ -31,7 +22,6 @@ const ManageSecurityScreen = ({ navigation }: any) => {
                 return pushMessage("Erro ao authenticar com biometria.")
         }
 
-        const settings = getSettings()
         settings.useBiometrics = value
         saveSettings(settings)
 

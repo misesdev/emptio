@@ -4,20 +4,21 @@ import { ButtonPrimary } from "@components/form/Buttons";
 import { hasHardwareAsync, authenticateAsync } from 'expo-local-authentication';
 import { useTranslate } from "@src/services/translate";
 import SplashScreen from "@components/general/SplashScreen";
+import { useSettings } from "@src/providers/settingsProvider";
 import theme from "@src/theme";
 
 const AuthenticateScreen = ({ navigation }: any) => {
 
+    const { settings } = useSettings()
     const [loading, setLoading] = useState(true)
     const [biometrics, setBiometrics] = useState(true)
 
-    useEffect(() => {
-
-        // remover depois 
-        navigation.reset({ index: 0, routes: [{ name: "core-stack" }] })
-
-        // checkBiometricAvailability()
-    }, [])
+    useEffect(() => {        
+        if (settings.useBiometrics)
+            checkBiometricAvailability()
+        else
+            navigation.reset({ index: 0, routes: [{ name: "core-stack" }] })
+    }, [settings])
 
     const checkBiometricAvailability = async () => {
         const isBiometricAvailable = await hasHardwareAsync()
@@ -34,7 +35,7 @@ const AuthenticateScreen = ({ navigation }: any) => {
             promptMessage: useTranslate("commons.authenticate.message"),
         })
 
-        if (success) 
+        if (success)
             navigation.reset({ index: 0, routes: [{ name: "core-stack" }] })
     };
 
@@ -56,25 +57,9 @@ const AuthenticateScreen = ({ navigation }: any) => {
 }
 
 const styles = StyleSheet.create({
-    logo: {
-        maxWidth: "90%",
-        height: "35%",
-        marginTop: -100
-    },
-    title: {
-        marginVertical: 10,
-        color: theme.colors.gray,
-        textAlign: "center",
-        width: "85%"
-    },
-    buttonArea: {
-        width: '100%',
-        position: 'absolute',
-        justifyContent: 'center',
-        marginVertical: 30,
-        flexDirection: "row",
-        bottom: 10,
-    }
+    logo: { maxWidth: "90%", height: "35%", marginTop: -100 },
+    title: { marginVertical: 10, color: theme.colors.gray, textAlign: "center", width: "85%" },
+    buttonArea: { width: '100%', position: 'absolute', justifyContent: 'center', marginVertical: 30, flexDirection: "row", bottom: 10 }
 })
 
 export default AuthenticateScreen

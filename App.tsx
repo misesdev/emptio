@@ -11,14 +11,17 @@ import { View } from 'react-native';
 import theme from '@src/theme';
 import AppRoutes from './src/routes';
 import { AuthProvider } from "./src/providers/userProvider";
+import { SettingsProvider } from "./src/providers/settingsProvider";
 
 export default function App() {
     return (
         <View style={{ flex: 1, backgroundColor: theme.colors.black }} >
             <StatusBar hidden translucent />
-            <AuthProvider>
-                <AppRoutes />
-            </AuthProvider>
+            <SettingsProvider>
+                <AuthProvider>
+                    <AppRoutes />
+                </AuthProvider>
+            </SettingsProvider>
         </View>
     )
 }

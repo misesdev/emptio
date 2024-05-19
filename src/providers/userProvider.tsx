@@ -15,12 +15,7 @@ type AuthContextType = {
 
 const AuthContext = createContext<AuthContextType>({ user: {}, wallet: {}, wallets: [], emptioData: {} })
 
-const useAuth = (): AuthContextType => {
-
-    const context = useContext(AuthContext)
-
-    return context
-}
+const useAuth = (): AuthContextType => useContext(AuthContext)
 
 const AuthProvider = ({ children }: { children: ReactNode }): ReactElement => {
 
