@@ -11,8 +11,8 @@ const checkBiometric = async () => {
 
         return success
     }
-    else
-        return true
+
+    return false
 }
 
 export const authService = {

@@ -81,4 +81,8 @@ export type User = {
     bitcoin_address?: string
 }
 
+export type Settings = {
+    useBiometrics?: boolean
+}
+
 export type Relays = Relay[]
