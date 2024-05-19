@@ -43,7 +43,7 @@ export default {
     "commons.name": "Nome",
     "commons.description": "Descrição",
     "commons.version": "Versão",
-
+    
     "labels.friends": "Amigos",
     "labels.username": "Nome de Usuário",
     "labels.about": "Sobre min",
@@ -53,6 +53,7 @@ export default {
     "labels.wallet.add": "Adicionar carteira!",
     "labels.wallet.name": "Nome da Carteira",
     "labels.wallet.getseed": "Visualizar Seed",
+    "labels.relays.add": "Adicionar Relay",
 
     "menu.home": "início",
     "menu.buy&sell": "comprar & vender",
@@ -84,6 +85,16 @@ export default {
     "message.profile.alertleave": "Tem certeza que deseja sair? Todos os dados de usuário e carteiras serão permanetemente excluídos.",
     "message.profile.alertname": "Ops, parece que o nome de usuário é muito curto, por favor digite um nome de usuário com mais caracteres!",
     "message.request.error": "Ocorreu um erro inesperado durante a requisição:",
+    "message.default_error": "Ops, ocorreu um erro inerperado!",
+    "message.relay.title_delete": "Excluir Relay?",
+    "message.relay.confirm_delete": "O Relay será permanentemente excluído, deseja continuar?",
+    "message.relay.delete_success": "Relay removido com sucesso!",
+    "message.relay.save_success": "Relay adicionado com sucesso!",
+    "message.relay.invalid": "Relay inválido!",
+    "message.relay.invalid_format": "O relay está em um formato inválido!",
+    "message.relay.already_exists": "O relay já existe na lista de relays!",
+    "message.relay.supported_nips": "Nips suportados pelo relay",
+    "message.relay.empty": "Não há nenhum  relay para exibir",
 
     "settings.relays": "Relays", 
     "settings.nostrkey.copy": "Copiar Nostr ID",

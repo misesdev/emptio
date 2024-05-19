@@ -1,5 +1,5 @@
 
-import { StyleSheet, View, ScrollView, ActivityIndicator } from "react-native"
+import { StyleSheet, View, ScrollView, Text, ActivityIndicator } from "react-native"
 import { HeaderScreen } from "@components/general/HeaderScreen"
 import { useTranslate } from "@/src/services/translate"
 import MessageBox, { showMessage } from "@components/general/MessageBox"
@@ -37,7 +37,7 @@ const ManageRelaysScreen = ({ navigation }: any) => {
             const response = await httpClient.get(relay.replace("wss://", "https://"))
 
             if (response.status != 200)
-                return await pushMessage("relay inválido")
+                return await pushMessage(useTranslate("message.relay.invalid"))
 
             Nostr.addExplicitRelay(relay, undefined, true)
 
@@ -46,16 +46,16 @@ const ManageRelaysScreen = ({ navigation }: any) => {
             setRelays(relayList)
         } 
         catch(ex) { 
-            return await pushMessage("Ocorreu um erro inesperado dutante o processamento.") 
+            return await pushMessage(useTranslate("message.default_error")) 
         }
 
-        await pushMessage("relay adicionado com sucesso!")
+        await pushMessage(useTranslate("message.relay.save_success"))
     }
 
     const handleDeleteRelay = (relay: string) => {
         showMessage({
-            title: "Excluir Relay?",
-            message: "O Relay será permanentemente excluído, deseja continuar?",
+            title: useTranslate("message.relay.title_delete"),
+            message: useTranslate("message.relay.confirm_delete"),
             action: {
                 label: useTranslate("commons.delete"),
                 onPress: async () => {       
@@ -66,7 +66,7 @@ const ManageRelaysScreen = ({ navigation }: any) => {
 
                     Nostr.explicitRelayUrls?.splice(Nostr.explicitRelayUrls.indexOf(relay), 1)
 
-                    pushMessage("Relay removido com sucesso!")
+                    pushMessage(useTranslate("message.relay.delete_success"))
                 }
             }
         })
@@ -77,7 +77,8 @@ const ManageRelaysScreen = ({ navigation }: any) => {
             <HeaderScreen title={useTranslate("settings.relays")} onClose={() => navigation.navigate("user-menu-stack")} />
             <ScrollView contentContainerStyle={theme.styles.scroll_container} >
 
-                {relays.length <= 0 && <ActivityIndicator color={theme.colors.gray} size={theme.icons.extra} />}
+                {/* {relays.length <= 0 && <ActivityIndicator color={theme.colors.gray} size={theme.icons.extra} />} */}
+                {relays.length <= 0 && <Text style={{ color: theme.colors.gray }}>{useTranslate("message.relay.empty")}</Text>}
 
                 <RelayList relays={relays} onDelete={handleDeleteRelay} />
 
@@ -85,7 +86,7 @@ const ManageRelaysScreen = ({ navigation }: any) => {
 
             </ScrollView>
             <View style={styles.buttonarea}>
-                <ButtonPrimary label="Add Relay" onPress={handleAddRelay} />
+                <ButtonPrimary label={useTranslate("labels.relays.add")} onPress={handleAddRelay} />
             </View>            
             <AddRelay visible={visible} relays={relays} onClose={() => setVisible(false)} onSaveRelay={handleSaveRelay} />
             <MessageBox />

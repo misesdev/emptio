@@ -1,9 +1,9 @@
 import { Modal, StyleSheet, View, Text, TouchableOpacity, ActivityIndicator } from "react-native"
 import { FormControl } from "@components/form/FormControl"
-import { useTranslate } from "@src/services/translate"
-import theme from "@src/theme"
-import React, { useState } from "react"
 import { pushMessage } from "@src/services/notification"
+import { useTranslate } from "@src/services/translate"
+import React, { useState } from "react"
+import theme from "@src/theme"
 
 type ButtonProps = {
     label: string,
@@ -47,7 +47,7 @@ const AddRelay = ({ visible, relays, onClose, onSaveRelay }: Props) => {
     const handleAddRelay = async () => {
 
         if (relays.includes(relayAddress))
-            return pushMessage("Relay já adicionado!")
+            return pushMessage(useTranslate("message.relay.already_exists"))
 
         if (await verifyRelay(relayAddress)) {
             setLoading(true)
@@ -55,7 +55,7 @@ const AddRelay = ({ visible, relays, onClose, onSaveRelay }: Props) => {
             setLoading(false)
             handleClose()
         } else
-            await pushMessage("O relay está em um formato inválido!")
+            await pushMessage(useTranslate("message.relay.invalid_format"))
     }
 
     const handleClose = () => {
@@ -68,7 +68,7 @@ const AddRelay = ({ visible, relays, onClose, onSaveRelay }: Props) => {
             <View style={{ flex: 1, alignItems: "center", justifyContent: "center", backgroundColor: "rgba(0,0,0, .6)" }}>
                 <View style={styles.box}>
                     <View style={{ padding: 10, paddingHorizontal: 15 }}>
-                        <Text style={styles.title}>Adicionar Relay</Text>
+                        <Text style={styles.title}>{useTranslate("labels.relays.add")}</Text>
 
                         <View style={{ width: "100%", marginTop: 10, marginBottom: 20 }}>
                             <FormControl label="Relay" value={relayAddress} onChangeText={onChangeTextRelay} fullScreen />

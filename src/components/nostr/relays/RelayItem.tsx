@@ -1,9 +1,9 @@
-import { useTranslate } from "@/src/services/translate"
-import theme from "@/src/theme"
-import axios from "axios"
-import { useEffect, useState } from "react"
+import { useTranslate } from "@src/services/translate"
 import { ScrollView, StyleSheet, Text, TouchableOpacity, View } from "react-native"
 import { Ionicons } from "@expo/vector-icons"
+import { useEffect, useState } from "react"
+import theme from "@src/theme"
+import axios from "axios"
 
 type RelayProps = {
     relay: string,
@@ -14,7 +14,7 @@ type RelayMetadata = {
     name?: string,
     description?: string,
     contact?: string,
-    supported_nips?: Array<number>,
+    supported_nips?: Array<string>,
     version?: string
 }
 
@@ -35,63 +35,61 @@ export const RelayItem = ({ relay, onDelete }: RelayProps) => {
 
     return (
         <>
-            {metadata &&
-                <View style={styles.relay_container}>
-                    <View style={[styles.relay_row, { borderBottomWidth: .5, borderBottomColor: theme.colors.default }]}>
-                        <View style={{ width: "60%" }}>
-                            <Text style={{ color: theme.colors.gray }}>{metadata.name ?? relay}</Text>
+            <View style={styles.relay_container}>
+                <View style={[styles.relay_row, { borderBottomWidth: .5, borderBottomColor: theme.colors.default }]}>
+                    <View style={{ width: "60%" }}>
+                        <Text style={{ color: theme.colors.gray }}>{metadata?.name ?? relay}</Text>
+                    </View>
+                    <View style={{ width: "40%", flexDirection: "row-reverse" }}>
+                        <TouchableOpacity activeOpacity={.7} onPress={() => onDelete(relay)} style={styles.button_delete}>
+                            <Ionicons name="close" size={theme.icons.mine} color={theme.colors.white} />
+                        </TouchableOpacity>
+                    </View>
+                </View>
+                {metadata?.description &&
+                    <View style={styles.relay_row}>
+                        <View style={{ width: "50%" }}>
+                            <Text style={{ color: theme.colors.white }}>{useTranslate("commons.description")}</Text>
                         </View>
-                        <View style={{ width: "40%", flexDirection: "row-reverse" }}>
-                            <TouchableOpacity activeOpacity={.7} onPress={() => onDelete(relay)} style={styles.button_delete}>
-                                <Ionicons name="close" size={theme.icons.mine} color={theme.colors.white} />
-                            </TouchableOpacity>
+                        <View style={{ width: "50%" }}>
+                            <Text style={{ color: theme.colors.gray }}>{metadata.description}</Text>
                         </View>
                     </View>
-                    {metadata.description &&
-                        <View style={styles.relay_row}>
-                            <View style={{ width: "50%" }}>
-                                <Text style={{ color: theme.colors.white }}>{useTranslate("commons.description")}</Text>
-                            </View>
-                            <View style={{ width: "50%" }}>
-                                <Text style={{ color: theme.colors.gray }}>{metadata.description}</Text>
-                            </View>
-                        </View>
-                    }
+                }
 
-                    {relay &&
-                        <View style={styles.relay_row}>
-                            <View style={{ width: "50%" }}>
-                                <Text style={{ color: theme.colors.white }}>URL</Text>
-                            </View>
-                            <View style={{ width: "50%" }}>
-                                <Text style={{ color: theme.colors.gray }}>{relay}</Text>
-                            </View>
+                {relay &&
+                    <View style={styles.relay_row}>
+                        <View style={{ width: "50%" }}>
+                            <Text style={{ color: theme.colors.white }}>URL</Text>
                         </View>
-                    }
+                        <View style={{ width: "50%" }}>
+                            <Text style={{ color: theme.colors.gray }}>{relay}</Text>
+                        </View>
+                    </View>
+                }
 
-                    {metadata.version &&
-                        <View style={styles.relay_row}>
-                            <View style={{ width: "50%" }}>
-                                <Text style={{ color: theme.colors.white }}>{useTranslate("commons.version")}</Text>
-                            </View>
-                            <View style={{ width: "50%" }}>
-                                <Text style={{ color: theme.colors.gray }}>{metadata.version}</Text>
-                            </View>
+                {metadata?.version &&
+                    <View style={styles.relay_row}>
+                        <View style={{ width: "50%" }}>
+                            <Text style={{ color: theme.colors.white }}>{useTranslate("commons.version")}</Text>
                         </View>
-                    }
+                        <View style={{ width: "50%" }}>
+                            <Text style={{ color: theme.colors.gray }}>{metadata.version}</Text>
+                        </View>
+                    </View>
+                }
 
-                    {metadata.supported_nips && metadata.supported_nips.length &&
-                        <View style={{ padding: 5 }}>
-                            <View style={{}}>
-                                <Text style={{ color: theme.colors.white }}>Nips suportados pelo relay</Text>
-                            </View>
-                            <ScrollView contentContainerStyle={{ padding: 10, flexDirection: "row" }} horizontal>
-                                {metadata.supported_nips.map((nip, index) => <View key={index} style={styles.nip}><Text style={styles.nip_text}>{nip}</Text></View>)}
-                            </ScrollView>
+                {metadata?.supported_nips && metadata.supported_nips.length &&
+                    <View style={{ padding: 5 }}>
+                        <View style={{}}>
+                            <Text style={{ color: theme.colors.white }}>{useTranslate("message.relay.supported_nips")}</Text>
                         </View>
-                    }
-                </View>
-            }
+                        <ScrollView contentContainerStyle={{ padding: 10, flexDirection: "row" }} horizontal>
+                            {metadata.supported_nips.map((nip, index) => <View key={index} style={styles.nip}><Text style={styles.nip_text}>{nip}</Text></View>)}
+                        </ScrollView>
+                    </View>
+                }
+            </View>
         </>
     )
 }

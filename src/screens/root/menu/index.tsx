@@ -21,7 +21,7 @@ const UserMenuScreen = ({ navigation }: any) => {
 
     const opacity = .7 
     const { user } = useAuth()
-    const [update, forceUpdate] = useState()
+    const [forceUpdate, setForceUpdate] = useState()
     const [loading, setLoading] = useState(false) 
 
     const handleCopySecretKey = async () => {
@@ -127,8 +127,8 @@ const UserMenuScreen = ({ navigation }: any) => {
                 </View>
             </ScrollView>
             <MessageBox />
-            <SelectLanguageBox forceUpdate={forceUpdate} />
-            <View key={update}></View>
+            <SelectLanguageBox forceUpdate={setForceUpdate} />
+            <View key={forceUpdate}></View>
         </>
     )
 }
