@@ -17,7 +17,7 @@ const HomeScreen = ({ navigation }: any) => {
     const [loading, setLoading] = useState(false)
     const [wallets, setWallets] = useState<Wallet[]>([])
 
-    useEffect(() => { handleData() }, [wallets])
+    useEffect(() => { handleData() }, [user])
 
     const handleData = async () => {
         setLoading(true)

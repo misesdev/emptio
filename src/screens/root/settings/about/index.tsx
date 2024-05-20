@@ -19,7 +19,7 @@ const AboutScreen = ({ navigation }: any) => {
                 <Image source={require("assets/emptio.png")} style={styles.logo} />
 
                 <View style={{ padding: 15, marginVertical: 20 }}>
-                    <Text style={{ color: theme.colors.gray, fontSize: 18, textAlign: "center" }}>
+                    <Text style={{ color: theme.colors.gray, fontSize: 18 }}>
                         {useTranslate("settings.about.content")}
                     </Text>
                 </View>
