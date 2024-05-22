@@ -28,7 +28,7 @@ const FeedScreen = ({ navigation }: any) => {
 
         const { publicKey } = await getPairKey(user?.keychanges ?? "")
 
-        const result = await listenerEvents({ limit: 2, kinds: [NostrEventKinds.classifiedListening] });
+        const result = await listenerEvents({ limit: 10, kinds: [NostrEventKinds.classifiedListening] });
 
         setPosts(result)
 
