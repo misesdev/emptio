@@ -19,14 +19,11 @@ type EventData = {
 
 const FeedScreen = ({ navigation }: any) => {
 
-    const { user } = useAuth()
     const [loading, setLoading] = useState(false)
     const [posts, setPosts] = useState<EventData[]>([])
 
     const handleData = async () => {
         setLoading(true)
-
-        const { publicKey } = await getPairKey(user?.keychanges ?? "")
 
         const result = await listenerEvents({ limit: 10, kinds: [NostrEventKinds.classifiedListening] });
 
