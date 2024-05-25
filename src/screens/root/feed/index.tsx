@@ -19,6 +19,7 @@ type EventData = {
 
 const FeedScreen = ({ navigation }: any) => {
 
+    const {user} = useAuth()
     const [loading, setLoading] = useState(false)
     const [posts, setPosts] = useState<EventData[]>([])
 
