@@ -44,7 +44,7 @@ const FeedScreen = ({ navigation }: any) => {
         </SectionContainer>
     )
 
-    const ListEndLoader = () => {
+    const listEndLoader = () => {
         if (loading)
             // Show loader at the end of list when fetching next page data.
             return <ActivityIndicator color={theme.colors.gray} style={{ margin: 10 }} size={50} />
@@ -59,7 +59,7 @@ const FeedScreen = ({ navigation }: any) => {
                 onEndReached={handleData}
                 onEndReachedThreshold={2}
                 contentContainerStyle={[theme.styles.scroll_container, { backgroundColor: theme.colors.black, alignItems: "center" }]}
-                ListFooterComponent={ListEndLoader}
+                ListFooterComponent={listEndLoader}
             />
         </>
 
