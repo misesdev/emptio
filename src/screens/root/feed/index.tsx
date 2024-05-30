@@ -10,14 +10,6 @@ import { useState } from "react"
 import theme from "@src/theme"
 import { NostrEvent } from "@nostr-dev-kit/ndk"
 
-type EventData = {
-    id: string,
-    kind: number,
-    pubkey: string,
-    content: string,
-    created_at: number
-}
-
 const FeedScreen = ({ navigation }: any) => {
 
     const { user } = useAuth()
