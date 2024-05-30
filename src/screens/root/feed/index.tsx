@@ -8,6 +8,7 @@ import { useAuth } from "@src/providers/userProvider"
 import { HeaderFeed } from "./header"
 import { useState } from "react"
 import theme from "@src/theme"
+import { NostrEvent } from "@nostr-dev-kit/ndk"
 
 type EventData = {
     id: string,
@@ -19,21 +20,30 @@ type EventData = {
 
 const FeedScreen = ({ navigation }: any) => {
 
-    const {user} = useAuth()
+    const { user } = useAuth()
     const [loading, setLoading] = useState(false)
-    const [posts, setPosts] = useState<EventData[]>([])
+    const [posts, setPosts] = useState<NostrEvent[]>([])
 
     const handleData = async () => {
         setLoading(true)
 
-        const result = await listenerEvents({ limit: 10, kinds: [NostrEventKinds.classifiedListening] });
+        console.log("loading data")
 
-        setPosts(result)
+        let lastPost: NostrEvent | undefined
+
+        if (posts.length)
+            lastPost = posts.findLast(event => event)
+
+        const result = await listenerEvents({ limit: 5, kinds: [NostrEventKinds.classifiedListening], since: lastPost?.created_at });
+
+        const resultPosts = result.filter(event => posts.filter(post => post.id == event.id).length <= 0)
+
+        setPosts([...posts, ...resultPosts])
 
         setLoading(false)
     }
 
-    const renderItem = ({ item }: { item: EventData }) =>
+    const renderItem = ({ item }: { item: NostrEvent }) =>
     (
         <SectionContainer >
             <Text style={{ fontSize: 16, color: theme.colors.gray, margin: 10, textAlign: "center" }}>{item.content}</Text>
@@ -60,6 +70,7 @@ const FeedScreen = ({ navigation }: any) => {
                 onEndReachedThreshold={2}
                 contentContainerStyle={[theme.styles.scroll_container, { backgroundColor: theme.colors.black, alignItems: "center" }]}
                 ListFooterComponent={listEndLoader}
+                keyExtractor={event => event.id ?? Math.random().toString()}
             />
         </>
 
