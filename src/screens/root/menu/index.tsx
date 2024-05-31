@@ -3,7 +3,7 @@ import { LinkSection, SectionContainer } from "@components/general/section"
 import { getPairKey } from "@src/services/memory/pairkeys"
 import SplashScreen from "@components/general/SplashScreen"
 import { useAuth } from "@src/providers/userProvider"
-import { ButtonDanger } from "@components/form/Buttons"
+import { ButtonDanger, ButtonDefault, ButtonLink } from "@components/form/Buttons"
 import { useTranslate } from "@src/services/translate"
 import { userService } from "@/src/core/userManager"
 import { hexToBytes } from "@noble/hashes/utils"
@@ -123,7 +123,7 @@ const UserMenuScreen = ({ navigation }: any) => {
                 </SectionContainer>
 
                 <View style={{ padding: 20 }}>
-                    <ButtonDanger label={useTranslate("commons.signout")} onPress={handleDeleteAccount} />
+                    <ButtonLink color={theme.colors.red} label={useTranslate("commons.signout")} onPress={handleDeleteAccount} />
                 </View>
             </ScrollView>
             <MessageBox />

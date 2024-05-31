@@ -10,6 +10,8 @@ import { FormControl } from "@components/form/FormControl"
 import { pushMessage } from "@src/services/notification"
 import { useState } from "react"
 import theme from "@src/theme"
+import { useAuth } from "@src/providers/userProvider"
+import { userService } from "@src/core/userManager"
 
 const AddWalletScreen = ({ navigation }: any) => {
 
@@ -29,11 +31,17 @@ const AddWalletScreen = ({ navigation }: any) => {
 
         setTimeout(async () => {
 
+            const { user } = useAuth()
             const response = await walletService.create({ name: walletName, type: walletType })
 
-            if (response.success)
-                // navigation.reset({ index: 0, routes: [{ name: "core-stack" }] })
+            if (response.success) {
+                if (!user.default_wallet) {
+                    user.default_wallet = response.data?.key
+                    user.bitcoin_address = response.data?.address
+                    await userService.updateProfile({ user, upNostr: true })
+                }
                 navigation.navigate("seed-wallet-stack", { origin: "create", pairkey: response.data?.pairkey })
+            }
             else
                 pushMessage(response.message)
 
