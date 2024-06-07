@@ -1,7 +1,6 @@
 
 import { StyleSheet, View, ScrollView, Text, ActivityIndicator } from "react-native"
 import { HeaderScreen } from "@components/general/HeaderScreen"
-import { useTranslate } from "@/src/services/translate"
 import MessageBox, { showMessage } from "@components/general/MessageBox"
 import { ButtonPrimary } from "@components/form/Buttons"
 import { RelayList } from "@components/nostr/relays/RelayList"
@@ -11,9 +10,11 @@ import { useEffect, useState } from "react"
 import theme from "@src/theme"
 import AddRelay from "./add"
 import axios from "axios"
+import { useTranslateService } from "@/src/providers/translateProvider"
 
 const ManageRelaysScreen = ({ navigation }: any) => {
 
+    const { useTranslate } = useTranslateService()
     const [visible, setVisible] = useState(false)
     const [relays, setRelays] = useState<string[]>([])
 

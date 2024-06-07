@@ -2,7 +2,6 @@
 import { StyleSheet, View, TouchableOpacity, Image } from "react-native"
 import { MediaTypeOptions, launchImageLibraryAsync, requestMediaLibraryPermissionsAsync } from "expo-image-picker"
 import { useAuth } from "@src/providers/userProvider"
-import { useTranslate } from "@src/services/translate"
 import { ButtonPrimary } from "@components/form/Buttons"
 import { FormControl } from "@components/form/FormControl"
 import { ScrollView } from "react-native-gesture-handler"
@@ -13,6 +12,7 @@ import SplashScreen from "@components/general/SplashScreen"
 import theme from "@src/theme"
 import { uploadImage } from "@src/services/blob"
 import { pushMessage } from "@src/services/notification"
+import { useTranslateService } from "@/src/providers/translateProvider"
 
 const UserEditScreen = ({ navigation }: any) => {
 
@@ -24,6 +24,7 @@ const UserEditScreen = ({ navigation }: any) => {
     const [myWebsite, setMyWebsite] = useState(user.website)
     const [lnAddress, setLnAddress] = useState(user.lud16)
     const [prifile, setProfile] = useState(user.picture)
+    const { useTranslate } = useTranslateService()
 
     useEffect(() => {
         (async () => {

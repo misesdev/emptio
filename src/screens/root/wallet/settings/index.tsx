@@ -1,7 +1,6 @@
 import { useAuth } from "@src/providers/userProvider"
 import { ScrollView, StyleSheet, View } from "react-native"
 import { ButtonLink, ButtonPrimary } from "@components/form/Buttons"
-import { useTranslate } from "@src/services/translate"
 import { walletService } from "@src/core/walletManager"
 import MessageBox, { showMessage } from "@components/general/MessageBox"
 import SplashScreen from "@components/general/SplashScreen"
@@ -14,9 +13,11 @@ import { authService } from "@src/core/authManager"
 import { pushMessage } from "@src/services/notification"
 import { useState } from "react"
 import theme from "@src/theme"
+import { useTranslateService } from "@/src/providers/translateProvider"
 
 const WalletSettings = ({ navigation }: any) => {
 
+    const { useTranslate } = useTranslateService()
     const { wallet, setWallet, user, setUser } = useAuth()
     const [loading, setLoading] = useState(false)
     const [walletName, setWalletName] = useState(wallet.name)

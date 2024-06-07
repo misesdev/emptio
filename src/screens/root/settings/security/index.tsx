@@ -7,10 +7,13 @@ import { authService } from "@src/core/authManager"
 import { pushMessage } from "@src/services/notification"
 import { getSettings, saveSettings } from "@src/services/memory/settings"
 import theme from "@src/theme"
+import { useTranslateService } from "@/src/providers/translateProvider"
+import { useSettings } from "@/src/providers/settingsProvider"
 
 const ManageSecurityScreen = ({ navigation }: any) => {
 
-    const settings = getSettings()
+    const {settings} = useSettings()
+    const { useTranslate } = useTranslateService()
     const [useBiometrics, setUseBiometrics] = useState<boolean>(settings.useBiometrics ?? false)
 
     const onHandleSetAuthenticate = async (value: boolean) => {

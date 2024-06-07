@@ -1,6 +1,6 @@
 import { SafeAreaView, ScrollView, TouchableOpacity, Image, View, Text, StyleSheet } from "react-native"
+import { useTranslateService } from "@/src/providers/translateProvider"
 import { formatSats, toBitcoin } from "@src/services/converter"
-import { useTranslate } from "@src/services/translate"
 import { useAuth } from "@src/providers/userProvider"
 import { Wallet } from "@src/services/memory/types"
 import theme from "@src/theme"
@@ -13,6 +13,7 @@ type Props = {
 const WalletList = ({ wallets, navigation }: Props) => {
 
     const { setWallet } = useAuth()
+    const { useTranslate } = useTranslateService()
 
     const handleOpenWallet = (wallet: Wallet) => {
 

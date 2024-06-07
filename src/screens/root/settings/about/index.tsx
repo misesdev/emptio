@@ -2,10 +2,12 @@
 import { StyleSheet, View, Text, ScrollView, Image, TouchableOpacity, Linking } from "react-native"
 import theme from "@src/theme"
 import { HeaderScreen } from "@components/general/HeaderScreen"
-import { useTranslate } from "@/src/services/translate"
 import { Ionicons } from "@expo/vector-icons"
+import { useTranslateService } from "@/src/providers/translateProvider"
 
 const AboutScreen = ({ navigation }: any) => {
+
+    const { useTranslate } = useTranslateService()
 
     const handleToGithub = () => Linking.openURL("https://github.com/emptioapp/emptio")
 

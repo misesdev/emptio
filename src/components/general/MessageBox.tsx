@@ -1,6 +1,6 @@
 import { useState } from "react"
 import { Modal, StyleSheet, Text, TouchableOpacity, View } from "react-native"
-import { useTranslate } from "@src/services/translate"
+import { useTranslateService } from "@src/providers/translateProvider"
 import theme from "@src/theme"
 
 type typeMessage = "alert" | "error" | "success"
@@ -44,6 +44,7 @@ const MessageBox = () => {
     const [message, setMessage] = useState<string>()
     const [infolog, setInfolog] = useState<string>()
     const [action, setAction] = useState<MessageAction>()
+    const { useTranslate } = useTranslateService()
 
     const [visible, setVisible] = useState(false)
 

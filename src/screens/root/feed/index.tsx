@@ -2,17 +2,18 @@ import { View, Text, FlatList, ActivityIndicator } from "react-native"
 import { SectionContainer } from "@components/general/section"
 import { ButtonDanger, ButtonSuccess } from "@components/form/Buttons"
 import { listenerEvents } from "@src/services/nostr/events"
-import { getPairKey } from "@src/services/memory/pairkeys"
 import { NostrEventKinds } from "@src/constants/Events"
 import { useAuth } from "@src/providers/userProvider"
 import { HeaderFeed } from "./header"
 import { useState } from "react"
 import theme from "@src/theme"
 import { NostrEvent } from "@nostr-dev-kit/ndk"
+import { useTranslateService } from "@/src/providers/translateProvider"
 
 const FeedScreen = ({ navigation }: any) => {
 
     const { user } = useAuth()
+    const { useTranslate } = useTranslateService()
     const [loading, setLoading] = useState(false)
     const [posts, setPosts] = useState<NostrEvent[]>([])
 

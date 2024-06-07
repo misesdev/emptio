@@ -1,15 +1,17 @@
 import { createMaterialBottomTabNavigator } from '@react-navigation/material-bottom-tabs';
-import { useTranslate } from "../services/translate"
 import { Ionicons } from "@expo/vector-icons"
 import HomeScreen from "@screens/root/home"
 import FeedScreen from "@screens/root/feed"
 import theme from "@src/theme"
 import ChatsScreen from '@screens/root/chats';
 import NotificationScreen from '@screens/root/notifications';
+import { useTranslateService } from '../providers/translateProvider';
 
 const Tab = createMaterialBottomTabNavigator()
 
 const TabRoutes = () => {
+
+    const { useTranslate } = useTranslateService()
 
     return (
         <Tab.Navigator

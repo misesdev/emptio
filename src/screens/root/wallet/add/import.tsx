@@ -1,6 +1,5 @@
 import { HeaderScreen } from "@components/general/HeaderScreen"
 import { StyleSheet, View, Text } from "react-native"
-import { useTranslate } from "@/src/services/translate"
 import { FormControl } from "@components/form/FormControl"
 import { ButtonPrimary } from "@components/form/Buttons"
 import { useState } from "react"
@@ -8,6 +7,7 @@ import theme from "@src/theme"
 import SplashScreen from "@components/general/SplashScreen"
 import { walletService } from "@/src/core/walletManager"
 import { pushMessage } from "@/src/services/notification"
+import { useTranslateService } from "@/src/providers/translateProvider"
 
 const ImportWalletScreen = ({ navigation }: any) => {
 
@@ -15,6 +15,7 @@ const ImportWalletScreen = ({ navigation }: any) => {
     const [walletName, setWalletName] = useState<string>("")
     const [seedPhrase, setSeedPhrase] = useState<string>("")
     const [passPhrase, setPassPhrase] = useState<string>()
+    const { useTranslate } = useTranslateService()
 
     const handleImport = async () => {
 

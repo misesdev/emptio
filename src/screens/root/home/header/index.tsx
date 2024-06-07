@@ -2,12 +2,13 @@ import { useAuth } from "@src/providers/userProvider"
 import { TouchableOpacity, View, Image, StyleSheet } from "react-native"
 import { Ionicons } from "@expo/vector-icons"
 import SearchButton from "@components/form/SearchButton"
-import { useTranslate } from "@src/services/translate"
 import theme from "@/src/theme"
+import { useTranslateService } from "@/src/providers/translateProvider"
 
 export const HeaderHome = ({ navigation }: any) => {
 
     const { user } = useAuth()
+    const { useTranslate } = useTranslateService()
 
     return (
         <View style={styles.header}>

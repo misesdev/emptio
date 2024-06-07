@@ -2,17 +2,18 @@ import { ButtonDefault, ButtonSuccess } from "@components/form/Buttons"
 import { Image, StyleSheet, Text, View } from "react-native"
 import SplashScreen from "@components/general/SplashScreen"
 import { getNostrInstance } from "../services/nostr/events"
-import { useTranslate } from "../services/translate"
 import { userService } from "../core/userManager"
 import { useEffect, useState } from "react"
 import theme from "@src/theme"
 import { useAuth } from "../providers/userProvider"
 import { emptioService } from "../core/emptio"
+import { useTranslateService } from "../providers/translateProvider"
 
 const InitializeScreen = ({ navigation }: any) => {
 
     const { setUser, setEmptioData } = useAuth()
     const [loading, setLoading] = useState(true)
+    const { useTranslate } = useTranslateService()
 
     useEffect(() => {
 

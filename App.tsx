@@ -12,16 +12,19 @@ import theme from '@src/theme';
 import AppRoutes from './src/routes';
 import { AuthProvider } from "./src/providers/userProvider";
 import { SettingsProvider } from "./src/providers/settingsProvider";
+import { TranslateProvider } from "./src/providers/translateProvider";
 
 export default function App() {
     return (
         <View style={{ flex: 1, backgroundColor: theme.colors.black }} >
             <StatusBar hidden translucent />
-            <SettingsProvider>
-                <AuthProvider>
-                    <AppRoutes />
-                </AuthProvider>
-            </SettingsProvider>
+            <TranslateProvider>
+                <SettingsProvider>
+                    <AuthProvider>
+                        <AppRoutes />
+                    </AuthProvider>
+                </SettingsProvider>
+            </TranslateProvider>
         </View>
     )
 }

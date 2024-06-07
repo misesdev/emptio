@@ -2,8 +2,8 @@ import { useState } from "react"
 import { Modal, StyleSheet, Text, TouchableOpacity, View } from "react-native"
 import { Language } from "@/src/services/translate/types"
 import { getLanguage, getLanguages, saveLanguage } from "@/src/services/memory/language"
+import { useTranslateService } from "@src/providers/translateProvider"
 import { Ionicons } from "@expo/vector-icons"
-import { useTranslate } from "@/src/services/translate"
 import theme from "@src/theme"
 
 var showLanguagesFunction: () => void
@@ -14,23 +14,24 @@ type Props = {
 
 const SelectLanguageBox = ({ forceUpdate }: Props) => {
 
+    const { useTranslate, setLanguage, language } = useTranslateService()
     const [visible, setVisible] = useState(false)
-    const [language, setLanguage] = useState<Language>()
-    const [languages, setLanguages] = useState<Language[]>()
+    const [languagesList, setLanguageList] = useState<Language[]>()
 
     showLanguagesFunction = () => {
-        setLanguages(getLanguages())
-        setLanguage(getLanguage())
+        setLanguageList(getLanguages())
         setVisible(true)
     }
 
     const changeLanguage = (language: Language) => {
-        saveLanguage(language)
+        if (setLanguage)
+            setLanguage(language)
         setVisible(false)
+        saveLanguage(language)
         forceUpdate(Math.random())
     }
 
-    const renderLanguageOption = (item: Language, key: number) => {    
+    const renderLanguageOption = (item: Language, key: number) => {
 
         var selected = item.selector == language?.selector
 
@@ -50,8 +51,8 @@ const SelectLanguageBox = ({ forceUpdate }: Props) => {
         <Modal animationType="fade" onRequestClose={() => setVisible(false)} visible={visible} transparent >
             <View style={{ flex: 1, alignItems: "center", justifyContent: "center", backgroundColor: "rgba(0,0,0, .6)" }}>
                 <View style={styles.box}>
-                    {languages &&
-                        languages.map((item, key) => renderLanguageOption(item, key))
+                    {languagesList &&
+                        languagesList.map((item, key) => renderLanguageOption(item, key))
                     }
                 </View>
             </View>

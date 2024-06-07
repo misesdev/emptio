@@ -1,5 +1,4 @@
 import { View, Text, StyleSheet } from "react-native"
-import { useTranslate } from "@src/services/translate"
 import { useAuth } from "@src/providers/userProvider"
 import { ButtonDefault } from "@components/form/Buttons"
 import SplashScreen from "@components/general/SplashScreen"
@@ -9,11 +8,12 @@ import theme from "@src/theme"
 import { walletService } from "@src/core/walletManager"
 import { HeaderScreen } from "@components/general/HeaderScreen"
 import { pushMessage } from "@src/services/notification"
+import { useTranslateService } from "@/src/providers/translateProvider"
 
 const SendFinalScreen = ({ navigation, route }: any) => {
 
     const { wallet } = useAuth()
-
+    const { useTranslate } = useTranslateService()
     const [loading, setLoading] = useState(true)
     const [searching, setSearching] = useState(false)
     const [nextDisabled, setNextDisabled] = useState(true)

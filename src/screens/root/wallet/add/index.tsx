@@ -1,6 +1,5 @@
 
 import { StyleSheet, View, Text, TouchableOpacity } from "react-native"
-import { useTranslate } from "@src/services/translate"
 import { ButtonLink, ButtonPrimary } from "@components/form/Buttons"
 import { Ionicons } from "@expo/vector-icons"
 import SplashScreen from "@components/general/SplashScreen"
@@ -12,9 +11,11 @@ import { useState } from "react"
 import theme from "@src/theme"
 import { useAuth } from "@src/providers/userProvider"
 import { userService } from "@src/core/userManager"
+import { useTranslateService } from "@/src/providers/translateProvider"
 
 const AddWalletScreen = ({ navigation }: any) => {
 
+    const { useTranslate } = useTranslateService()
     const [loading, setLoading] = useState(false)
     const [walletName, setWalletName] = useState<string>()
     const [walletType, setWalletType] = useState<"bitcoin" | "lightning">("bitcoin")

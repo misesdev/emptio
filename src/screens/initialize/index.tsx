@@ -2,14 +2,15 @@ import { useEffect, useState } from "react";
 import { Image, StyleSheet, View } from "react-native";
 import { ButtonPrimary } from "@components/form/Buttons";
 import { hasHardwareAsync, authenticateAsync } from 'expo-local-authentication';
-import { useTranslate } from "@src/services/translate";
 import SplashScreen from "@components/general/SplashScreen";
 import { useSettings } from "@src/providers/settingsProvider";
 import theme from "@src/theme";
+import { useTranslateService } from "@/src/providers/translateProvider";
 
 const AuthenticateScreen = ({ navigation }: any) => {
 
     const { settings } = useSettings()
+    const { useTranslate } = useTranslateService()
     const [loading, setLoading] = useState(true)
     const [biometrics, setBiometrics] = useState(true)
 

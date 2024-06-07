@@ -2,14 +2,15 @@ import SplashScreen from "@components/general/SplashScreen"
 import { HeaderScreen } from "@components/general/HeaderScreen"
 import { useEffect, useState } from "react"
 import { ScrollView, StyleSheet, Text, View } from "react-native"
-import { useTranslate } from "@src/services/translate"
 import { walletService } from "@src/core/walletManager"
 import { ButtonPrimary } from "@components/form/Buttons"
 import { pushMessage } from "@src/services/notification"
 import theme from "@src/theme"
+import { useTranslateService } from "@/src/providers/translateProvider"
 
 const CreatedSeedScren = ({ navigation, route }: any) => {
 
+    const { useTranslate } = useTranslateService()
     const [loading, setLoading] = useState(true)
     const [wordList, setWordList] = useState<string[]>()
 

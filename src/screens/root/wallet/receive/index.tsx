@@ -1,5 +1,4 @@
 import { Image, TouchableOpacity, View, Text, StyleSheet } from "react-native"
-import { useTranslate } from "@src/services/translate"
 import { setStringAsync } from "expo-clipboard"
 import QRCode from "react-native-qrcode-svg"
 import { HeaderScreen } from "@components/general/HeaderScreen"
@@ -7,11 +6,12 @@ import { ButtonPrimary } from "@components/form/Buttons"
 import { useAuth } from "@src/providers/userProvider"
 import { useState } from "react"
 import theme from "@src/theme"
+import { useTranslateService } from "@/src/providers/translateProvider"
 
 const WalletReceiveScreen = ({ navigation, route }: any) => {
 
     const { user } = useAuth()
-
+    const { useTranslate } = useTranslateService()
     const [address, setAddress] = useState<string>(route.params?.address)
     const [valueText, setValueText] = useState<string>(route.params?.address)
 

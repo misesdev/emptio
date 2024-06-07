@@ -1,9 +1,9 @@
 import { Modal, StyleSheet, View, Text, TouchableOpacity, ActivityIndicator } from "react-native"
 import { FormControl } from "@components/form/FormControl"
 import { pushMessage } from "@src/services/notification"
-import { useTranslate } from "@src/services/translate"
 import React, { useState } from "react"
 import theme from "@src/theme"
+import { useTranslateService } from "@/src/providers/translateProvider"
 
 type ButtonProps = {
     label: string,
@@ -11,6 +11,7 @@ type ButtonProps = {
 }
 
 const ButtonLight = ({ label, onPress }: ButtonProps) => {
+
     const [backColor, setBackColor] = useState(theme.colors.transparent)
     return (
         <TouchableOpacity onPress={onPress}
@@ -32,6 +33,7 @@ type Props = {
 
 const AddRelay = ({ visible, relays, onClose, onSaveRelay }: Props) => {
 
+    const { useTranslate } = useTranslateService()
     const [loading, setLoading] = useState(false)
     const [relayAddress, setRelayAddress] = useState("wss://")
 

@@ -2,7 +2,6 @@ import MessageBox, { showMessage } from "@components/general/MessageBox";
 import { Image, StyleSheet, Text, View } from "react-native";
 import { QRCodeTextBox } from "@components/form/TextBoxs";
 import { ButtonPrimary } from "@components/form/Buttons";
-import { useTranslate } from "@src/services/translate";
 import SplashScreen from "@components/general/SplashScreen";
 import { validatePrivateKey } from "@src/services/nostr";
 import { userService } from "@/src/core/userManager";
@@ -11,10 +10,12 @@ import { useEffect, useState } from "react";
 import * as ClipBoard from 'expo-clipboard'
 import { AppState } from "react-native";
 import theme from "@src/theme";
+import { useTranslateService } from "@/src/providers/translateProvider";
 
 const LoginScreen = ({ navigation }: any) => {
 
     const { setUser } = useAuth()
+    const { useTranslate } = useTranslateService()
     const [loading, setLoading] = useState(false)
     const [secretKey, setSecretKey] = useState("")
 

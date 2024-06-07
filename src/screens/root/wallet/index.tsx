@@ -1,7 +1,6 @@
 import { WalletButtons, WalletHeader, WalletTransactions } from "@components/wallet"
 import { SectionHeader } from "@components/general/section/headers"
 import { updateWallet } from "@src/services/memory/wallets"
-import { useTranslate } from "@src/services/translate"
 import { Transaction } from "@src/services/memory/types"
 import { View, ScrollView, RefreshControl, TouchableOpacity } from "react-native"
 import { useEffect, useState } from "react"
@@ -10,10 +9,12 @@ import SplashScreen from "@components/general/SplashScreen"
 import { useAuth } from "@/src/providers/userProvider"
 import theme from "@src/theme"
 import { walletService } from "@/src/core/walletManager"
+import { useTranslateService } from "@/src/providers/translateProvider"
 
 const WalletManagerScreen = ({ navigation, route }: any) => {
 
     const { wallet, setWallet } = useAuth()
+    const { useTranslate } = useTranslateService()
     const [loading, setLoading] = useState(true)
     const [refreshing, setRefreshing] = useState(false)
     const [transactions, setTransactions] = useState<Transaction[]>([])

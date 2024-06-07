@@ -1,18 +1,19 @@
 import { StyleSheet, View, Text, TouchableOpacity } from "react-native"
 import { HeaderScreen } from "@components/general/HeaderScreen"
-import { useTranslate } from "@src/services/translate"
 import { useAuth } from "@src/providers/userProvider"
 import { getWallet } from "@src/services/memory/wallets"
 import theme from "@src/theme"
 import { useEffect, useState } from "react"
 import { AmountBox } from "@components/wallet/inputs"
 import { Ionicons } from "@expo/vector-icons"
+import { useTranslateService } from "@/src/providers/translateProvider"
 
 const DonateScreen = ({ navigation }: any) => {
 
     const { user, setWallet } = useAuth()
     const [amount, setAmount] = useState<string>()
     const [disabled, setDisabled] = useState(true)
+    const { useTranslate } = useTranslateService()
 
     useEffect(() => {
         handleLoadData()

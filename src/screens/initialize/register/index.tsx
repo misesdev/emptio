@@ -5,13 +5,14 @@ import { ButtonPrimary } from "@components/form/Buttons";
 import { TextBox } from "@components/form/TextBoxs";
 import MessageBox, { showMessage } from "@components/general/MessageBox";
 import { userService } from "@/src/core/userManager";
-import { useTranslate } from "@src/services/translate";
 import { useAuth } from "@/src/providers/userProvider";
 import theme from "@src/theme";
+import { useTranslateService } from "@/src/providers/translateProvider";
 
 const RegisterScreen = ({ navigation }: any) => {
 
     const { setUser } = useAuth()
+    const { useTranslate } = useTranslateService()
     const [userName, setUserName] = useState("")
     const [loading, setLoading] = useState(false)
 

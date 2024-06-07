@@ -3,8 +3,7 @@ import { LinkSection, SectionContainer } from "@components/general/section"
 import { getPairKey } from "@src/services/memory/pairkeys"
 import SplashScreen from "@components/general/SplashScreen"
 import { useAuth } from "@src/providers/userProvider"
-import { ButtonDanger, ButtonDefault, ButtonLink } from "@components/form/Buttons"
-import { useTranslate } from "@src/services/translate"
+import { ButtonLink } from "@components/form/Buttons"
 import { userService } from "@/src/core/userManager"
 import { hexToBytes } from "@noble/hashes/utils"
 import { useState } from "react"
@@ -16,11 +15,13 @@ import { authService } from "@src/core/authManager";
 import MessageBox, { showMessage } from "@components/general/MessageBox"
 import SelectLanguageBox, { showSelectLanguage } from "@components/modal/SelectLanguageBox"
 import { pushMessage } from "@src/services/notification"
+import { useTranslateService } from "@/src/providers/translateProvider"
 
 const UserMenuScreen = ({ navigation }: any) => {
 
     const opacity = .7 
     const { user } = useAuth()
+    const { useTranslate } = useTranslateService()
     const [forceUpdate, setForceUpdate] = useState()
     const [loading, setLoading] = useState(false) 
 

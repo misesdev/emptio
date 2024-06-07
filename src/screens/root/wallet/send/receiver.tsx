@@ -1,6 +1,5 @@
 import { View, Text, StyleSheet, TouchableOpacity } from "react-native"
 import { FollowList } from "@components/nostr/follow/FollowList"
-import { useTranslate } from "@src/services/translate"
 import { ButtonScanQRCode } from "@components/wallet/buttons"
 import { TextBox } from "@components/form/TextBoxs"
 import SplashScreen from "@components/general/SplashScreen"
@@ -11,9 +10,11 @@ import { useEffect, useState } from "react"
 import { SectionHeader } from "@components/general/section/headers"
 import { HeaderScreen } from "@components/general/HeaderScreen"
 import theme from "@src/theme"
+import { useTranslateService } from "@/src/providers/translateProvider"
 
 const SendReceiverScreen = ({ navigation, route }: any) => {
 
+    const { useTranslate } = useTranslateService()
     const [loading, setLoading] = useState(true)
     // const [searching, setSearching] = useState(false)
     const [nextDisabled, setNextDisabled] = useState(true)
