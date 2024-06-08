@@ -23,7 +23,7 @@ export const HeaderFeed = ({ navigation }: any) => {
             </View>
             <View style={{ width: "15%", alignItems: "center", justifyContent: "center" }}>
                 <TouchableOpacity onPress={() => navigation.navigate("user-menu-stack")}>
-                    <Ionicons name="chatbubble" color={theme.colors.gray} size={theme.icons.extra} />
+                    <Ionicons name="documents" color={theme.colors.gray} size={theme.icons.extra} />
                 </TouchableOpacity>
             </View>
         </View>

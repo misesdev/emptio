@@ -1,4 +1,4 @@
-import { View, Text, FlatList, ActivityIndicator } from "react-native"
+import { View, Text, FlatList, ActivityIndicator, StyleSheet, TouchableOpacity } from "react-native"
 import { SectionContainer } from "@components/general/section"
 import { ButtonDanger, ButtonSuccess } from "@components/form/Buttons"
 import { listenerEvents } from "@src/services/nostr/events"
@@ -9,6 +9,7 @@ import { useState } from "react"
 import theme from "@src/theme"
 import { NostrEvent } from "@nostr-dev-kit/ndk"
 import { useTranslateService } from "@/src/providers/translateProvider"
+import { Ionicons } from "@expo/vector-icons"
 
 const FeedScreen = ({ navigation }: any) => {
 
@@ -60,14 +61,24 @@ const FeedScreen = ({ navigation }: any) => {
                 data={posts}
                 renderItem={renderItem}
                 onEndReached={handleData}
-                onEndReachedThreshold={2}
+                onEndReachedThreshold={.1}
                 contentContainerStyle={[theme.styles.scroll_container, { backgroundColor: theme.colors.black, alignItems: "center" }]}
                 ListFooterComponent={listEndLoader}
                 keyExtractor={event => event.id ?? Math.random().toString()}
             />
+            <View style={styles.rightButton}>
+                <TouchableOpacity activeOpacity={.7} style={styles.newChatButton} onPress={() => navigation.navigate("new-chat-stack")}>
+                    <Ionicons name="add" size={theme.icons.medium} color={theme.colors.white} />
+                </TouchableOpacity>
+            </View>
         </>
 
     )
 }
+
+const styles = StyleSheet.create({
+    newChatButton: { backgroundColor: theme.colors.blue, padding: 18, borderRadius: 50 },
+    rightButton: { position: "absolute", bottom: 0, right: 0, width: 100, height: 70, justifyContent: "center", alignItems: "center" }
+})
 
 export default FeedScreen
