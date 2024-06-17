@@ -10,6 +10,7 @@ import { useAuth } from "@/src/providers/userProvider"
 import theme from "@src/theme"
 import { walletService } from "@/src/core/walletManager"
 import { useTranslateService } from "@/src/providers/translateProvider"
+import { getPairKey } from "@/src/services/memory/pairkeys"
 
 const WalletManagerScreen = ({ navigation, route }: any) => {
 
@@ -39,6 +40,9 @@ const WalletManagerScreen = ({ navigation, route }: any) => {
         setRefreshing(true)
 
         const address = wallet.address ?? ""
+        console.log("wallet key", wallet.key )
+        const walletPrivateKey = await getPairKey(wallet.key ?? "")
+        console.log("private key", walletPrivateKey.privateKey)
 
         // search transactions and update wallet lastBalance
         const walletInfo = await walletService.listTransactions(address)
