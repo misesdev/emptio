@@ -23,7 +23,6 @@ export const getPairKey = async (key: string): Promise<PairKey> => {
 
     if (data) {
         pairKeyList = JSON.parse(data)
-        console.log(pairKeyList)
 
         let filtered = pairKeyList.filter(k => k.key == key)
 
