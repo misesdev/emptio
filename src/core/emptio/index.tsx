@@ -23,10 +23,10 @@ export type EmptioData = {
 }
 
 const getInitalData = async (): Promise<EmptioData> => {
-    const response = await axios.get(`${env.emptio.host}/index.json`)
+    //const response = await axios.get(`${env.emptio.host}/index.json`)
 
-    if (response.status === 200)
-        return response.data
+    //if (response.status === 200)
+        //return response.data
 
     return {}
 }
