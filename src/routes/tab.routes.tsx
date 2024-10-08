@@ -4,7 +4,6 @@ import HomeScreen from "@screens/root/home"
 import FeedScreen from "@screens/root/feed"
 import theme from "@src/theme"
 import ChatsScreen from '@screens/root/chats';
-import NotificationScreen from '@screens/root/notifications';
 import { useTranslateService } from '../providers/translateProvider';
 
 const Tab = createMaterialBottomTabNavigator()
@@ -35,7 +34,7 @@ const TabRoutes = () => {
                 component={FeedScreen}
                 options={{
                     tabBarLabel: useTranslate("menu.orders"),
-                    tabBarIcon: ({ color }) => <Ionicons name="storefront" color={color} size={theme.icons.medium} />,
+                    tabBarIcon: ({ color }) => <Ionicons name="git-compare" color={color} size={theme.icons.medium} />,
                 }}
             />
             <Tab.Screen

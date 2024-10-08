@@ -2,7 +2,7 @@ import { ActivityIndicator, FlatList } from "react-native"
 import { userService } from "@/src/core/userManager"
 import { useAuth } from "@src/providers/userProvider"
 import { User } from "@src/services/memory/types"
-import { useCallback, useEffect, useState } from "react"
+import { useCallback, useEffect, useRef, useState } from "react"
 import { walletService } from "@src/core/walletManager"
 import { FollowItem } from "./FollowItem"
 import theme from "@src/theme"
@@ -16,8 +16,9 @@ type FriendListProps = {
     onPressFollow?: (user: User) => void,
 }
 
-export const FollowList = ({ searchTerm, onPressFollow, itemsPerPage = 50, toPayment = false, searchable, iNot = false }: FriendListProps) => {
+export const FollowList = ({ searchTerm, onPressFollow, itemsPerPage = 50, toPayment = false, searchable, iNot = true }: FriendListProps) => {
 
+    const searchTimeout:any = useRef(null);
     const { user } = useAuth()
     const [listCounter, setListCounter] = useState(itemsPerPage)
     const [refreshing, setRefreshing] = useState(true)
@@ -28,18 +29,27 @@ export const FollowList = ({ searchTerm, onPressFollow, itemsPerPage = 50, toPay
 
     if (searchable) {
         useEffect(() => {
-            // search and filter
-            if (searchTerm && !walletService.address.validate(searchTerm)) {
-                const searchResult = followListData.filter(follow => {
-                    let filterLower = searchTerm.toLowerCase()
-                    let filterNameLower = `${follow.name}${follow.display_name}`.toLowerCase()
-                    return filterNameLower.includes(filterLower)
-                })
+            if(searchTimeout.current) clearTimeout(searchTimeout.current)
 
-                setFollowList(searchResult)
-            }
-            else if (followListData.length < followList.length)
-                setFollowList(followListData)
+            searchTimeout.current = setTimeout(() => {
+                // search and filter
+                if (searchTerm && !walletService.address.validate(searchTerm)) {
+
+                    const searchResult = followListData.filter(follow => {
+                        let filterLower = searchTerm.toLowerCase()
+                        let filterNameLower = `${follow.name}${follow.display_name}`.toLowerCase()
+                        return filterNameLower.includes(filterLower)
+                    })
+
+                    const distinctByPubkey = searchResult.filter((obj, index, self) =>
+                        index === self.findIndex((el) => el.pubkey === obj.pubkey)
+                    )
+
+                    setFollowList(distinctByPubkey)
+                }
+                else if (followListData.length < followList.length)
+                    setFollowList(followListData)
+            }, 200)
 
         }, [searchTerm])
     }

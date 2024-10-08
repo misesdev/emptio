@@ -163,7 +163,7 @@ const listFollows = async (user: User, iNot: boolean = true): Promise<User[]> =>
     }
 
     if (iNot) 
-        return follows.filter(pubkey => pubkey != user.pubkey) 
+        return follows.filter(follow => follow.pubkey != user.pubkey) 
 
     return follows
 }
