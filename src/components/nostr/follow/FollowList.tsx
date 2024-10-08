@@ -18,11 +18,11 @@ type FriendListProps = {
 
 export const FollowList = ({ searchTerm, onPressFollow, itemsPerPage = 50, toPayment = false, searchable, iNot = true }: FriendListProps) => {
 
-    const searchTimeout:any = useRef(null);
     const { user } = useAuth()
-    const [listCounter, setListCounter] = useState(itemsPerPage)
+    const searchTimeout:any = useRef(null);
     const [refreshing, setRefreshing] = useState(true)
     const [followList, setFollowList] = useState<User[]>([])
+    const [listCounter, setListCounter] = useState(itemsPerPage)
     const [followListData, setFollowListData] = useState<User[]>([])
 
     useEffect(() => { handleListFollows() }, [])
@@ -49,7 +49,7 @@ export const FollowList = ({ searchTerm, onPressFollow, itemsPerPage = 50, toPay
                 }
                 else if (followListData.length < followList.length)
                     setFollowList(followListData)
-            }, 200)
+            }, 150)
 
         }, [searchTerm])
     }
