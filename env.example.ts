@@ -6,6 +6,9 @@ const env = {
     },
     emptio: {
         host: "https://emptioapp.github.io/emptiopubdata"
+    },
+    nosbook: {
+        api: "https://find.nosbook.org"
     }
 }
 

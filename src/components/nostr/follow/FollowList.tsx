@@ -8,6 +8,7 @@ import { FollowItem } from "./FollowItem"
 import theme from "@src/theme"
 
 type FriendListProps = {
+    iNot?: boolean,
     searchTerm?: string,
     itemsPerPage?: number,
     toPayment?: boolean,
@@ -15,7 +16,7 @@ type FriendListProps = {
     onPressFollow?: (user: User) => void,
 }
 
-export const FollowList = ({ searchTerm, onPressFollow, itemsPerPage = 24, toPayment = false, searchable }: FriendListProps) => {
+export const FollowList = ({ searchTerm, onPressFollow, itemsPerPage = 50, toPayment = false, searchable, iNot = false }: FriendListProps) => {
 
     const { user } = useAuth()
     const [listCounter, setListCounter] = useState(itemsPerPage)
@@ -46,7 +47,7 @@ export const FollowList = ({ searchTerm, onPressFollow, itemsPerPage = 24, toPay
     const handleListFollows = async () => {
         setRefreshing(true)
 
-        var follows = await userService.listFollows(user)
+        var follows = await userService.listFollows(user, iNot)
 
         setFollowList(follows.slice(0, itemsPerPage))
 
@@ -66,7 +67,7 @@ export const FollowList = ({ searchTerm, onPressFollow, itemsPerPage = 24, toPay
             setFollowList([...followList, ...followListData.slice(listCounter, listCounter + itemsPerPage)])
             setListCounter(listCounter + itemsPerPage)
         }
-        setTimeout(() => setRefreshing(false), 1200)        
+        setRefreshing(false)        
     }
 
     const handleRenderItem = ({ item }: { item: User }) => <FollowItem follow={item} handleClickFollow={handleClickFollow} />

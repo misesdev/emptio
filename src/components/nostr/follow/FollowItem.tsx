@@ -1,41 +1,30 @@
 import { TouchableOpacity, View, Image, Text, StyleSheet } from "react-native"
-import { memo, useEffect, useState } from "react"
 import { User } from "@src/services/memory/types"
-import { getEvent } from "@src/services/nostr/events"
 import { nip19 } from "nostr-tools"
 import theme from "@src/theme"
+import { hexToNpub } from "@/src/services/converter"
+import { useState } from "react"
 
 type UserItemProps = {
     follow: User,
     handleClickFollow: (follow: User) => void
 }
 
-export const FollowItem = memo(({ follow, handleClickFollow }: UserItemProps) => {
+export const FollowItem = ({ follow, handleClickFollow }: UserItemProps) => {
 
-    const [followData, setUserData] = useState<User>(follow)
-
-    useEffect(() => {
-        loadProfile()
-    }, [])
-
-    const loadProfile = async () => {
-        getEvent({ kinds: [0], authors: [follow.pubkey ?? ""] }).then(event => {
-            if (event)
-                setUserData({ ...event.content, pubkey: event.pubkey })
-        })
-    }
+    const [error, setError] = useState(false)
 
     return (
         <TouchableOpacity
             activeOpacity={.7}
             style={styles.sectionUser}
-            onPress={() => handleClickFollow(followData)}
+            onPress={() => handleClickFollow(follow)}
         >
             {/* Transaction Type */}
             <View style={styles.profileArea}>
                 <View style={styles.profileView}>
-                    {followData.picture && <Image source={{ uri: followData.picture }} style={styles.profile} />}
-                    {!followData.picture && <Image source={require("assets/images/defaultProfile.png")} style={styles.profileView} />}
+                    {(follow.picture && !error) && <Image onError={() => setError(true)} source={{ uri: follow.picture }} style={styles.profile} />}
+                    {(!follow.picture || error) && <Image source={require("assets/images/defaultProfile.png")} style={styles.profileView} />}
                 </View>
             </View>
             {/* Transaction Description and Date */}
@@ -43,19 +32,20 @@ export const FollowItem = memo(({ follow, handleClickFollow }: UserItemProps) =>
                 <View style={{ width: "100%" }}>
                     <Text style={styles.userName}>
                         {
-                            (followData.name ?? followData.display_name ?? nip19.npubEncode(followData.pubkey ?? "")).substring(0, 17)
+                            (follow.name ?? follow.display_name ?? nip19.npubEncode(follow.pubkey ?? "")).substring(0, 17)
                         }
                     </Text>
                 </View>
                 <View style={{ width: "100%" }}>
                     <Text style={styles.userAbout}>
-                        {(followData.about ?? "").substring(0, 50)}
+                        {hexToNpub(follow.pubkey ?? "").substring(0, 38)}..
                     </Text>
                 </View>
-            </View>
+            </View>            
+
         </TouchableOpacity>
     )
-})
+}
 
 const styles = StyleSheet.create({
     profile: { flex: 1 },

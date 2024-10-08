@@ -60,6 +60,7 @@ export type TranslateWords = "initial.message"
     | "labels.relays.add"
 
     | "menu.home"
+    | "menu.orders"
     | "menu.buy&sell"
     | "menu.donate"
     | "menu.chats"

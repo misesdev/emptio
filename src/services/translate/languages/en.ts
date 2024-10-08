@@ -56,6 +56,7 @@ export default {
     "labels.relays.add": "Add Relay",
 
     "menu.home": "home",
+    "menu.orders": "orders",
     "menu.buy&sell": "buy & sell",
     "menu.donate": "donate",
     "menu.setting": "settings",

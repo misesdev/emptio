@@ -1,3 +1,6 @@
+import { hexToBytes } from "@noble/curves/abstract/utils"
+import { bech32 } from "bech32"
+
 export const bitcoinParts = 100000000
 
 
@@ -26,5 +29,10 @@ export const toNumber = (text: string) => {
     const number = text.replace(/[^0-9]/g, '')
 
     return parseInt(number)
+}
+
+export const hexToNpub = (pubkey: string) => {
+    const words = bech32.toWords(hexToBytes(pubkey))
+    return bech32.encode("npub", words)
 }
 

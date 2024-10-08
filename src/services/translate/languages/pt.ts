@@ -55,7 +55,8 @@ export default {
     "labels.wallet.getseed": "Visualizar Seed",
     "labels.relays.add": "Adicionar Relay",
 
-    "menu.home": "início",
+    "menu.home": "início",   
+    "menu.orders": "ordens",
     "menu.buy&sell": "comprar & vender",
     "menu.donate": "doar",
     "menu.setting": "configurações",

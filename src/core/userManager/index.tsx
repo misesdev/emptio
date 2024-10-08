@@ -8,6 +8,7 @@ import { getUser, insertUpdateUser } from "../../services/memory/user"
 import { getPairKey, insertPairKey } from "../../services/memory/pairkeys"
 import { NostrEventKinds } from "@/src/constants/Events"
 import { nip19 } from "nostr-tools"
+import env from "@/env"
 
 type SignUpProps = {
     userName: string,
@@ -143,30 +144,28 @@ const listFollows = async (user: User, iNot: boolean = true): Promise<User[]> =>
 
     var follows: User[] = []
 
-    const event = await getEvent({ limit: 1, authors: [user.pubkey ?? ""], kinds: [NostrEventKinds.followList] })
+    try {
+        const response = await fetch(`${env.nosbook.api}/user/friends/${user.pubkey}`)
 
-    // if (events[0]?.content) {
-    //     for (let relay in events[0].content) {
-    //         if (relay.includes("wss://")) 
-    //             Nostr.addExplicitRelay(relay)
-    //     }
-    // }
+        const result = await response.json();
 
-    follows = event ? event.tags.map(tag => { return { pubkey: tag[1] } }) : []
-
-    follows = follows.filter(f => (f.pubkey ?? "").length >= 64)
-
-    if (iNot) {
-        return follows.filter(pubkey => pubkey != user.pubkey).map(follow => {
-            follow.name = convertPubkey(follow.pubkey ?? "")
-            return follow
+        follows = result.map((user: any): User => {
+            return {
+                name: user.name,
+                pubkey: user.pubkey,
+                picture: user.profile,
+                display_name: user.displayName,
+            }
         })
+    } catch (fail) {
+        //console.log("error when loading folows", fail)
+        return []
     }
 
-    return follows.map(follow => {
-        follow.name = convertPubkey(follow.pubkey ?? "")
-        return follow
-    })
+    if (iNot) 
+        return follows.filter(pubkey => pubkey != user.pubkey) 
+
+    return follows
 }
 
 const convertPubkey = (pubkey: string) => nip19.npubEncode(pubkey)

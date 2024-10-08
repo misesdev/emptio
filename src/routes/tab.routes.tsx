@@ -34,7 +34,7 @@ const TabRoutes = () => {
                 name="feed"
                 component={FeedScreen}
                 options={{
-                    tabBarLabel: useTranslate("menu.buy&sell"),
+                    tabBarLabel: useTranslate("menu.orders"),
                     tabBarIcon: ({ color }) => <Ionicons name="storefront" color={color} size={theme.icons.medium} />,
                 }}
             />
@@ -46,14 +46,14 @@ const TabRoutes = () => {
                     tabBarIcon: ({ color }) => <Ionicons name="chatbox" color={color} size={theme.icons.medium} />,
                 }}
             />
-            <Tab.Screen
-                name="notifications"
-                component={NotificationScreen}
-                options={{
-                    tabBarLabel: useTranslate("menu.notifications"),
-                    tabBarIcon: ({ color }) => <Ionicons name="notifications" color={color} size={theme.icons.medium} />,
-                }}
-            />
+            {/* <Tab.Screen */}
+            {/*     name="notifications" */}
+            {/*     component={NotificationScreen} */}
+            {/*     options={{ */}
+            {/*         tabBarLabel: useTranslate("menu.notifications"), */}
+            {/*         tabBarIcon: ({ color }) => <Ionicons name="notifications" color={color} size={theme.icons.medium} />, */}
+            {/*     }} */}
+            {/* /> */}
         </Tab.Navigator>
     )
 }
