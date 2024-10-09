@@ -1,49 +1,38 @@
 import { SearchBox } from "@components/form/SearchBox"
 import { HeaderScreen } from "@components/general/HeaderScreen"
-import { FollowList } from "@components/nostr/follow/FollowList"
-import { ActivityIndicator, ScrollView, StyleSheet, View } from "react-native"
-import theme from "@src/theme"
-import { useEffect, useState } from "react"
+import { ActivityIndicator, View } from "react-native"
 import { User } from "@src/services/memory/types"
-import { FollowItem } from "@components/nostr/follow/FollowItem"
-import { listenerEvents } from "@src/services/nostr/events"
 import { useAuth } from "@src/providers/userProvider"
-import { nip19 } from "nostr-tools"
 import { useTranslateService } from "@/src/providers/translateProvider"
+import { userService } from "@/src/core/userManager"
+import { UserList } from "@/src/components/nostr/user/UserList"
+import theme from "@src/theme"
+import { useState } from "react"
+
 
 const AddFolowScreen = ({ navigation }: any) => {
 
-    const { emptioData } = useAuth()
+    const { user } = useAuth()
     const { useTranslate } = useTranslateService()
-    const [follows, setFollows] = useState<User[]>()
-    const [loading, setLoading] = useState(true)
+    const [users, setUsers] = useState<User[]>([])
+    const [loading, setLoading] = useState(false)
 
-    useEffect(() => { handleLoadInitialData() }, [])
+    const handleSearch = async (searchTerm: string) => {
 
-    const handleLoadInitialData = async () => {
+        if(searchTerm?.length <= 1) {
+            setUsers([])
+            return;
+        }
+            
+        setLoading(true)
 
-        var authors: string[] = []
+        const users = await userService.searchUsers(user, searchTerm)
 
-        var developers = emptioData ? emptioData?.developers?.map(item => nip19.decode(item.pubkey).data.toString()) : []
+        users.sort((a, b) => (b.similarity ?? 1) - (a.similarity ?? 1))
 
-        var securesellers = emptioData ? emptioData?.securesellers?.map(item => nip19.decode(item.pubkey).data.toString()) : []
-
-        if (developers)
-            authors = authors.concat(developers)
-
-        if (securesellers)
-            authors = authors.concat(securesellers)
-
-        const events = await listenerEvents({ kinds: [0], limit: 10, authors })
-
-        if (events)
-            setFollows(events.slice(0, 10).map(event => event.content))
+        setUsers(users)
 
         setLoading(false)
-    }
-
-    const handleSearch = (searchTerm: string) => {
-        console.log(searchTerm)
     }
 
     const handleAddFollow = (follow: User) => {
@@ -55,23 +44,17 @@ const AddFolowScreen = ({ navigation }: any) => {
 
             <HeaderScreen title={useTranslate("screen.title.addfriend")} onClose={() => navigation.navigate("core-stack")} />
 
-            <SearchBox label={`${useTranslate("commons.search")} npub..`} onSearch={handleSearch} />
+            <SearchBox label={useTranslate("commons.search")} onSearch={handleSearch} />
 
             {loading && <ActivityIndicator color={theme.colors.gray} size={50} />}
 
-            <ScrollView contentContainerStyle={{ flex: 1, alignItems: "center" }}>
-                {
-                    follows && follows.map((follow, key) => <FollowItem key={key} follow={follow} handleClickFollow={handleAddFollow} />)
-                }
-            </ScrollView>
-            {/* <FollowList itemsPerPage={10} /> */}
+            <UserList users={users} onPressUser={handleAddFollow} />
 
         </View>
     )
 }
 
-const styles = StyleSheet.create({
-
-})
-
 export default AddFolowScreen
+
+
+

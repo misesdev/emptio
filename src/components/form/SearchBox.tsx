@@ -1,5 +1,5 @@
 import theme from "@src/theme"
-import { useState } from "react"
+import { useRef, useState } from "react"
 import { Ionicons } from "@expo/vector-icons"
 import { StyleSheet, TextInput, View } from "react-native"
 import { TouchableOpacity } from "react-native-gesture-handler"
@@ -11,16 +11,16 @@ type SearchBoxProps = {
 }
 
 export const SearchBox = ({ label, textCenter, onSearch }: SearchBoxProps) => {
+    
+    let TimeOutSearch: any = useRef(null)
 
     const [search, setSearch] = useState<string>()
-
-    var TimeOutSearch = setTimeout(() => { }, 10)
 
     const handleSearch = (value: string) => {
         setSearch(value)
         if (value) {
-            clearTimeout(TimeOutSearch)
-            TimeOutSearch = setTimeout(() => onSearch(value), 800)
+            if(TimeOutSearch.current) clearTimeout(TimeOutSearch.current)
+            TimeOutSearch.current = setTimeout(() => onSearch(value), 500)
         }
     }
 

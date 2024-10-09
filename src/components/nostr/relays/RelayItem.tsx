@@ -25,12 +25,17 @@ export const RelayItem = ({ relay, onDelete }: RelayProps) => {
     useEffect(() => { loadRelayData() }, [])
 
     const loadRelayData = async () => {
-        const httpClient = axios.create({ headers: { Accept: "application/nostr+json" } })
 
-        const response = await httpClient.get(relay.replace("wss", "https"))
+        try 
+        {
+            const response = await fetch(relay.replace("wss", "https"), {
+                headers: { 'Accept': 'application:nostr+json' }
+            })
 
-        if (response.status == 200)
-            setMetadata(response.data)
+            if (response.ok)
+                setMetadata(await response.json())
+            } 
+        catch {}
     }
 
     return (

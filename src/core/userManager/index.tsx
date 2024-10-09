@@ -168,6 +168,33 @@ const listFollows = async (user: User, iNot: boolean = true): Promise<User[]> =>
     return follows
 }
 
+const searchUsers = async (user: User, searchTerm: string): Promise<User[]> => {
+    try 
+    {
+        const response = await fetch(`${env.nosbook.api}/search`, {
+            method: "post",
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                pubkey: user.pubkey,
+                searchTerm: searchTerm,
+                limit: 50
+            })
+        })
+
+        const users: any = await response.json()
+
+        return users.map((user: any) => {
+            return {
+                name: user.name,
+                pubkey: user.pubkey,
+                picture: user.profile,
+                display_name: user.displayName
+            }
+        })
+    }
+    catch { return [] }
+}
+
 const convertPubkey = (pubkey: string) => nip19.npubEncode(pubkey)
 
 export const userService = {
@@ -177,5 +204,6 @@ export const userService = {
     isLogged,
     updateProfile,
     convertPubkey,
-    listFollows
+    listFollows,
+    searchUsers
 }

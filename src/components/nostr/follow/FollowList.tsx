@@ -41,15 +41,11 @@ export const FollowList = ({ searchTerm, onPressFollow, itemsPerPage = 50, toPay
                         return filterNameLower.includes(filterLower)
                     })
 
-                    const distinctByPubkey = searchResult.filter((obj, index, self) =>
-                        index === self.findIndex((el) => el.pubkey === obj.pubkey)
-                    )
-
-                    setFollowList(distinctByPubkey)
+                    setFollowList(searchResult)
                 }
                 else if (followListData.length < followList.length)
                     setFollowList(followListData)
-            }, 150)
+            }, 300)
 
         }, [searchTerm])
     }

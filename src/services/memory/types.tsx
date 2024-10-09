@@ -78,7 +78,8 @@ export type User = {
     website?: string,
     keychanges?: string,
     default_wallet?: string,
-    bitcoin_address?: string
+    bitcoin_address?: string,
+    similarity?: number
 }
 
 export type Settings = {
