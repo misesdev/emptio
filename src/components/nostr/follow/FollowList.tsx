@@ -10,19 +10,17 @@ import theme from "@src/theme"
 type FriendListProps = {
     iNot?: boolean,
     searchTerm?: string,
-    itemsPerPage?: number,
     toPayment?: boolean,
     searchable?: boolean,
     onPressFollow?: (user: User) => void,
 }
 
-export const FollowList = ({ searchTerm, onPressFollow, itemsPerPage = 50, toPayment = false, searchable, iNot = true }: FriendListProps) => {
+export const FollowList = ({ searchTerm, onPressFollow, toPayment = false, searchable, iNot = true }: FriendListProps) => {
 
     const { user } = useAuth()
     const searchTimeout:any = useRef(null);
     const [refreshing, setRefreshing] = useState(true)
     const [followList, setFollowList] = useState<User[]>([])
-    //const [listCounter, setListCounter] = useState(itemsPerPage)
     const [followListData, setFollowListData] = useState<User[]>([])
 
     useEffect(() => { handleListFollows() }, [])
@@ -32,7 +30,6 @@ export const FollowList = ({ searchTerm, onPressFollow, itemsPerPage = 50, toPay
             if(searchTimeout.current) clearTimeout(searchTimeout.current)
 
             searchTimeout.current = setTimeout(() => {
-                console.log("search:", searchTerm)
                 // search and filter
                 if (searchTerm && !walletService.address.validate(searchTerm)) {
 
@@ -55,7 +52,6 @@ export const FollowList = ({ searchTerm, onPressFollow, itemsPerPage = 50, toPay
 
         var follows = await userService.listFollows(user, iNot)
 
-        //setFollowList(follows.slice(0, itemsPerPage))
         setFollowList(follows)
 
         setFollowListData(follows)
@@ -67,15 +63,6 @@ export const FollowList = ({ searchTerm, onPressFollow, itemsPerPage = 50, toPay
         if (onPressFollow)
             onPressFollow(follow)
     }, [onPressFollow])
-
-    // const handleLoadScroll = () => {
-    //     setRefreshing(true)
-    //     if (followListData.length > listCounter) {
-    //         setFollowList([...followList, ...followListData.slice(listCounter, listCounter + itemsPerPage)])
-    //         setListCounter(listCounter + itemsPerPage)
-    //     }
-    //     setRefreshing(false)        
-    // }
 
     const handleRenderItem = ({ item }: { item: User }) => <FollowItem follow={item} handleClickFollow={handleClickFollow} />
 

@@ -25,7 +25,7 @@ const NewChatScreen = ({ navigation }: any) => {
 
             <SearchBox label={`${useTranslate("commons.search")} npub..`} onSearch={(searchTerm) => setSearchTerm(searchTerm)} />
 
-            <FollowList searchable searchTerm={searchTerm} itemsPerPage={30} onPressFollow={handleChatFollow} />
+            <FollowList searchable searchTerm={searchTerm} onPressFollow={handleChatFollow} />
 
         </View>
     )
