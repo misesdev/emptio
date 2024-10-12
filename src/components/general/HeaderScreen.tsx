@@ -27,7 +27,7 @@ export const HeaderScreen = ({ title, onClose, style }: HeaderProps) => {
 }
 
 const styles = StyleSheet.create({
-    header: { flexDirection: "row", width: "100%" },
-    title: { color: theme.colors.white, fontSize: 20, fontWeight: "bold", margin: 15 },
-    button: { borderRadius: 20, padding: 6, backgroundColor: theme.colors.gray, margin: 15 }
+    header: { flexDirection: "row", width: "100%", marginBottom: 15 },
+    title: { color: theme.colors.white, fontSize: 20, fontWeight: "bold", marginLeft: 15 },
+    button: { borderRadius: 20, padding: 6, backgroundColor: theme.colors.gray, marginRight: 15 }
 })

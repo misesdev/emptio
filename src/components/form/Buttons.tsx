@@ -80,7 +80,7 @@ export const ButtonIcon = ({ icon, size, style, buttonStyle, onPress }: IconProp
 }
 
 const styles = StyleSheet.create({
-    button: { margin: 10, minWidth: 150, maxWidth: "96%", paddingVertical: 14, borderRadius: 25 },
+    button: { margin: 10, minWidth: 150, maxWidth: "96%", paddingVertical: 14, borderRadius: 18 },
     succes: { backgroundColor: theme.colors.green },
     primary: { backgroundColor: theme.colors.blue },
     danger: { backgroundColor: theme.colors.red },
