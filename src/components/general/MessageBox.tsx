@@ -2,6 +2,7 @@ import { useState } from "react"
 import { Modal, StyleSheet, Text, TouchableOpacity, View } from "react-native"
 import { useTranslateService } from "@src/providers/translateProvider"
 import theme from "@src/theme"
+import { BlurView } from "expo-blur"
 
 type typeMessage = "alert" | "error" | "success"
 
@@ -67,24 +68,26 @@ const MessageBox = () => {
 
     return (
         <Modal animationType="fade" onRequestClose={handleClose} visible={visible} transparent >
-            <View style={{ flex: 1, alignItems: "center", justifyContent: "center", backgroundColor: "rgba(0,0,0, .6)" }}>
-                <View style={styles.box}>
+            <BlurView intensity={75} tint="dark" style={styles.absolute}>
+                <View style={{ flex: 1, alignItems: "center", justifyContent: "center", backgroundColor: "rgba(0,0,0, .6)" }}>
+                    <View style={styles.box}>
 
-                    <Text style={{ color: theme.colors.white, fontSize: 20, marginVertical: 10, fontWeight: 'bold' }}>{title ?? useTranslate("commons.oops")}</Text>
-                    
-                    <View style={{ width: "100%", marginTop: 10, marginBottom: 20 }}>
-                        <Text style={styles.message}>{message}</Text>
+                        <Text style={{ color: theme.colors.white, fontSize: 20, marginVertical: 10, fontWeight: 'bold' }}>{title ?? useTranslate("commons.oops")}</Text>
+                        
+                        <View style={{ width: "100%", marginTop: 10, marginBottom: 20 }}>
+                            <Text style={styles.message}>{message}</Text>
+                        </View>
+
+                        {infolog && <Text style={styles.infolog}>{infolog}</Text>}
+
+                        <View style={styles.sectionButtons}>
+                            {action && <ButtonLight label={action.label} onPress={handleAction} />}
+                            <ButtonLight label={useTranslate("commons.close")} onPress={handleClose} />
+                        </View>
+
                     </View>
-
-                    {infolog && <Text style={styles.infolog}>{infolog}</Text>}
-
-                    <View style={styles.sectionButtons}>
-                        {action && <ButtonLight label={action.label} onPress={handleAction} />}
-                        <ButtonLight label={useTranslate("commons.close")} onPress={handleClose} />
-                    </View>
-
                 </View>
-            </View>
+            </BlurView>
         </Modal>
     )
 }
@@ -98,7 +101,14 @@ const styles = StyleSheet.create({
     message: { fontSize: 14, color: theme.colors.gray },
     infolog: { paddingHorizontal: 15, paddingVertical: 8, marginVertical: 18, borderRadius: 10, backgroundColor: theme.colors.gray },
     sectionButtons: { width: "100%", flexDirection: "row-reverse" },
-    close: { top: 20, left: 20, position: "absolute" }
+    close: { top: 20, left: 20, position: "absolute" },
+    absolute: {
+        position: "absolute",
+        top: 0,
+        left: 0,
+        right: 0,
+        bottom: 0
+    }
 })
 
 export default MessageBox

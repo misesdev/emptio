@@ -4,6 +4,7 @@ import { pushMessage } from "@src/services/notification"
 import React, { useState } from "react"
 import theme from "@src/theme"
 import { useTranslateService } from "@/src/providers/translateProvider"
+import { BlurView } from "expo-blur"
 
 type ButtonProps = {
     label: string,
@@ -67,27 +68,29 @@ const AddRelay = ({ visible, relays, onClose, onSaveRelay }: Props) => {
 
     return (
         <Modal animationType="slide" onRequestClose={handleClose} visible={visible} transparent >
-            <View style={{ flex: 1, alignItems: "center", justifyContent: "center", backgroundColor: "rgba(0,0,0, .6)" }}>
-                <View style={styles.box}>
-                    <View style={{ padding: 10, paddingHorizontal: 15 }}>
-                        <Text style={styles.title}>{useTranslate("labels.relays.add")}</Text>
+            <BlurView intensity={75} tint="dark" style={styles.absolute}>
+                <View style={{ flex: 1, alignItems: "center", justifyContent: "center", backgroundColor: "rgba(0,0,0, .6)" }}>
+                    <View style={styles.box}>
+                        <View style={{ padding: 10, paddingHorizontal: 15 }}>
+                            <Text style={styles.title}>{useTranslate("labels.relays.add")}</Text>
 
-                        <View style={{ width: "100%", marginTop: 10, marginBottom: 20 }}>
-                            <FormControl label="Relay" value={relayAddress} onChangeText={onChangeTextRelay} fullScreen />
-                        </View>
+                            <View style={{ width: "100%", marginTop: 10, marginBottom: 20 }}>
+                                <FormControl label="Relay" value={relayAddress} onChangeText={onChangeTextRelay} fullScreen />
+                            </View>
 
-                        <View style={styles.section_buttons}>
-                            <ButtonLight label={useTranslate("commons.add")} onPress={handleAddRelay} />
-                            <ButtonLight label={useTranslate("commons.close")} onPress={handleClose} />
+                            <View style={styles.section_buttons}>
+                                <ButtonLight label={useTranslate("commons.add")} onPress={handleAddRelay} />
+                                <ButtonLight label={useTranslate("commons.close")} onPress={handleClose} />
+                            </View>
                         </View>
+                        {loading &&
+                            <View style={styles.load_box}>
+                                <ActivityIndicator color={theme.colors.gray} size={theme.icons.extra} />
+                            </View>
+                        }
                     </View>
-                    {loading &&
-                        <View style={styles.load_box}>
-                            <ActivityIndicator color={theme.colors.gray} size={theme.icons.extra} />
-                        </View>
-                    }
                 </View>
-            </View>
+            </BlurView>
         </Modal>
     )
 }
@@ -105,6 +108,13 @@ const styles = StyleSheet.create({
         justifyContent: "center",
         alignItems: "center",
         backgroundColor: "rgba(255, 255, 255, .1)"
+    },
+    absolute: {
+        position: "absolute",
+        top: 0,
+        left: 0,
+        right: 0,
+        bottom: 0,
     }
 })
 

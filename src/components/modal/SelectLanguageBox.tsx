@@ -5,6 +5,7 @@ import { getLanguage, getLanguages, saveLanguage } from "@/src/services/memory/l
 import { useTranslateService } from "@src/providers/translateProvider"
 import { Ionicons } from "@expo/vector-icons"
 import theme from "@src/theme"
+import { BlurView } from "expo-blur"
 
 var showLanguagesFunction: () => void
 
@@ -49,13 +50,19 @@ const SelectLanguageBox = ({ forceUpdate }: Props) => {
 
     return (
         <Modal animationType="fade" onRequestClose={() => setVisible(false)} visible={visible} transparent >
-            <View style={{ flex: 1, alignItems: "center", justifyContent: "center", backgroundColor: "rgba(0,0,0, .6)" }}>
-                <View style={styles.box}>
-                    {languagesList &&
-                        languagesList.map((item, key) => renderLanguageOption(item, key))
-                    }
+            <BlurView 
+                tint="dark" 
+                intensity={60} 
+                style={styles.absolute}
+            >
+                <View style={{ flex: 1, alignItems: "center", justifyContent: "center", backgroundColor: "rgba(0,0,0, .6)" }}>
+                    <View style={styles.box}>
+                        {languagesList &&
+                            languagesList.map((item, key) => renderLanguageOption(item, key))
+                        }
+                    </View>
                 </View>
-            </View>
+            </BlurView>
         </Modal>
     )
 }
@@ -67,7 +74,8 @@ export const showSelectLanguage = () => {
 const styles = StyleSheet.create({
     box: { padding: 10, width: "85%", borderRadius: 8, backgroundColor: theme.colors.section },
     option: { width: "100%", flexDirection: "row", padding: 5, borderRadius: 10, marginVertical: 2 },
-    labelOption: { width: "100%", color: theme.colors.white, padding: 10 }
+    labelOption: { width: "100%", color: theme.colors.white, padding: 10 },
+    absolute: { position: "absolute", width: "100%", height: "100%", top: 0, left: 0, bottom: 0, right: 0 }
 })
 
 export default SelectLanguageBox
