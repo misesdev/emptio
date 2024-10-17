@@ -8,7 +8,10 @@ const env = {
         host: "https://emptioapp.github.io/emptiopubdata"
     },
     nosbook: {
-        api: "https://find.nosbook.org"
+        api: "https://find.nosbook.org/api"
+    },
+    server: {
+        pubkey: ""
     }
 }
 

@@ -18,7 +18,7 @@ const TabRoutes = () => {
             activeColor={theme.colors.white}
             inactiveColor={theme.colors.gray}
             screenOptions={{ tabBarColor: theme.colors.gray }}
-            barStyle={{ backgroundColor: theme.colors.black }}
+            barStyle={{ backgroundColor: theme.colors.transparent }}
             activeIndicatorStyle={{ backgroundColor: theme.colors.blue }}
         >
             <Tab.Screen
@@ -34,7 +34,8 @@ const TabRoutes = () => {
                 component={FeedScreen}
                 options={{
                     tabBarLabel: useTranslate("menu.orders"),
-                    tabBarIcon: ({ color }) => <Ionicons name="git-compare" color={color} size={theme.icons.medium} />,
+                    tabBarIcon: ({ color }) => <Ionicons name="flame" color={color} size={theme.icons.medium} />,
+                    // tabBarBadge: true
                 }}
             />
             <Tab.Screen
@@ -43,6 +44,7 @@ const TabRoutes = () => {
                 options={{
                     tabBarLabel: useTranslate("menu.chats"),
                     tabBarIcon: ({ color }) => <Ionicons name="chatbox" color={color} size={theme.icons.medium} />,
+                    // tabBarBadge: true
                 }}
             />
             {/* <Tab.Screen */}
