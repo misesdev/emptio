@@ -140,7 +140,7 @@ const styles = StyleSheet.create({
     mediumsection: { width: "50%", alignItems: "center", height: "100%" },
     area: { width: "100%", alignItems: "center", marginVertical: 10 },
     name: { fontSize: 18, fontWeight: 'bold', color: theme.colors.white, marginVertical: 10 },
-    image: { width: 100, height: 100, borderRadius: 50, backgroundColor: theme.colors.gray, overflow: "hidden", borderWidth: 2, borderColor: theme.colors.section },
+    image: { width: 100, height: 100, borderRadius: 50, backgroundColor: theme.colors.black, overflow: "hidden", borderWidth: 3, borderColor: theme.colors.blue },
     banner: { width: "100%", height: 140, position: "absolute", top: 0 }
 })
 

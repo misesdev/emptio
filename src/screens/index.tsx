@@ -36,7 +36,7 @@ const InitializeScreen = ({ navigation }: any) => {
     }
 
     if (loading)
-        return <SplashScreen />
+        return <SplashScreen message="connecting to relays..." />
 
     return (
         <View style={theme.styles.container}>
