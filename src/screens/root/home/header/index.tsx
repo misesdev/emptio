@@ -1,5 +1,5 @@
 import { useAuth } from "@src/providers/userProvider"
-import { TouchableOpacity, View, Image, StyleSheet } from "react-native"
+import { TouchableOpacity, View, Text, Image, StyleSheet } from "react-native"
 import { Ionicons } from "@expo/vector-icons"
 import SearchButton from "@components/form/SearchButton"
 import theme from "@/src/theme"
@@ -19,7 +19,10 @@ export const HeaderHome = ({ navigation }: any) => {
                 </TouchableOpacity>
             </View>
             <View style={{ width: "60%", alignItems: "center", justifyContent: "center" }}>
-                <SearchButton label={useTranslate("commons.search")} onPress={() => navigation.navigate("search-home-stack")} />
+                {/* <SearchButton label={useTranslate("commons.search")} onPress={() => navigation.navigate("search-home-stack")} /> */}
+                <Text style={{ color: theme.colors.white, fontSize: 16, fontWeight: "600" }}>
+                    {useTranslate("commons.hello")}, {user?.display_name?.substring(0, user?.display_name.indexOf(" "))}
+                </Text>    
             </View>
             <View style={{ width: "12%", alignItems: "center", justifyContent: "center" }}>
                 <TouchableOpacity onPress={() => navigation.navigate("user-donate-stack")}>

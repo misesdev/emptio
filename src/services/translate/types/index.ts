@@ -47,6 +47,7 @@ export type TranslateWords = "initial.message"
     | "commons.name"
     | "commons.description"
     | "commons.version"
+    | "commons.hello"
 
     | "labels.username"
     | "labels.about"

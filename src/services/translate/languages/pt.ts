@@ -43,6 +43,7 @@ export default {
     "commons.name": "Nome",
     "commons.description": "Descrição",
     "commons.version": "Versão",
+    "commons.hello": "Olá",
     
     "labels.friends": "Amigos",
     "labels.username": "Nome de Usuário",
