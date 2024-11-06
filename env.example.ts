@@ -12,6 +12,10 @@ const env = {
     },
     server: {
         pubkey: ""
+    },
+    blob: {
+        api: "https://blob.nosbook.org/api",
+        key: ""
     }
 }
 
