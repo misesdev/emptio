@@ -53,7 +53,7 @@ export const QRCodeTextBox = ({ value, placeholder, onChangeText }: TextBoxProps
                 placeholder={placeholder}
                 onChangeText={onChangeText}
                 placeholderTextColor={theme.colors.gray}
-                value={value}
+                value={value}                
             />
             <TouchableOpacity style={styles.pastButton} onPress={() => { setQrReader(true) }} activeOpacity={.7}>
                 <Ionicons name="qr-code" size={theme.icons.medium} color="white" style={styles.pastIcon} />
@@ -68,7 +68,7 @@ const styles = StyleSheet.create({
         width: "90%",
         color: theme.colors.white,
         backgroundColor: theme.input.backGround,
-        paddingHorizontal: 30,
+        paddingHorizontal: 24,
         paddingVertical: 15,
         borderRadius: 24,
         margin: 10
@@ -89,6 +89,6 @@ const styles = StyleSheet.create({
     },
     pastIcon: {
         textAlign: "center",
-        paddingVertical: 15,
+        paddingVertical: 20,
     }
 })

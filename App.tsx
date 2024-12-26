@@ -18,12 +18,12 @@ import { TorProvider } from "./src/providers/torProvider";
 export default function App() {
     return (
         <View style={{ flex: 1, backgroundColor: theme.colors.black }} >
-            <StatusBar hidden translucent />
+            <StatusBar hidden translucent /> 
             <TranslateProvider>
                 <SettingsProvider>
                     <AuthProvider>
                         {/* <TorProvider> */}
-                            <AppRoutes />
+                        <AppRoutes />
                         {/* </TorProvider> */}
                     </AuthProvider>
                 </SettingsProvider>

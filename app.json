@@ -18,6 +18,10 @@
             "supportsTablet": true
         },
         "android": {
+            "newArchEnabled": true,
+            "experimental": {
+                "bridgeless": false
+            },
             "adaptiveIcon": {
                 "foregroundImage": "./assets/adaptive-icon.png",
                 "backgroundColor": "#transparent"
@@ -40,7 +44,8 @@
                 {
                     "faceIDPermission": "Allow $(PRODUCT_NAME) to use Face ID."
                 }
-            ]
+            ],
+            "expo-secure-store"
         ]
     }
 }
