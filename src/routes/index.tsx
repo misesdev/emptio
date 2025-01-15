@@ -27,6 +27,7 @@ import WalletReceiveScreen from "@screens/root/wallet/receive"
 import ImportWalletScreen from "@screens/root/wallet/add/import"
 import CreatedSeedScren from "@screens/root/wallet/add/seed"
 import TransactionScreen from "../screens/root/wallet/transaction"
+import NewOrderScreen from "../screens/root/feed/order/new"
 
 const Stack = createStackNavigator()
 
@@ -69,6 +70,7 @@ const AppRoutes = () => {
 
                 <Stack.Screen name="add-follow-stack" component={AddFolowScreen} options={ScreenCardOptions} />
 
+                <Stack.Screen name="feed-order-new" component={NewOrderScreen} options={ScreenCardOptions} />
             </Stack.Navigator>
         </NavigationContainer>
     )

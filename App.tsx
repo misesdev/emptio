@@ -29,6 +29,7 @@ export default function App() {
                     </AuthProvider>
                 </SettingsProvider>
             </TranslateProvider>
+            <View style={styles.space}></View>
         </View>
     )
 }
@@ -40,6 +41,7 @@ const styles = StyleSheet.create({
     },
     space: {
         height: 40,
-        width: "100%"
+        width: "100%",
+        backgroundColor: theme.colors.transparent
     }
 })

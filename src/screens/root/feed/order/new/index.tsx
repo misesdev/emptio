@@ -6,7 +6,7 @@ import { useState } from "react"
 import theme from "@src/theme"
 import { useTranslateService } from "@/src/providers/translateProvider"
 
-const SendScreen = ({ navigation }: any) => {
+const NewOrderScreen = ({ navigation }: any) => {
 
     const { useTranslate } = useTranslateService()
     const [amount, setAmount] = useState<string>("0")
@@ -19,10 +19,10 @@ const SendScreen = ({ navigation }: any) => {
             backgroundColor: theme.colors.black
         }}>
             {/* Hader */}
-            <HeaderScreen title={useTranslate("wallet.title.send")} onClose={() => navigation.navigate("wallet-stack")} />
+            <HeaderScreen title={useTranslate("order.new.title")} onClose={() => navigation.navigate("feed")} />
 
             {/* Body */}
-            <Text style={styles.title}>{useTranslate("wallet.title.sendvalue")}</Text>
+            <Text style={styles.title}>{useTranslate("order.new.amount-title")}</Text>
 
             <AmountBox value={amount} onChangeText={setAmount} isValidHandle={(valid) => setNextDisabled(!valid)} />
 
@@ -43,4 +43,4 @@ const styles = StyleSheet.create({
     buttonArea: { position: "absolute", bottom: 0, padding: 10, width: "100%", flexDirection: "row-reverse" }
 })
 
-export default SendScreen
+export default NewOrderScreen

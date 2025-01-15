@@ -133,7 +133,8 @@ const listTransactions = async (address: string): Promise<WalletInfo> => {
             description: utxo.status.confirmed ? useTranslate("message.transaction.confirmed") : useTranslate("message.transaction.notconfirmed"),
             type: received > sended ? "received" : "sended",
             amount: received > sended ? received : sended,
-            date: utxo.status.confirmed ? new Date(utxo.status.block_time * 1000).toLocaleString() : useTranslate("message.transaction.notconfirmed")
+            date: utxo.status.confirmed ? new Date(utxo.status.block_time * 1000).toLocaleString() : useTranslate("message.transaction.notconfirmed"),
+            timestamp: utxo.status.block_time
         }
 
         response.transactions.push(transaction)
@@ -142,6 +143,7 @@ const listTransactions = async (address: string): Promise<WalletInfo> => {
     })
 
     response.balance = response.received - response.sended
+    response.transactions.sort((a, b) => (b.timestamp ?? 1) - (a.timestamp ?? 1));
 
     return response
 }

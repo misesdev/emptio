@@ -141,6 +141,8 @@ export type TranslateWords = "initial.message"
     | "screen.title.donate"
     | "screen.title.newchat"
 
+    | "order.new.title"
+    | "order.new.amount-title"
 
 
 

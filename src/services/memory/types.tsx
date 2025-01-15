@@ -59,7 +59,8 @@ export type Transaction = {
     amount?: number,
     date?: string,
     txid?: string
-    confirmed?: boolean
+    confirmed?: boolean,
+    timestamp?: number
 }
 
 export type User = {

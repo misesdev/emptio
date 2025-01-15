@@ -67,12 +67,11 @@ const FeedScreen = ({ navigation }: any) => {
                 keyExtractor={event => event.id ?? Math.random().toString()}
             />
             <View style={styles.rightButton}>
-                <TouchableOpacity activeOpacity={.7} style={styles.newChatButton} onPress={() => navigation.navigate("new-chat-stack")}>
+                <TouchableOpacity activeOpacity={.7} style={styles.newChatButton} onPress={() => navigation.navigate("feed-order-new")}>
                     <Ionicons name="add" size={theme.icons.medium} color={theme.colors.white} />
                 </TouchableOpacity>
             </View>
         </>
-
     )
 }
 

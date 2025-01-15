@@ -134,6 +134,9 @@ export default {
     "screen.title.donate": "Contribuir com o Projeto",
     "screen.title.newchat": "Nova Conversa",
 
+    "order.new.title": "Nova Ordem de Venda",
+    "order.new.amount-title": "Quantos Sats deseja vender?",
+
     "settings.about": "Sobre",
     "settings.about.content": `Emptio P2P é uma aplicação de código aberto que tem o objetivo de permitir inicialmente a compra e venda de bitcoin de pessoa para pessoa de forma descentralizada utilizando o protocolo Nostr.
 

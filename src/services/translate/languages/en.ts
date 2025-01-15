@@ -134,6 +134,9 @@ export default {
     "screen.title.donate": "Contribute to this Project",
     "screen.title.newchat": "New Conversation",
 
+    "order.new.title": "New Sales Order",
+    "order.new.amount-title": "How many Sats do you want to sell?",
+
     "settings.about": "About",
     "settings.about.content": `Emptio P2P is an open-source application aimed at initially enabling peer-to-peer buying and selling of Bitcoin in a decentralized manner using the Nostr protocol.
 
