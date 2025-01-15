@@ -42,8 +42,8 @@ export const HeaderHome = ({ navigation }: any) => {
 const styles = StyleSheet.create({
     header: {
         width: "100%",
-        flexDirection: "row",
         paddingVertical: 5,
+        flexDirection: "row",
         backgroundColor: theme.colors.black
     },
     userMenu: {

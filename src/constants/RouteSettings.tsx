@@ -16,7 +16,7 @@ export const stackOptions: StackNavigationOptions = {
     title: "",
     headerShown: false,
     headerTransparent: true,
-    headerTintColor: theme.colors.white,
+    /* headertintcolor: theme.colors.white, */
     headerLeft: (props: any) => {
         return (
             <TouchableOpacity onPress={() => props?.onPress()} 
@@ -29,7 +29,7 @@ export const stackOptions: StackNavigationOptions = {
     },
     cardStyle: { backgroundColor: theme.colors.black },
     cardStyleInterpolator: CardStyleInterpolators.forHorizontalIOS,
-    // headerStyle: { backgroundColor: theme.colors.black },
+    /* headerStyle: { height: 50, backgroundColor: theme.colors.black }, */
     headerShadowVisible: false,
 }
 

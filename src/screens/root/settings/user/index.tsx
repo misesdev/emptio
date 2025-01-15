@@ -115,7 +115,7 @@ const UserEditScreen = ({ navigation }: any) => {
             <FormControl label={useTranslate("labels.mywebsite")} value={myWebsite} onChangeText={setMyWebsite} />
             <FormControl label={useTranslate("labels.lnaddress")} value={lnAddress} onChangeText={setLnAddress} />
 
-            <ButtonPrimary label={useTranslate("commons.save")} onPress={handleSave} />
+            <ButtonPrimary style={{ marginTop: 50 }} label={useTranslate("commons.save")} onPress={handleSave} />
         </ScrollView>
     )
 }
@@ -124,7 +124,7 @@ const styles = StyleSheet.create({
     image: { width: 100, height: 100, borderRadius: 50, backgroundColor: theme.colors.gray, borderWidth: 2, borderColor: theme.colors.section, overflow: "hidden" },
     profileArea: { width: "100%", alignItems: "center", marginVertical: 10, marginBottom: 20 },
     banner: { width: "100%", height: 140, position: "absolute", top: 0 },
-    buttonBanner: { position: "absolute", top: 10, right: 10, backgroundColor: theme.colors.default, padding: 10, borderRadius: 10 },
+    buttonBanner: { position: "absolute", top: 14, right: 12, backgroundColor: theme.colors.default, padding: 10, borderRadius: 10 },
     buttonProfile: { position: "absolute", padding: 5, bottom: 5, right: 5, zIndex: 999, backgroundColor: theme.colors.default, borderRadius: 15 }
 })
 

@@ -7,7 +7,7 @@ import "react-native-get-random-values"
 import './libs/global';
 
 import { StatusBar } from 'expo-status-bar';
-import { View } from 'react-native';
+import { View, StyleSheet } from 'react-native';
 import theme from '@src/theme';
 import AppRoutes from './src/routes';
 import { AuthProvider } from "./src/providers/userProvider";
@@ -17,8 +17,9 @@ import { TorProvider } from "./src/providers/torProvider";
 
 export default function App() {
     return (
-        <View style={{ flex: 1, backgroundColor: theme.colors.black }} >
+        <View style={styles.root} >
             <StatusBar hidden translucent /> 
+            <View style={styles.space}></View>
             <TranslateProvider>
                 <SettingsProvider>
                     <AuthProvider>
@@ -31,3 +32,14 @@ export default function App() {
         </View>
     )
 }
+
+const styles = StyleSheet.create({
+    root: { 
+        flex: 1,
+        backgroundColor: theme.colors.black,
+    },
+    space: {
+        height: 40,
+        width: "100%"
+    }
+})
