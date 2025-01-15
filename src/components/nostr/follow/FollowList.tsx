@@ -64,7 +64,7 @@ export const FollowList = ({ searchTerm, onPressFollow, toPayment = false, searc
             onPressFollow(follow)
     }, [onPressFollow])
 
-    const handleRenderItem = ({ item }: { item: User }) => <FollowItem follow={item} handleClickFollow={handleClickFollow} />
+    const handleRenderItem = ({ item }: { item: User }) => <FollowItem follow={item} key={item.pubkey} handleClickFollow={handleClickFollow} />
 
     const handleLoaderEnd = () => {
         if (refreshing)
@@ -80,7 +80,7 @@ export const FollowList = ({ searchTerm, onPressFollow, toPayment = false, searc
                 //onEndReachedThreshold={2}
                 contentContainerStyle={theme.styles.scroll_container}
                 ListFooterComponent={handleLoaderEnd}
-                keyExtractor={item => item.pubkey ?? Math.random().toString()}
+                //keyExtractor={item => item.pubkey ?? Math.random().toString()}
             />
         </>
     )

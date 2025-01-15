@@ -20,7 +20,7 @@ export const stackOptions: StackNavigationOptions = {
     headerLeft: (props: any) => {
         return (
             <TouchableOpacity onPress={() => props?.onPress()} 
-                style={{ marginLeft: 10, borderRadius: 50, padding: 6, backgroundColor: theme.colors.semitransparent }} 
+                style={{ marginLeft: 10, borderRadius: 50, padding: 8, backgroundColor: theme.colors.semitransparent }} 
                 activeOpacity={.7}
             >
                 <Ionicons name="arrow-back" size={20} color={theme.colors.white} />
