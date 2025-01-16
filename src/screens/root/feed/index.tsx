@@ -10,43 +10,58 @@ import theme from "@src/theme"
 import { NostrEvent } from "@nostr-dev-kit/ndk"
 import { useTranslateService } from "@/src/providers/translateProvider"
 import { Ionicons } from "@expo/vector-icons"
+import { User } from "@/src/services/memory/types"
+import { RefreshControl } from "react-native-gesture-handler"
 
 const FeedScreen = ({ navigation }: any) => {
 
     const { user } = useAuth()
     const { useTranslate } = useTranslateService()
     const [loading, setLoading] = useState(false)
-    const [posts, setPosts] = useState<NostrEvent[]>([])
+    const [posts, setPosts] = useState<User[]>([])
+    const [notResult, setNotResult] = useState(false);
 
     const handleData = async () => {
         setLoading(true)
 
-        console.log("loading data")
+        const followList = await listenerEvents({ 
+            limit: 1, 
+            kinds: [NostrEventKinds.followList],
+            authors: [user.pubkey ?? ""] 
+        })
+        
+        if(!followList.length) setNotResult(true)
 
-        let lastPost: NostrEvent | undefined
+        if(followList.length) 
+        {
+            const friends = followList[0].tags.filter(tag => tag[0] == "p").map(e => e[1]);
 
-        if (posts.length)
-            lastPost = posts.findLast(event => event)
+            const resultPosts = await listenerEvents({ 
+                limit: friends.length, 
+                kinds: [NostrEventKinds.metadata],
+                authors: friends 
+            });
 
-        const result = await listenerEvents({ limit: 5, kinds: [NostrEventKinds.classifiedListening], since: lastPost?.created_at });
+            const users = resultPosts.map(event => event.content as User);
 
-        const resultPosts = result.filter(event => posts.filter(post => post.id == event.id).length <= 0)
-
-        setPosts([...posts, ...resultPosts])
+            setPosts(users)
+        }
 
         setLoading(false)
     }
 
-    const renderItem = ({ item }: { item: NostrEvent }) =>
-    (
-        <SectionContainer >
-            <Text style={{ fontSize: 16, color: theme.colors.gray, margin: 10, textAlign: "center" }}>{item.content}</Text>
-            <View style={{ width: "100%", flexDirection: "row", alignItems: "center" }}>
-                <ButtonSuccess label="Buy" onPress={() => { }} />
-                <ButtonDanger label="Sell" onPress={() => { }} />
-            </View>
-        </SectionContainer>
-    )
+    const renderItem = ({ item }: { item: User }) => {
+        
+        return (
+            <SectionContainer >
+                <Text style={{ fontSize: 16, color: theme.colors.gray, margin: 10, textAlign: "center" }}>{item.display_name}</Text>
+                <View style={{ width: "100%", flexDirection: "row", alignItems: "center" }}>
+                    <ButtonSuccess label="Buy" onPress={() => { }} />
+                    <ButtonDanger label="Sell" onPress={() => { }} />
+                </View>
+            </SectionContainer>
+        )
+    }
 
     const listEndLoader = () => {
         if (loading)
@@ -59,13 +74,21 @@ const FeedScreen = ({ navigation }: any) => {
             <HeaderFeed navigation={navigation} />
             <FlatList
                 data={posts}
+                style={{ flex: 1 }}
                 renderItem={renderItem}
                 onEndReached={handleData}
                 onEndReachedThreshold={.1}
                 contentContainerStyle={[theme.styles.scroll_container, { backgroundColor: theme.colors.black, alignItems: "center" }]}
-                ListFooterComponent={listEndLoader}
-                keyExtractor={event => event.id ?? Math.random().toString()}
+                //ListFooterComponent={listEndLoader}
+                refreshControl={<RefreshControl refreshing={loading} onRefresh={handleData} />}
+                keyExtractor={event => event.pubkey ?? Math.random().toString()}
             />
+            {
+                notResult && 
+                <View>
+                    <Text style={{ color: theme.colors.white }}>Nenhuma ordem encontrada!</Text>
+                </View>
+            }
             <View style={styles.rightButton}>
                 <TouchableOpacity activeOpacity={.7} style={styles.newChatButton} onPress={() => navigation.navigate("feed-order-new")}>
                     <Ionicons name="add" size={theme.icons.medium} color={theme.colors.white} />

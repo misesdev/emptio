@@ -6,10 +6,13 @@ export type PairKey = {
     publicKey: string
 }
 
+export type WalletType = "lightning" | "bitcoin" | "testnet" | "emptio"
+
 export type Wallet = {
     id?: number,
     name?: string,
-    type?: "lightning" | "bitcoin",
+    type?: WalletType,
+    default?: boolean,
     lastBalance?: number,
     lastSended?: number,
     lastReceived?: number, 
