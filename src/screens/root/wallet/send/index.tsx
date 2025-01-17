@@ -5,9 +5,11 @@ import { Ionicons } from "@expo/vector-icons"
 import { useState } from "react"
 import theme from "@src/theme"
 import { useTranslateService } from "@/src/providers/translateProvider"
+import { Wallet } from "@/src/services/memory/types"
 
-const SendScreen = ({ navigation }: any) => {
+const SendScreen = ({ navigation, route }: any) => {
 
+    const { wallet } = route.params
     const { useTranslate } = useTranslateService()
     const [amount, setAmount] = useState<string>("0")
     const [nextDisabled, setNextDisabled] = useState(true)
@@ -19,16 +21,16 @@ const SendScreen = ({ navigation }: any) => {
             backgroundColor: theme.colors.black
         }}>
             {/* Hader */}
-            <HeaderScreen title={useTranslate("wallet.title.send")} onClose={() => navigation.navigate("wallet-stack")} />
+            <HeaderScreen title={useTranslate("wallet.title.send")} onClose={() => navigation.navigate("wallet-stack", { wallet })} />
 
             {/* Body */}
             <Text style={styles.title}>{useTranslate("wallet.title.sendvalue")}</Text>
 
-            <AmountBox value={amount} onChangeText={setAmount} isValidHandle={(valid) => setNextDisabled(!valid)} />
+            <AmountBox value={amount} wallet={wallet} onChangeText={setAmount} isValidHandle={(valid) => setNextDisabled(!valid)} />
 
             {/* Footer */}
             <View style={styles.buttonArea}>
-                <TouchableOpacity activeOpacity={.7} onPress={() => navigation.navigate("wallet-send-receiver-stack", { amount })} disabled={nextDisabled}
+                <TouchableOpacity activeOpacity={.7} onPress={() => navigation.navigate("wallet-send-receiver-stack", { amount, wallet })} disabled={nextDisabled}
                     style={{ borderRadius: 50, padding: 14, margin: 10, backgroundColor: nextDisabled ? theme.colors.disabled : theme.colors.blue }}
                 >
                     <Ionicons name="arrow-forward-outline" size={theme.icons.large} color={nextDisabled ? theme.colors.gray : theme.colors.white} />

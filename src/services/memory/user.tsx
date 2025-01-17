@@ -1,7 +1,6 @@
 import AsyncStorage from "@react-native-async-storage/async-storage"
 import { User } from "./types"
 
-
 export const getUser = async (): Promise<User> => {
 
     var response: User = {}
@@ -9,7 +8,7 @@ export const getUser = async (): Promise<User> => {
     var user = await AsyncStorage.getItem("userData")
 
     if (user)
-        response = JSON.parse(user)
+        response = JSON.parse(user) as User
 
     return response
 }

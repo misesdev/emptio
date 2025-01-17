@@ -4,11 +4,22 @@ import { Ionicons } from "@expo/vector-icons"
 import SearchButton from "@components/form/SearchButton"
 import theme from "@/src/theme"
 import { useTranslateService } from "@/src/providers/translateProvider"
+import { pushMessage } from "@/src/services/notification"
+import { Wallet } from "@/src/services/memory/types"
 
 export const HeaderHome = ({ navigation }: any) => {
 
-    const { user } = useAuth()
+    const { user, wallets } = useAuth()
     const { useTranslate } = useTranslateService()
+
+    const toDonate = (items: Wallet[]) => {
+        if(!items.length)
+            return  pushMessage(useTranslate("message.wallet.alertcreate")) 
+
+        let wallet = items.filter(w => w.default).length ? items.filter(w => w.default)[0] : items[0]
+
+        navigation.navigate("user-donate-stack", { wallet })
+    }
 
     return (
         <View style={styles.header}>
@@ -26,7 +37,7 @@ export const HeaderHome = ({ navigation }: any) => {
                 </Text>    
             </View>
             <View style={{ width: "12%", alignItems: "center", justifyContent: "center" }}>
-                <TouchableOpacity onPress={() => navigation.navigate("user-donate-stack")}>
+                <TouchableOpacity onPress={() => toDonate(wallets)}>
                     <Ionicons name="heart" color={theme.colors.gray} size={theme.icons.large} />
                 </TouchableOpacity>
             </View>

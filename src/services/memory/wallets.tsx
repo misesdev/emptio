@@ -9,7 +9,7 @@ export const getWallets = async (): Promise<Wallet[]> => {
     const data = await AsyncStorage.getItem("walletsData")
 
     if (data)
-        wallets = JSON.parse(data)
+        wallets = JSON.parse(data) as Wallet[]
 
     return wallets
 }
@@ -18,12 +18,12 @@ export const getWallet = async (key: string): Promise<Wallet> => {
 
     const wallets = await getWallets()
 
-    const walletFiltered = wallets.filter(x => x.key === key)
+    const walletFiltered = wallets.find(x => x.key === key) ?? {}
 
-    if (walletFiltered.length <= 0)
+    if (!walletFiltered)
         throw new Error(useTranslate("message.wallet.notfound"))
 
-    return walletFiltered[0]
+    return walletFiltered
 }
 
 export const insertWallet = async (wallet: Wallet) => {
@@ -41,31 +41,39 @@ export const updateWallet = async (wallet: Wallet) => {
 
     const wallets = await getWallets()
 
-    const findWallet = wallets.filter(w => w.key == wallet.key)[0]
-
-    const index = wallets.indexOf(findWallet)
-
-    if (index <= -1)
-        throw new Error(useTranslate("message.wallet.notfound"))
-
-    wallets[index].name = wallet.name
-    wallets[index].lastBalance = wallet.lastBalance
-    wallets[index].lastReceived = wallet.lastReceived
-    wallets[index].lastSended = wallet.lastSended
-    wallets[index].address = wallet.address
+    wallets.forEach(item => {
+        if(wallet.key == item.key) {
+            item.name = wallet.name
+            item.lastBalance = wallet.lastBalance
+            item.lastReceived = wallet.lastReceived
+            item.lastSended = wallet.lastSended
+            item.address = wallet.address
+            item.default = wallet.default
+        }
+    })
 
     await AsyncStorage.setItem("walletsData", JSON.stringify(wallets))
 }
 
-export const deleteWallet = async (key: string) => {
+export const clearDefaultWallets = async () => {
 
     const wallets = await getWallets()
 
-    const wallet = await getWallet(key)
-
-    wallets.splice(wallets.indexOf(wallet), 1)
+    wallets.forEach(item => {
+        item.default = false
+    })
 
     await AsyncStorage.setItem("walletsData", JSON.stringify(wallets))
+}
+
+
+export const deleteWallet = async (key: string) => {
+
+    const walletList = await getWallets()
+
+    const filtered = walletList.filter(wallet => wallet.key != key)
+
+    await AsyncStorage.setItem("walletsData", JSON.stringify(filtered))
 }
 
 export const deleteWallets = async () => await AsyncStorage.removeItem("walletsData")

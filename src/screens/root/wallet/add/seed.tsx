@@ -10,6 +10,7 @@ import { useTranslateService } from "@/src/providers/translateProvider"
 
 const CreatedSeedScren = ({ navigation, route }: any) => {
 
+    const { wallet } = route.params
     const { useTranslate } = useTranslateService()
     const [loading, setLoading] = useState(true)
     const [wordList, setWordList] = useState<string[]>()
@@ -18,7 +19,7 @@ const CreatedSeedScren = ({ navigation, route }: any) => {
 
     const loadData = async () => {
 
-        const seed = await walletService.seed(route.params?.pairkey)
+        const seed = await walletService.seed(wallet.pairkey)
 
         if (seed.success)
             setWordList(seed.data?.split(" "))
@@ -30,7 +31,7 @@ const CreatedSeedScren = ({ navigation, route }: any) => {
 
     const handleClose = () => {
         if (route?.params?.origin == "options")
-            navigation.navigate("wallet-settings-stack")
+            navigation.navigate("wallet-settings-stack", { wallet })
         else if (route?.params?.origin == "create")
             navigation.reset({ index: 0, routes: [{ name: "core-stack" }] })
     }

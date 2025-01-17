@@ -16,6 +16,7 @@ export const WalletHeader = ({ wallet, showOptions }: WalletProps) => {
 
     let balanceSats = formatSats(wallet.lastBalance)
     let balanceBTC = toBitcoin(wallet.lastBalance)
+    let formatName = (!!wallet.name && wallet.name?.length >= 28) ? `${wallet.name?.substring(0, 28)}..` : wallet?.name
 
     let walletColor = wallet.type == "bitcoin" ? theme.colors.orange : theme.colors.blue
 
@@ -25,7 +26,7 @@ export const WalletHeader = ({ wallet, showOptions }: WalletProps) => {
             {wallet!.type == "lightning" && <Image source={require("assets/images/lightning-wallet-header.png")} style={{ width: "100%", height: 240 }} />}
             <View style={styles.headerWallet}>
                 <View style={{ height: 50 }}></View>
-                <Text style={[{ fontSize: 18 }, styles.headerText]}>{wallet!.name}</Text>
+                <Text style={[{ fontSize: 18 }, styles.headerText]}>{formatName}</Text>
                 <Text style={[{ fontSize: 30 }, styles.headerText]}>{balanceSats} Sats</Text>
                 <Text style={[{ fontSize: 14 }, styles.headerText]}>{balanceBTC} BTC</Text>
                 <Text style={[styles.headerText, { fontSize: 12, backgroundColor: walletColor, padding: 10, borderRadius: 15, maxWidth: 130, textAlign: "center" }]}>
@@ -59,7 +60,6 @@ export const WalletTransactions = ({ transactions, onPressTransaction }: WalletT
         let rotate = type == "received" ? "90deg" : "-90deg"
         let icon: IconNames = type == "received" ? "enter" : "exit"
 
-
         if (type == "received")
             color = confirmed ? theme.colors.green : theme.colors.yellow
 
@@ -84,7 +84,9 @@ export const WalletTransactions = ({ transactions, onPressTransaction }: WalletT
                                     </Text>
                                 </View>
                                 <View style={{ width: "100%" }}>
-                                    <Text style={{ fontSize: 12, color: theme.colors.gray, margin: 2, fontWeight: "bold" }}>{transaction.date}</Text>
+                                    <Text style={{ fontSize: 12, color: theme.colors.gray, margin: 2, fontWeight: "bold" }}>
+                                        {transaction.confirmed ? transaction.date : '-- -- --'}
+                                    </Text>
                                 </View>
                             </View>
                             {/* Transaction Ammount */}

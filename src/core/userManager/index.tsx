@@ -128,16 +128,20 @@ type loggedProps = {
 
 const isLogged = async ({ setUser }: loggedProps) => {
 
-    const user: User = await getUser()
+    try 
+    {
+        const user: User = await getUser()
 
-    const { publicKey, privateKey } = await getPairKey(user.keychanges ?? "")
+        const { publicKey, privateKey } = await getPairKey(user.keychanges ?? "")
 
-    user.pubkey = publicKey
+        user.pubkey = publicKey
 
-    if (setUser && !!privateKey)
-        setUser(user)
+        if (setUser && !!privateKey)
+            setUser(user)
 
-    return !!privateKey
+        return !!privateKey
+    } 
+    catch { return false }
 }
 
 const listFollows = async (user: User, iNot: boolean = true): Promise<User[]> => {

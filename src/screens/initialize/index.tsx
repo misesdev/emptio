@@ -14,7 +14,7 @@ const AuthenticateScreen = ({ navigation }: any) => {
     const [loading, setLoading] = useState(true)
     const [biometrics, setBiometrics] = useState(true)
 
-    useEffect(() => {        
+    useEffect(() => {    
         if (settings.useBiometrics)
             checkBiometricAvailability()
         else
@@ -44,7 +44,7 @@ const AuthenticateScreen = ({ navigation }: any) => {
         navigation.reset({ index: 0, routes: [{ name: "core-stack" }] })
 
     if (loading)
-        return <SplashScreen />
+        return <SplashScreen message="" />
 
     return (
         <View style={theme.styles.container}>

@@ -24,7 +24,6 @@ export const getUtxo = async (txid: string) => await transactions.getTx({ txid }
 // Find current transaction rates
 export const getFee = async () => await fees.getFeesRecommended()
 
-
 export const getTransactionInfo = async (txid: string) => {
 
     const utxo : Tx = await getUtxo(txid)

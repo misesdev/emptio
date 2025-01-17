@@ -3,7 +3,6 @@ import { FollowList } from "@components/nostr/follow/FollowList"
 import { ButtonScanQRCode } from "@components/wallet/buttons"
 import { TextBox } from "@components/form/TextBoxs"
 import SplashScreen from "@components/general/SplashScreen"
-import { Hidable } from "@components/general/Hidable"
 import { walletService } from "@src/core/walletManager"
 import { Ionicons } from "@expo/vector-icons"
 import { useEffect, useState } from "react"
@@ -14,6 +13,7 @@ import { useTranslateService } from "@/src/providers/translateProvider"
 
 const SendReceiverScreen = ({ navigation, route }: any) => {
 
+    const { wallet } = route.params
     const { useTranslate } = useTranslateService()
     const [loading, setLoading] = useState(true)
     // const [searching, setSearching] = useState(false)
@@ -36,7 +36,7 @@ const SendReceiverScreen = ({ navigation, route }: any) => {
         setNextDisabled(!walletService.address.validate(value))
     }
 
-    const handleSendToFee = async () => navigation.navigate("wallet-send-final-stack", { amount, address })
+    const handleSendToFee = async () => navigation.navigate("wallet-send-final-stack", { amount, address, wallet })
 
     if (loading)
         return <SplashScreen />
@@ -50,7 +50,7 @@ const SendReceiverScreen = ({ navigation, route }: any) => {
             {/* Header */}
             <HeaderScreen
                 title={useTranslate("wallet.title.sendfor")}
-                onClose={() => navigation.navigate("wallet-send-stack")}
+                onClose={() => navigation.navigate("wallet-send-stack", { wallet })}
             />
 
             {/* Body */}

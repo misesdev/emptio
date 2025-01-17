@@ -8,10 +8,11 @@ import theme from "@src/theme"
 import { useAuth } from "../providers/userProvider"
 import { emptioService } from "../core/emptio"
 import { useTranslateService } from "../providers/translateProvider"
+import { walletService } from "../core/walletManager"
 
 const InitializeScreen = ({ navigation }: any) => {
 
-    const { setUser, setEmptioData } = useAuth()
+    const { setUser, setEmptioData, setWallets } = useAuth()
     const [loading, setLoading] = useState(true)
     const { useTranslate } = useTranslateService()
 
@@ -24,6 +25,10 @@ const InitializeScreen = ({ navigation }: any) => {
     const handleVerifyLogon = async () => {
 
         Nostr = await getNostrInstance()
+
+        const wallets = await walletService.list()
+
+        if(wallets && setWallets) setWallets(wallets)
 
         if (await userService.isLogged({ setUser })) {
             if (setEmptioData)

@@ -7,15 +7,15 @@ import { useAuth } from "@src/providers/userProvider"
 import { HeaderFeed } from "./header"
 import { useState } from "react"
 import theme from "@src/theme"
-import { NostrEvent } from "@nostr-dev-kit/ndk"
 import { useTranslateService } from "@/src/providers/translateProvider"
 import { Ionicons } from "@expo/vector-icons"
 import { User } from "@/src/services/memory/types"
 import { RefreshControl } from "react-native-gesture-handler"
+import { pushMessage } from "@/src/services/notification"
 
 const FeedScreen = ({ navigation }: any) => {
 
-    const { user } = useAuth()
+    const { user, wallets } = useAuth()
     const { useTranslate } = useTranslateService()
     const [loading, setLoading] = useState(false)
     const [posts, setPosts] = useState<User[]>([])
@@ -47,6 +47,9 @@ const FeedScreen = ({ navigation }: any) => {
             setPosts(users)
         }
 
+        if(!wallets.length)
+            pushMessage(useTranslate("message.wallet.alertcreate"))    
+
         setLoading(false)
     }
 
@@ -63,10 +66,11 @@ const FeedScreen = ({ navigation }: any) => {
         )
     }
 
-    const listEndLoader = () => {
-        if (loading)
-            // Show loader at the end of list when fetching next page data.
-            return <ActivityIndicator color={theme.colors.gray} style={{ margin: 10 }} size={50} />
+    const newOrder = () => {
+        if(!wallets.length)
+            return pushMessage(useTranslate("message.wallet.alertcreate"))
+
+        navigation.navigate("feed-order-new")
     }
 
     return (
@@ -90,7 +94,7 @@ const FeedScreen = ({ navigation }: any) => {
                 </View>
             }
             <View style={styles.rightButton}>
-                <TouchableOpacity activeOpacity={.7} style={styles.newChatButton} onPress={() => navigation.navigate("feed-order-new")}>
+                <TouchableOpacity activeOpacity={.7} style={styles.newChatButton} onPress={newOrder}>
                     <Ionicons name="add" size={theme.icons.medium} color={theme.colors.white} />
                 </TouchableOpacity>
             </View>

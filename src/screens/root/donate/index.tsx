@@ -7,23 +7,23 @@ import { useEffect, useState } from "react"
 import { AmountBox } from "@components/wallet/inputs"
 import { Ionicons } from "@expo/vector-icons"
 import { useTranslateService } from "@/src/providers/translateProvider"
+import { Wallet } from "@/src/services/memory/types"
 
-const DonateScreen = ({ navigation }: any) => {
+const DonateScreen = ({ navigation, route }: any) => {
 
-    const { user, setWallet } = useAuth()
+    const { wallets } = useAuth()
     const [amount, setAmount] = useState<string>()
     const [disabled, setDisabled] = useState(true)
     const { useTranslate } = useTranslateService()
+    const [wallet, setWallet] = useState<Wallet>(route.params.wallet as Wallet)
 
-    useEffect(() => {
-        handleLoadData()
-    }, [])
+    // useEffect(() => {
+    //     handleLoadData()
+    // }, [])
 
-    const handleLoadData = async () => {
-        const wallet = await getWallet(user.default_wallet ?? "")
-
-        if (setWallet)
-            setWallet(wallet)
+    const selecteWallet = (wallet: Wallet) => {
+        setWallet(wallet)
+        
     }
 
     const handleSendMoney = () => {
@@ -41,7 +41,7 @@ const DonateScreen = ({ navigation }: any) => {
             {/* Body */}
             <Text style={styles.title}>{useTranslate("wallet.title.sendvalue")}</Text>
 
-            <AmountBox value={amount} onChangeText={setAmount} isValidHandle={(valid) => setDisabled(!valid)} />
+            <AmountBox wallet={wallet} setWallet={setWallet} manageWallet={wallets.length > 1} value={amount} onChangeText={setAmount} isValidHandle={(valid) => setDisabled(!valid)} />
 
             {/* Footer */}
             <View style={styles.sectionBottom}>

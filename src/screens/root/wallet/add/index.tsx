@@ -12,15 +12,18 @@ import theme from "@src/theme"
 import { useAuth } from "@src/providers/userProvider"
 import { userService } from "@src/core/userManager"
 import { useTranslateService } from "@/src/providers/translateProvider"
+import { Wallet, WalletType } from "@/src/services/memory/types"
+import { getWallets } from "@/src/services/memory/wallets"
 
 const AddWalletScreen = ({ navigation }: any) => {
 
+    const { user, wallets, setWallets } = useAuth()
     const { useTranslate } = useTranslateService()
     const [loading, setLoading] = useState(false)
     const [walletName, setWalletName] = useState<string>()
-    const [walletType, setWalletType] = useState<"bitcoin" | "lightning">("bitcoin")
+    const [walletType, setWalletType] = useState<WalletType>("bitcoin")
 
-    const handleWalletType = (type: "bitcoin" | "lightning") => {
+    const handleWalletType = (type: WalletType) => {
         setWalletType(type)
     }
 
@@ -31,23 +34,25 @@ const AddWalletScreen = ({ navigation }: any) => {
         setLoading(true)
 
         setTimeout(async () => {
-
-            const { user } = useAuth()
-            const response = await walletService.create({ name: walletName, type: walletType })
-
+            const response = await walletService.create({ name: walletName, type: walletType, wallets })
+            
             if (response.success) {
-                if (!user.default_wallet) {
-                    user.default_wallet = response.data?.key
-                    user.bitcoin_address = response.data?.address
+                let wallet = response.data as Wallet
+                if (wallet.default) {
+                    user.default_wallet = wallet.key
+                    user.bitcoin_address = wallet.address
                     await userService.updateProfile({ user, upNostr: true })
                 }
-                navigation.navigate("seed-wallet-stack", { origin: "create", pairkey: response.data?.pairkey })
+
+                if(setWallets) setWallets(await getWallets())
+
+                navigation.navigate("seed-wallet-stack", { origin: "create", wallet })
             }
             else
                 pushMessage(response.message)
-
+            
             setLoading(false)
-        }, 100)
+        }, 50)
     }
 
     if (loading)
@@ -74,22 +79,48 @@ const AddWalletScreen = ({ navigation }: any) => {
                             <Ionicons name="logo-bitcoin" size={theme.icons.large} color={theme.colors.orange} />
                         </View>
                         <View style={{ width: "85%" }}>
-                            <Text style={[styles.typeTitle, { color: theme.colors.white }]}>Bitcoin</Text>
-                            <Text style={styles.typeDescription}>description type wallet</Text>
+                            <Text style={[styles.typeTitle, { color: theme.colors.white }]}>
+                                {useTranslate("wallet.bitcoin.tag")}
+                            </Text>
+                            <Text style={styles.typeDescription}>
+                                {useTranslate("wallet.bitcoin.description")}
+                            </Text>
                         </View>
                     </TouchableOpacity>
 
-                    <TouchableOpacity activeOpacity={1}
-                        style={[styles.selection, { borderWidth: walletType == "lightning" ? 2 : 0 }]}
-                        onPress={() => { handleWalletType("bitcoin") }}
+                    <TouchableOpacity activeOpacity={.7}
+                        style={[styles.selection, { borderWidth: walletType == "testnet" ? 2 : 0 }]}
+                        onPress={() => handleWalletType("testnet")}
+                    >
+                        <View style={{ width: "15%", height: "100%", alignItems: "center", justifyContent: "center" }}>
+                            {/* <Image source={{ uri: "" }} style={{ }}/> */}
+                            <Ionicons name="logo-bitcoin" size={theme.icons.large} color={theme.colors.green} />
+                        </View>
+                        <View style={{ width: "85%" }}>
+                            <Text style={[styles.typeTitle, { color: theme.colors.white }]}>
+                                {useTranslate("wallet.bitcoin.testnet.tag")}
+                            </Text>
+                            <Text style={styles.typeDescription}>
+                                {useTranslate("wallet.bitcoin.testnet.description")}
+                            </Text>
+                        </View>
+                    </TouchableOpacity>
+
+                    <TouchableOpacity activeOpacity={1} disabled
+                        style={[styles.selection, { borderWidth: walletType == "lightning" ? 2 : 0, backgroundColor: theme.colors.section }]}
+                        onPress={() => { handleWalletType("lightning") }}
                     >
                         <View style={{ width: "15%", height: "100%", alignItems: "center", justifyContent: "center" }}>
                             {/* <Image source={{ uri: "" }} style={{ }}/> */}
                             <Ionicons name="flash" size={theme.icons.large} color={theme.colors.yellow} />
                         </View>
                         <View style={{ width: "85%" }}>
-                            <Text style={[styles.typeTitle, { color: theme.colors.white }]}>Lightning</Text>
-                            <Text style={styles.typeDescription}>{useTranslate("message.shortly")}</Text>
+                            <Text style={[styles.typeTitle, { color: theme.colors.white }]}>
+                                {useTranslate("wallet.lightning.tag")}
+                            </Text>
+                            <Text style={styles.typeDescription}>
+                                {useTranslate("wallet.lightning.description")}
+                            </Text>
                         </View>
                     </TouchableOpacity>
                 </View>

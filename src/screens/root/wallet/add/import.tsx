@@ -8,9 +8,11 @@ import SplashScreen from "@components/general/SplashScreen"
 import { walletService } from "@/src/core/walletManager"
 import { pushMessage } from "@/src/services/notification"
 import { useTranslateService } from "@/src/providers/translateProvider"
+import { useAuth } from "@/src/providers/userProvider"
 
 const ImportWalletScreen = ({ navigation }: any) => {
 
+    const { setWallets } = useAuth()
     const [loading, setLoading] = useState(false)
     const [walletName, setWalletName] = useState<string>("")
     const [seedPhrase, setSeedPhrase] = useState<string>("")
@@ -32,14 +34,16 @@ const ImportWalletScreen = ({ navigation }: any) => {
 
         setLoading(true)
 
-        const wallet = await walletService.import({ name: walletName, seedphrase: seedPhrase, passphrase: passPhrase })
+        const response = await walletService.import({ name: walletName, seedphrase: seedPhrase, passphrase: passPhrase })
+
+        if(setWallets) setWallets(await walletService.list())
 
         setLoading(false)
 
-        if (wallet.success)
+        if (response.success)
             navigation.reset({ index: 0, routes: [{ name: "core-stack" }] })
         else
-            pushMessage(wallet.message)
+            pushMessage(response.message)
     }
 
     if (loading)
@@ -56,7 +60,11 @@ const ImportWalletScreen = ({ navigation }: any) => {
             {/* Body */}
             <Text style={styles.title}>{useTranslate("wallet.title.import")}</Text>
 
-            <FormControl label={useTranslate("labels.wallet.name")} value={walletName} onChangeText={setWalletName} />
+            <FormControl  
+                value={walletName} 
+                onChangeText={setWalletName}                 
+                label={useTranslate("labels.wallet.name")}
+            />
 
             <FormControl label="Seed Phrase" value={seedPhrase} onChangeText={value => setSeedPhrase(value.toLowerCase())} isTextArea />
 

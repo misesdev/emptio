@@ -11,7 +11,7 @@ const AboutScreen = ({ navigation }: any) => {
 
     const handleToGithub = () => Linking.openURL("https://github.com/emptioapp/emptio")
 
-    const hndleToDiscord = () => Linking.openURL("https://discord.gg/pUxPZHPu")
+    const handleToDiscord = () => Linking.openURL("https://discord.gg/pUxPZHPu")
 
     return (
         <>
@@ -30,7 +30,7 @@ const AboutScreen = ({ navigation }: any) => {
                     <TouchableOpacity activeOpacity={.7} onPress={handleToGithub} style={styles.itemContact}>
                         <Ionicons name="logo-github" size={theme.icons.extra} color={theme.colors.white} />
                     </TouchableOpacity>
-                    <TouchableOpacity activeOpacity={.7} onPress={hndleToDiscord} style={styles.itemContact}>
+                    <TouchableOpacity activeOpacity={.7} onPress={handleToDiscord} style={styles.itemContact}>
                         <Ionicons name="logo-discord" size={theme.icons.extra} color={theme.colors.white} />
                     </TouchableOpacity>
                 </View>

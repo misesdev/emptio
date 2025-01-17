@@ -11,9 +11,10 @@ import { useTranslateService } from "@/src/providers/translateProvider"
 const WalletReceiveScreen = ({ navigation, route }: any) => {
 
     const { user } = useAuth()
+    const { wallet } = route.params
     const { useTranslate } = useTranslateService()
-    const [address, setAddress] = useState<string>(route.params?.address)
-    const [valueText, setValueText] = useState<string>(route.params?.address)
+    const [address, setAddress] = useState<string>(wallet?.address)
+    const [valueText, setValueText] = useState<string>(wallet?.address)
 
     const handleCopyValue = async () => {
 
@@ -28,7 +29,7 @@ const WalletReceiveScreen = ({ navigation, route }: any) => {
         <View style={styles.content}>
 
             {/* Header */}
-            <HeaderScreen title={useTranslate("wallet.title.receive")} onClose={() => navigation.navigate("wallet-stack")} />
+            <HeaderScreen title={useTranslate("wallet.title.receive")} onClose={() => navigation.navigate("wallet-stack", { wallet })} />
 
             {/* Body */}
             <View style={{ flex: 1, alignItems: "center" }}>

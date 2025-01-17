@@ -1,54 +1,43 @@
 import { setItemAsync, getItemAsync } from "expo-secure-store"
 import { PairKey } from "./types"
 
-export const insertPairKey = async (pairKey: PairKey) => {
-    var pairKeyList: PairKey[] = []
-
+export const getPairKeys = async () : Promise<PairKey[]> => {
+    
     const data = await getItemAsync("pairkeys")
 
-    if (data) 
-        pairKeyList = JSON.parse(data)
+    if (data) {
+        var pairkeys = JSON.parse(data) as PairKey[]
 
-    pairKeyList.push(pairKey)
+        return pairkeys
+    }
+    return []
+} 
 
-    await setItemAsync("pairkeys", JSON.stringify(pairKeyList))
+export const insertPairKey = async (pairKey: PairKey) => {
+    
+    const pairkeys = await getPairKeys()
+
+    pairkeys.push(pairKey)
+
+    await setItemAsync("pairkeys", JSON.stringify(pairkeys))
 }
 
 export const getPairKey = async (key: string): Promise<PairKey> => {
-    var pairKeyList: PairKey[] = []
 
-    var pairKey: PairKey = { key: "", privateKey: "", publicKey: "" }
+    const pairkeys = await getPairKeys()
 
-    const data = await getItemAsync("pairkeys")
+    const pairkey = pairkeys.find(x => x.key == key)
 
-    if (data) {
-        pairKeyList = JSON.parse(data)
+    if(!pairkey) throw Error("Pairkey not found!")
 
-        let filtered = pairKeyList.filter(k => k.key == key)
-
-        if (filtered.length)
-            pairKey = filtered[0]
-    }
-
-    return pairKey
+    return pairkey
 }
 
 export const deletePairKey = async (key: string) => {
-    var pairKeyList: PairKey[] = []
-    var pairKey: PairKey = { key: "", privateKey: "", publicKey: "" }
+    
+    const pairkeys = await getPairKeys()
 
-    const data = await getItemAsync("pairkeys")
+    let filtered = pairkeys.filter(k => k.key != key)
 
-    if (data) {
-        pairKeyList = JSON.parse(data)
-
-        let filtered = pairKeyList.filter(k => k.key == key)
-
-        if (filtered.length)
-            pairKey = filtered[0]
-
-        pairKeyList.splice(pairKeyList.indexOf(pairKey), 1)
-
-        await setItemAsync("pairkeys", JSON.stringify(pairKeyList))
-    }
+    await setItemAsync("pairkeys", JSON.stringify(filtered))
 }

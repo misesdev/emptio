@@ -10,7 +10,7 @@ export const getSettings = (): Settings => {
     var data = getItem("settings")
 
     if(data)
-        settings = JSON.parse(data)
+        settings = JSON.parse(data) as Settings
 
     return settings
 }

@@ -1,35 +1,29 @@
 import { RefreshControl, ScrollView, StyleSheet, View, } from "react-native"
 import { ActionHeader, SectionHeader } from "@components/general/section/headers"
 import { useTranslateService } from "@src/providers/translateProvider"
-import { userService } from "@/src/core/userManager"
-import { Wallet } from "@src/services/memory/types"
-import { getWallets } from "@src/services/memory/wallets"
 import { useAuth } from "@src/providers/userProvider"
 import WalletList from "@components/wallet/WalletList"
 import { useEffect, useState } from "react"
 import { HeaderHome } from "./header"
 import theme from "@src/theme"
 import { pushMessage } from "@src/services/notification"
+import { walletService } from "@/src/core/walletManager"
 
 const HomeScreen = ({ navigation }: any) => {
 
-    const { user, setUser } = useAuth()
+    const { wallets, setWallets } = useAuth()
     const { useTranslate } = useTranslateService()
     const [loading, setLoading] = useState(false)
-    const [wallets, setWallets] = useState<Wallet[]>([])
 
-    useEffect(() => { handleData() }, [user])
+    useEffect(() => { handleData() }, [])
 
     const handleData = async () => {
         setLoading(true)
-        const wallets = await getWallets()
+
+        if(setWallets) setWallets(await walletService.list())
 
         if (wallets.length <= 0)
             pushMessage(useTranslate("message.wallet.alertcreate"))
-
-        setWallets(wallets)
-
-        await userService.updateProfile({ user: user ?? {}, setUser })
 
         setLoading(false)
     }

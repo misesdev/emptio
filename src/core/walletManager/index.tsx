@@ -1,22 +1,25 @@
-import { getUtxos } from "@/src/services/bitcoin/mempool"
+import { getUtxo, getUtxos } from "@/src/services/bitcoin/mempool"
+import { getUser } from "@/src/services/memory/user"
 import { useTranslate } from "@/src/services/translate"
 import { Tx } from "@mempool/mempool.js/lib/interfaces/bitcoin/transactions"
 import { generateAddress, createTransaction, createWallet, ValidateAddress, sendTransaction, importWallet, getSeedPhrase } from "@src/services/bitcoin"
 import { getRandomKey } from "@src/services/bitcoin/signature"
 import { deletePairKey, getPairKey, insertPairKey } from "@src/services/memory/pairkeys"
-import { PairKey, Transaction, Wallet, WalletInfo } from "@src/services/memory/types"
-import { deleteWallet, getWallet, insertWallet } from "@src/services/memory/wallets"
+import { PairKey, Transaction, TransactionInput, TransactionOutput, Wallet, WalletInfo, WalletType } from "@src/services/memory/types"
+import { clearDefaultWallets, deleteWallet, getWallet, getWallets, insertWallet, updateWallet } from "@src/services/memory/wallets"
 import { Response, trackException } from "@src/services/telemetry"
+import { userService } from "../userManager"
 
 type Props = {
     name: string,
-    type: "bitcoin" | "lightning"
+    type: WalletType,
+    wallets: Wallet[]
 }
 
-const create = async ({ name, type }: Props): Promise<Response<Wallet>> => {
+const create = async ({ name, type, wallets }: Props): Promise<Response<Wallet>> => {
     try {
         const pairKey: PairKey = createWallet()
-
+    
         const bitcoinAddress = generateAddress(pairKey.publicKey)
 
         const wallet: Wallet = {
@@ -27,7 +30,8 @@ const create = async ({ name, type }: Props): Promise<Response<Wallet>> => {
             lastSended: 0,
             pairkey: pairKey.key,
             key: getRandomKey(10),
-            address: bitcoinAddress
+            address: bitcoinAddress,
+            default: wallets.length <= 0
         }
 
         await insertPairKey(pairKey)
@@ -43,7 +47,7 @@ type ImportProps = {
     name: string,
     seedphrase: string,
     passphrase?: string,
-    type?: "bitcoin" | "lightning"
+    type?: WalletType
 }
 
 const require = async ({ name, type = "bitcoin", seedphrase, passphrase }: ImportProps): Promise<Response<Wallet>> => {
@@ -96,6 +100,23 @@ const exclude = async (wallet: Wallet): Promise<Response<any>> => {
 
         await deleteWallet(wallet.key ?? "")
 
+        if(wallet.default) 
+        {
+            const wallets = await list()
+            if(wallets.length) 
+            {
+                wallets[0].default = true
+                await update(wallets[0])
+
+                const user = await getUser()
+
+                user.default_wallet = wallets[0].key
+                user.bitcoin_address = wallets[0].address
+
+                userService.updateProfile({ user, upNostr: true })
+            }
+        }
+
         return { success: true, message: "" }
     }
     catch (ex) {
@@ -104,7 +125,10 @@ const exclude = async (wallet: Wallet): Promise<Response<any>> => {
 }
 
 const update = async (wallet: Wallet) => {
+    
+    if(wallet.default) await clearDefaults()
 
+    await updateWallet(wallet)
 }
 
 const listTransactions = async (address: string): Promise<WalletInfo> => {
@@ -129,12 +153,13 @@ const listTransactions = async (address: string): Promise<WalletInfo> => {
 
         const transaction: Transaction = {
             txid: utxo.txid,
+            fee: utxo.fee,
             confirmed: utxo.status.confirmed,
             description: utxo.status.confirmed ? useTranslate("message.transaction.confirmed") : useTranslate("message.transaction.notconfirmed"),
             type: received > sended ? "received" : "sended",
             amount: received > sended ? received : sended,
             date: utxo.status.confirmed ? new Date(utxo.status.block_time * 1000).toLocaleString() : useTranslate("message.transaction.notconfirmed"),
-            timestamp: utxo.status.block_time
+            timestamp: utxo.status.confirmed ? utxo.status.block_time : Date.now()
         }
 
         response.transactions.push(transaction)
@@ -166,21 +191,66 @@ const transaction = {
 
         return transaction
     },
-    send: async (txHex: string): Promise<Response<any>> => sendTransaction(txHex)
+    send: async (txHex: string): Promise<Response<any>> => sendTransaction(txHex),
+    details: async (txid: string) => {
+        const utxo = await getUtxo(txid)
+
+        var amount: number = 0
+        utxo.vout.forEach(tx => amount += tx.value)
+
+        var inputs: TransactionInput[] = utxo.vin.map((item): TransactionInput => { 
+            return {
+                address: item.prevout.scriptpubkey_address,
+                scriptPubkey: item.prevout.scriptpubkey,
+                amount: item.prevout.value
+            }
+        })  
+
+        var outputs: TransactionInput[] = utxo.vout.map((item): TransactionOutput => { 
+            return {
+                address: item.scriptpubkey_address,
+                scriptPubkey: item.scriptpubkey,
+                amount: item.value
+            }
+        }) 
+
+        const transaction: Transaction = {
+            txid: utxo.txid,
+            fee: utxo.fee,
+            size: utxo.size,
+            confirmed: utxo.status.confirmed,
+            block_height: utxo.status.block_height,
+            description: utxo.status.confirmed ? useTranslate("message.transaction.confirmed") : useTranslate("message.transaction.notconfirmed"),
+            amount: amount,
+            date: utxo.status.confirmed ? new Date(utxo.status.block_time * 1000).toLocaleString() : useTranslate("message.transaction.notconfirmed"),
+            timestamp: utxo.status.confirmed ? utxo.status.block_time : Date.now(),
+            inputs: inputs,
+            outputs: outputs
+        }
+
+        return transaction
+    }
 }
 
 const address = {
     validate: (address: string) => ValidateAddress(address)
 }
 
+const clearDefaults = async () => {
+    await clearDefaultWallets()
+}
+
+const list = async (): Promise<Wallet[]> => await getWallets()
 
 export const walletService = {
     create,
     update,
     import: require,
     delete: exclude,
+    clearDefaults,
     seed: seedphrase,
     listTransactions,
+    list,
     address,
     transaction
 }

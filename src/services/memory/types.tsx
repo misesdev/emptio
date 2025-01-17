@@ -48,12 +48,14 @@ export type TransactionInfo = {
 
 export type TransactionInput = {
     amount?: number,
-    address?: number
+    address?: string,
+    scriptPubkey?: string
 }
 
 export type TransactionOutput = {
     amount?: number,
-    address?: number
+    address?: string,
+    scriptPubkey?: string
 }
 
 export type Transaction = {
@@ -63,7 +65,12 @@ export type Transaction = {
     date?: string,
     txid?: string
     confirmed?: boolean,
-    timestamp?: number
+    timestamp?: number,
+    fee?: number,
+    size?: number,
+    block_height?: number,
+    inputs?: TransactionInput[],
+    outputs?: TransactionOutput[]
 }
 
 export type User = {

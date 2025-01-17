@@ -20,6 +20,7 @@ export const setRelays = async (relays: string[]) => await AsyncStorage.setItem(
 
 export const insertRelay = async (relay: string) => {
     let relays = await getRelays()
+    
     if (relays) {
         relays.push(relay)
     } else
@@ -30,9 +31,7 @@ export const insertRelay = async (relay: string) => {
 
 export const deleteRelay = async (relay: string) => {
     let relays = await getRelays()
-    if (relays) {
-        relays.splice(relays.indexOf(relay), 1)
-        setRelays(relays)
-    }
+       
+    setRelays(relays.filter(r => r != relay))
 }
 

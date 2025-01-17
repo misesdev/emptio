@@ -14,14 +14,16 @@ import { pushMessage } from "@src/services/notification"
 import { useState } from "react"
 import theme from "@src/theme"
 import { useTranslateService } from "@/src/providers/translateProvider"
+import { Wallet } from "@/src/services/memory/types"
 
-const WalletSettings = ({ navigation }: any) => {
+const WalletSettings = ({ navigation, route }: any) => {
 
+    const { wallet } = route.params as { wallet: Wallet }
     const { useTranslate } = useTranslateService()
-    const { wallet, setWallet, user, setUser } = useAuth()
+    const { setWallets, user, setUser } = useAuth()
     const [loading, setLoading] = useState(false)
     const [walletName, setWalletName] = useState(wallet.name)
-    const [defaultWallet, setDefaultWallet] = useState<boolean>(wallet.key == user.default_wallet && user.default_wallet != undefined)
+    const [defaultWallet, setDefaultWallet] = useState<boolean>(wallet.default ?? false)
 
     const hadleDeleteWallet = async () => {
         showMessage({
@@ -33,6 +35,8 @@ const WalletSettings = ({ navigation }: any) => {
 
                     await walletService.delete(wallet ?? {})
 
+                    if(setWallets) setWallets(await walletService.list())
+
                     navigation.reset({ index: 0, routes: [{ name: "core-stack" }] })
                 }
             }
@@ -40,10 +44,11 @@ const WalletSettings = ({ navigation }: any) => {
     }
 
     const handleViewSeed = async () => {
+
         const biometrics = await authService.checkBiometric()
 
         if(biometrics)
-            navigation.navigate("seed-wallet-stack", { origin: "options", pairkey: wallet.pairkey })
+            navigation.navigate("seed-wallet-stack", { origin: "options", wallet })
     }
 
     const handleSave = async () => {
@@ -51,22 +56,23 @@ const WalletSettings = ({ navigation }: any) => {
         setLoading(true)
 
         wallet.name = walletName
+        wallet.default = defaultWallet
 
-        if (defaultWallet) {
+        if(wallet.default && wallet.key != user.default_wallet) 
+        {           
             user.default_wallet = wallet.key
-            user.bitcoin_address = wallet.address
+            user.bitcoin_address = wallet.address   
 
             await userService.updateProfile({ user, setUser, upNostr: true })
         }
 
         await walletService.update(wallet)
 
-        if (setWallet)
-            setWallet(wallet)
-
-        setLoading(false)
+        if(setWallets) setWallets(await walletService.list())
 
         pushMessage(useTranslate("message.wallet.saved"))
+
+        navigation.navigate("wallet-stack", { wallet })
     }
 
     if (loading)
@@ -77,7 +83,7 @@ const WalletSettings = ({ navigation }: any) => {
             {/* Header */}
             <HeaderScreen
                 title={useTranslate("wallet.title.settings")}
-                onClose={() => navigation.navigate("wallet-stack")}
+                onClose={() => navigation.navigate("wallet-stack", { wallet })}
             />
 
             <ScrollView contentContainerStyle={[theme.styles.scroll_container, { justifyContent: "center" }]}>

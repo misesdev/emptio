@@ -68,7 +68,7 @@ const SelectLanguageBox = ({ forceUpdate }: Props) => {
 }
 
 export const showSelectLanguage = () => {
-    setTimeout(() => { showLanguagesFunction() }, 50)
+    setTimeout(() => { showLanguagesFunction() }, 10)
 }
 
 const styles = StyleSheet.create({

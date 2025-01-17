@@ -2,15 +2,27 @@ import { StyleSheet, Text, TouchableOpacity, View } from "react-native"
 import { HeaderScreen } from "@components/general/HeaderScreen"
 import { AmountBox } from "@components/wallet/inputs"
 import { Ionicons } from "@expo/vector-icons"
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import theme from "@src/theme"
 import { useTranslateService } from "@/src/providers/translateProvider"
+import { useAuth } from "@/src/providers/userProvider"
+import { Wallet } from "@/src/services/memory/types"
 
 const NewOrderScreen = ({ navigation }: any) => {
 
+    const { wallets } = useAuth()
     const { useTranslate } = useTranslateService()
     const [amount, setAmount] = useState<string>("0")
     const [nextDisabled, setNextDisabled] = useState(true)
+    const [wallet, setWallet] = useState<Wallet>(wallets[0])
+
+    useEffect(() => { loadWallet() }, [])
+
+    const loadWallet = async () => {
+        if(wallets.length && wallets.find(w => w.default)) {
+            setWallet(wallets.filter(w => w.default)[0])
+        } 
+    } 
 
     return (
         <View style={{
@@ -24,7 +36,7 @@ const NewOrderScreen = ({ navigation }: any) => {
             {/* Body */}
             <Text style={styles.title}>{useTranslate("order.new.amount-title")}</Text>
 
-            <AmountBox value={amount} onChangeText={setAmount} isValidHandle={(valid) => setNextDisabled(!valid)} />
+            <AmountBox wallet={wallet} setWallet={setWallet} manageWallet={wallets.length > 1} value={amount} onChangeText={setAmount} isValidHandle={(valid) => setNextDisabled(!valid)} />
 
             {/* Footer */}
             <View style={styles.buttonArea}>
