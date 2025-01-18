@@ -52,7 +52,7 @@ const NewOrderScreen = ({ navigation }: any) => {
 
 const styles = StyleSheet.create({
     title: { fontSize: 25, maxWidth: "90%", fontWeight: "bold", textAlign: "center", color: theme.colors.white },
-    buttonArea: { position: "absolute", bottom: 0, padding: 10, width: "100%", flexDirection: "row-reverse" }
+    buttonArea: { position: "absolute", bottom: 30, padding: 10, width: "100%", flexDirection: "row-reverse" }
 })
 
 export default NewOrderScreen

@@ -36,7 +36,7 @@ export const styles = StyleSheet.create({
     walletButtonsSection: {
         width: "100%",
         position: "absolute",
-        bottom: 25,
+        bottom: 45,
         flexDirection: "row",
         justifyContent: "center",
     },

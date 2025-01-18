@@ -3,6 +3,7 @@ import { formatSats, toBitcoin } from "@/src/services/converter"
 import { Wallet, WalletType } from "@/src/services/memory/types"
 import { useTranslate } from "@/src/services/translate"
 import theme from "@/src/theme"
+import { Network } from "@/src/services/bitcoin/types"
 import { useEffect, useState } from "react"
 import { TouchableOpacity, View, Text, StyleSheet, Image } from "react-native"
 import { ActivityIndicator } from "react-native-paper"
@@ -33,12 +34,11 @@ const WalletListItem = ({ wallet, handleOpen }: Props) => {
     useEffect(() => { loadData() }, [])
 
     const loadData = async () => {
-        const walletInfo = await walletService.listTransactions(wallet.address ?? "")
 
-        if(wallet.lastBalance != walletInfo.balance ||
-            wallet.lastSended != walletInfo.sended ||
-            wallet.lastReceived != walletInfo.received
-        )
+        const network: Network = wallet.type == "bitcoin" ? "mainnet" : "testnet"
+        const walletInfo = await walletService.listTransactions(wallet.address ?? "", network)
+
+        if(wallet.lastBalance != walletInfo.balance)
         {
             wallet.lastBalance = walletInfo.balance
             wallet.lastSended = walletInfo.sended
@@ -77,12 +77,16 @@ const WalletListItem = ({ wallet, handleOpen }: Props) => {
                         {balanceBTC} BTC
                 </Text>
             </View> 
-            <TouchableOpacity activeOpacity={.7} style={[styles.button, { backgroundColor: theme.colors.orange }]} onPress={() => handleOpen(wallet)}>
+            <TouchableOpacity activeOpacity={.7} 
+                style={[styles.button, { 
+                    backgroundColor: wallet.type == "bitcoin" ? theme.colors.orange : theme.colors.blue 
+                }]} onPress={() => handleOpen(wallet)}>
                 <Text style={styles.buttonText}> {useTranslate("commons.open")} </Text>
             </TouchableOpacity>
 
             <Text style={{
-                backgroundColor: theme.colors.gray, color: theme.colors.white, margin: 10, borderRadius: 10,
+                backgroundColor:  wallet.type == "bitcoin" ? theme.colors.orange : theme.colors.blue,
+                color: theme.colors.white, margin: 10, borderRadius: 10,
                 fontSize: 10, fontWeight: "bold", paddingHorizontal: 10, paddingVertical: 4, position: "absolute", top: -18, right: 14,
             }}>{typeWallet}</Text>
         </TouchableOpacity>

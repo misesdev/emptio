@@ -8,8 +8,9 @@ import { getRandomKey, signBuffer, verifySign } from "./signature"
 import { getTxsUtxos, getUtxo, sendUtxo } from "./mempool"
 import { Response, trackException } from "../telemetry"
 import env from "@/env"
+import { Network } from "./types"
 
-const network = env.mempool.network == "testnet" ? networks.testnet : networks.bitcoin
+//const network = env.mempool.network == "testnet" ? networks.testnet : networks.bitcoin
 
 export const createWallet = (): PairKey => {
 
@@ -48,15 +49,18 @@ export const seedToWallet = (seedPhrase: string): PairKey => {
 
 export const getSeedPhrase = (privateKey: string): string => entropyToMnemonic(privateKey)
 
-export const generateAddress = (publicKey: string): string => {
+export const generateAddress = (publicKey: string, net: Network = "mainnet"): string => {
+
+    const network =  net == "testnet" ? networks.testnet : networks.bitcoin
 
     const { address } = payments.p2wpkh({ pubkey: Buffer.from(publicKey, "hex"), network })
 
     return address ?? ""
 }
 
-export const ValidateAddress = (btcAddress: string) => {
+export const ValidateAddress = (btcAddress: string, net: Network = "mainnet") => {
     try {
+        const network =  net == "testnet" ? networks.testnet : networks.bitcoin
         address.toOutputScript(btcAddress, network)
         return true
     } catch { return false }
@@ -74,9 +78,13 @@ export const createTransaction = async ({ amount, destination, wallet, pairkey }
     {
         var utxoAmount = 0
 
+        const net: Network = wallet.type == "bitcoin" ? "mainnet" : "testnet"
+
+        const network = wallet.type == "bitcoin" ? networks.bitcoin : networks.testnet
+
         const transaction = new Psbt({ network })
 
-        const utxos = await getTxsUtxos(wallet.address ?? "")
+        const utxos = await getTxsUtxos(wallet.address ?? "", net)
 
         // ordenate for include all minimal value utxo of wallet
         const ordenedUtxos = utxos.sort((a, b) => a.value - b.value)
@@ -85,7 +93,7 @@ export const createTransaction = async ({ amount, destination, wallet, pairkey }
             if (utxoAmount < amount) {
                 utxoAmount += utxo.value
                 var index = ordenedUtxos.indexOf(utxo)
-                var completeUtxo = await getUtxo(utxo.txid)
+                var completeUtxo = await getUtxo(utxo.txid, net)
                 var scripPubkeys = completeUtxo.vout.filter(x => x.scriptpubkey_address == wallet.address).map(tx => tx.scriptpubkey)
                 // define the utxo entered -> buffer
                 transaction.addInput({
@@ -128,10 +136,10 @@ export const createTransaction = async ({ amount, destination, wallet, pairkey }
     }
 }
 
-export const sendTransaction = async (transactionHex: string): Promise<Response<any>> => {
+export const sendTransaction = async (transactionHex: string, network: Network): Promise<Response<any>> => {
 
     try {
-        const txid = await sendUtxo(transactionHex)
+        const txid = await sendUtxo(transactionHex, network)
 
         return { success: true, message: "", data: txid }
     }

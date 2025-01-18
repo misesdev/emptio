@@ -97,6 +97,7 @@ export default {
     "message.relay.already_exists": "The relay already exists in the relay list!",
     "message.relay.supported_nips": "Nips supported by the relay",
     "message.relay.empty": "There are no relays to display",
+    "message.friend.already": "already on your friends list",
 
     "settings.relays": "Relays",
     "settings.account.edit": "My Account",
@@ -120,7 +121,7 @@ export default {
     "wallet.bitcoin.tag": "Bitcoin Wallet (mainnet)",
     "wallet.bitcoin.description": "Bitcoin wallet on mainnet",
     "wallet.bitcoin.testnet.tag": "Bitcoin Wallet (testnet)",
-    "wallet.bitcoin.testnet.desecription": "Bitcoin Wallet on testnet",
+    "wallet.bitcoin.testnet.description": "Bitcoin Wallet on testnet",
     "wallet.title.receive": "Receive",
     "wallet.title.send": "Send",
     "wallet.title.sendvalue": "How many sats do you want to send?",

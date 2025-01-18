@@ -9,10 +9,12 @@ import { walletService } from "@/src/core/walletManager"
 import { pushMessage } from "@/src/services/notification"
 import { useTranslateService } from "@/src/providers/translateProvider"
 import { useAuth } from "@/src/providers/userProvider"
+import { WalletType } from "@/src/services/memory/types"
 
-const ImportWalletScreen = ({ navigation }: any) => {
+const ImportWalletScreen = ({ navigation, route }: any) => {
 
     const { setWallets } = useAuth()
+    const type = route.params.type as WalletType
     const [loading, setLoading] = useState(false)
     const [walletName, setWalletName] = useState<string>("")
     const [seedPhrase, setSeedPhrase] = useState<string>("")
@@ -34,7 +36,7 @@ const ImportWalletScreen = ({ navigation }: any) => {
 
         setLoading(true)
 
-        const response = await walletService.import({ name: walletName, seedphrase: seedPhrase, passphrase: passPhrase })
+        const response = await walletService.import({ name: walletName, type, seedphrase: seedPhrase, passphrase: passPhrase })
 
         if(setWallets) setWallets(await walletService.list())
 
@@ -68,6 +70,20 @@ const ImportWalletScreen = ({ navigation }: any) => {
 
             <FormControl label="Seed Phrase" value={seedPhrase} onChangeText={value => setSeedPhrase(value.toLowerCase())} isTextArea />
 
+            <View style={{ alignItems: "center" }}>
+                <Text style={{ 
+                    width: "50%", 
+                    padding: 4,
+                    borderRadius: 10,
+                    textAlign: "center",
+                    color: theme.colors.white, 
+                    backgroundColor: type == "bitcoin" ? theme.colors.orange : theme.colors.green
+                }}>
+                    {type == "bitcoin" && useTranslate("wallet.bitcoin.tag")}
+                    {type == "testnet" && useTranslate("wallet.bitcoin.testnet.tag")}
+                </Text>
+            </View>
+            
             {/* <FormControl label="PassPhrase" value={passPhrase} onChangeText={setPassPhrase} type="password" /> */}
 
             {/* Footer */}

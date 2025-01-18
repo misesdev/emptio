@@ -1,17 +1,17 @@
 
 import NDK, { NDKUserProfile, NDKPrivateKeySigner, NDKEvent } from "@nostr-dev-kit/ndk"
-import { Filter, Event } from "nostr-tools"
+import { Filter } from "nostr-tools"
 import { PairKey } from "../memory/types"
 import { getRelays } from "../memory/relays"
 import { NostrEventKinds } from "@/src/constants/Events"
 
-type NostrEvent = {
-    id: string,
-    kind: number,
-    pubkey: string,
-    content: any,
-    created_at: number,
-    tags: string[][]
+export type NostrEvent = {
+    id?: string,
+    kind?: number,
+    pubkey?: string,
+    content?: any,
+    created_at?: number,
+    tags?: string[][]
 }
 
 export const getNostrInstance = async (): Promise<NDK> => {
@@ -27,9 +27,11 @@ export const getNostrInstance = async (): Promise<NDK> => {
 
 export const publishUser = async (profile: NDKUserProfile, keys: PairKey) => {
 
-    Nostr.signer = new NDKPrivateKeySigner(keys.privateKey)
+    const pool = Nostr as NDK
 
-    const user = Nostr.getUser({ hexpubkey: keys.publicKey })
+    pool.signer = new NDKPrivateKeySigner(keys.privateKey)
+
+    const user = pool.getUser({ hexpubkey: keys.publicKey })
 
     await user.fetchProfile()
 
@@ -38,30 +40,38 @@ export const publishUser = async (profile: NDKUserProfile, keys: PairKey) => {
     await user.publish()
 }
 
-export const publishEvent = async (event: { kind: number, content: string }, keys: PairKey) => {
+export const publishEvent = async (event: NostrEvent, keys: PairKey, replacable: boolean = false) => {
 
-    Nostr.signer = new NDKPrivateKeySigner(keys.privateKey)
+    const pool = Nostr as NDK
+    
+    pool.signer = new NDKPrivateKeySigner(keys.privateKey)
 
-    const eventSend = new NDKEvent(Nostr);
-
-    eventSend.content = event.content
+    const eventSend = new NDKEvent(pool);
 
     eventSend.kind = event.kind
+    eventSend.pubkey = event.pubkey ?? ""
+    eventSend.content = event.content
+    eventSend.created_at = event.created_at
+    eventSend.tags = event.tags ?? [[]]
 
     await eventSend.sign()
 
-    await eventSend.publish()
+    if(replacable) await eventSend.publishReplaceable()
+    
+    if(!replacable) await eventSend.publish()
 }
 
-export const listenerEvents = async (filters: Filter) => {
+export const listenerEvents = async (filters: Filter) : Promise<NostrEvent[]> => {
 
-    const events = await Nostr.fetchEvents(filters)
+    const pool = Nostr as NDK
+
+    const events = await pool.fetchEvents(filters)
 
     const eventsResut: NostrEvent[] = []
 
-    events.forEach((event: Event) => {
+    events.forEach((event: NDKEvent) => {
 
-        let jsonContent = [NostrEventKinds.metadata].includes(event.kind)
+        let jsonContent = [NostrEventKinds.metadata].includes(event.kind ?? 0)
 
         eventsResut.push({
             id: event.id,
@@ -76,14 +86,16 @@ export const listenerEvents = async (filters: Filter) => {
     return eventsResut
 }
 
-export const getEvent = async (filters: Filter) => {
+export const getEvent = async (filters: Filter) : Promise<NostrEvent> => {
 
-    var eventResut: NostrEvent 
+    var eventResut: NostrEvent
 
-    const event = await Nostr.fetchEvent(filters)
+    const pool = Nostr as NDK
+
+    const event = await pool.fetchEvent(filters)
 
     if (event) {
-        let jsonContent = [NostrEventKinds.metadata].includes(event.kind)
+        let jsonContent = [NostrEventKinds.metadata].includes(event.kind ?? 0)
 
         eventResut = {
             id: event.id,
@@ -94,8 +106,8 @@ export const getEvent = async (filters: Filter) => {
             tags: event.tags
         }
 
-        return eventResut
+        return eventResut as NostrEvent
     } else 
-        return null
+        return {}
 }
 

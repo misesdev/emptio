@@ -1,26 +1,23 @@
 import { ButtonDefault, ButtonSuccess } from "@components/form/Buttons"
 import { Image, StyleSheet, Text, View } from "react-native"
 import SplashScreen from "@components/general/SplashScreen"
-import { getNostrInstance } from "../services/nostr/events"
+import { getEvent, getNostrInstance, listenerEvents } from "../services/nostr/events"
 import { userService } from "../core/userManager"
 import { useEffect, useState } from "react"
-import theme from "@src/theme"
 import { useAuth } from "../providers/userProvider"
 import { emptioService } from "../core/emptio"
 import { useTranslateService } from "../providers/translateProvider"
 import { walletService } from "../core/walletManager"
+import { NostrEvent } from "@nostr-dev-kit/ndk"
+import theme from "@src/theme"
 
 const InitializeScreen = ({ navigation }: any) => {
 
-    const { setUser, setEmptioData, setWallets } = useAuth()
+    const { setUser, setEmptioData, setWallets, setFollowsEvent } = useAuth()
     const [loading, setLoading] = useState(true)
     const { useTranslate } = useTranslateService()
 
-    useEffect(() => {
-
-        handleVerifyLogon()
-
-    }, [])
+    useEffect(() => { handleVerifyLogon() }, [])
 
     const handleVerifyLogon = async () => {
 
@@ -30,9 +27,17 @@ const InitializeScreen = ({ navigation }: any) => {
 
         if(wallets && setWallets) setWallets(wallets)
 
-        if (await userService.isLogged({ setUser })) {
+        if (await userService.isLogged({ setUser })) 
+        {
             if (setEmptioData)
                 setEmptioData(await emptioService.getInitalData())
+            
+            if(setFollowsEvent) 
+            {
+                const user = await userService.getUser()
+                const eventFollow = await getEvent({ kinds:[3], authors: [user?.pubkey ?? ""], limit: 1 })
+                if(eventFollow) setFollowsEvent(eventFollow as NostrEvent)
+            }                
 
             navigation.reset({ index: 0, routes: [{ name: "authenticate-stack" }] })
         }
@@ -58,23 +63,9 @@ const InitializeScreen = ({ navigation }: any) => {
 }
 
 const styles = StyleSheet.create({
-    logo: {
-        maxWidth: "90%",
-        height: "35%",
-        marginTop: -100
-    },
-    title: {
-        marginVertical: 10,
-        color: theme.colors.gray,
-    },
-    buttonArea: {
-        width: '100%',
-        position: 'absolute',
-        justifyContent: 'center',
-        marginVertical: 30,
-        flexDirection: "row",
-        bottom: 10,
-    }
+    logo: { maxWidth: "90%", height: "35%", marginTop: -100 },
+    title: { marginVertical: 10, color: theme.colors.gray },
+    buttonArea: { width: '100%', position: 'absolute', justifyContent: 'center', marginVertical: 30, flexDirection: "row", bottom: 10 }
 })
 
 export default InitializeScreen;

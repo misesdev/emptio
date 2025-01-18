@@ -67,7 +67,7 @@ const CreatedSeedScren = ({ navigation, route }: any) => {
 const styles = StyleSheet.create({
     title: { fontSize: 30, maxWidth: "90%", fontWeight: "bold", textAlign: "center", color: theme.colors.white, marginVertical: 20 },
     seedarea: { width: "100%", marginVertical: 20, flexDirection: "row" },
-    buttonarea: { width: "100%", paddingVertical: 20, justifyContent: "center", alignItems: "center" },
+    buttonarea: { width: "100%", paddingVertical: 6, marginBottom: 40, justifyContent: "center", alignItems: "center" },
     word: { color: theme.colors.white, fontSize: 14, fontWeight: "bold", marginVertical: 4, padding: 15, borderRadius: 10, backgroundColor: theme.colors.section }
 })
 

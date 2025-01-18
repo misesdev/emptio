@@ -121,6 +121,7 @@ export type TranslateWords = "initial.message"
     | "message.relay.already_exists"
     | "message.relay.supported_nips"
     | "message.relay.empty"
+    | "message.friend.already"
 
     | "wallet.lightning.tag"
     | "wallet.lightning.description"

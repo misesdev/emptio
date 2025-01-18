@@ -58,7 +58,7 @@ const AuthenticateScreen = ({ navigation }: any) => {
 }
 
 const styles = StyleSheet.create({
-    logo: { maxWidth: "90%", height: "35%", marginTop: -100 },
+    logo: { maxWidth: "60%", height: "25%", marginTop: -100 },
     title: { marginVertical: 10, color: theme.colors.gray, textAlign: "center", width: "85%" },
     buttonArea: { width: '100%', position: 'absolute', justifyContent: 'center', marginVertical: 30, flexDirection: "row", bottom: 10 }
 })

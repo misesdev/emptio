@@ -16,7 +16,7 @@ export const UserList = ({ users, onPressUser, toPayment = false }: FriendListPr
         if (onPressUser) onPressUser(follow)
     }, [onPressUser])
 
-    const handleRenderItem = ({ item }: { item: User }) => <FollowItem follow={item} handleClickFollow={handleClickFollow} />
+    const handleRenderItem = ({ item }: { item: User }) => <FollowItem key={item.pubkey?.substring(0, 20)} follow={item} handleClickFollow={handleClickFollow} />
 
     return (
         <>

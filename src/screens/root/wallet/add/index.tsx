@@ -55,6 +55,12 @@ const AddWalletScreen = ({ navigation }: any) => {
         }, 50)
     }
 
+    const handleImportWallet = () => {
+        const type: WalletType = walletType 
+        
+        navigation.navigate("import-wallet-stack", { type })
+    }
+
     if (loading)
         return <SplashScreen />
 
@@ -127,7 +133,7 @@ const AddWalletScreen = ({ navigation }: any) => {
 
                 {/* Import wallet from seed phrase */}
 
-                <ButtonLink label={useTranslate("commons.import")} onPress={() => navigation.navigate("import-wallet-stack")} color={theme.colors.gray} />
+                <ButtonLink label={useTranslate("commons.import")} onPress={handleImportWallet} color={theme.colors.gray} />
 
                 <View style={styles.buttonArea}>
                     <ButtonPrimary label={useTranslate("commons.create")} onPress={() => handleCreate()} />
@@ -143,7 +149,7 @@ const styles = StyleSheet.create({
     selection: { width: "90%", minHeight: 20, maxHeight: 100, borderRadius: 16, marginVertical: 10, flexDirection: "row", borderColor: theme.colors.white, backgroundColor: theme.colors.default },
     typeTitle: { fontSize: 16, fontWeight: "bold", marginTop: 15, color: theme.colors.white },
     typeDescription: { marginBottom: 15, color: theme.colors.gray },
-    buttonArea: { width: '100%', position: 'absolute', justifyContent: 'center', marginVertical: 10, flexDirection: "row", bottom: 10 }
+    buttonArea: { width: '100%', position: 'absolute', justifyContent: 'center', marginBottom: 40, flexDirection: "row", bottom: 10 }
 })
 
 export default AddWalletScreen

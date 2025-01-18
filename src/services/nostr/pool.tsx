@@ -12,7 +12,7 @@ export const pushUserData = async (user: User, pairKey: PairKey) => {
 
     const profile: User = {
         name: user.name,
-        displayName: user.displayName,
+        display_name: user.display_name,
         picture: user.picture,
         image: user.image,
         about: user.about,

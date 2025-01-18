@@ -92,14 +92,14 @@ const MessageBox = () => {
     )
 }
 
-export const showMessage = ({ title, message, infolog, type, action }: alertBoxProps) => {
-    setTimeout(() => { showMessageFunction({ title, message, infolog, action }) }, 50)
+export const showMessage = (props: alertBoxProps) => {
+    showMessageFunction(props) 
 }
 
 const styles = StyleSheet.create({
     box: { padding: 10, paddingHorizontal: 15, width: "85%", borderRadius: 8, backgroundColor: theme.colors.section },
     message: { fontSize: 14, color: theme.colors.gray },
-    infolog: { paddingHorizontal: 15, paddingVertical: 8, marginVertical: 18, borderRadius: 10, backgroundColor: theme.colors.gray },
+    infolog: { paddingHorizontal: 15, paddingVertical: 8, marginVertical: 18, borderRadius: 10, backgroundColor: theme.colors.semitransparent, color: theme.colors.gray },
     sectionButtons: { width: "100%", flexDirection: "row-reverse" },
     close: { top: 20, left: 20, position: "absolute" },
     absolute: {

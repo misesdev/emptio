@@ -8,6 +8,7 @@ import SplashScreen from "@components/general/SplashScreen"
 import theme from "@src/theme"
 import { walletService } from "@/src/core/walletManager"
 import { useTranslateService } from "@/src/providers/translateProvider"
+import { Network } from "@/src/services/bitcoin/types"
 
 const WalletManagerScreen = ({ navigation, route }: any) => {
 
@@ -38,8 +39,9 @@ const WalletManagerScreen = ({ navigation, route }: any) => {
         setRefreshing(true)
 
         const address = wallet.address ?? ""
+        const network: Network = wallet.type == "bitcoin" ? "mainnet" : "testnet"
         // search transactions and update wallet lastBalance
-        const walletInfo = await walletService.listTransactions(address)
+        const walletInfo = await walletService.listTransactions(address, network)
 
         setTransactions(walletInfo.transactions)
 

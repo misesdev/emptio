@@ -13,7 +13,6 @@ import AppRoutes from './src/routes';
 import { AuthProvider } from "./src/providers/userProvider";
 import { SettingsProvider } from "./src/providers/settingsProvider";
 import { TranslateProvider } from "./src/providers/translateProvider";
-import { TorProvider } from "./src/providers/torProvider";
 
 export default function App() {
     return (
@@ -23,13 +22,11 @@ export default function App() {
             <TranslateProvider>
                 <SettingsProvider>
                     <AuthProvider>
-                        {/* <TorProvider> */}
                         <AppRoutes />
-                        {/* </TorProvider> */}
                     </AuthProvider>
                 </SettingsProvider>
             </TranslateProvider>
-            <View style={styles.space}></View>
+            {/* <View style={styles.space}></View> */}
         </View>
     )
 }

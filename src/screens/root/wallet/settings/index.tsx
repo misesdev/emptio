@@ -114,7 +114,7 @@ const WalletSettings = ({ navigation, route }: any) => {
 const styles = StyleSheet.create({
     title: { fontSize: 20, textAlign: "center", color: theme.colors.white },
     container: { backgroundColor: theme.colors.black, height: "100%" },
-    footer: { width: "100%", position: "absolute", bottom: 10, alignItems: "center" }
+    footer: { width: "100%", position: "absolute", bottom: 40, alignItems: "center" }
 })
 
 export default WalletSettings

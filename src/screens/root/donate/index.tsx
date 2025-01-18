@@ -64,7 +64,7 @@ const DonateScreen = ({ navigation, route }: any) => {
 
 const styles = StyleSheet.create({
     title: { fontSize: 25, maxWidth: "90%", fontWeight: "bold", textAlign: "center", color: theme.colors.white },
-    sectionBottom: { position: "absolute", bottom: 0, padding: 10, width: "100%", alignItems: "center" },
+    sectionBottom: { position: "absolute", bottom: 30, padding: 10, width: "100%", alignItems: "center" },
     sendButtonText: { fontSize: 13, fontWeight: "500", textAlign: 'center', marginHorizontal: 10, },
     sendButton: { borderRadius: 18, paddingVertical: 14, margin: 10, minWidth: 160 }
 })

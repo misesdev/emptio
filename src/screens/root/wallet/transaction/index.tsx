@@ -12,6 +12,8 @@ import { ActivityIndicator } from "react-native-paper"
 import { SectionContainer } from "@/src/components/general/section"
 import { ButtonPrimary } from "@/src/components/form/Buttons"
 import { useTranslateService } from "@/src/providers/translateProvider"
+import { Network } from "@/src/services/bitcoin/types"
+import env from "@/env"
 
 const TransactionIcon = ({ type, confirmed }: TransactionInfo) => {
     let color = theme.colors.red
@@ -36,14 +38,21 @@ const TransactionScreen = ({ navigation, route }: any) => {
 
     const loadData = async () => {
         
-        const transactionDetails = await walletService.transaction.details(transaction.txid ?? "")
+        const network: Network = wallet.type == "bitcoin" ? "mainnet" : "testnet"
+
+        const transactionDetails = await walletService.transaction.details(transaction.txid ?? "", network)
 
         setTxDetails(transactionDetails)
 
         setLoading(false)
     }
 
-    const handleToWeb = () => Linking.openURL(`https://mempool.space/testnet/tx/${txDetails.txid}`)
+    const handleToWeb = () => { 
+
+        const directory = wallet.type == "bitcoin" ? "tx/" : "testnet/tx/"
+
+        Linking.openURL(`https://${env.mempool.hostname}/${directory}${txDetails.txid}`)
+    }
 
     return (
         <>
@@ -55,23 +64,13 @@ const TransactionScreen = ({ navigation, route }: any) => {
                 <Text style={styles.amount}>{formatSats(transaction.amount)} Sats</Text>
             </View>
             
-            <View style={{ height: 50 }}></View>
+            <View style={{ height: 30 }}></View>
 
             <SectionHeader label={useTranslate("wallet.transaction.details")} />
 
             <ScrollView contentContainerStyle={theme.styles.scroll_container}>
-                
-                {/* <TransactionIcon type={transaction.type} confirmed={transaction.confirmed} />  */}
-                {/*  */}
-                {/* <Text style={styles.amount}>{formatSats(transaction.amount)} Sats</Text> */}
-                {/*  */}
-                {/* <View style={{ height: 50 }}></View> */}
-
-                {/* <SectionHeader label="Details" /> */}
-                
-                { loading &&
-                    <ActivityIndicator size={40} color={theme.colors.gray}/>
-                }
+                               
+                {loading && <ActivityIndicator size={40} color={theme.colors.gray}/>}
 
                 { !loading &&
                     <>                        

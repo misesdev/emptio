@@ -73,7 +73,7 @@ const styles = StyleSheet.create({
     content: { flex: 1, justifyContent: "center", alignItems: "center", backgroundColor: theme.colors.black },
     copycontent: { padding: 12, marginVertical: 10, borderRadius: 8, backgroundColor: theme.colors.gray },
     copytext: { color: theme.colors.white, fontSize: 10, textAlign: "center" },
-    footer: { position: "absolute", bottom: 10, justifyContent: "center" },
+    footer: { position: "absolute", bottom: 40, justifyContent: "center" },
     image: { width: 100, height: 100, overflow: "hidden", borderRadius: 50, backgroundColor: theme.colors.gray },
     userName: { color: theme.colors.white, fontSize: 18, fontWeight: "500", marginVertical: 15, textAlign: "center" }
 })

@@ -23,6 +23,7 @@ export const WalletHeader = ({ wallet, showOptions }: WalletProps) => {
     return (
         <>
             {wallet!.type == "bitcoin" && <Image source={require("assets/images/bitcoin-wallet-header3.jpg")} style={{ width: "100%", height: 240 }} />}
+            {wallet!.type == "testnet" && <Image source={require("assets/images/bitcoin-wallet-header.jpg")} style={{ width: "100%", height: 240 }} />}
             {wallet!.type == "lightning" && <Image source={require("assets/images/lightning-wallet-header.png")} style={{ width: "100%", height: 240 }} />}
             <View style={styles.headerWallet}>
                 <View style={{ height: 50 }}></View>
@@ -30,8 +31,9 @@ export const WalletHeader = ({ wallet, showOptions }: WalletProps) => {
                 <Text style={[{ fontSize: 30 }, styles.headerText]}>{balanceSats} Sats</Text>
                 <Text style={[{ fontSize: 14 }, styles.headerText]}>{balanceBTC} BTC</Text>
                 <Text style={[styles.headerText, { fontSize: 12, backgroundColor: walletColor, padding: 10, borderRadius: 15, maxWidth: 130, textAlign: "center" }]}>
-                    {wallet!.type == "bitcoin" && "Bitcoin Wallet"}
-                    {wallet!.type == "lightning" && "Lightning Wallet"}
+                    {wallet?.type == "bitcoin" && useTranslate("wallet.bitcoin.tag") }
+                    {wallet?.type == "testnet" && useTranslate("wallet.bitcoin.testnet.tag")}
+                    {wallet?.type == "lightning" && useTranslate("wallet.lightning.tag")}
                 </Text>
             </View>
         </>

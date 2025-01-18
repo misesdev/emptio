@@ -97,6 +97,7 @@ export default {
     "message.relay.already_exists": "O relay já existe na lista de relays!",
     "message.relay.supported_nips": "Nips suportados pelo relay",
     "message.relay.empty": "Não há nenhum  relay para exibir",
+    "messade.friend.already": "já está na sua lista de amigos",
 
     "settings.relays": "Relays", 
     "settings.nostrkey.copy": "Copiar Nostr ID",

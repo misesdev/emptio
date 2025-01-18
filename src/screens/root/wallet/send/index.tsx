@@ -5,7 +5,6 @@ import { Ionicons } from "@expo/vector-icons"
 import { useState } from "react"
 import theme from "@src/theme"
 import { useTranslateService } from "@/src/providers/translateProvider"
-import { Wallet } from "@/src/services/memory/types"
 
 const SendScreen = ({ navigation, route }: any) => {
 
@@ -42,7 +41,7 @@ const SendScreen = ({ navigation, route }: any) => {
 
 const styles = StyleSheet.create({
     title: { fontSize: 25, maxWidth: "90%", fontWeight: "bold", textAlign: "center", color: theme.colors.white },
-    buttonArea: { position: "absolute", bottom: 0, padding: 10, width: "100%", flexDirection: "row-reverse" }
+    buttonArea: { position: "absolute", bottom: 30, padding: 10, width: "100%", flexDirection: "row-reverse" }
 })
 
 export default SendScreen

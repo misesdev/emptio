@@ -62,7 +62,7 @@ const RegisterScreen = ({ navigation }: any) => {
 }
 
 const styles = StyleSheet.create({
-    logo: { width: 200, height: 200 },
+    logo: { width: 200, height: 160 },
     title: { marginVertical: 10, color: theme.colors.gray, textAlign: "center", width: "85%" },
     buttonArea: { width: '100%', position: 'absolute', justifyContent: 'center', marginVertical: 30, flexDirection: "row", bottom: 10 }
 })

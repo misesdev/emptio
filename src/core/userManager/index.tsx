@@ -9,6 +9,7 @@ import { getPairKey, insertPairKey } from "../../services/memory/pairkeys"
 import { NostrEventKinds } from "@/src/constants/Events"
 import { nip19 } from "nostr-tools"
 import env from "@/env"
+import { NostrEvent } from "@nostr-dev-kit/ndk"
 
 type SignUpProps = {
     userName: string,
@@ -172,6 +173,39 @@ const listFollows = async (user: User, iNot: boolean = true): Promise<User[]> =>
     return follows
 }
 
+type addFollowProps = {
+    user: User,
+    friend: User,
+    followsEvent: NostrEvent,
+    setFollowsEvent?: (followsEvent: NostrEvent) => void
+}
+
+const addFollow = async ({ user, friend, followsEvent, setFollowsEvent }: addFollowProps) => {
+    try {
+        await fetch(`${env.nosbook.api}/friends/add`, {
+            method: "post",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+                pubkey: user.pubkey,
+                friends: [friend.pubkey]
+            })
+        })
+        
+        if(!followsEvent.tags.filter(t => t[0] == "p" && t[1] == friend.pubkey).length) 
+        {
+            const pairKey = await getPairKey(user.keychanges ?? "")
+
+            followsEvent.tags.push(["p", friend.pubkey ?? ""])
+            followsEvent.created_at = Date.now()
+
+            await publishEvent(followsEvent, pairKey, true)
+
+            if(setFollowsEvent) setFollowsEvent(followsEvent)
+        }
+
+    } catch (ex) { console.log(ex) }
+}
+
 const searchUsers = async (user: User, searchTerm: string): Promise<User[]> => {
     try 
     {
@@ -181,7 +215,7 @@ const searchUsers = async (user: User, searchTerm: string): Promise<User[]> => {
             body: JSON.stringify({
                 pubkey: user.pubkey,
                 searchTerm: searchTerm,
-                limit: 50
+                limit: 100
             })
         })
 
@@ -206,8 +240,10 @@ export const userService = {
     signIn,
     signOut,
     isLogged,
+    getUser: getUser,
     updateProfile,
     convertPubkey,
     listFollows,
+    addFollow,
     searchUsers
 }

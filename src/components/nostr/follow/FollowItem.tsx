@@ -32,7 +32,7 @@ export const FollowItem = ({ follow, handleClickFollow }: UserItemProps) => {
                 <View style={{ width: "100%" }}>
                     <Text style={styles.userName}>
                         {
-                            (follow.name ?? follow.display_name ?? nip19.npubEncode(follow.pubkey ?? "")).substring(0, 17)
+                            (follow.display_name ?? follow.name ?? nip19.npubEncode(follow.pubkey ?? "")).substring(0, 17)
                         }
                     </Text>
                 </View>

@@ -73,7 +73,7 @@ const SendReceiverScreen = ({ navigation, route }: any) => {
 
             <FollowList searchable searchTerm={address} onPressFollow={user => { console.log(user) }} />
 
-            <View style={{ position: "absolute", bottom: 0, padding: 10, width: "100%", flexDirection: "row-reverse" }}>
+            <View style={{ position: "absolute", bottom: 30, padding: 10, width: "100%", flexDirection: "row-reverse" }}>
                 <TouchableOpacity activeOpacity={.7} onPress={handleSendToFee} disabled={nextDisabled}
                     style={{ borderRadius: 50, padding: 14, margin: 10, backgroundColor: nextDisabled ? theme.colors.disabled : theme.colors.blue }}
                 >

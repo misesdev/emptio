@@ -11,6 +11,7 @@ import theme from "@src/theme"
 import AddRelay from "./add"
 import axios from "axios"
 import { useTranslateService } from "@/src/providers/translateProvider"
+import NDK from "@nostr-dev-kit/ndk"
 
 const ManageRelaysScreen = ({ navigation }: any) => {
 
@@ -78,8 +79,7 @@ const ManageRelaysScreen = ({ navigation }: any) => {
             <HeaderScreen title={useTranslate("settings.relays")} onClose={() => navigation.navigate("user-menu-stack")} />
             <ScrollView contentContainerStyle={theme.styles.scroll_container} >
 
-                {/* {relays.length <= 0 && <ActivityIndicator color={theme.colors.gray} size={theme.icons.extra} />} */}
-                {relays.length <= 0 && <Text style={{ color: theme.colors.gray }}>{useTranslate("message.relay.empty")}</Text>}
+                {!relays.length && <Text style={{ color: theme.colors.gray }}>{useTranslate("message.relay.empty")}</Text>}
 
                 <RelayList relays={relays} onDelete={handleDeleteRelay} />
 
@@ -96,7 +96,7 @@ const ManageRelaysScreen = ({ navigation }: any) => {
 }
 
 const styles = StyleSheet.create({
-    buttonarea: { width: "100%", position: "absolute", alignItems: "center", bottom: 10 }
+    buttonarea: { width: "100%", position: "absolute", alignItems: "center", bottom: 40 }
 })
 
 export default ManageRelaysScreen

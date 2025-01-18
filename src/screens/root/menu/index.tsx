@@ -16,6 +16,7 @@ import MessageBox, { showMessage } from "@components/general/MessageBox"
 import SelectLanguageBox, { showSelectLanguage } from "@components/modal/SelectLanguageBox"
 import { pushMessage } from "@src/services/notification"
 import { useTranslateService } from "@/src/providers/translateProvider"
+import Constants from "expo-constants"
 
 const UserMenuScreen = ({ navigation }: any) => {
 
@@ -126,6 +127,11 @@ const UserMenuScreen = ({ navigation }: any) => {
                 <View style={{ padding: 20 }}>
                     <ButtonLink color={theme.colors.red} label={useTranslate("commons.signout")} onPress={handleDeleteAccount} />
                 </View>
+
+                <View style={{ flexDirection: "row", marginBottom: 40 }}>
+                    <Text style={{ textAlign: "center", color: theme.colors.gray, fontWeight: "400", fontSize: 14 }}>version {Constants.expoConfig?.version}</Text>
+                </View>
+
             </ScrollView>
             <MessageBox />
             <SelectLanguageBox forceUpdate={setForceUpdate} />
@@ -140,7 +146,7 @@ const styles = StyleSheet.create({
     mediumsection: { width: "50%", alignItems: "center", height: "100%" },
     area: { width: "100%", alignItems: "center", marginVertical: 10 },
     name: { fontSize: 18, fontWeight: 'bold', color: theme.colors.white, marginVertical: 10 },
-    image: { width: 100, height: 100, borderRadius: 50, backgroundColor: theme.colors.black, overflow: "hidden", borderWidth: 3, borderColor: theme.colors.blue },
+    image: { width: 100, height: 100, borderRadius: 50, overflow: "hidden", borderWidth: 3, borderColor: theme.colors.blue },
     banner: { width: "100%", height: 140, position: "absolute", top: 0 }
 })
 

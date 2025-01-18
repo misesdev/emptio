@@ -7,22 +7,30 @@ import { useTranslateService } from "@/src/providers/translateProvider"
 import { userService } from "@/src/core/userManager"
 import { UserList } from "@/src/components/nostr/user/UserList"
 import theme from "@src/theme"
-import { useState } from "react"
+import { useEffect, useState } from "react"
+import FollowModal, { showFollowModal } from "@/src/components/nostr/follow/FollowModal"
+import { NostrEvent } from "@nostr-dev-kit/ndk"
 
 
 const AddFolowScreen = ({ navigation }: any) => {
 
-    const { user } = useAuth()
+    const { user, followsEvent, setFollowsEvent } = useAuth()
     const { useTranslate } = useTranslateService()
     const [users, setUsers] = useState<User[]>([])
     const [loading, setLoading] = useState(false)
+    //const [friends, setFriends] = useState<User[]>([])
+
+    // useEffect(() => { loadFriends() }, [])
+
+    // const loadFriends = async () => {
+    //     const follows = await userService.listFollows(user)
+
+    //     setFriends(follows)
+    // }
 
     const handleSearch = async (searchTerm: string) => {
 
-        if(searchTerm?.length <= 1) {
-            setUsers([])
-            return;
-        }
+        if(searchTerm?.length <= 1) return setUsers([])
             
         setLoading(true)
 
@@ -35,8 +43,17 @@ const AddFolowScreen = ({ navigation }: any) => {
         setLoading(false)
     }
 
-    const handleAddFollow = (follow: User) => {
-        console.log(follow.pubkey)
+    const AddUserOnFollowList = async (friend: User) => {
+        await userService.addFollow({
+            user,
+            friend,
+            followsEvent: followsEvent as NostrEvent,
+            setFollowsEvent: setFollowsEvent,
+        })
+    }
+
+    const handleAddFollow = async (follow: User) => {
+        showFollowModal({ user: follow })
     }
 
     return (
@@ -50,6 +67,9 @@ const AddFolowScreen = ({ navigation }: any) => {
 
             <UserList users={users} onPressUser={handleAddFollow} />
 
+            <View style={{ height: 38 }}></View>
+
+            <FollowModal handleAddFollow={AddUserOnFollowList} />
         </View>
     )
 }

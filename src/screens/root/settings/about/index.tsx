@@ -4,6 +4,7 @@ import theme from "@src/theme"
 import { HeaderScreen } from "@components/general/HeaderScreen"
 import { Ionicons } from "@expo/vector-icons"
 import { useTranslateService } from "@/src/providers/translateProvider"
+import Constants from "expo-constants"
 
 const AboutScreen = ({ navigation }: any) => {
 
@@ -21,7 +22,7 @@ const AboutScreen = ({ navigation }: any) => {
                 <Image source={require("assets/emptio.png")} style={styles.logo} />
 
                 <View style={{ padding: 15, marginVertical: 20 }}>
-                    <Text style={{ color: theme.colors.gray, fontSize: 18 }}>
+                    <Text style={{ color: theme.colors.gray, fontSize: 16 }}>
                         {useTranslate("settings.about.content")}
                     </Text>
                 </View>
@@ -36,7 +37,7 @@ const AboutScreen = ({ navigation }: any) => {
                 </View>
 
                 <View style={{ flexDirection: "row", marginVertical: 10 }}>
-                    <Text style={{ textAlign: "center", color: theme.colors.gray, fontWeight: "bold", fontSize: 13 }}>version 0.0.1</Text>
+                    <Text style={{ textAlign: "center", color: theme.colors.gray, fontWeight: "400", fontSize: 14 }}>version {Constants.expoConfig?.version}</Text>
                 </View>
 
             </ScrollView>

@@ -1,4 +1,4 @@
-import { getUtxo, getUtxos } from "@/src/services/bitcoin/mempool"
+import { getTransactionInfo, getUtxo, getUtxos } from "@/src/services/bitcoin/mempool"
 import { getUser } from "@/src/services/memory/user"
 import { useTranslate } from "@/src/services/translate"
 import { Tx } from "@mempool/mempool.js/lib/interfaces/bitcoin/transactions"
@@ -9,6 +9,7 @@ import { PairKey, Transaction, TransactionInput, TransactionOutput, Wallet, Wall
 import { clearDefaultWallets, deleteWallet, getWallet, getWallets, insertWallet, updateWallet } from "@src/services/memory/wallets"
 import { Response, trackException } from "@src/services/telemetry"
 import { userService } from "../userManager"
+import { Network } from "../../services/bitcoin/types"
 
 type Props = {
     name: string,
@@ -20,7 +21,9 @@ const create = async ({ name, type, wallets }: Props): Promise<Response<Wallet>>
     try {
         const pairKey: PairKey = createWallet()
     
-        const bitcoinAddress = generateAddress(pairKey.publicKey)
+        const network: Network = type == "bitcoin" ? "mainnet" : "testnet"
+
+        const bitcoinAddress = generateAddress(pairKey.publicKey, network)
 
         const wallet: Wallet = {
             name: name,
@@ -55,7 +58,9 @@ const require = async ({ name, type = "bitcoin", seedphrase, passphrase }: Impor
     try {
         const pairKey = await importWallet(seedphrase, passphrase)
 
-        const bitcoinAddress = generateAddress(pairKey.publicKey)
+        const network: Network = type == "bitcoin" ? "mainnet" : "testnet"
+
+        const bitcoinAddress = generateAddress(pairKey.publicKey, network)
 
         const wallet: Wallet = {
             name: name,
@@ -131,10 +136,10 @@ const update = async (wallet: Wallet) => {
     await updateWallet(wallet)
 }
 
-const listTransactions = async (address: string): Promise<WalletInfo> => {
+const listTransactions = async (address: string, network: Network): Promise<WalletInfo> => {
     const response: WalletInfo = { balance: 0, sended: 0, received: 0, transactions: [] }
 
-    const utxos: Tx[] = await getUtxos(address)
+    const utxos: Tx[] = await getUtxos(address, network)
 
     utxos.forEach(utxo => {
         let received = utxo.vout.reduce((acumulator, tx) => {
@@ -191,45 +196,8 @@ const transaction = {
 
         return transaction
     },
-    send: async (txHex: string): Promise<Response<any>> => sendTransaction(txHex),
-    details: async (txid: string) => {
-        const utxo = await getUtxo(txid)
-
-        var amount: number = 0
-        utxo.vout.forEach(tx => amount += tx.value)
-
-        var inputs: TransactionInput[] = utxo.vin.map((item): TransactionInput => { 
-            return {
-                address: item.prevout.scriptpubkey_address,
-                scriptPubkey: item.prevout.scriptpubkey,
-                amount: item.prevout.value
-            }
-        })  
-
-        var outputs: TransactionInput[] = utxo.vout.map((item): TransactionOutput => { 
-            return {
-                address: item.scriptpubkey_address,
-                scriptPubkey: item.scriptpubkey,
-                amount: item.value
-            }
-        }) 
-
-        const transaction: Transaction = {
-            txid: utxo.txid,
-            fee: utxo.fee,
-            size: utxo.size,
-            confirmed: utxo.status.confirmed,
-            block_height: utxo.status.block_height,
-            description: utxo.status.confirmed ? useTranslate("message.transaction.confirmed") : useTranslate("message.transaction.notconfirmed"),
-            amount: amount,
-            date: utxo.status.confirmed ? new Date(utxo.status.block_time * 1000).toLocaleString() : useTranslate("message.transaction.notconfirmed"),
-            timestamp: utxo.status.confirmed ? utxo.status.block_time : Date.now(),
-            inputs: inputs,
-            outputs: outputs
-        }
-
-        return transaction
-    }
+    send: async (txHex: string, network: Network): Promise<Response<any>> => sendTransaction(txHex, network),
+    details: async (txid: string, network: Network) => await getTransactionInfo(txid, network)
 }
 
 const address = {
