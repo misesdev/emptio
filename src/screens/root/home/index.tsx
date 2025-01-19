@@ -14,6 +14,7 @@ const HomeScreen = ({ navigation }: any) => {
     const { wallets, setWallets } = useAuth()
     const { useTranslate } = useTranslateService()
     const [loading, setLoading] = useState(false)
+    const [reloadWallets, setReloadWallets] = useState<boolean>(true)
 
     useEffect(() => { handleData() }, [])
 
@@ -24,6 +25,8 @@ const HomeScreen = ({ navigation }: any) => {
 
         if (wallets.length <= 0)
             pushMessage(useTranslate("message.wallet.alertcreate"))
+
+        setReloadWallets(!reloadWallets)
 
         setLoading(false)
     }
@@ -43,7 +46,7 @@ const HomeScreen = ({ navigation }: any) => {
                 <SectionHeader icon="wallet" label={useTranslate("section.title.wallets")} actions={[actionWallet]} />
 
                 {/* Wallets section  */}
-                <WalletList wallets={wallets} navigation={navigation} />
+                <WalletList reload={reloadWallets} wallets={wallets} navigation={navigation} />
 
                 {/* Sales and Shopping section*/}
                 <SectionHeader icon="cash-outline" label={useTranslate("section.title.sales")} />

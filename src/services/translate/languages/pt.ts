@@ -29,6 +29,7 @@ export default {
     "commons.create": "Criar",
     "commons.import": "Importar",
     "commons.add": "Adicionar",
+    "commons.remove": "Remover",
     "commons.update": "Atualizar",
     "commons.delete": "Excluir",
     "commons.save": "Salvar",
@@ -97,7 +98,12 @@ export default {
     "message.relay.already_exists": "O relay já existe na lista de relays!",
     "message.relay.supported_nips": "Nips suportados pelo relay",
     "message.relay.empty": "Não há nenhum  relay para exibir",
-    "messade.friend.already": "já está na sua lista de amigos",
+    "message.friend.already": "já está na sua lista de amigos",
+
+    "friends.notes.lasts": "Últimas Notas",
+    "friends.notes.empty": "Nenhuma nota encontrada!",
+    "friends.search.subtitle": "Busque pessoas e adicione a sua lista de amigos",
+    "friends.user.is-friend": "Amigo",
 
     "settings.relays": "Relays", 
     "settings.nostrkey.copy": "Copiar Nostr ID",
@@ -152,7 +158,10 @@ export default {
     "screen.title.newchat": "Nova Conversa",
 
     "order.new.title": "Nova Ordem de Venda",
-    "order.new.amount-title": "Quantos Sats deseja vender?",
+    "order.new.amount-title": "Quantos Sats deseja vender?",    
+
+    "chats.title": "Conversas",
+    "chat.empty": "Você não possui nenhuma mensagem",
 
     "settings.about": "Sobre",
     "settings.about.content": `Emptio P2P é uma aplicação de código aberto que tem o objetivo de permitir inicialmente a compra e venda de bitcoin de pessoa para pessoa de forma descentralizada utilizando o protocolo Nostr.

@@ -34,10 +34,10 @@ const FeedScreen = ({ navigation }: any) => {
 
         if(followList.length) 
         {
-            const friends = followList[0].tags.filter(tag => tag[0] == "p").map(e => e[1]);
+            const friends = followList[0].tags?.filter(tag => tag[0] == "p").map(e => e[1]);
 
             const resultPosts = await listenerEvents({ 
-                limit: friends.length, 
+                limit: friends?.length, 
                 kinds: [NostrEventKinds.metadata],
                 authors: friends 
             });
@@ -104,7 +104,7 @@ const FeedScreen = ({ navigation }: any) => {
 
 const styles = StyleSheet.create({
     newChatButton: { backgroundColor: theme.colors.blue, padding: 18, borderRadius: 50 },
-    rightButton: { position: "absolute", bottom: 0, right: 0, width: 100, height: 70, justifyContent: "center", alignItems: "center" }
+    rightButton: { position: "absolute", bottom: 10, right: 0, width: 100, height: 70, justifyContent: "center", alignItems: "center" }
 })
 
 export default FeedScreen

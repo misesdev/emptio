@@ -2,7 +2,7 @@ import { clearStorage } from "../../services/memory"
 import { createPairKeys, getHexKeys } from "../../services/nostr"
 import { getUserData, pushUserData } from "../../services/nostr/pool"
 import { PairKey, User } from "../../services/memory/types"
-import { getEvent, publishEvent } from "../../services/nostr/events"
+import { getEvent, listenerEvents, publishEvent } from "../../services/nostr/events"
 import { Response, trackException } from "../../services/telemetry"
 import { getUser, insertUpdateUser } from "../../services/memory/user"
 import { getPairKey, insertPairKey } from "../../services/memory/pairkeys"
@@ -206,6 +206,30 @@ const addFollow = async ({ user, friend, followsEvent, setFollowsEvent }: addFol
     } catch (ex) { console.log(ex) }
 }
 
+const removeFollow = async ({ user, friend, followsEvent, setFollowsEvent }: addFollowProps) => {
+    try {
+        // await fetch(`${env.nosbook.api}/friends/remove`, {
+        //     method: "post",
+        //     headers: { "Content-Type": "application/json" },
+        //     body: JSON.stringify({
+        //         pubkey: user.pubkey,
+        //         friends: [friend.pubkey]
+        //     })
+        // })
+        
+        const pairKey = await getPairKey(user.keychanges ?? "")
+
+        //followsEvent.tags = followsEvent.tags.filter(t => t[0] == "p" && t[1] != friend.pubkey)
+        followsEvent.created_at = Date.now()
+
+        await publishEvent(followsEvent, pairKey, true)
+
+        if(setFollowsEvent) setFollowsEvent(followsEvent)
+        
+    } catch (ex) { console.log(ex) }
+}
+
+
 const searchUsers = async (user: User, searchTerm: string): Promise<User[]> => {
     try 
     {
@@ -233,6 +257,26 @@ const searchUsers = async (user: User, searchTerm: string): Promise<User[]> => {
     catch { return [] }
 }
 
+const lastNotes = async (user: User, limit: number = 3) : Promise<string[]> => {
+
+    const events = await listenerEvents({ 
+        authors: [user.pubkey ?? ""], 
+        kinds:[1], 
+        limit: limit
+    })
+
+    return events.map(event => event.content as string)
+}
+
+const listChats = async (followsEvent: NostrEvent): Promise<NostrEvent[]> => {
+    
+    const authors: string[] = followsEvent?.tags.filter(t => t[0] == "p").map(t => t[1])
+
+    const eventsChat = await listenerEvents({ kinds: [4], authors })
+
+    return eventsChat as NostrEvent[]
+}
+
 const convertPubkey = (pubkey: string) => nip19.npubEncode(pubkey)
 
 export const userService = {
@@ -245,5 +289,8 @@ export const userService = {
     convertPubkey,
     listFollows,
     addFollow,
-    searchUsers
+    removeFollow,
+    searchUsers,
+    lastNotes,
+    listChats
 }

@@ -6,10 +6,11 @@ import WalletListItem from "./WalletListItem"
 
 type Props = {
     wallets: Wallet[],
+    reload: boolean,
     navigation: any
 }
 
-const WalletList = ({ wallets, navigation }: Props) => {
+const WalletList = ({ wallets, navigation, reload }: Props) => {
 
     const { useTranslate } = useTranslateService()
 
@@ -21,7 +22,7 @@ const WalletList = ({ wallets, navigation }: Props) => {
         <SafeAreaView style={{ width: "100%", height: 220 }}>
             <ScrollView horizontal>
                 {wallets &&
-                    wallets.map((wallet) => <WalletListItem key={wallet.key} wallet={wallet} handleOpen={handleOpenWallet} />)
+                    wallets.map((wallet) => <WalletListItem reload={reload} key={wallet.key} wallet={wallet} handleOpen={handleOpenWallet} />)
                 }
 
                 <View style={[styles.wallet, { backgroundColor: theme.colors.section, padding: 5 }]}>

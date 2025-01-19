@@ -8,6 +8,9 @@ import { BlurView } from "expo-blur"
 import { User } from "@/src/services/memory/types"
 import { hexToNpub } from "@/src/services/converter"
 import { useAuth } from "@/src/providers/userProvider"
+import { userService } from "@/src/core/userManager"
+import { NoteList } from "../user/NoteList"
+import { ActivityIndicator } from "react-native-paper"
 
 type followModalProps = {
     user: User,
@@ -34,31 +37,38 @@ const ButtonLight = ({ label, onPress }: ButtonProps) => {
 }
 
 type FollowProps = {
-    handleAddFollow: (user: User) => void
+    handleAddFollow: (user: User, action: string) => void
 }
 
 const FollowModal = ({ handleAddFollow }: FollowProps) => {
 
     const { followsEvent } = useAuth()
     const [user, setUser] = useState<User>()
+    const [notes, setNotes] = useState<string[]>([])
     const [isFriend, setIsFriend] = useState(false)
     const [visible, setVisible] = useState(false)
+    const [loading, setloading] = useState(true)
     const { useTranslate } = useTranslateService()
 
-    showFollowModalFunction = ({ user }: followModalProps) => {
+    showFollowModalFunction = async ({ user }: followModalProps) => {
         setUser(user)
+        setloading(true)
         setIsFriend(!!followsEvent?.tags.filter(f => f[0] == "p" && f[1] == user.pubkey).length)
         setVisible(true)
+        const notes = await userService.lastNotes(user)
+        setNotes(notes)
+        setloading(false)
     }
 
     const handleClose = () => {
         setVisible(false)
+        setNotes([])
     }
 
     const handleAction = () => {
-        handleAddFollow(user ?? {})
-
+        handleAddFollow(user ?? {}, isFriend ? "remove" : "add")
         setVisible(false)
+        setNotes([])
     }
 
     return (
@@ -70,8 +80,8 @@ const FollowModal = ({ handleAddFollow }: FollowProps) => {
                         <View style={{ flexDirection: "row" }}>
                             <TouchableOpacity activeOpacity={.3}>
                                 <View style={styles.image}>
-                                    {user?.picture && <Image source={{ uri: user?.picture }} style={{ flex: 1 }} />}
-                                    {!user?.picture && <Image source={require("assets/images/defaultProfile.png")} style={{ flex: 1 }} />}
+                                    {user?.picture && <Image onError={() => user.picture = ""} source={{ uri: user?.picture }} style={{ flex: 1 }} />}
+                                    {!user?.picture && <Image source={require("assets/images/defaultProfile.png")} style={{ width: 60, height: 60 }} />}
                                 </View>
                             </TouchableOpacity>
                             <View style={{ paddingHorizontal: 12 }}>
@@ -83,11 +93,7 @@ const FollowModal = ({ handleAddFollow }: FollowProps) => {
                                 </Text>
                             </View>
                         </View>
-                        
-                        <View style={{ width: "100%", marginTop: 10, marginBottom: 10 }}>
-                            <Text style={styles.message}>{user?.about}</Text>
-                        </View>
-
+                                              
                         {isFriend && <Text style={styles.infolog}>
                             <Text style={{ color: theme.colors.gray, fontWeight: "500" }}>
                                 {user?.display_name?.substring(0, 14)}  
@@ -95,8 +101,21 @@ const FollowModal = ({ handleAddFollow }: FollowProps) => {
                             {useTranslate("message.friend.already")}
                         </Text>}
 
+                        <Text style={{ margin: 10, fontWeight: "500", color: theme.colors.white }}>
+                            {useTranslate("friends.notes.lasts")}
+                        </Text>
+                        
+                        {notes.length > 0 && <NoteList notes={notes} /> }
+                        {notes.length <= 0 && loading && <ActivityIndicator color={theme.colors.gray} size={50} />}
+                        {notes.length <= 0 && !loading &&
+                            <Text style={{ color: theme.colors.gray, textAlign: "center", margin: 15 }}>
+                                {useTranslate("friends.notes.empty")}
+                            </Text>
+                        }
+
                         <View style={styles.sectionButtons}>
                             {!isFriend && <ButtonLight label={useTranslate("commons.add")} onPress={handleAction} />}
+                            {isFriend && <ButtonLight label={useTranslate("commons.remove")} onPress={handleAction} />}
                             <ButtonLight label={useTranslate("commons.close")} onPress={handleClose} />
                         </View>
 
@@ -112,7 +131,7 @@ export const showFollowModal = (props: followModalProps) => {
 }
 
 const styles = StyleSheet.create({
-    box: { padding: 10, paddingHorizontal: 15, width: "85%", borderRadius: 8, backgroundColor: theme.colors.section },
+    box: { padding: 15, width: "85%", borderRadius: 8, backgroundColor: theme.colors.section },
     message: { fontSize: 14, color: theme.colors.gray },
     infolog: { paddingHorizontal: 15, paddingVertical: 8, marginVertical: 18, borderRadius: 10, backgroundColor: theme.colors.semitransparent, color: theme.colors.gray },
     image: { width: 60, height: 60, borderRadius: 50, overflow: "hidden", borderWidth: 1, borderColor: theme.colors.blue },

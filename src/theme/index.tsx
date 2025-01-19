@@ -7,6 +7,7 @@ const theme = {
         red: "#C14D45",
         green: "#009751",
         blue: "#184149",
+        blueOpacity: "rgba(0, 55, 55, .2)",
         gray: "#525B5F",
         default: "#2D3138",
         orange: "#bd6413",

@@ -10,6 +10,7 @@ import { ActivityIndicator } from "react-native-paper"
 
 type Props = {
     wallet: Wallet,
+    reload: boolean,
     handleOpen: (wallet: Wallet) => void
 }
 
@@ -27,13 +28,15 @@ const getDescriptionTypeWallet = (type: WalletType) => {
     }
 }
 
-const WalletListItem = ({ wallet, handleOpen }: Props) => {
+const WalletListItem = ({ wallet, reload, handleOpen }: Props) => {
     
     const [loading, setLoading] = useState<boolean>()
 
-    useEffect(() => { loadData() }, [])
+    useEffect(() => { loadData() }, [reload])
 
     const loadData = async () => {
+
+        setLoading(true)
 
         const network: Network = wallet.type == "bitcoin" ? "mainnet" : "testnet"
         const walletInfo = await walletService.listTransactions(wallet.address ?? "", network)

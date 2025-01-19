@@ -29,6 +29,7 @@ export default {
     "commons.create": "Create",
     "commons.import": "Import",
     "commons.add": "Add Now",
+    "commons.remove": "Remove",
     "commons.update": "Update",
     "commons.delete": "Delete",
     "commons.save": "Save",
@@ -99,6 +100,11 @@ export default {
     "message.relay.empty": "There are no relays to display",
     "message.friend.already": "already on your friends list",
 
+    "friends.notes.lasts": "Latest Notes",
+    "friends.notes.empty": "No notes found!",   
+    "friends.search.subtitle": "Search for people and add them to your friends list",
+    "friends.user.is-friend": "Friend",
+
     "settings.relays": "Relays",
     "settings.account.edit": "My Account",
     "settings.nostrkey.copy": "Copy Nostr ID",
@@ -150,6 +156,9 @@ export default {
     "screen.title.addfriend": "Add Friend",
     "screen.title.donate": "Contribute to this Project",
     "screen.title.newchat": "New Conversation",
+
+    "chats.title": "Conversations",
+    "chat.empty": "Você não possui nenhuma mensagem",
 
     "order.new.title": "New Sales Order",
     "order.new.amount-title": "How many Sats do you want to sell?",

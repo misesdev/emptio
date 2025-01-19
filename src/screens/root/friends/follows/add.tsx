@@ -1,6 +1,6 @@
 import { SearchBox } from "@components/form/SearchBox"
 import { HeaderScreen } from "@components/general/HeaderScreen"
-import { ActivityIndicator, View } from "react-native"
+import { ActivityIndicator, View, Text } from "react-native"
 import { User } from "@src/services/memory/types"
 import { useAuth } from "@src/providers/userProvider"
 import { useTranslateService } from "@/src/providers/translateProvider"
@@ -10,7 +10,7 @@ import theme from "@src/theme"
 import { useEffect, useState } from "react"
 import FollowModal, { showFollowModal } from "@/src/components/nostr/follow/FollowModal"
 import { NostrEvent } from "@nostr-dev-kit/ndk"
-
+import { Ionicons } from "@expo/vector-icons"
 
 const AddFolowScreen = ({ navigation }: any) => {
 
@@ -18,15 +18,7 @@ const AddFolowScreen = ({ navigation }: any) => {
     const { useTranslate } = useTranslateService()
     const [users, setUsers] = useState<User[]>([])
     const [loading, setLoading] = useState(false)
-    //const [friends, setFriends] = useState<User[]>([])
-
-    // useEffect(() => { loadFriends() }, [])
-
-    // const loadFriends = async () => {
-    //     const follows = await userService.listFollows(user)
-
-    //     setFriends(follows)
-    // }
+    const [reloadUsers, setReloadUsers] = useState(true)
 
     const handleSearch = async (searchTerm: string) => {
 
@@ -40,16 +32,35 @@ const AddFolowScreen = ({ navigation }: any) => {
 
         setUsers(users)
 
+        setReloadUsers(!reloadUsers)
+
         setLoading(false)
     }
 
-    const AddUserOnFollowList = async (friend: User) => {
-        await userService.addFollow({
-            user,
-            friend,
-            followsEvent: followsEvent as NostrEvent,
-            setFollowsEvent: setFollowsEvent,
-        })
+    const AddUserOnFollowList = async (friend: User, action: string) => {
+
+        if(action == "add") 
+        {
+            followsEvent!.tags.push(["p", friend.pubkey ?? ""])
+            setReloadUsers(!reloadUsers)
+            await userService.addFollow({
+                user,
+                friend,
+                followsEvent: followsEvent as NostrEvent,
+                setFollowsEvent: setFollowsEvent,
+            })
+        }
+        if(action == "remove") 
+        {
+            followsEvent!.tags = followsEvent!.tags.filter(t => t[0] == "p" && t[1] != friend.pubkey)
+            setReloadUsers(!reloadUsers)
+            await userService.removeFollow({
+                user,
+                friend,
+                followsEvent: followsEvent as NostrEvent,
+                setFollowsEvent: setFollowsEvent,
+            })
+        }
     }
 
     const handleAddFollow = async (follow: User) => {
@@ -65,7 +76,16 @@ const AddFolowScreen = ({ navigation }: any) => {
 
             {loading && <ActivityIndicator color={theme.colors.gray} size={50} />}
 
-            <UserList users={users} onPressUser={handleAddFollow} />
+            {!users.length && !loading &&
+                <View style={{ width: "100%", alignItems: "center", paddingHorizontal: 42, marginTop: 120 }}>
+                    {/* <Ionicons name="search" color={theme.colors.gray} size={120}/> */}
+                    <Text style={{ color: theme.colors.gray, fontSize: 16, fontWeight: "400", textAlign: "center", marginVertical: 20 }}>
+                        {useTranslate("friends.search.subtitle")}
+                    </Text>
+                </View>
+            } 
+
+            <UserList reload={reloadUsers} toFollow users={users} setUsers={setUsers} onPressUser={handleAddFollow} />
 
             <View style={{ height: 38 }}></View>
 

@@ -4,13 +4,16 @@ import { nip19 } from "nostr-tools"
 import theme from "@src/theme"
 import { hexToNpub } from "@/src/services/converter"
 import { useState } from "react"
+import { useTranslate } from "@/src/services/translate"
 
 type UserItemProps = {
     follow: User,
+    toFollow?: boolean,
+    isFriend?: boolean,
     handleClickFollow: (follow: User) => void
 }
 
-export const FollowItem = ({ follow, handleClickFollow }: UserItemProps) => {
+export const FollowItem = ({ follow, handleClickFollow, toFollow = false, isFriend = false }: UserItemProps) => {
 
     const [error, setError] = useState(false)
 
@@ -41,6 +44,13 @@ export const FollowItem = ({ follow, handleClickFollow }: UserItemProps) => {
                         {hexToNpub(follow.pubkey ?? "").substring(0, 38)}..
                     </Text>
                 </View>
+                {isFriend && toFollow &&
+                    <Text style={{ position: "absolute", right: 10, top: -2, paddingHorizontal: 12, 
+                        borderRadius: 5, fontWeight: "400", fontSize: 11, paddingVertical: 3,
+                        color: theme.colors.white, backgroundColor: theme.colors.blue }}>
+                        {useTranslate("friends.user.is-friend")}
+                    </Text>
+                }
             </View>            
 
         </TouchableOpacity>

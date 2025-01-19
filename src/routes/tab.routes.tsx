@@ -18,7 +18,7 @@ const TabRoutes = () => {
             activeColor={theme.colors.white}
             inactiveColor={theme.colors.gray}
             screenOptions={{ tabBarColor: theme.colors.gray }}
-            barStyle={{ backgroundColor: theme.colors.semitransparent, height: 70 }}
+            barStyle={{ backgroundColor: theme.colors.semitransparent, height: 80 }}
             activeIndicatorStyle={{ backgroundColor: theme.colors.blue }}
         >
             <Tab.Screen
