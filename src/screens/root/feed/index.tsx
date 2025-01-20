@@ -5,7 +5,7 @@ import { listenerEvents } from "@src/services/nostr/events"
 import { NostrEventKinds } from "@src/constants/Events"
 import { useAuth } from "@src/providers/userProvider"
 import { HeaderFeed } from "./header"
-import { useState } from "react"
+import { memo, useState } from "react"
 import theme from "@src/theme"
 import { useTranslateService } from "@/src/providers/translateProvider"
 import { Ionicons } from "@expo/vector-icons"
@@ -15,7 +15,7 @@ import { pushMessage } from "@/src/services/notification"
 
 const FeedScreen = ({ navigation }: any) => {
 
-    const { user, wallets } = useAuth()
+    const { user, followsEvent, wallets } = useAuth()
     const { useTranslate } = useTranslateService()
     const [loading, setLoading] = useState(false)
     const [posts, setPosts] = useState<User[]>([])
@@ -23,18 +23,12 @@ const FeedScreen = ({ navigation }: any) => {
 
     const handleData = async () => {
         setLoading(true)
-
-        const followList = await listenerEvents({ 
-            limit: 1, 
-            kinds: [NostrEventKinds.followList],
-            authors: [user.pubkey ?? ""] 
-        })
         
-        if(!followList.length) setNotResult(true)
+        if(!followsEvent?.tags.length) setNotResult(true)
 
-        if(followList.length) 
+        if(followsEvent?.tags.length) 
         {
-            const friends = followList[0].tags?.filter(tag => tag[0] == "p").map(e => e[1]);
+            const friends = followsEvent.tags?.filter(tag => tag[0] == "p").map(e => e[1]);
 
             const resultPosts = await listenerEvents({ 
                 limit: friends?.length, 
@@ -53,8 +47,7 @@ const FeedScreen = ({ navigation }: any) => {
         setLoading(false)
     }
 
-    const renderItem = ({ item }: { item: User }) => {
-        
+    const ListItem = memo(({ item }: { item: User }) => {
         return (
             <SectionContainer >
                 <Text style={{ fontSize: 16, color: theme.colors.gray, margin: 10, textAlign: "center" }}>{item.display_name}</Text>
@@ -64,7 +57,7 @@ const FeedScreen = ({ navigation }: any) => {
                 </View>
             </SectionContainer>
         )
-    }
+    })
 
     const newOrder = () => {
         if(!wallets.length)
@@ -79,7 +72,7 @@ const FeedScreen = ({ navigation }: any) => {
             <FlatList
                 data={posts}
                 style={{ flex: 1 }}
-                renderItem={renderItem}
+                renderItem={({ item }) => <ListItem item={item}/>}
                 onEndReached={handleData}
                 onEndReachedThreshold={.1}
                 contentContainerStyle={[theme.styles.scroll_container, { backgroundColor: theme.colors.black, alignItems: "center" }]}

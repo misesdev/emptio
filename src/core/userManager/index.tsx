@@ -145,22 +145,26 @@ const isLogged = async ({ setUser }: loggedProps) => {
     catch { return false }
 }
 
-const listFollows = async (user: User, iNot: boolean = true): Promise<User[]> => {
+const listFollows = async (user: User,  followsEvent: NostrEvent, iNot: boolean = true): Promise<User[]> => {
 
     var follows: User[] = []
 
     try {
-        const response = await fetch(`${env.nosbook.api}/user/friends/${user.pubkey}`)
+        // const response = await fetch(`${env.nosbook.api}/user/friends/${user.pubkey}`)
 
-        const result = await response.json();
+        // const events = await response.json();
+        const authors = followsEvent.tags.filter(t => t[0] == "p").map(t => t[1])
 
-        follows = result.map((user: any): User => {
-            return {
-                name: user.name,
-                pubkey: user.pubkey,
-                picture: user.profile,
-                display_name: user.displayName,
-            }
+        const events = await listenerEvents({ authors, kinds: [0], limit: authors.length })
+
+        follows = events.filter((u: any) => u.pubkey != user.pubkey).map((user: any): User => {
+            // return {
+            //     name: user.name,
+            //     pubkey: user.pubkey,
+            //     picture: user.profile,
+            //     display_name: user.displayName,
+            // }
+            return user.content as User
         })
     } catch (fail) {
         //console.log("error when loading folows", fail)
@@ -245,7 +249,7 @@ const searchUsers = async (user: User, searchTerm: string): Promise<User[]> => {
 
         const users: any = await response.json()
 
-        return users.map((user: any) => {
+        return users.filter((u: any) => u.pubkey != user.pubkey).map((user: any) => {
             return {
                 name: user.name,
                 pubkey: user.pubkey,

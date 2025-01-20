@@ -1,9 +1,7 @@
 import { TouchableOpacity, View, Image, Text, StyleSheet } from "react-native"
 import { User } from "@src/services/memory/types"
-import { nip19 } from "nostr-tools"
 import theme from "@src/theme"
 import { hexToNpub } from "@/src/services/converter"
-import { useState } from "react"
 import { useTranslate } from "@/src/services/translate"
 
 type UserItemProps = {
@@ -15,8 +13,6 @@ type UserItemProps = {
 
 export const FollowItem = ({ follow, handleClickFollow, toFollow = false, isFriend = false }: UserItemProps) => {
 
-    const [error, setError] = useState(false)
-
     return (
         <TouchableOpacity
             activeOpacity={.7}
@@ -26,8 +22,8 @@ export const FollowItem = ({ follow, handleClickFollow, toFollow = false, isFrie
             {/* Transaction Type */}
             <View style={styles.profileArea}>
                 <View style={styles.profileView}>
-                    {(follow.picture && !error) && <Image onError={() => setError(true)} source={{ uri: follow.picture }} style={styles.profile} />}
-                    {(!follow.picture || error) && <Image source={require("assets/images/defaultProfile.png")} style={styles.profileView} />}
+                    {follow.picture && <Image onError={() => follow.picture = ""} source={{ uri: follow.picture }} style={styles.profile} />}
+                    {!follow.picture && <Image source={require("assets/images/defaultProfile.png")} style={styles.profileView} />}
                 </View>
             </View>
             {/* Transaction Description and Date */}
@@ -35,7 +31,7 @@ export const FollowItem = ({ follow, handleClickFollow, toFollow = false, isFrie
                 <View style={{ width: "100%" }}>
                     <Text style={styles.userName}>
                         {
-                            (follow.display_name ?? follow.name ?? nip19.npubEncode(follow.pubkey ?? "")).substring(0, 17)
+                            (follow.display_name ?? follow.name ?? hexToNpub(follow.pubkey ?? "")).substring(0, 17)
                         }
                     </Text>
                 </View>

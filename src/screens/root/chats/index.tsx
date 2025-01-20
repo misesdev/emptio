@@ -2,7 +2,7 @@ import theme from "@src/theme"
 import { ScrollView, StyleSheet, View, Text, Image } from "react-native"
 import { FlatList, RefreshControl, TouchableOpacity } from "react-native-gesture-handler"
 import { Ionicons } from "@expo/vector-icons"
-import { useEffect, useState } from "react"
+import { memo, useEffect, useState } from "react"
 import { HeaderChats } from "./header"
 import { useAuth } from "@/src/providers/userProvider"
 import { User } from "@/src/services/memory/types"
@@ -31,7 +31,7 @@ const ChatsScreen = ({ navigation }: any) => {
 
         setLoading(true)
 
-        const friends: User[] = await userService.listFollows(user, true)
+        const friends: User[] = await userService.listFollows(user, followsEvent as NostrEvent, true)
 
         const events: NostrEvent[] = await userService.listChats(followsEvent as NostrEvent)
 
@@ -62,7 +62,7 @@ const ChatsScreen = ({ navigation }: any) => {
         console.log(chat)
     }
 
-    const renderItem = ({ item }: { item: UserChat }) => {
+    const ListItem = memo(({ item }: { item: UserChat }) => {
         return (
             <View style={{ width: "100%", paddingVertical: 3 }}>
                 <TouchableOpacity
@@ -87,7 +87,7 @@ const ChatsScreen = ({ navigation }: any) => {
                 </TouchableOpacity>
             </View>
         )
-    }
+    })
 
     return (
 
@@ -97,13 +97,13 @@ const ChatsScreen = ({ navigation }: any) => {
 
             <SearchBox label={useTranslate("commons.search")} onSearch={handleSearch} />
 
-                <FlatList
-                    data={filteredChats}
-                    renderItem={renderItem}
-                    keyExtractor={(item) => item.user.pubkey ?? ""}
-                    style={styles.chatsScroll}
-                    refreshControl={<RefreshControl refreshing={loading} onRefresh={handleLoadChats} />}
-                />
+            <FlatList
+                data={filteredChats}
+                renderItem={({ item }) => <ListItem item={item} />}
+                keyExtractor={(item) => item.user.pubkey ?? ""}
+                style={styles.chatsScroll}
+                refreshControl={<RefreshControl refreshing={loading} onRefresh={handleLoadChats} />}
+            />
 
             { !loading && !filteredChats?.length && 
                 <Text style={{ color: theme.colors.gray, marginTop: 200, textAlign: "center" }}>

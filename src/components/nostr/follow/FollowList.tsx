@@ -2,10 +2,11 @@ import { ActivityIndicator, FlatList } from "react-native"
 import { userService } from "@/src/core/userManager"
 import { useAuth } from "@src/providers/userProvider"
 import { User } from "@src/services/memory/types"
-import { useCallback, useEffect, useRef, useState } from "react"
+import { memo, useCallback, useEffect, useRef, useState } from "react"
 import { walletService } from "@src/core/walletManager"
 import { FollowItem } from "./FollowItem"
 import theme from "@src/theme"
+import { NostrEvent } from "@nostr-dev-kit/ndk"
 
 type FriendListProps = {
     iNot?: boolean,
@@ -17,7 +18,7 @@ type FriendListProps = {
 
 export const FollowList = ({ searchTerm, onPressFollow, toPayment = false, searchable, iNot = true }: FriendListProps) => {
 
-    const { user } = useAuth()
+    const { user, followsEvent } = useAuth()
     const searchTimeout:any = useRef(null);
     const [refreshing, setRefreshing] = useState(true)
     const [followList, setFollowList] = useState<User[]>([])
@@ -42,7 +43,7 @@ export const FollowList = ({ searchTerm, onPressFollow, toPayment = false, searc
                     setFollowList(searchResult)
                 }
                 else setFollowList(followListData)
-            }, 300)
+            }, 200)
 
         }, [searchTerm])
     }
@@ -50,7 +51,7 @@ export const FollowList = ({ searchTerm, onPressFollow, toPayment = false, searc
     const handleListFollows = async () => {
         setRefreshing(true)
 
-        var follows = await userService.listFollows(user, iNot)
+        var follows = await userService.listFollows(user, followsEvent as NostrEvent, iNot)
 
         setFollowList(follows)
 
@@ -64,23 +65,22 @@ export const FollowList = ({ searchTerm, onPressFollow, toPayment = false, searc
             onPressFollow(follow)
     }, [onPressFollow])
 
-    const handleRenderItem = ({ item }: { item: User }) => <FollowItem follow={item} key={item.pubkey} handleClickFollow={handleClickFollow} />
+    const ListItem = memo(({ item }: { item: User }) => <FollowItem follow={item} handleClickFollow={handleClickFollow} />)
 
     const handleLoaderEnd = () => {
         if (refreshing)
             // Show loader at the end of list when fetching next page data.
             return <ActivityIndicator color={theme.colors.gray} style={{ margin: 10 }} size={50} />
     }
+
     return (
         <>
             <FlatList
                 data={followList}
-                renderItem={handleRenderItem}
-                //onEndReached={handleLoadScroll}
-                //onEndReachedThreshold={2}
-                contentContainerStyle={theme.styles.scroll_container}
+                renderItem={({ item }) => <ListItem item={item} />}
+                contentContainerStyle={[theme.styles.scroll_container, { paddingBottom: 30 }]}
                 ListFooterComponent={handleLoaderEnd}
-                //keyExtractor={item => item.pubkey ?? Math.random().toString()}
+                keyExtractor={item => item.pubkey ?? Math.random().toString()}
             />
         </>
     )
