@@ -1,16 +1,16 @@
 import { ButtonDefault, ButtonSuccess } from "@components/form/Buttons"
 import { Image, StyleSheet, Text, View } from "react-native"
 import SplashScreen from "@components/general/SplashScreen"
-import { getEvent, getNostrInstance, listenerEvents } from "../services/nostr/events"
+import { getEvent } from "../services/nostr/events"
 import { userService } from "../core/userManager"
 import { useEffect, useState } from "react"
 import { useAuth } from "../providers/userProvider"
 import { emptioService } from "../core/emptio"
 import { useTranslateService } from "../providers/translateProvider"
 import { walletService } from "../core/walletManager"
-import NDK, { NDKEvent, NostrEvent } from "@nostr-dev-kit/ndk"
+import NDK, { NostrEvent } from "@nostr-dev-kit/ndk"
 import theme from "@src/theme"
-import { kinds } from "nostr-tools"
+import { getNostrInstance, subscribeUser } from "../services/nostr/pool"
 
 const InitializeScreen = ({ navigation }: any) => {
 
@@ -37,16 +37,10 @@ const InitializeScreen = ({ navigation }: any) => {
             {
                 const user = await userService.getUser()
                 const eventFollow = await getEvent({ kinds:[3], authors: [user?.pubkey ?? ""], limit: 1 })
-                if(eventFollow) {
-                    setFollowsEvent(eventFollow as NostrEvent)
-                    
-                    const follows = eventFollow.tags?.filter(t => t[0] == "p").map(t => t[1])
-                    const subscription = Nostr.subscribe({ kinds: [1], authors: [follows] })
-
-                    subscription.on("event", (event: NDKEvent) => {
-                        console.log(event)
-                    })
-                }
+                
+                if(eventFollow) setFollowsEvent(eventFollow as NostrEvent)
+                
+                subscribeUser({ user })
             }                
 
             navigation.reset({ index: 0, routes: [{ name: "authenticate-stack" }] })

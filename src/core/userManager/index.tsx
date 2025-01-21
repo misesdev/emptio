@@ -292,9 +292,7 @@ const lastNotes = async (user: User, limit: number = 3, onlyPrincipal = false) :
 
 const listChats = async (followsEvent: NostrEvent): Promise<NostrEvent[]> => {
     
-    const authors: string[] = followsEvent?.tags.filter(t => t[0] == "p").map(t => t[1])
-
-    const eventsChat = await listenerEvents({ kinds: [4], authors })
+    const eventsChat = await listenerEvents({ kinds: [4], "#p": [followsEvent.pubkey ?? ""] })
 
     return eventsChat as NostrEvent[]
 }

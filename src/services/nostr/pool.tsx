@@ -1,6 +1,7 @@
-import { NostrEvent } from "@nostr-dev-kit/ndk"
+import NDK, { NDKEvent, NostrEvent } from "@nostr-dev-kit/ndk"
 import { PairKey, User } from "../memory/types"
 import { listenerEvents, publishEvent } from "./events"
+import { getRelays } from "../memory/relays"
 
 export const getUserData = async (publicKey: string): Promise<User> => {
 
@@ -34,4 +35,30 @@ export const pushUserData = async (user: User, pairKey: PairKey) => {
 export const pushUserFollows = async (event: NostrEvent, pairKey: PairKey) => {
     
     await publishEvent(event, pairKey, true)
+}
+
+type SubscribeProps = {
+    user: User
+}
+
+export const getNostrInstance = async (): Promise<NDK> => {
+
+    const relays = await getRelays()
+
+    const ndk = new NDK({ explicitRelayUrls: relays })
+
+    await ndk.connect()
+
+    return ndk
+}
+
+export const subscribeUser = ({ user }: SubscribeProps) => {
+    
+    const pool = Nostr as NDK
+
+    const subscription = pool.subscribe({ kinds: [1,4], "#p": [user.pubkey ?? ""] })
+
+    subscription.on("event", (event: NDKEvent) => {
+        
+    })
 }
