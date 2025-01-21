@@ -33,20 +33,23 @@ const ChatsScreen = ({ navigation }: any) => {
 
         const friends: User[] = await userService.listFollows(user, followsEvent as NostrEvent, true)
 
-        const events: NostrEvent[] = await userService.listChats(followsEvent as NostrEvent)
+        // const events: NostrEvent[] = await 
+        userService.listChats(followsEvent as NostrEvent).then(events => {
 
-        const chats: UserChat[] = friends.filter(u => events.filter(e => e.pubkey == u.pubkey).length > 0)
-        .map((friend): UserChat => {
-            return {
-                user: friend,
-                messages: events.filter(e => e.pubkey == user.pubkey)
-            }
-        })
+            const chats: UserChat[] = friends
+                .filter(u => events.filter(e => e.pubkey == u.pubkey).length > 0)
+                .map((friend): UserChat => {
+                    return {
+                        user: friend,
+                        messages: events.filter(e => e.pubkey == user.pubkey)
+                    }
+                })
 
-        setFilteredChats(chats)
-        setChats(chats)
+            setFilteredChats(chats)
+            setChats(chats)
 
-        setLoading(false)
+            setLoading(false)
+        }).catch(() => setLoading(false))
     }
 
     const handleSearch = (searchTerm: string) => {
@@ -60,6 +63,14 @@ const ChatsScreen = ({ navigation }: any) => {
 
     const handleOpenChat = (chat: UserChat) => {
         console.log(chat)
+    }
+
+    const EmptyComponent = () => {
+        return (
+            <Text style={{ color: theme.colors.gray, marginTop: 200, textAlign: "center" }}>
+                {useTranslate("chat.empty")}
+            </Text>
+        )
     }
 
     const ListItem = memo(({ item }: { item: UserChat }) => {
@@ -102,14 +113,9 @@ const ChatsScreen = ({ navigation }: any) => {
                 renderItem={({ item }) => <ListItem item={item} />}
                 keyExtractor={(item) => item.user.pubkey ?? ""}
                 style={styles.chatsScroll}
+                ListEmptyComponent={EmptyComponent}
                 refreshControl={<RefreshControl refreshing={loading} onRefresh={handleLoadChats} />}
             />
-
-            { !loading && !filteredChats?.length && 
-                <Text style={{ color: theme.colors.gray, marginTop: 200, textAlign: "center" }}>
-                    {useTranslate("chat.empty")}
-                </Text> 
-            }
 
             <View style={styles.rightButton}>
                 <TouchableOpacity activeOpacity={.7} style={styles.newChatButton} onPress={() => navigation.navigate("new-chat-stack")}>

@@ -105,7 +105,7 @@ const styles = StyleSheet.create({
         padding: 16,
     },
     text: {
-        color: theme.colors.gray, 
+        color: theme.colors.gray,
     },
     link: {
         color: theme.colors.blue,
@@ -114,6 +114,7 @@ const styles = StyleSheet.create({
     image: {
         width: "90%",
         height: 200,
+        margin: 10,
         resizeMode: 'contain',
         marginVertical: 10,
         borderRadius: 14,
@@ -134,14 +135,11 @@ const styles = StyleSheet.create({
         borderRadius: 14,
     },
     webview: {
-        flex: 1,
-        //width: "90%"
+        padding: 24,
     },
     contentContainer: {
         flex: 1,
         padding: 10,
-        alignItems: 'center',
-        justifyContent: 'center',
         paddingHorizontal: 50,
     },
     // video: {

@@ -1,40 +1,46 @@
-import { FlatList } from "react-native"
+import { FlatList, Text } from "react-native"
 import { User } from "@src/services/memory/types"
-import { memo, useCallback } from "react"
+import { useCallback } from "react"
 import { FollowItem } from "../follow/FollowItem"
 import theme from "@src/theme"
-import { useAuth } from "@/src/providers/userProvider"
+import { useTranslateService } from "@/src/providers/translateProvider"
 
 type FriendListProps = {
     users: User[],
     setUsers: (user: User[]) => void,
     toPayment?: boolean,
     toFollow?: boolean,
-    reload: boolean,
+    showEmptyMessage?: boolean,
     onPressUser?: (user: User) => void,
 }
 
-export const UserList = ({ users, setUsers, onPressUser, toPayment = false, toFollow = false, reload }: FriendListProps) => {
+export const UserList = ({ users, setUsers, onPressUser, toPayment = false, 
+    toFollow = false, showEmptyMessage = false }: FriendListProps) => {
 
-    const { followsEvent } = useAuth()
+    const { useTranslate } = useTranslateService()
 
     const handleClickFollow = useCallback((follow: User) => {
         if (onPressUser) onPressUser(follow)
     }, [onPressUser])
 
-    const ListItem = memo(({ item }: { item: User }) => {
-        const tags = followsEvent?.tags.filter(t => t[0] == "p" && t[1] == item.pubkey)
+    const ListItem = ({ item }: { item: User }) => {
         return <FollowItem 
-            key={item.pubkey?.substring(0, 20)} 
-            follow={item} toFollow={toFollow} isFriend={!!tags?.length}
+            follow={item} toFollow={toFollow} isFriend={item.friend ?? false}
             handleClickFollow={handleClickFollow} 
         />
-    })
+    }
+
+    const EmptyComponent = () => (
+        <Text style={{ color: theme.colors.gray, marginTop: 200, textAlign: "center" }}>
+            {useTranslate("chat.empty")}
+        </Text>
+    )
 
     return (
         <>
             <FlatList
                 data={users}
+                //ListEmptyComponent={EmptyComponent}
                 renderItem={({ item }) => <ListItem item={item} />}
                 contentContainerStyle={theme.styles.scroll_container}
                 keyExtractor={item => item.pubkey ?? Math.random().toString()}

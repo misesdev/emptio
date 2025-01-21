@@ -14,7 +14,7 @@ import { useTranslateService } from "@/src/providers/translateProvider";
 
 const LoginScreen = ({ navigation }: any) => {
 
-    const { setUser } = useAuth()
+    const { setUser, setFollowsEvent } = useAuth()
     const { useTranslate } = useTranslateService()
     const [loading, setLoading] = useState(false)
     const [secretKey, setSecretKey] = useState("")
@@ -55,8 +55,8 @@ const LoginScreen = ({ navigation }: any) => {
 
         setTimeout(async () => {
             if (validatePrivateKey(secretKey)) {
-                const result = await userService.signIn({ secretKey, setUser })
-                if (result.success)
+                const result = await userService.signIn({ secretKey, setUser, setFollowsEvent })
+                if (result.success) 
                     navigation.reset({ index: 0, routes: [{ name: "core-stack" }] })
             } else
                 showMessage({ message: useTranslate("message.invalidkey"), infolog: secretKey })
@@ -90,9 +90,9 @@ const LoginScreen = ({ navigation }: any) => {
 }
 
 const styles = StyleSheet.create({
-    logo: { width: 200, height: 200 },
+    logo: { maxWidth: "90%", maxHeight: "26%", marginTop: -100 },
     title: { marginVertical: 25, color: theme.colors.gray, textAlign: "center", width: "85%" },
-    buttonArea: { width: '100%', position: 'absolute', justifyContent: 'center', marginVertical: 30, flexDirection: "row", bottom: 10 }
+    buttonArea: { width: '100%', position: 'absolute', justifyContent: 'center', marginBottom: 40, flexDirection: "row", bottom: 10 }
 })
 
 export default LoginScreen

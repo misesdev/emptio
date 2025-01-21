@@ -9,12 +9,12 @@ type NoteProps = { note: string }
 const NoteItem = ({ note }: NoteProps) => {
     return (
         <View> 
-            <ScrollView showsVerticalScrollIndicator style={styles.scrollNote}>
-                {/* <View style={styles.viewNote}> */}
-                {/*     <Text style={styles.note}>{note?.trim() ?? ""}</Text> */}
-                {/* </View> */}
+            <ScrollView
+                contentContainerStyle={{ minHeight: 300, justifyContent: "center" }}
+                showsVerticalScrollIndicator 
+                style={styles.scrollNote}
+            >
                 <NoteViewer note={note} />
-                <View style={{ height: 50 }}></View>
             </ScrollView>
         </View>
     )
@@ -39,23 +39,22 @@ export const NoteList = ({ notes }: NoteListProps) => {
 }
 
 const styles = StyleSheet.create({
-    scroll: { 
+    scroll: {
         width: "100%", 
         marginBottom: 10,
     },
     scrollNote: {
         height: 300, 
         margin: 6,
-        padding: 20,
         width: 325,
         borderRadius: 14,
         backgroundColor: theme.colors.black,
     },
     note: { 
-        //textAlign: "center",
         color: theme.colors.gray, 
     },
-    viewNote: { 
+    viewNote: {
+        flex: 1,
         height: 'auto',
         marginVertical: 20
     }

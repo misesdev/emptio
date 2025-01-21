@@ -1,6 +1,6 @@
 import { clearStorage } from "../../services/memory"
 import { createPairKeys, getHexKeys } from "../../services/nostr"
-import { getUserData, pushUserData } from "../../services/nostr/pool"
+import { getUserData, pushUserData, pushUserFollows } from "../../services/nostr/pool"
 import { PairKey, User } from "../../services/memory/types"
 import { getEvent, listenerEvents, publishEvent } from "../../services/nostr/events"
 import { Response, trackException } from "../../services/telemetry"
@@ -9,32 +9,37 @@ import { getPairKey, insertPairKey } from "../../services/memory/pairkeys"
 import { NostrEventKinds } from "@/src/constants/Events"
 import { nip19 } from "nostr-tools"
 import env from "@/env"
-import { NostrEvent } from "@nostr-dev-kit/ndk"
+import NDK, { NostrEvent } from "@nostr-dev-kit/ndk"
 
-type SignUpProps = {
-    userName: string,
-    setUser?: (user: User) => void
+type SignUpProps = { 
+    userName: string, 
+    setUser?: (user: User) => void, 
+    setFollowsEvent?: (event: NostrEvent) => void  
 }
 
-const signUp = async ({ userName, setUser }: SignUpProps): Promise<Response<any>> => {
+const signUp = async ({ userName, setUser, setFollowsEvent }: SignUpProps): Promise<Response<any>> => {
     try {
-
         const pairKey: PairKey = createPairKeys()
 
         const userData: User = {
             name: userName.trim(),
+            pubkey: pairKey.publicKey,
             display_name: userName.trim(),
             keychanges: pairKey.key,
         }
 
+        const followsEvent = createFollowEvent(userData, [[]])
+
         await pushUserData(userData, pairKey)
 
-        userData.keychanges = pairKey.key
+        await pushUserFollows(followsEvent, pairKey)
 
         await insertUpdateUser(userData)
+        
+        await insertPairKey(pairKey)
 
-        if (setUser)
-            setUser(userData)
+        if (setUser) setUser(userData)
+        if (setFollowsEvent) setFollowsEvent(followsEvent)
 
         return { success: true, message: "" }
     }
@@ -43,17 +48,24 @@ const signUp = async ({ userName, setUser }: SignUpProps): Promise<Response<any>
     }
 }
 
-type SignProps = {
-    secretKey: string,
-    setUser?: (user: User) => void
+type SignProps = { 
+    secretKey: string, 
+    setUser?: (user: User) => void,
+    setFollowsEvent?: (event: NostrEvent) => void
 }
 
-const signIn = async ({ secretKey, setUser }: SignProps) => {
+const signIn = async ({ secretKey, setUser, setFollowsEvent }: SignProps) => {
 
     try {
         const pairKey: PairKey = getHexKeys(secretKey)
 
         const userData = await getUserData(pairKey.publicKey)
+
+        const followsEvent = await getEvent({ 
+            kinds: [NostrEventKinds.followList],
+            authors: [pairKey.publicKey],
+            limit: 1
+        })
 
         userData.keychanges = pairKey.key
 
@@ -61,8 +73,8 @@ const signIn = async ({ secretKey, setUser }: SignProps) => {
 
         await insertPairKey(pairKey)
 
-        if (setUser)
-            setUser(userData)
+        if (setUser) setUser(userData)
+        if (setFollowsEvent) setFollowsEvent(followsEvent as NostrEvent)
 
         return { success: true }
     }
@@ -114,6 +126,7 @@ const updateProfile = async ({ user, setUser, upNostr = false }: UpdateProfilePr
 const signOut = async (): Promise<Response<any>> => {
 
     try {
+
         await clearStorage()
 
         return { success: true, message: "" }
@@ -180,12 +193,12 @@ const listFollows = async (user: User,  followsEvent: NostrEvent, iNot: boolean 
 type addFollowProps = {
     user: User,
     friend: User,
-    followsEvent: NostrEvent,
-    setFollowsEvent?: (followsEvent: NostrEvent) => void
+    followsEvent: NostrEvent
 }
 
-const addFollow = async ({ user, friend, followsEvent, setFollowsEvent }: addFollowProps) => {
+const addFollow = async ({ user, friend, followsEvent }: addFollowProps) => {
     try {
+
         await fetch(`${env.nosbook.api}/friends/add`, {
             method: "post",
             headers: { "Content-Type": "application/json" },
@@ -195,22 +208,14 @@ const addFollow = async ({ user, friend, followsEvent, setFollowsEvent }: addFol
             })
         })
         
-        if(!followsEvent.tags.filter(t => t[0] == "p" && t[1] == friend.pubkey).length) 
-        {
-            const pairKey = await getPairKey(user.keychanges ?? "")
+        const pairKey = await getPairKey(user.keychanges ?? "")
 
-            followsEvent.tags.push(["p", friend.pubkey ?? ""])
-            followsEvent.created_at = Date.now()
-
-            await publishEvent(followsEvent, pairKey, true)
-
-            if(setFollowsEvent) setFollowsEvent(followsEvent)
-        }
-
-    } catch (ex) { console.log(ex) }
+        await publishEvent(followsEvent, pairKey, true)
+    }
+    catch (ex) { console.log(ex) }
 }
 
-const removeFollow = async ({ user, friend, followsEvent, setFollowsEvent }: addFollowProps) => {
+const removeFollow = async ({ user, friend, followsEvent }: addFollowProps) => {
     try {
         // await fetch(`${env.nosbook.api}/friends/remove`, {
         //     method: "post",
@@ -223,18 +228,27 @@ const removeFollow = async ({ user, friend, followsEvent, setFollowsEvent }: add
         
         const pairKey = await getPairKey(user.keychanges ?? "")
 
-        //followsEvent.tags = followsEvent.tags.filter(t => t[0] == "p" && t[1] != friend.pubkey)
         followsEvent.created_at = Date.now()
 
         await publishEvent(followsEvent, pairKey, true)
-
-        if(setFollowsEvent) setFollowsEvent(followsEvent)
-        
-    } catch (ex) { console.log(ex) }
+    } 
+    catch (ex) { console.log(ex) }
 }
 
+const createFollowEvent = (user: User, friends: [string[]]) : NostrEvent => {
 
-const searchUsers = async (user: User, searchTerm: string): Promise<User[]> => {
+    const pool = Nostr as NDK
+
+    return {
+        pubkey: user.pubkey ?? "",
+        kind: NostrEventKinds.followList,
+        content: JSON.stringify(pool.explicitRelayUrls),
+        created_at: Date.now(),
+        tags: friends
+    }
+}
+
+const searchUsers = async (user: User, searchTerm: string, limit: number = 50): Promise<User[]> => {
     try 
     {
         const response = await fetch(`${env.nosbook.api}/search`, {
@@ -243,7 +257,7 @@ const searchUsers = async (user: User, searchTerm: string): Promise<User[]> => {
             body: JSON.stringify({
                 pubkey: user.pubkey,
                 searchTerm: searchTerm,
-                limit: 100
+                limit
             })
         })
 
@@ -261,15 +275,19 @@ const searchUsers = async (user: User, searchTerm: string): Promise<User[]> => {
     catch { return [] }
 }
 
-const lastNotes = async (user: User, limit: number = 3) : Promise<string[]> => {
+const lastNotes = async (user: User, limit: number = 3, onlyPrincipal = false) : Promise<string[]> => {
 
-    const events = await listenerEvents({ 
+    var events = await listenerEvents({ 
         authors: [user.pubkey ?? ""], 
-        kinds:[1], 
+        kinds: [1], 
         limit: limit
     })
 
-    return events.map(event => event.content as string)
+    if(onlyPrincipal) 
+        events = events.filter(e => !e.tags?.filter(t => t[0] == "e").length)
+
+    return events.sort((a,b) => (a.created_at ?? 1) - (b.created_at ?? 1))
+        .map(event => event.content as string)
 }
 
 const listChats = async (followsEvent: NostrEvent): Promise<NostrEvent[]> => {
@@ -296,5 +314,6 @@ export const userService = {
     removeFollow,
     searchUsers,
     lastNotes,
-    listChats
+    listChats,
+    createFollowEvent
 }

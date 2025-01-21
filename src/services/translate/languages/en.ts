@@ -55,6 +55,7 @@ export default {
     "labels.wallet.add": "Add a wallet!",
     "labels.wallet.name": "Wallet Name",
     "labels.wallet.getseed": "View Seed",
+    "labels.wallet.password": "Password (optional)",
     "labels.relays.add": "Add Relay",
 
     "menu.home": "home",
@@ -158,7 +159,9 @@ export default {
     "screen.title.newchat": "New Conversation",
 
     "chats.title": "Conversations",
-    "chat.empty": "Você não possui nenhuma mensagem",
+    "chat.empty": "You don't have any messages",
+    "feed.empty": "No orders found, try adding seller friends",
+
 
     "order.new.title": "New Sales Order",
     "order.new.amount-title": "How many Sats do you want to sell?",

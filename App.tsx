@@ -37,7 +37,7 @@ const styles = StyleSheet.create({
         backgroundColor: theme.colors.black,
     },
     space: {
-        height: 40,
+        height: 48,
         width: "100%",
         backgroundColor: theme.colors.transparent
     }

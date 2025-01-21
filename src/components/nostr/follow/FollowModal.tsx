@@ -7,10 +7,12 @@ import theme from "@src/theme"
 import { BlurView } from "expo-blur"
 import { User } from "@/src/services/memory/types"
 import { hexToNpub } from "@/src/services/converter"
-import { useAuth } from "@/src/providers/userProvider"
 import { userService } from "@/src/core/userManager"
 import { NoteList } from "../user/NoteList"
 import { ActivityIndicator } from "react-native-paper"
+import { setStringAsync } from "expo-clipboard"
+import { showMessage } from "../../general/MessageBox"
+import { pushMessage } from "@/src/services/notification"
 
 type followModalProps = {
     user: User,
@@ -37,15 +39,13 @@ const ButtonLight = ({ label, onPress }: ButtonProps) => {
 }
 
 type FollowProps = {
-    handleAddFollow: (user: User, action: string) => void
+    handleAddFollow: (user: User) => Promise<void>
 }
 
 const FollowModal = ({ handleAddFollow }: FollowProps) => {
 
-    const { followsEvent } = useAuth()
     const [user, setUser] = useState<User>()
     const [notes, setNotes] = useState<string[]>([])
-    const [isFriend, setIsFriend] = useState(false)
     const [visible, setVisible] = useState(false)
     const [loading, setloading] = useState(true)
     const { useTranslate } = useTranslateService()
@@ -53,10 +53,8 @@ const FollowModal = ({ handleAddFollow }: FollowProps) => {
     showFollowModalFunction = async ({ user }: followModalProps) => {
         setUser(user)
         setloading(true)
-        setIsFriend(!!followsEvent?.tags.filter(f => f[0] == "p" && f[1] == user.pubkey).length)
         setVisible(true)
-        const notes = await userService.lastNotes(user)
-        setNotes(notes)
+        setNotes(await userService.lastNotes(user, 6, true))
         setloading(false)
     }
 
@@ -65,10 +63,19 @@ const FollowModal = ({ handleAddFollow }: FollowProps) => {
         setNotes([])
     }
 
-    const handleAction = () => {
-        handleAddFollow(user ?? {}, isFriend ? "remove" : "add")
-        setVisible(false)
+    const handleAction = async () => {
         setNotes([])
+        setVisible(false)
+        handleAddFollow(user as User)
+    }
+
+    const handleCopyPubkey = async () => {
+        
+        const npub = hexToNpub(user?.pubkey ?? "")
+
+        await setStringAsync(npub)
+
+        pushMessage(useTranslate("message.copied"))
     }
 
     return (
@@ -78,23 +85,23 @@ const FollowModal = ({ handleAddFollow }: FollowProps) => {
                     <View style={styles.box}>
 
                         <View style={{ flexDirection: "row" }}>
-                            <TouchableOpacity activeOpacity={.3}>
+                            <TouchableOpacity activeOpacity={.3} onPress={handleCopyPubkey}>
                                 <View style={styles.image}>
                                     {user?.picture && <Image onError={() => user.picture = ""} source={{ uri: user?.picture }} style={{ flex: 1 }} />}
                                     {!user?.picture && <Image source={require("assets/images/defaultProfile.png")} style={{ width: 60, height: 60 }} />}
                                 </View>
                             </TouchableOpacity>
-                            <View style={{ paddingHorizontal: 12 }}>
+                            <TouchableOpacity style={{ paddingHorizontal: 12 }} onPress={handleCopyPubkey}>
                                 <Text style={{ color: theme.colors.white, fontSize: 20, fontWeight: 'bold' }}>
                                     {user?.display_name?.substring(0, 18)}
                                 </Text>
                                 <Text style={{ fontSize: 14, fontWeight: "500", color: theme.colors.gray }}>
                                     {hexToNpub(user?.pubkey ?? "").substring(0, 25)}..
                                 </Text>
-                            </View>
+                            </TouchableOpacity>
                         </View>
                                               
-                        {isFriend && <Text style={styles.infolog}>
+                        {user?.friend && <Text style={styles.infolog}>
                             <Text style={{ color: theme.colors.gray, fontWeight: "500" }}>
                                 {user?.display_name?.substring(0, 14)}  
                             </Text> {' '}
@@ -106,7 +113,7 @@ const FollowModal = ({ handleAddFollow }: FollowProps) => {
                         </Text>
                         
                         {notes.length > 0 && <NoteList notes={notes} /> }
-                        {notes.length <= 0 && loading && <ActivityIndicator color={theme.colors.gray} size={50} />}
+                        {notes.length <= 0 && loading && <ActivityIndicator color={theme.colors.gray} size={45} />}
                         {notes.length <= 0 && !loading &&
                             <Text style={{ color: theme.colors.gray, textAlign: "center", margin: 15 }}>
                                 {useTranslate("friends.notes.empty")}
@@ -114,8 +121,8 @@ const FollowModal = ({ handleAddFollow }: FollowProps) => {
                         }
 
                         <View style={styles.sectionButtons}>
-                            {!isFriend && <ButtonLight label={useTranslate("commons.add")} onPress={handleAction} />}
-                            {isFriend && <ButtonLight label={useTranslate("commons.remove")} onPress={handleAction} />}
+                            {!user?.friend && <ButtonLight label={useTranslate("commons.add")} onPress={handleAction} />}
+                            {user?.friend && <ButtonLight label={useTranslate("commons.remove")} onPress={handleAction} />}
                             <ButtonLight label={useTranslate("commons.close")} onPress={handleClose} />
                         </View>
 

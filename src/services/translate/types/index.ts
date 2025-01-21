@@ -59,6 +59,7 @@ export type TranslateWords = "initial.message"
     | "labels.wallet.add"
     | "labels.wallet.name"
     | "labels.wallet.getseed"
+    | "labels.wallet.password"
     | "labels.relays.add"
 
     | "menu.home"
@@ -160,6 +161,8 @@ export type TranslateWords = "initial.message"
 
     | "chats.title"
     | "chat.empty"
+
+    | "feed.empty"
 
     | "screen.title.addwallet"
     | "screen.title.importwallet"

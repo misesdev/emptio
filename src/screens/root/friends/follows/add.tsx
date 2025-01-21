@@ -7,10 +7,9 @@ import { useTranslateService } from "@/src/providers/translateProvider"
 import { userService } from "@/src/core/userManager"
 import { UserList } from "@/src/components/nostr/user/UserList"
 import theme from "@src/theme"
-import { useEffect, useState } from "react"
+import { useState } from "react"
 import FollowModal, { showFollowModal } from "@/src/components/nostr/follow/FollowModal"
 import { NostrEvent } from "@nostr-dev-kit/ndk"
-import { Ionicons } from "@expo/vector-icons"
 
 const AddFolowScreen = ({ navigation }: any) => {
 
@@ -18,47 +17,57 @@ const AddFolowScreen = ({ navigation }: any) => {
     const { useTranslate } = useTranslateService()
     const [users, setUsers] = useState<User[]>([])
     const [loading, setLoading] = useState(false)
-    const [reloadUsers, setReloadUsers] = useState(true)
-
+   
     const handleSearch = async (searchTerm: string) => {
 
         if(searchTerm?.length <= 1) return setUsers([])
             
         setLoading(true)
 
-        const users = await userService.searchUsers(user, searchTerm)
+        //const users = await 
+        userService.searchUsers(user, searchTerm, 30).then(users => {
+            users.sort((a, b) => (b.similarity ?? 1) - (a.similarity ?? 1))
 
-        users.sort((a, b) => (b.similarity ?? 1) - (a.similarity ?? 1))
+            const friends = followsEvent?.tags?.filter(t => t[0] == "p").map(t => t[1]) ?? []
+            
+            users.forEach(user => {
+                user.friend = friends.includes(user.pubkey ?? "")
+            })
 
-        setUsers(users)
+            setUsers(users)
 
-        setReloadUsers(!reloadUsers)
-
-        setLoading(false)
+            setLoading(false)
+        })
+        .catch(() => setLoading(false))
     }
 
-    const AddUserOnFollowList = async (friend: User, action: string) => {
+    const AddUserOnFollowList = async (friend: User) => {
 
-        if(action == "add") 
-        {
-            followsEvent!.tags.push(["p", friend.pubkey ?? ""])
-            setReloadUsers(!reloadUsers)
-            await userService.addFollow({
+        setUsers(users.map((user: User) => {
+            if(user.pubkey == friend.pubkey) user.friend = !user.friend
+            return user
+        }))
+
+        if(friend.friend) 
+        {   
+            console.log("add friend")
+            followsEvent?.tags?.push(["p", friend.pubkey ?? ""])
+
+            if(setFollowsEvent) setFollowsEvent(followsEvent as NostrEvent)
+
+            setTimeout(async () => await userService.addFollow({
                 user,
                 friend,
-                followsEvent: followsEvent as NostrEvent,
-                setFollowsEvent: setFollowsEvent,
-            })
-        }
-        if(action == "remove") 
-        {
+                followsEvent: followsEvent as NostrEvent
+            }), 50)
+        } 
+        else {
             followsEvent!.tags = followsEvent!.tags.filter(t => t[0] == "p" && t[1] != friend.pubkey)
-            setReloadUsers(!reloadUsers)
+            
             await userService.removeFollow({
                 user,
                 friend,
-                followsEvent: followsEvent as NostrEvent,
-                setFollowsEvent: setFollowsEvent,
+                followsEvent: followsEvent as NostrEvent
             })
         }
     }
@@ -85,7 +94,7 @@ const AddFolowScreen = ({ navigation }: any) => {
                 </View>
             } 
 
-            <UserList reload={reloadUsers} toFollow users={users} setUsers={setUsers} onPressUser={handleAddFollow} />
+            <UserList toFollow users={users} setUsers={setUsers} onPressUser={handleAddFollow} />
 
             <View style={{ height: 38 }}></View>
 

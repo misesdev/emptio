@@ -14,13 +14,15 @@ import { userService } from "@src/core/userManager"
 import { useTranslateService } from "@/src/providers/translateProvider"
 import { Wallet, WalletType } from "@/src/services/memory/types"
 import { getWallets } from "@/src/services/memory/wallets"
+import { BaseWallet } from "@/src/services/bitcoin"
 
 const AddWalletScreen = ({ navigation }: any) => {
 
     const { user, wallets, setWallets } = useAuth()
     const { useTranslate } = useTranslateService()
     const [loading, setLoading] = useState(false)
-    const [walletName, setWalletName] = useState<string>()
+    const [walletName, setWalletName] = useState<string>("")
+    const [walletPassword, setWalletPassword] = useState<string>("")
     const [walletType, setWalletType] = useState<WalletType>("bitcoin")
 
     const handleWalletType = (type: WalletType) => {
@@ -34,19 +36,28 @@ const AddWalletScreen = ({ navigation }: any) => {
         setLoading(true)
 
         setTimeout(async () => {
-            const response = await walletService.create({ name: walletName, type: walletType, wallets })
+            const response = await walletService.create({ 
+                name: walletName, 
+                password: walletPassword, 
+                type: walletType,
+                wallets 
+            })
             
             if (response.success) {
-                let wallet = response.data as Wallet
-                if (wallet.default) {
-                    user.default_wallet = wallet.key
-                    user.bitcoin_address = wallet.address
+                let base = response.data as BaseWallet
+                if (base.wallet.default) {
+                    user.default_wallet = base.wallet.key
+                    user.bitcoin_address = base.wallet.address
                     await userService.updateProfile({ user, upNostr: true })
                 }
 
                 if(setWallets) setWallets(await getWallets())
 
-                navigation.navigate("seed-wallet-stack", { origin: "create", wallet })
+                navigation.navigate("seed-wallet-stack", { 
+                    origin: "create", 
+                    wallet: base.wallet,
+                    mnemonic: base.mnemonic.split(" ")
+                })
             }
             else
                 pushMessage(response.message)
@@ -74,6 +85,8 @@ const AddWalletScreen = ({ navigation }: any) => {
             <View style={theme.styles.container} >
 
                 <FormControl label={useTranslate("labels.wallet.name")} value={walletName} onChangeText={setWalletName} />
+                
+                <FormControl label={useTranslate("labels.wallet.password")} value={walletPassword} onChangeText={setWalletPassword} />
 
                 <View style={{ width: "100%", alignItems: "center", marginVertical: 30 }}>
                     <TouchableOpacity activeOpacity={.7}

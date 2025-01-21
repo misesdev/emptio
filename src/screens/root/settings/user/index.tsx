@@ -96,18 +96,20 @@ const UserEditScreen = ({ navigation }: any) => {
             </View>
             <View style={{ height: 60 }}></View>
             <View style={styles.profileArea}>
-                <TouchableOpacity activeOpacity={.7} onPress={() => handlePickImage("profile")}>
-                    <View style={styles.image}>
-                        {prifile && <Image source={{ uri: prifile }} style={{ flex: 1 }} />}
-                        {!prifile && <Image source={require("assets/images/defaultProfile.png")} style={{ flex: 1 }} />}
-                    </View>
-                    <Ionicons
-                        size={theme.icons.mine}
-                        color={theme.colors.white}
-                        name="pencil-outline"
-                        style={styles.buttonProfile}
-                    />
-                </TouchableOpacity>
+                <View style={styles.imageArea}>
+                    <TouchableOpacity activeOpacity={.7} onPress={() => handlePickImage("profile")}>
+                        <View style={styles.image}>
+                            {prifile && <Image source={{ uri: prifile }} style={{ flex: 1 }} />}
+                            {!prifile && <Image source={require("assets/images/defaultProfile.png")} style={{ flex: 1 }} />}
+                        </View>
+                        <Ionicons
+                            size={theme.icons.mine}
+                            color={theme.colors.white}
+                            name="pencil-outline"
+                            style={styles.buttonProfile}
+                        />
+                    </TouchableOpacity>
+                </View>
             </View>
 
             <FormControl label={useTranslate("labels.username")} value={userName} onChangeText={setUserName} />
@@ -121,6 +123,7 @@ const UserEditScreen = ({ navigation }: any) => {
 }
 
 const styles = StyleSheet.create({
+    imageArea: { width: 100, height: 100, borderRadius: 50, backgroundColor: theme.colors.black },
     image: { width: 100, height: 100, borderRadius: 50, backgroundColor: theme.colors.gray, borderWidth: 2, borderColor: theme.colors.section, overflow: "hidden" },
     profileArea: { width: "100%", alignItems: "center", marginVertical: 10, marginBottom: 20 },
     banner: { width: "100%", height: 140, position: "absolute", top: 0 },

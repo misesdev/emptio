@@ -1,3 +1,4 @@
+import { NostrEvent } from "@nostr-dev-kit/ndk"
 import { PairKey, User } from "../memory/types"
 import { listenerEvents, publishEvent } from "./events"
 
@@ -28,4 +29,9 @@ export const pushUserData = async (user: User, pairKey: PairKey) => {
     const event = { kind: 0, content: JSON.stringify(profile) }
 
     await publishEvent(event, pairKey)
+}
+
+export const pushUserFollows = async (event: NostrEvent, pairKey: PairKey) => {
+    
+    await publishEvent(event, pairKey, true)
 }

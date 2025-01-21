@@ -18,7 +18,7 @@ export const SearchBox = ({ label, textCenter, onSearch }: SearchBoxProps) => {
 
     const handleSearch = (value: string) => {
         setSearch(value)
-        if (value) {
+        if (value.trim()) {
             if(TimeOutSearch.current) clearTimeout(TimeOutSearch.current)
             TimeOutSearch.current = setTimeout(() => onSearch(value), 500)
         }
@@ -33,7 +33,7 @@ export const SearchBox = ({ label, textCenter, onSearch }: SearchBoxProps) => {
                 <TextInput style={[styles.input, { textAlign: textCenter ? "center" : "auto", width: "72%" }]}
                     placeholder={label}
                     onChangeText={handleSearch}
-                    clearTextOnFocus={true}
+                    //clearTextOnFocus={true}
                     placeholderTextColor={theme.colors.gray}
                     value={search}
                 />

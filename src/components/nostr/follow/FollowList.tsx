@@ -32,12 +32,11 @@ export const FollowList = ({ searchTerm, onPressFollow, toPayment = false, searc
 
             searchTimeout.current = setTimeout(() => {
                 // search and filter
-                if (searchTerm && !walletService.address.validate(searchTerm)) {
-
+                const filter = searchTerm?.trim()
+                if (filter?.length && !walletService.address.validate(filter)) {
                     const searchResult = followListData.filter(follow => {
-                        let filterLower = searchTerm.toLowerCase()
                         let filterNameLower = `${follow.name}${follow.display_name}`.toLowerCase()
-                        return filterNameLower.includes(filterLower)
+                        return filterNameLower.includes(filter.toLowerCase())
                     })
 
                     setFollowList(searchResult)

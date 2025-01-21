@@ -28,24 +28,28 @@ const ImportWalletScreen = ({ navigation, route }: any) => {
         if (!walletName)
             return pushMessage(useTranslate("message.wallet.nameempty"))
 
-        // if (words && words?.length < 12)
-        //     return pushMessage(`${useTranslate("message.wallet.invalidseed")} ${words.length}.`)
-
-        if (words && words?.length < 24 || words?.length > 24)
+        if (words && words?.length < 12 || words.length > 12)
             return pushMessage(`${useTranslate("message.wallet.invalidseed")} ${words.length}.`)
-
+        
         setLoading(true)
 
-        const response = await walletService.import({ name: walletName, type, seedphrase: seedPhrase, passphrase: passPhrase })
+        setTimeout(async () => {
+            const response = await walletService.import({ 
+                type,
+                name: walletName.trim(),
+                mnemonic: seedPhrase.trim(), 
+                password: passPhrase?.trim() 
+            })
 
-        if(setWallets) setWallets(await walletService.list())
+            if(setWallets) setWallets(await walletService.list())
 
-        setLoading(false)
+            setLoading(false)
 
-        if (response.success)
-            navigation.reset({ index: 0, routes: [{ name: "core-stack" }] })
-        else
-            pushMessage(response.message)
+            if (response.success)
+                navigation.reset({ index: 0, routes: [{ name: "core-stack" }] })
+            else
+                pushMessage(response.message)
+        }, 50)
     }
 
     if (loading)
@@ -62,15 +66,7 @@ const ImportWalletScreen = ({ navigation, route }: any) => {
             {/* Body */}
             <Text style={styles.title}>{useTranslate("wallet.title.import")}</Text>
 
-            <FormControl  
-                value={walletName} 
-                onChangeText={setWalletName}                 
-                label={useTranslate("labels.wallet.name")}
-            />
-
-            <FormControl label="Seed Phrase" value={seedPhrase} onChangeText={value => setSeedPhrase(value.toLowerCase())} isTextArea />
-
-            <View style={{ alignItems: "center" }}>
+            <View style={{ alignItems: "center", marginVertical: 26 }}>
                 <Text style={{ 
                     width: "50%", 
                     padding: 4,
@@ -83,9 +79,17 @@ const ImportWalletScreen = ({ navigation, route }: any) => {
                     {type == "testnet" && useTranslate("wallet.bitcoin.testnet.tag")}
                 </Text>
             </View>
-            
-            {/* <FormControl label="PassPhrase" value={passPhrase} onChangeText={setPassPhrase} type="password" /> */}
 
+            <FormControl  
+                value={walletName} 
+                onChangeText={setWalletName}                 
+                label={useTranslate("labels.wallet.name")}
+            />
+
+            <FormControl label="Seed Phrase" value={seedPhrase} onChangeText={value => setSeedPhrase(value.toLowerCase())} isTextArea />
+            
+            <FormControl label={useTranslate("labels.wallet.password")} value={passPhrase} onChangeText={setPassPhrase} type="password" /> 
+           
             {/* Footer */}
             <View style={styles.buttonArea}>
                 <ButtonPrimary label={useTranslate("commons.import")} onPress={() => handleImport()} />

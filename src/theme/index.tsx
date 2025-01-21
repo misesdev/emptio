@@ -7,7 +7,7 @@ const theme = {
         red: "#C14D45",
         green: "#009751",
         blue: "#184149",
-        blueOpacity: "rgba(0, 55, 55, .2)",
+        blueOpacity: "rgba(0, 55, 55, .4)",
         gray: "#525B5F",
         default: "#2D3138",
         orange: "#bd6413",
@@ -16,7 +16,7 @@ const theme = {
         icons: "#FFFFFF",
         section: "#0c1e21",
         transparent: "transparent",
-        semitransparent: "rgba(0,0,0,.4)",
+        semitransparent: "rgba(0,0,0,.6)",
         link: "#0940e3",
         disabled: "#26292e"
     },
@@ -44,7 +44,8 @@ const theme = {
         scroll_container: {
             flexGrow: 1,
             alignContent: "center",
-            alignItems: "center"
+            alignItems: "center",
+            backgroundColor: "#000000"
         },
         hidden: {
             opacity: 0,

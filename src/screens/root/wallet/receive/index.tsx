@@ -36,8 +36,8 @@ const WalletReceiveScreen = ({ navigation, route }: any) => {
 
                 {/* Profile Picture */}
                 <View style={styles.image}>
-                    {user.picture && <Image source={{ uri: user.picture }} style={{ flex: 1 }} />}
-                    {!user.picture && <Image source={require("assets/images/defaultProfile.png")} style={{ flex: 1 }} />}
+                    {user.picture && <Image onError={() => user.picture = ""} source={{ uri: user.picture }} style={{ flex: 1 }} />}
+                    {!user.picture && <Image source={require("assets/images/defaultProfile.png")} style={{ width: 100, height: 100 }} />}
                 </View>
                 {/* Profile Name */}
                 <Text style={styles.userName}>{user.name}</Text>

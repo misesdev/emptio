@@ -2,7 +2,7 @@ import { getTransactionInfo, getUtxo, getUtxos } from "@/src/services/bitcoin/me
 import { getUser } from "@/src/services/memory/user"
 import { useTranslate } from "@/src/services/translate"
 import { Tx } from "@mempool/mempool.js/lib/interfaces/bitcoin/transactions"
-import { generateAddress, createTransaction, createWallet, ValidateAddress, sendTransaction, importWallet, getSeedPhrase } from "@src/services/bitcoin"
+import { generateAddress, createTransaction, createWallet, ValidateAddress, sendTransaction, importWallet, getSeedPhrase, BaseWallet } from "@src/services/bitcoin"
 import { getRandomKey } from "@src/services/bitcoin/signature"
 import { deletePairKey, getPairKey, insertPairKey } from "@src/services/memory/pairkeys"
 import { PairKey, Transaction, TransactionInput, TransactionOutput, Wallet, WalletInfo, WalletType } from "@src/services/memory/types"
@@ -14,16 +14,17 @@ import { Network } from "../../services/bitcoin/types"
 type Props = {
     name: string,
     type: WalletType,
+    password: string,
     wallets: Wallet[]
 }
 
-const create = async ({ name, type, wallets }: Props): Promise<Response<Wallet>> => {
+const create = async ({ name, type, password, wallets }: Props): Promise<Response<BaseWallet>> => {
     try {
-        const pairKey: PairKey = createWallet()
-    
         const network: Network = type == "bitcoin" ? "mainnet" : "testnet"
 
-        const bitcoinAddress = generateAddress(pairKey.publicKey, network)
+        const walletData: BaseWallet = createWallet(password, network)
+        
+        const bitcoinAddress = generateAddress(walletData.pairkey.publicKey, network)
 
         const wallet: Wallet = {
             name: name,
@@ -31,36 +32,38 @@ const create = async ({ name, type, wallets }: Props): Promise<Response<Wallet>>
             lastBalance: 0,
             lastReceived: 0,
             lastSended: 0,
-            pairkey: pairKey.key,
+            pairkey: walletData.pairkey.key,
             key: getRandomKey(10),
             address: bitcoinAddress,
             default: wallets.length <= 0
         }
 
-        await insertPairKey(pairKey)
+        walletData.wallet = wallet
+
+        await insertPairKey(walletData.pairkey)
 
         await insertWallet(wallet)
 
-        return { success: true, message: "success", data: wallet }
+        return { success: true, message: "success", data: walletData }
     }
     catch (ex) { return trackException(ex) }
 }
 
 type ImportProps = {
     name: string,
-    seedphrase: string,
-    passphrase?: string,
+    mnemonic: string,
+    password?: string,
     type?: WalletType
 }
 
-const require = async ({ name, type = "bitcoin", seedphrase, passphrase }: ImportProps): Promise<Response<Wallet>> => {
+const require = async ({ name, type = "bitcoin", mnemonic, password }: ImportProps): Promise<Response<BaseWallet>> => {
 
     try {
-        const pairKey = await importWallet(seedphrase, passphrase)
-
         const network: Network = type == "bitcoin" ? "mainnet" : "testnet"
 
-        const bitcoinAddress = generateAddress(pairKey.publicKey, network)
+        const base = await importWallet(mnemonic, password, network)
+        
+        const bitcoinAddress = generateAddress(base.pairkey.publicKey, network)
 
         const wallet: Wallet = {
             name: name,
@@ -68,16 +71,18 @@ const require = async ({ name, type = "bitcoin", seedphrase, passphrase }: Impor
             lastBalance: 0,
             lastReceived: 0,
             lastSended: 0,
-            pairkey: pairKey.key,
+            pairkey: base.pairkey.key,
             key: getRandomKey(10),
             address: bitcoinAddress
         }
 
-        await insertPairKey(pairKey)
+        base.wallet = wallet
+
+        await insertPairKey(base.pairkey)
 
         await insertWallet(wallet)
 
-        return { success: true, message: "", data: wallet }
+        return { success: true, message: "", data: base }
     }
     catch (ex) {
         return trackException(ex)

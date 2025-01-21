@@ -55,6 +55,7 @@ export default {
     "labels.wallet.add": "Adicionar carteira!",
     "labels.wallet.name": "Nome da Carteira",
     "labels.wallet.getseed": "Visualizar Seed",
+    "labels.wallet.password": "Senha (opcional)",
     "labels.relays.add": "Adicionar Relay",
 
     "menu.home": "início",   
@@ -162,6 +163,8 @@ export default {
 
     "chats.title": "Conversas",
     "chat.empty": "Você não possui nenhuma mensagem",
+
+    "feed.empty": "Nenhuma ordem encontrada, tende adicionar amigos vendedores",
 
     "settings.about": "Sobre",
     "settings.about.content": `Emptio P2P é uma aplicação de código aberto que tem o objetivo de permitir inicialmente a compra e venda de bitcoin de pessoa para pessoa de forma descentralizada utilizando o protocolo Nostr.

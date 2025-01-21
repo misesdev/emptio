@@ -11,7 +11,7 @@ import { useTranslateService } from "@/src/providers/translateProvider";
 
 const RegisterScreen = ({ navigation }: any) => {
 
-    const { setUser } = useAuth()
+    const { setUser, setFollowsEvent } = useAuth()
     const { useTranslate } = useTranslateService()
     const [userName, setUserName] = useState("")
     const [loading, setLoading] = useState(false)
@@ -25,9 +25,13 @@ const RegisterScreen = ({ navigation }: any) => {
             setLoading(true)
             setTimeout(async () => {
 
-                const result = await userService.signUp({ userName, setUser })
+                const result = await userService.signUp({ 
+                    userName, 
+                    setUser, 
+                    setFollowsEvent
+                })
 
-                if (result.success)
+                if (result.success) 
                     return navigation.reset({ index: 0, routes: [{ name: "core-stack" }] })
                 else {
                     showMessage({ message: `${useTranslate("message.request.error")} ${result.message}` })
@@ -43,7 +47,6 @@ const RegisterScreen = ({ navigation }: any) => {
     return (
         <>
             <View style={theme.styles.container}>
-
                 <Image style={styles.logo} source={require("@assets/emptio.png")} />
 
                 <Text style={styles.title}>{useTranslate("register.message")}</Text>
@@ -62,9 +65,9 @@ const RegisterScreen = ({ navigation }: any) => {
 }
 
 const styles = StyleSheet.create({
-    logo: { width: 200, height: 160 },
+    logo: { maxWidth: "90%", maxHeight: "26%", marginTop: -100 },
     title: { marginVertical: 10, color: theme.colors.gray, textAlign: "center", width: "85%" },
-    buttonArea: { width: '100%', position: 'absolute', justifyContent: 'center', marginVertical: 30, flexDirection: "row", bottom: 10 }
+    buttonArea: { width: '100%', position: 'absolute', justifyContent: 'center', marginBottom: 40, flexDirection: "row", bottom: 10 }
 })
 
 export default RegisterScreen

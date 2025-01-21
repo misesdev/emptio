@@ -39,18 +39,20 @@ const WalletListItem = ({ wallet, reload, handleOpen }: Props) => {
         setLoading(true)
 
         const network: Network = wallet.type == "bitcoin" ? "mainnet" : "testnet"
-        const walletInfo = await walletService.listTransactions(wallet.address ?? "", network)
+        const walletInfo = 
+        walletService.listTransactions(wallet.address ?? "", network).then(walletInfo => {
+            if(wallet.lastBalance != walletInfo.balance)
+            {
+                wallet.lastBalance = walletInfo.balance
+                wallet.lastSended = walletInfo.sended
+                wallet.lastReceived = walletInfo.received
 
-        if(wallet.lastBalance != walletInfo.balance)
-        {
-            wallet.lastBalance = walletInfo.balance
-            wallet.lastSended = walletInfo.sended
-            wallet.lastReceived = walletInfo.received
+                // await walletService.update(wallet)
+                walletService.update(wallet)
+            }
+            setLoading(false)
+        }).catch(() => setLoading(false))
 
-            await walletService.update(wallet)
-        }
-
-        setLoading(false)
     }
 
     let balanceSats = formatSats(wallet.lastBalance)

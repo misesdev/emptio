@@ -1,33 +1,61 @@
 import { getRandomBytes } from "expo-crypto"
 import { getPublicKey } from "@noble/secp256k1"
 import { bytesToHex } from "@noble/hashes/utils"
-import { mnemonicToEntropy, entropyToMnemonic, mnemonicToSeed } from "bip39"
+import { mnemonicToEntropy, entropyToMnemonic, generateMnemonic, mnemonicToSeedSync } from "bip39"
 import { payments, Psbt, networks, address } from "bitcoinjs-lib"
 import { PairKey, Wallet } from "../memory/types"
 import { getRandomKey, signBuffer, verifySign } from "./signature"
 import { getTxsUtxos, getUtxo, sendUtxo } from "./mempool"
 import { Response, trackException } from "../telemetry"
-import env from "@/env"
 import { Network } from "./types"
+import { HDKey } from "@scure/bip32"
 
-//const network = env.mempool.network == "testnet" ? networks.testnet : networks.bitcoin
+export type BaseWallet = {
+    pairkey: PairKey,
+    mnemonic: string,
+    wallet: Wallet
+}
 
-export const createWallet = (): PairKey => {
+export const createWallet = (password: string = "", network: Network = "mainnet"): BaseWallet => {
 
     const key = getRandomKey(10)
 
-    const secretBytes = getRandomBytes(32)
+    const mnemonic = generateMnemonic(128)
 
-    const privateKey = bytesToHex(secretBytes)
+    const seed = mnemonicToSeedSync(mnemonic, password)
+
+    const root = HDKey.fromMasterSeed(seed)
+
+    const privateKey = bytesToHex(root.privateKey as Uint8Array)
 
     const publicbytes = getPublicKey(privateKey)
 
     const publicKey = bytesToHex(publicbytes)
 
-    return { key, privateKey, publicKey }
+    const pairkey =  { key, privateKey, publicKey }
+
+    return { pairkey, mnemonic, wallet: {} }
 }
 
-export const importWallet = async (seedPhrase: string, password?: string): Promise<PairKey> => seedToWallet(seedPhrase)
+export const importWallet = async (mnemonic: string, password?: string, network: Network = "mainnet"): Promise<BaseWallet> => {
+    
+    const key = getRandomKey(10)
+
+    const seed = mnemonicToSeedSync(mnemonic, password)
+
+    const root = HDKey.fromMasterSeed(seed)
+
+    const privateKey = bytesToHex(root.privateKey as Uint8Array)
+
+    const publicbytes = getPublicKey(privateKey)
+
+    const publicKey = bytesToHex(publicbytes)
+
+    const pairkey =  { key, privateKey, publicKey }
+
+    return { pairkey, mnemonic, wallet: {} }
+}
+
 
 export type SeedProps = {
     seed: string, // phrase with 12 or 24 words
@@ -47,7 +75,12 @@ export const seedToWallet = (seedPhrase: string): PairKey => {
     return { key, privateKey, publicKey }
 }
 
-export const getSeedPhrase = (privateKey: string): string => entropyToMnemonic(privateKey)
+export const getSeedPhrase = (privateKey: string): string => {
+
+    console.log("privateKey:", privateKey)
+
+    return entropyToMnemonic(privateKey)
+}
 
 export const generateAddress = (publicKey: string, net: Network = "mainnet"): string => {
 
