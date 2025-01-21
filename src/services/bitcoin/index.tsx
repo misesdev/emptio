@@ -1,4 +1,3 @@
-import { getRandomBytes } from "expo-crypto"
 import { getPublicKey } from "@noble/secp256k1"
 import { bytesToHex } from "@noble/hashes/utils"
 import { mnemonicToEntropy, entropyToMnemonic, generateMnemonic, mnemonicToSeedSync } from "bip39"
@@ -73,13 +72,6 @@ export const seedToWallet = (seedPhrase: string): PairKey => {
     const publicKey = bytesToHex(publicbytes)
 
     return { key, privateKey, publicKey }
-}
-
-export const getSeedPhrase = (privateKey: string): string => {
-
-    console.log("privateKey:", privateKey)
-
-    return entropyToMnemonic(privateKey)
 }
 
 export const generateAddress = (publicKey: string, net: Network = "mainnet"): string => {

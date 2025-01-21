@@ -1,7 +1,12 @@
-import NDK, { NDKEvent, NostrEvent } from "@nostr-dev-kit/ndk"
+import NDK, { NDKEvent, NDKPrivateKeySigner } from "@nostr-dev-kit/ndk"
 import { PairKey, User } from "../memory/types"
-import { listenerEvents, publishEvent } from "./events"
+import { listenerEvents, publishEvent, NostrEvent } from "./events"
 import { getRelays } from "../memory/relays"
+import { getPairKey } from "../memory/pairkeys"
+import { NotificationApp } from "../notification/application"
+import { AppState } from "react-native"
+import { pushNotification } from "../notification"
+import { insertEvent } from "../memory/database/events"
 
 export const getUserData = async (publicKey: string): Promise<User> => {
 
@@ -37,28 +42,68 @@ export const pushUserFollows = async (event: NostrEvent, pairKey: PairKey) => {
     await publishEvent(event, pairKey, true)
 }
 
-type SubscribeProps = {
-    user: User
-}
+type NostrInstanceProps = { user: User }
 
-export const getNostrInstance = async (): Promise<NDK> => {
+export const getNostrInstance = async ({ user }: NostrInstanceProps): Promise<NDK> => {
 
     const relays = await getRelays()
 
+    const pairKey = await getPairKey(user.keychanges ?? "")
+
     const ndk = new NDK({ explicitRelayUrls: relays })
 
+    ndk.signer = new NDKPrivateKeySigner(pairKey.privateKey)
+    
     await ndk.connect()
 
     return ndk
 }
 
-export const subscribeUser = ({ user }: SubscribeProps) => {
-    
+type SubscribeProps = { 
+    user: User,
+    homeState: boolean,
+    feedState: boolean,
+    ordersState: boolean,
+    messageState: boolean,
+    setNotificationApp?: (notification: NotificationApp) => void
+}
+
+export const subscribeUser = ({ user, messageState, setNotificationApp }: SubscribeProps) => {
     const pool = Nostr as NDK
 
-    const subscription = pool.subscribe({ kinds: [1,4], "#p": [user.pubkey ?? ""] })
+    const subscriptionMessages = pool.subscribe([
+        { kinds: [4], "#p": [user.pubkey ?? ""] }, 
+        { kinds: [4], authors: [user.pubkey ?? ""] }
+    ])
 
-    subscription.on("event", (event: NDKEvent) => {
-        
+    const processEventMessage = async (event: NDKEvent) => {
+        //await event.decrypt()
+
+        console.log(event.tags)
+        if(setNotificationApp && !messageState) 
+            setNotificationApp({ state: true, type: "message" })
+
+        if(["inactive", "background"].includes(AppState.currentState))
+        {
+            await pushNotification({ 
+                title: "Emptio P2P",
+                message: event.content.length <= 30 ? event.content : `${event.content.substring(0,30)}..`
+            })
+        }
+
+        await insertEvent({ event, category: "message" })
+    }
+    
+    subscriptionMessages.on("event", async (event: NDKEvent) => {
+        try 
+        {
+            if([4].includes(event.kind ?? 0)) 
+            {
+                await processEventMessage(event) 
+            }
+        } 
+        catch (ex) { console.log(ex) }
     })
+
+    //subscriptionMessages.start()
 }

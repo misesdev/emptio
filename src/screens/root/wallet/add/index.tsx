@@ -12,7 +12,7 @@ import theme from "@src/theme"
 import { useAuth } from "@src/providers/userProvider"
 import { userService } from "@src/core/userManager"
 import { useTranslateService } from "@/src/providers/translateProvider"
-import { Wallet, WalletType } from "@/src/services/memory/types"
+import { WalletType } from "@/src/services/memory/types"
 import { getWallets } from "@/src/services/memory/wallets"
 import { BaseWallet } from "@/src/services/bitcoin"
 
@@ -125,23 +125,23 @@ const AddWalletScreen = ({ navigation }: any) => {
                         </View>
                     </TouchableOpacity>
 
-                    <TouchableOpacity activeOpacity={1} disabled
-                        style={[styles.selection, { borderWidth: walletType == "lightning" ? 2 : 0, backgroundColor: theme.colors.section }]}
-                        onPress={() => { handleWalletType("lightning") }}
-                    >
-                        <View style={{ width: "15%", height: "100%", alignItems: "center", justifyContent: "center" }}>
-                            {/* <Image source={{ uri: "" }} style={{ }}/> */}
-                            <Ionicons name="flash" size={theme.icons.large} color={theme.colors.yellow} />
-                        </View>
-                        <View style={{ width: "85%" }}>
-                            <Text style={[styles.typeTitle, { color: theme.colors.white }]}>
-                                {useTranslate("wallet.lightning.tag")}
-                            </Text>
-                            <Text style={styles.typeDescription}>
-                                {useTranslate("wallet.lightning.description")}
-                            </Text>
-                        </View>
-                    </TouchableOpacity>
+                    {/* <TouchableOpacity activeOpacity={1} disabled */}
+                    {/*     style={[styles.selection, { borderWidth: walletType == "lightning" ? 2 : 0, backgroundColor: theme.colors.section }]} */}
+                    {/*     onPress={() => { handleWalletType("lightning") }} */}
+                    {/* > */}
+                    {/*     <View style={{ width: "15%", height: "100%", alignItems: "center", justifyContent: "center" }}> */}
+                          {/* <Image source={{ uri: "" }} style={{ }}/> */}
+                    {/*         <Ionicons name="flash" size={theme.icons.large} color={theme.colors.yellow} /> */}
+                    {/*     </View> */}
+                    {/*     <View style={{ width: "85%" }}> */}
+                    {/*         <Text style={[styles.typeTitle, { color: theme.colors.white }]}> */}
+                    {/*             {useTranslate("wallet.lightning.tag")} */}
+                    {/*         </Text> */}
+                    {/*         <Text style={styles.typeDescription}> */}
+                    {/*             {useTranslate("wallet.lightning.description")} */}
+                    {/*         </Text> */}
+                    {/*     </View> */}
+                    {/* </TouchableOpacity> */}
                 </View>
 
                 {/* Import wallet from seed phrase */}

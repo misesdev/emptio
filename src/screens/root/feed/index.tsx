@@ -5,20 +5,26 @@ import { listenerEvents } from "@src/services/nostr/events"
 import { NostrEventKinds } from "@src/constants/Events"
 import { useAuth } from "@src/providers/userProvider"
 import { HeaderFeed } from "./header"
-import { memo, useState } from "react"
+import { memo, useEffect, useState } from "react"
 import theme from "@src/theme"
 import { useTranslateService } from "@/src/providers/translateProvider"
 import { Ionicons } from "@expo/vector-icons"
 import { User } from "@/src/services/memory/types"
 import { RefreshControl } from "react-native-gesture-handler"
 import { pushMessage } from "@/src/services/notification"
+import { useNotificationBar } from "@/src/providers/notificationsProvider"
 
 const FeedScreen = ({ navigation }: any) => {
 
     const { followsEvent, wallets } = useAuth()
+    const { setNotificationApp } = useNotificationBar()
     const { useTranslate } = useTranslateService()
     const [loading, setLoading] = useState(false)
     const [posts, setPosts] = useState<User[]>([])
+
+    useEffect(() => {
+        if(setNotificationApp) setNotificationApp({ type: "orders", state: false })
+    }, [])
 
     const handleData = async () => {
         setLoading(true)
@@ -57,7 +63,7 @@ const FeedScreen = ({ navigation }: any) => {
     })
 
     const EmptyComponent = () => (
-        <Text style={{ color: theme.colors.gray, marginTop: 200, textAlign: "center" }}>
+        <Text style={{ width: "80%", color: theme.colors.gray, marginTop: 200, textAlign: "center" }}>
             {useTranslate("feed.empty")}
         </Text>
     )

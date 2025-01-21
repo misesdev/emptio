@@ -13,6 +13,7 @@ import AppRoutes from './src/routes';
 import { AuthProvider } from "./src/providers/userProvider";
 import { SettingsProvider } from "./src/providers/settingsProvider";
 import { TranslateProvider } from "./src/providers/translateProvider";
+import { NotificationProvider } from "./src/providers/notificationsProvider";
 
 export default function App() {
     return (
@@ -21,9 +22,11 @@ export default function App() {
             <View style={styles.space}></View>
             <TranslateProvider>
                 <SettingsProvider>
-                    <AuthProvider>
-                        <AppRoutes />
-                    </AuthProvider>
+                    <NotificationProvider>
+                        <AuthProvider>
+                            <AppRoutes />
+                        </AuthProvider>
+                    </NotificationProvider>
                 </SettingsProvider>
             </TranslateProvider>
             {/* <View style={styles.space}></View> */}

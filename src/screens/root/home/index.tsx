@@ -8,15 +8,20 @@ import { HeaderHome } from "./header"
 import theme from "@src/theme"
 import { pushMessage } from "@src/services/notification"
 import { walletService } from "@/src/core/walletManager"
+import { useNotificationBar } from "@/src/providers/notificationsProvider"
 
 const HomeScreen = ({ navigation }: any) => {
 
     const { wallets, setWallets } = useAuth()
+    const { setNotificationApp } = useNotificationBar()
     const { useTranslate } = useTranslateService()
     const [loading, setLoading] = useState(false)
     const [reloadWallets, setReloadWallets] = useState<boolean>(true)
 
-    useEffect(() => { handleData() }, [])
+    useEffect(() => { 
+        if(setNotificationApp) setNotificationApp({ type: "home", state: false })
+        handleData() 
+    }, [])
 
     const handleData = async () => {
         setLoading(true)

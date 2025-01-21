@@ -5,12 +5,14 @@ import FeedScreen from "@screens/root/feed"
 import theme from "@src/theme"
 import ChatsScreen from '@screens/root/chats';
 import { useTranslateService } from '../providers/translateProvider';
+import { useNotificationBar } from '../providers/notificationsProvider';
 
 const Tab = createMaterialBottomTabNavigator()
 
 const TabRoutes = () => {
 
     const { useTranslate } = useTranslateService()
+    const { messageState, homeState, feedState, ordersState } = useNotificationBar()
 
     return (
         <Tab.Navigator
@@ -18,34 +20,34 @@ const TabRoutes = () => {
             activeColor={theme.colors.white}
             inactiveColor={theme.colors.gray}
             screenOptions={{ tabBarColor: theme.colors.gray }}
-            barStyle={{ backgroundColor: theme.colors.semitransparent, height: 80 }}
+            barStyle={{ backgroundColor: theme.colors.semitransparent, height: 92 }}
             activeIndicatorStyle={{ backgroundColor: theme.colors.blue }}
         >
             <Tab.Screen
                 name="home"
                 component={HomeScreen}                
                 options={{                    
-                    tabBarLabel: "", // useTranslate("menu.home"),
+                    tabBarLabel: useTranslate("menu.home"),
                     tabBarIcon: ({ color }) => <Ionicons name="wallet" color={color} size={theme.icons.medium} />,
-                    tabBarBadge: false
+                    tabBarBadge: homeState
                 }}
             />
             <Tab.Screen
                 name="feed"
                 component={FeedScreen}
                 options={{
-                    tabBarLabel: "", //useTranslate("menu.orders"),
-                    tabBarIcon: ({ color }) => <Ionicons name="git-compare" color={color} size={theme.icons.large} />,
-                    tabBarBadge: false
+                    tabBarLabel: useTranslate("menu.orders"),
+                    tabBarIcon: ({ color }) => <Ionicons name="briefcase" color={color} size={theme.icons.large} />,
+                    tabBarBadge: ordersState
                 }}
             />
             <Tab.Screen
                 name="chats"
                 component={ChatsScreen}
                 options={{
-                    tabBarLabel: "",// useTranslate("menu.chats"),
+                    tabBarLabel: useTranslate("menu.chats"),
                     tabBarIcon: ({ color }) => <Ionicons name="chatbox" color={color} size={theme.icons.medium} />,
-                    tabBarBadge: false
+                    tabBarBadge: messageState,
                 }}
             />
             {/* <Tab.Screen */}

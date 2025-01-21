@@ -2,14 +2,15 @@ import { clearStorage } from "../../services/memory"
 import { createPairKeys, getHexKeys } from "../../services/nostr"
 import { getUserData, pushUserData, pushUserFollows } from "../../services/nostr/pool"
 import { PairKey, User } from "../../services/memory/types"
-import { getEvent, listenerEvents, publishEvent } from "../../services/nostr/events"
+import { getEvent, listenerEvents, publishEvent, NostrEvent } from "../../services/nostr/events"
 import { Response, trackException } from "../../services/telemetry"
 import { getUser, insertUpdateUser } from "../../services/memory/user"
 import { getPairKey, insertPairKey } from "../../services/memory/pairkeys"
 import { NostrEventKinds } from "@/src/constants/Events"
 import { nip19 } from "nostr-tools"
 import env from "@/env"
-import NDK, { NostrEvent } from "@nostr-dev-kit/ndk"
+import NDK from "@nostr-dev-kit/ndk"
+import { selecMessageChats } from "@/src/services/memory/database/events"
 
 type SignUpProps = { 
     userName: string, 
@@ -163,21 +164,12 @@ const listFollows = async (user: User,  followsEvent: NostrEvent, iNot: boolean 
     var follows: User[] = []
 
     try {
-        // const response = await fetch(`${env.nosbook.api}/user/friends/${user.pubkey}`)
+        const authors = followsEvent?.tags?.filter(t => t[0] == "p").map(t => t[1])
 
-        // const events = await response.json();
-        const authors = followsEvent.tags.filter(t => t[0] == "p").map(t => t[1])
-
-        const events = await listenerEvents({ authors, kinds: [0], limit: authors.length })
+        const events = await listenerEvents({ authors, kinds: [0], limit: authors?.length })
 
         follows = events.filter((u: any) => u.pubkey != user.pubkey).map((user: any): User => {
-            // return {
-            //     name: user.name,
-            //     pubkey: user.pubkey,
-            //     picture: user.profile,
-            //     display_name: user.displayName,
-            // }
-            return user.content as User
+             return user.content as User
         })
     } catch (fail) {
         //console.log("error when loading folows", fail)
@@ -290,11 +282,26 @@ const lastNotes = async (user: User, limit: number = 3, onlyPrincipal = false) :
         .map(event => event.content as string)
 }
 
-const listChats = async (followsEvent: NostrEvent): Promise<NostrEvent[]> => {
+const listChats = async (): Promise<NostrEvent[]> => {
     
-    const eventsChat = await listenerEvents({ kinds: [4], "#p": [followsEvent.pubkey ?? ""] })
+    const eventsChat = await selecMessageChats()
 
     return eventsChat as NostrEvent[]
+}
+
+const listUsers = async (pubkeys: string[]): Promise<User[]> => {
+    
+    const users: User[] = []
+
+    const events = await listenerEvents({ kinds: [0], authors: pubkeys, limit: pubkeys.length })
+
+    events.forEach(event => {
+        const user = event.content as User
+        user.pubkey = event.pubkey
+        users.push(user)
+    })
+
+    return users
 }
 
 const convertPubkey = (pubkey: string) => nip19.npubEncode(pubkey)
@@ -313,5 +320,6 @@ export const userService = {
     searchUsers,
     lastNotes,
     listChats,
+    listUsers,
     createFollowEvent
 }

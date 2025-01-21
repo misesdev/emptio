@@ -14,12 +14,14 @@ const AuthenticateScreen = ({ navigation }: any) => {
     const [loading, setLoading] = useState(true)
     const [biometrics, setBiometrics] = useState(true)
 
-    useEffect(() => {    
+    useEffect(() => { checkBiometric() }, [settings])
+
+    const checkBiometric = async () => {
         if (settings.useBiometrics)
-            checkBiometricAvailability()
+            await checkBiometricAvailability()
         else
             navigation.reset({ index: 0, routes: [{ name: "core-stack" }] })
-    }, [settings])
+    }
 
     const checkBiometricAvailability = async () => {
         const isBiometricAvailable = await hasHardwareAsync()
@@ -28,7 +30,7 @@ const AuthenticateScreen = ({ navigation }: any) => {
             return authenticateWithBiometrics()
 
         setBiometrics(isBiometricAvailable)
-    };
+    }
 
     const authenticateWithBiometrics = async () => {
         setLoading(false)
@@ -38,7 +40,7 @@ const AuthenticateScreen = ({ navigation }: any) => {
 
         if (success)
             navigation.reset({ index: 0, routes: [{ name: "core-stack" }] })
-    };
+    }
 
     if (!biometrics)
         navigation.reset({ index: 0, routes: [{ name: "core-stack" }] })

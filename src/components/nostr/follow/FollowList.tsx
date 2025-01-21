@@ -13,10 +13,12 @@ type FriendListProps = {
     searchTerm?: string,
     toPayment?: boolean,
     searchable?: boolean,
+    searchTimout?: number,
     onPressFollow?: (user: User) => void,
 }
 
-export const FollowList = ({ searchTerm, onPressFollow, toPayment = false, searchable, iNot = true }: FriendListProps) => {
+export const FollowList = ({ searchTerm, onPressFollow, toPayment = false, 
+    searchable, iNot = true, searchTimout = 100 }: FriendListProps) => {
 
     const { user, followsEvent } = useAuth()
     const searchTimeout:any = useRef(null);
@@ -28,10 +30,8 @@ export const FollowList = ({ searchTerm, onPressFollow, toPayment = false, searc
 
     if (searchable) {
         useEffect(() => {
-            if(searchTimeout.current) clearTimeout(searchTimeout.current)
-
+            clearTimeout(searchTimeout.current)
             searchTimeout.current = setTimeout(() => {
-                // search and filter
                 const filter = searchTerm?.trim()
                 if (filter?.length && !walletService.address.validate(filter)) {
                     const searchResult = followListData.filter(follow => {
@@ -42,7 +42,7 @@ export const FollowList = ({ searchTerm, onPressFollow, toPayment = false, searc
                     setFollowList(searchResult)
                 }
                 else setFollowList(followListData)
-            }, 200)
+            }, searchTimout)
 
         }, [searchTerm])
     }

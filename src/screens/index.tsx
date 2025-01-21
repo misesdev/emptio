@@ -11,9 +11,13 @@ import { walletService } from "../core/walletManager"
 import NDK, { NostrEvent } from "@nostr-dev-kit/ndk"
 import theme from "@src/theme"
 import { getNostrInstance, subscribeUser } from "../services/nostr/pool"
+import { getNotificationPermission } from "../services/permissions"
+import { useNotificationBar } from "../providers/notificationsProvider"
+import { initDatabase } from "../services/memory/database/events"
 
 const InitializeScreen = ({ navigation }: any) => {
 
+    const { feedState, messageState, ordersState, homeState, setNotificationApp } = useNotificationBar()
     const { setUser, setEmptioData, setWallets, setFollowsEvent } = useAuth()
     const [loading, setLoading] = useState(true)
     const { useTranslate } = useTranslateService()
@@ -22,8 +26,10 @@ const InitializeScreen = ({ navigation }: any) => {
 
     const handleVerifyLogon = async () => {
 
-        Nostr = (await getNostrInstance()) as NDK
+        await initDatabase()
 
+        await getNotificationPermission()
+        
         const wallets = await walletService.list()
 
         if(wallets && setWallets) setWallets(wallets)
@@ -36,11 +42,15 @@ const InitializeScreen = ({ navigation }: any) => {
             if(setFollowsEvent) 
             {
                 const user = await userService.getUser()
+                
+                Nostr = await getNostrInstance({ user })
+
                 const eventFollow = await getEvent({ kinds:[3], authors: [user?.pubkey ?? ""], limit: 1 })
                 
                 if(eventFollow) setFollowsEvent(eventFollow as NostrEvent)
-                
-                subscribeUser({ user })
+               
+                subscribeUser({ user, homeState, feedState, ordersState, 
+                    messageState, setNotificationApp })
             }                
 
             navigation.reset({ index: 0, routes: [{ name: "authenticate-stack" }] })

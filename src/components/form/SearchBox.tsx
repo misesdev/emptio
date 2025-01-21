@@ -7,10 +7,12 @@ import { TouchableOpacity } from "react-native-gesture-handler"
 type SearchBoxProps = {
     label: string,
     textCenter?: boolean,
+    delayTime?: number,
+    seachOnLenth: number,
     onSearch: (value: string) => void
 }
 
-export const SearchBox = ({ label, textCenter, onSearch }: SearchBoxProps) => {
+export const SearchBox = ({ label, textCenter, delayTime = 500, seachOnLenth = 1, onSearch }: SearchBoxProps) => {
     
     let TimeOutSearch: any = useRef(null)
 
@@ -18,9 +20,9 @@ export const SearchBox = ({ label, textCenter, onSearch }: SearchBoxProps) => {
 
     const handleSearch = (value: string) => {
         setSearch(value)
-        if (value.trim()) {
+        if (value.trim().length >= seachOnLenth) {
             if(TimeOutSearch.current) clearTimeout(TimeOutSearch.current)
-            TimeOutSearch.current = setTimeout(() => onSearch(value), 500)
+            TimeOutSearch.current = setTimeout(() => onSearch(value), delayTime)
         }
     }
 

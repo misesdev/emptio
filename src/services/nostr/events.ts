@@ -1,8 +1,7 @@
 
-import NDK, { NDKUserProfile, NDKPrivateKeySigner, NDKEvent } from "@nostr-dev-kit/ndk"
+import NDK, { NDKUserProfile, NDKEvent } from "@nostr-dev-kit/ndk"
 import { Filter } from "nostr-tools"
-import { PairKey, User } from "../memory/types"
-import { getRelays } from "../memory/relays"
+import { PairKey } from "../memory/types"
 import { NostrEventKinds } from "@/src/constants/Events"
 
 export type NostrEvent = {
@@ -11,14 +10,14 @@ export type NostrEvent = {
     pubkey?: string,
     content?: any,
     created_at?: number,
-    tags?: string[][]
+    tags?: string[][],
+    sig?: string,
+    status?: "new" | "viewed"
 }
 
 export const publishUser = async (profile: NDKUserProfile, keys: PairKey) => {
 
     const pool = Nostr as NDK
-
-    pool.signer = new NDKPrivateKeySigner(keys.privateKey)
 
     const user = pool.getUser({ hexpubkey: keys.publicKey })
 
@@ -33,8 +32,6 @@ export const publishEvent = async (event: NostrEvent, keys: PairKey, replacable:
 
     const pool = Nostr as NDK
     
-    pool.signer = new NDKPrivateKeySigner(keys.privateKey)
-
     const eventSend = new NDKEvent(pool);
 
     eventSend.kind = event.kind
@@ -85,7 +82,7 @@ export const getEvent = async (filters: Filter) : Promise<NostrEvent> => {
 
     if (event) {
         let jsonContent = [NostrEventKinds.metadata].includes(event.kind ?? 0)
-
+        
         eventResut = {
             id: event.id,
             kind: event.kind,
