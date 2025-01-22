@@ -5,7 +5,7 @@ const theme = {
         black: "#000000",
         white: "#BBB",
         red: "#C14D45",
-        green: "#109770",
+        green: "#0b612f",
         blue: "#184149",
         blueOpacity: "rgba(0, 55, 55, .4)",
         gray: "#525B5F",
@@ -32,6 +32,7 @@ const theme = {
     input: {
         color: "#1f2224",
         textColor: "#84898c",
+        placeholderColor: "#525B5F",
         backGround: "#0e191f",
     },
     styles: StyleSheet.create({

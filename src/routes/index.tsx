@@ -28,6 +28,7 @@ import ImportWalletScreen from "@screens/root/wallet/add/import"
 import CreatedSeedScren from "@screens/root/wallet/add/seed"
 import TransactionScreen from "../screens/root/wallet/transaction"
 import NewOrderScreen from "../screens/root/feed/order/new"
+import ConversationChat from "../screens/root/chats/conversation"
 
 const Stack = createStackNavigator()
 
@@ -49,6 +50,7 @@ const AppRoutes = () => {
                 <Stack.Screen name="search-feed-stack" component={FeedSearchScreen} options={ScreenCardOptions} />
 
                 <Stack.Screen name="new-chat-stack" component={NewChatScreen} options={ScreenCardOptions} />
+                <Stack.Screen name="conversation-chat-stack" component={ConversationChat} options={ScreenCardOptions} />
 
                 <Stack.Screen name="user-menu-stack" component={UserMenuScreen} options={{ headerShown: true }} />
                 <Stack.Screen name="manage-account-stack" component={UserEditScreen} options={{ headerShown: true }} />

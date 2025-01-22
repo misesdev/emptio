@@ -65,7 +65,7 @@ const ChatsScreen = ({ navigation }: any) => {
     }
 
     const handleOpenChat = (chat: User) => {
-        console.log(chat)
+        navigation.navigate("conversation-chat-stack", { user: chat })
     }
 
     const EmptyComponent = () => {
