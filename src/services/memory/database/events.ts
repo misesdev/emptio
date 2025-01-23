@@ -13,6 +13,7 @@ export const initDatabase = async () => {
             kind INTEGER,
             pubkey TEXT,
             category TEXT,                  -- Category (e.g., "feed", "chats", "orders")
+            chat_id TEXT,
             content TEXT,                   -- Content of Event (string)
             sig TEXT,                  
             tags TEXT,                      -- Tags of event (JSON string array)
@@ -27,8 +28,17 @@ type dbEventProps = {
     event: NDKEvent,
     category: TypeCategory
 }
-// Inserir um evento, apenas se ele não existir
-export const insertEvent = async ({ event, category }: dbEventProps) => {
+
+export const insertEvent = async ({ event, category }: dbEventProps) : Promise<boolean> => {
+
+    var chat_id: string = ""
+    if(category == "message") {
+        const pubkeys: string[] = event?.tags?.filter(t => t[0] == "p").map(t => t[1]) ?? [""]
+        if(pubkeys.length) {
+            chat_id = pubkeys[0].substring(0, 30) + event.pubkey.substring(0, 30)
+            chat_id = chat_id.split("").sort().join("")
+        }
+    }
 
     const params: SQLite.SQLiteBindParams = [
         event.id, 
@@ -38,16 +48,20 @@ export const insertEvent = async ({ event, category }: dbEventProps) => {
         event.sig ?? "",
         JSON.stringify(event.tags),
         event.created_at ?? 0,
-        category
+        category,
+        chat_id
     ]
 
-    await db.runAsync(`
-        INSERT OR IGNORE INTO events (id, kind, pubkey, content, sig, tags, created_at, category) 
-        VALUES (?, ?, ?, ?, ?, ?, ?, ?);
-    `, params)
-};
+    const data = await db.runAsync(`
+        INSERT OR IGNORE INTO events (id, kind, pubkey, content, sig, tags, created_at, category, chat_id) 
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?);
 
-// Listar eventos por categoria
+        SELECT changes() AS wasInserted;
+    `, params)
+
+    return !!data.changes;
+}
+
 export const listEventsByCategory = async (category: TypeCategory, limit = 50): Promise<NDKEvent[]> => {
     
     const rows = await db.getAllAsync(`
@@ -77,7 +91,7 @@ export const deleteEventsByCondition = async (condition: string, args: any[]) =>
 export const selecMessageChats = async (): Promise<NostrEvent[]> => {
     const rows = await db.getAllAsync(`
         --DELETE FROM events;
-        SELECT id, kind, pubkey, category, content, sig, tags, status, created_at, deleted
+        SELECT id, kind, pubkey, category, chat_id, content, sig, tags, status, created_at, deleted
         FROM events
         WHERE deleted = 0
             AND category = 'message'
@@ -85,7 +99,8 @@ export const selecMessageChats = async (): Promise<NostrEvent[]> => {
                 SELECT MAX(created_at)
                 FROM events
                 WHERE deleted = 0
-                GROUP BY pubkey
+                    AND category = 'message'
+                GROUP BY chat_id 
             )
         ORDER BY created_at DESC;
     `)
@@ -99,10 +114,37 @@ export const selecMessageChats = async (): Promise<NostrEvent[]> => {
             sig: event.sig,
             tags: JSON.parse(event.tags),
             created_at: event.created_at,
-            status: event.status
+            status: event.status,
+            chat_id: event.chat_id
         } 
     })
 }
+
+export const selecMessages = async (chat_id: string): Promise<NostrEvent[]> => {
+    const rows = await db.getAllAsync(`
+        UPDATE events SET status = 'viewed' 
+        WHERE category = 'message'
+            AND deleted = 0
+            AND chat_id = ?
+        RETURNING *;
+    `, [chat_id])
+   
+    return rows.map((event: any): NostrEvent => {
+        return { 
+            id: event.id,
+            kind: event.kind,
+            pubkey: event.pubkey,
+            content: event.content,
+            sig: event.sig,
+            tags: JSON.parse(event.tags),
+            created_at: event.created_at,
+            status: event.status,
+            chat_id: event.chat_id
+        } 
+    })
+}
+
+
 
 
 

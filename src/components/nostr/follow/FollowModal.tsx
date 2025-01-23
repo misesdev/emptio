@@ -11,7 +11,6 @@ import { userService } from "@/src/core/userManager"
 import { NoteList } from "../user/NoteList"
 import { ActivityIndicator } from "react-native-paper"
 import { setStringAsync } from "expo-clipboard"
-import { showMessage } from "../../general/MessageBox"
 import { pushMessage } from "@/src/services/notification"
 
 type followModalProps = {

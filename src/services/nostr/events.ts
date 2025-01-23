@@ -12,7 +12,8 @@ export type NostrEvent = {
     created_at?: number,
     tags?: string[][],
     sig?: string,
-    status?: "new" | "viewed"
+    status?: "new" | "viewed",
+    chat_id?: string
 }
 
 export const publishUser = async (profile: NDKUserProfile, keys: PairKey) => {

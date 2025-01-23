@@ -10,7 +10,6 @@ import { NostrEventKinds } from "@/src/constants/Events"
 import { nip19 } from "nostr-tools"
 import env from "@/env"
 import NDK from "@nostr-dev-kit/ndk"
-import { selecMessageChats } from "@/src/services/memory/database/events"
 
 type SignUpProps = { 
     userName: string, 
@@ -125,9 +124,7 @@ const updateProfile = async ({ user, setUser, upNostr = false }: UpdateProfilePr
 }
 
 const signOut = async (): Promise<Response<any>> => {
-
     try {
-
         await clearStorage()
 
         return { success: true, message: "" }
@@ -168,8 +165,10 @@ const listFollows = async (user: User,  followsEvent: NostrEvent, iNot: boolean 
 
         const events = await listenerEvents({ authors, kinds: [0], limit: authors?.length })
 
-        follows = events.filter((u: any) => u.pubkey != user.pubkey).map((user: any): User => {
-             return user.content as User
+        follows = events.filter((u: NostrEvent) => u.pubkey != user.pubkey).map((event: NostrEvent): User => {
+            const follow = event.content as User
+            follow.pubkey = event.pubkey
+            return follow
         })
     } catch (fail) {
         //console.log("error when loading folows", fail)
@@ -282,13 +281,6 @@ const lastNotes = async (user: User, limit: number = 3, onlyPrincipal = false) :
         .map(event => event.content as string)
 }
 
-const listChats = async (): Promise<NostrEvent[]> => {
-    
-    const eventsChat = await selecMessageChats()
-
-    return eventsChat as NostrEvent[]
-}
-
 const listUsers = async (pubkeys: string[]): Promise<User[]> => {
     
     const users: User[] = []
@@ -319,7 +311,6 @@ export const userService = {
     removeFollow,
     searchUsers,
     lastNotes,
-    listChats,
     listUsers,
     createFollowEvent
 }

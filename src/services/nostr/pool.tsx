@@ -76,22 +76,23 @@ export const subscribeUser = ({ user, messageState, setNotificationApp }: Subscr
         { kinds: [4], authors: [user.pubkey ?? ""] }
     ])
 
-    const processEventMessage = async (event: NDKEvent) => {
-        //await event.decrypt()
-
-        console.log(event.tags)
-        if(setNotificationApp && !messageState) 
-            setNotificationApp({ state: true, type: "message" })
-
-        if(["inactive", "background"].includes(AppState.currentState))
+    const processEventMessage = async (event: NDKEvent) => { 
+        if(await insertEvent({ event, category: "message" })) 
         {
-            await pushNotification({ 
-                title: "Emptio P2P",
-                message: event.content.length <= 30 ? event.content : `${event.content.substring(0,30)}..`
-            })
-        }
+            if(setNotificationApp && !messageState) 
+                setNotificationApp({ state: true, type: "message" })
 
-        await insertEvent({ event, category: "message" })
+            if(["inactive", "background", "unknown", "extension"].includes(AppState.currentState))
+            {
+                await event.decrypt() 
+                const profile = await event.author.fetchProfile()
+                console.log(event.author)
+                await pushNotification({ 
+                    title: profile?.displayName ?? profile?.name ?? "",
+                    message: event.content.length <= 30 ? event.content : `${event.content.substring(0,30)}..`
+                })
+            }
+        }
     }
     
     subscriptionMessages.on("event", async (event: NDKEvent) => {
@@ -105,5 +106,5 @@ export const subscribeUser = ({ user, messageState, setNotificationApp }: Subscr
         catch (ex) { console.log(ex) }
     })
 
-    //subscriptionMessages.start()
+    subscriptionMessages.start()
 }

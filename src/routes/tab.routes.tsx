@@ -1,7 +1,7 @@
 import { createMaterialBottomTabNavigator } from '@react-navigation/material-bottom-tabs';
 import { Ionicons } from "@expo/vector-icons"
 import HomeScreen from "@screens/root/home"
-import FeedScreen from "@screens/root/feed"
+import FeedScreen from "@screens/root/orders"
 import theme from "@src/theme"
 import ChatsScreen from '@screens/root/chats';
 import { useTranslateService } from '../providers/translateProvider';

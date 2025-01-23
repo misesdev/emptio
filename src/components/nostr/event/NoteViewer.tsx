@@ -135,7 +135,7 @@ const styles = StyleSheet.create({
         borderRadius: 14,
     },
     webview: {
-        padding: 24,
+        padding: 0,
     },
     contentContainer: {
         flex: 1,

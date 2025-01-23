@@ -12,16 +12,22 @@ Notifications.setNotificationHandler({
 
 type NotificationProps = {
     title: string,
+    subtitle?: string,
     message: string,
     date?: number
 }
 
-const pushNotificationMessage = async ({ title, message, date = Date.now() }: NotificationProps) => {
+const pushNotificationMessage = async ({ title, subtitle, message, date = Date.now() }: NotificationProps) => {
+    
     await Notifications.scheduleNotificationAsync({
-        content: { title, body: message },
+        content: { 
+            title, 
+            subtitle,
+            body: message,
+        },
         trigger: {
             type: Notifications.SchedulableTriggerInputTypes.DATE,
-            date: date
+            date: date,
         },
     })
 }

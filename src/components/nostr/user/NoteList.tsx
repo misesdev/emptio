@@ -14,7 +14,9 @@ const NoteItem = ({ note }: NoteProps) => {
                 showsVerticalScrollIndicator 
                 style={styles.scrollNote}
             >
-                <NoteViewer note={note} />
+                <View style={{ padding: 24 }}>
+                    <NoteViewer note={note} />
+                </View>
             </ScrollView>
         </View>
     )
