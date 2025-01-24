@@ -12,18 +12,15 @@ import { Ionicons } from "@expo/vector-icons"
 import { User } from "@/src/services/memory/types"
 import { RefreshControl } from "react-native-gesture-handler"
 import { pushMessage } from "@/src/services/notification"
-import { useNotificationBar } from "@/src/providers/notificationsProvider"
 
 const FeedScreen = ({ navigation }: any) => {
 
     const { followsEvent, wallets } = useAuth()
-    const { setNotificationApp } = useNotificationBar()
     const { useTranslate } = useTranslateService()
     const [loading, setLoading] = useState(false)
     const [posts, setPosts] = useState<User[]>([])
 
     useEffect(() => {
-        if(setNotificationApp) setNotificationApp({ type: "orders", state: false })
     }, [])
 
     const handleData = async () => {

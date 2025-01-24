@@ -98,4 +98,14 @@ export const getEvent = async (filters: Filter) : Promise<NostrEvent> => {
         return {}
 }
 
+export const getPubkeyFromTags = (event: NDKEvent) : string => {
+
+    const pubkeys = event.tags.filter(t => t[0] == "p").map(t => t[1])
+
+    if(pubkeys.length)
+        return pubkeys[0]
+
+    return ""
+}
+
 

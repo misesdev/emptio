@@ -4,66 +4,39 @@ import { TouchableOpacity } from "react-native-gesture-handler"
 import { Ionicons } from "@expo/vector-icons"
 import { useEffect, useState } from "react"
 import { HeaderChats } from "./header"
-import { userService } from "@/src/core/userManager"
 import { SearchBox } from "@/src/components/form/SearchBox"
 import { useTranslateService } from "@/src/providers/translateProvider"
-import { useNotificationBar } from "@/src/providers/notificationsProvider"
 import { useAuth } from "@/src/providers/userProvider"
-import ChatList, { UserChat } from "./list"
-import { messageService } from "@/src/core/messageManager"
+import ChatList from "./list"
+import useChatStore, { ChatUser } from "@/src/services/zustand/chats"
+import { User } from "@/src/services/memory/types"
 
 const ChatsScreen = ({ navigation }: any) => {
    
     const { user } = useAuth()
-    const { setNotificationApp } = useNotificationBar()
+    const { chats, markAllRead, markReadChat } = useChatStore()
     const { useTranslate } = useTranslateService()
     const [loading, setLoading] = useState(false)
-    const [chats, setChats] = useState<UserChat[]>([])
-    const [filteredChats, setFilteredChats] = useState<UserChat[]>([])
+    const [filteredChats, setFilteredChats] = useState<ChatUser[]>(chats)
     const [searchTerm, setSearchTerm] = useState("")
 
     useEffect(() => { 
-        if(setNotificationApp) setNotificationApp({ type: "message", state: false })
-        handleLoadChats() 
-    }, [])
-
-    const handleLoadChats = async () => {
-
-        setLoading(true)
-        
-        const events = await messageService.listChats(user)
-        
-        if(events.length)
-        {
-            const users = await userService.listUsers(events.map(e => e.pubkey ?? ""))
-
-            const messages = events.map((event) : UserChat => {
-                return {
-                    user: users.find(u => u.pubkey == event.pubkey) ?? {},
-                    lastMessage: event
-                }
-            })
-
-            setFilteredChats(messages)
-            setChats(messages)
-        }
-
-        setLoading(false)
-    }
+        markAllRead() 
+    }, [markAllRead])
 
     const handleSearch = (searchTerm: string) => {
-        if(!searchTerm.replace(" ", "").length) {
-            return setFilteredChats(chats)
-        }
-        const filtered = chats.filter(c => `${c.user.display_name ?? ""}${c.user.name ?? ""}`.toUpperCase()
-            .includes(searchTerm.toUpperCase()))
+        // if(!searchTerm.replace(" ", "").length) {
+        //     return setFilteredChats(chats)
+        // }
+        // const filtered = chats.filter(c => `${c.user.display_name ?? ""}${c.user.name ?? ""}`.toUpperCase()
+        //     .includes(searchTerm.toUpperCase()))
 
-        setFilteredChats(filtered)
-        setSearchTerm(searchTerm)
+        // setFilteredChats(filtered)
+        // setSearchTerm(searchTerm)
     }
 
-    const handleOpenChat = (chatUser: UserChat) => {
-        navigation.navigate("conversation-chat-stack", { userChat: chatUser })
+    const handleOpenChat = (chat_id: string, follow: User) => {
+        navigation.navigate("conversation-chat-stack", { chat_id, follow })
     }
 
     return (
@@ -76,7 +49,7 @@ const ChatsScreen = ({ navigation }: any) => {
 
             {/* <ChatFilters onFilter={filterEvents} activeSection={activeSection} /> */}
 
-            <ChatList chats={filteredChats} user={user} handleOpenChat={handleOpenChat} loading={loading} handleLoadChats={handleLoadChats} />
+            <ChatList chats={chats} user={user} handleOpenChat={handleOpenChat} />
 
             <View style={styles.rightButton}>
                 <TouchableOpacity activeOpacity={.7} style={styles.newChatButton} onPress={() => navigation.navigate("new-chat-stack")}>

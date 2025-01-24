@@ -3,34 +3,35 @@ import { hexToNpub } from "@/src/services/converter"
 import theme from "@/src/theme"
 import { memo, useEffect, useState } from "react"
 import { View, StyleSheet, Image, Text, TextInput, 
-    KeyboardAvoidingView, Platform, TouchableOpacity } from "react-native"
+    KeyboardAvoidingView, Platform, TouchableOpacity, 
+    Vibration} from "react-native"
 import { Ionicons } from "@expo/vector-icons"
 import { FlatList } from "react-native-gesture-handler"
 import NDK, { NDKEvent, NostrEvent as NEvent } from "@nostr-dev-kit/ndk"
 import { useAuth } from "@/src/providers/userProvider"
 import { NostrEvent } from "@/src/services/nostr/events"
 import NoteViewer from "@/src/components/nostr/event/NoteViewer"
-import { useNotificationBar } from "@/src/providers/notificationsProvider"
-import { UserChat } from "../list"
 import { messageService } from "@/src/core/messageManager"
+import { User } from "@/src/services/memory/types"
+import useChatStore from "@/src/services/zustand/chats"
 
 const ConversationChat = ({ navigation, route }: any) => {
     
     const { user }= useAuth()
-    const userChat = route.params.userChat as UserChat
-    const { setNotificationApp } = useNotificationBar()
+    const { markReadChat, unreadChats } = useChatStore()
+    const { follow, chat_id } = route.params as { chat_id: string, follow: User }
     const { useTranslate } = useTranslateService()
     const [messageText, setMessageText] = useState<string>("")
     const [messages, setMessages] = useState<NostrEvent[]>([])
     const [selectionMode, setSelectionMode] = useState(false)
 
-    useEffect(() => {
-        if(setNotificationApp) setNotificationApp({ type: "message", state: false })
-        handleLoadData()
+    useEffect(() => { 
+        if(unreadChats.length) markReadChat(chat_id)
+        handleLoadData() 
     }, [])
 
     const handleLoadData = async () => {
-        messageService.listMessages(userChat.lastMessage.chat_id ?? "").then(events => {
+        messageService.listMessages(chat_id ?? "").then(events => {
             setMessages(events as NostrEvent[])
         })
         .catch(ex => console.log(ex))
@@ -63,6 +64,8 @@ const ConversationChat = ({ navigation, route }: any) => {
 
     const deleteEvent = async (event: NDKEvent) => {
 
+        Vibration.vibrate(75)
+
         console.log("deleting event")
 
         const pool = Nostr as NDK
@@ -83,7 +86,7 @@ const ConversationChat = ({ navigation, route }: any) => {
     }
 
     const getUserName = () : string => {
-        var userName = userChat.user.display_name ?? userChat.user.name ?? ""
+        var userName = follow.display_name ?? follow.name ?? ""
 
         return userName.length > 20 ? `${userName?.substring(0,20)}..` : userName
     }
@@ -135,8 +138,8 @@ const ConversationChat = ({ navigation, route }: any) => {
             <View style={styles.headerContainer}>
                 <View style={{ width: "15%", padding: 5 }}>
                     <View style={styles.imageContainer}>
-                        {userChat.user?.picture && <Image onError={() => { userChat.user.picture = "" }} source={{ uri: userChat.user?.picture }} style={{ flex: 1 }} />}
-                        {!userChat.user?.picture && <Image source={require("assets/images/defaultProfile.png")} style={{ width: 50, height: 50 }} />}                               
+                        {follow?.picture && <Image onError={() => { follow.picture = "" }} source={{ uri: follow?.picture }} style={{ flex: 1 }} />}
+                        {!follow?.picture && <Image source={require("assets/images/defaultProfile.png")} style={{ width: 50, height: 50 }} />}                               
                     </View>
                 </View>
                 <View style={{ width: "70%", padding: 5 }}>
@@ -144,7 +147,7 @@ const ConversationChat = ({ navigation, route }: any) => {
                         <Text style={styles.userName}>
                             {getUserName()}
                         </Text>
-                        <Text style={styles.pubkey}>{hexToNpub(userChat.user.pubkey ?? "").substring(0, 28)}..</Text>
+                        <Text style={styles.pubkey}>{hexToNpub(follow.pubkey ?? "").substring(0, 28)}..</Text>
                     </View>
                 </View>
             </View>
@@ -174,7 +177,7 @@ const ConversationChat = ({ navigation, route }: any) => {
                         />
                     </View> 
                     <View style={{ width: "18%", alignItems: "center", justifyContent: "center" }}>
-                        <TouchableOpacity style={styles.sendButton} onPress={() => sendMessage(userChat.user)} >
+                        <TouchableOpacity style={styles.sendButton} onPress={() => sendMessage(follow)} >
                             <Ionicons name="paper-plane" 
                                 size={24} color={theme.colors.white}
                             />

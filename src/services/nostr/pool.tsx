@@ -1,12 +1,13 @@
 import NDK, { NDKEvent, NDKPrivateKeySigner } from "@nostr-dev-kit/ndk"
 import { PairKey, User } from "../memory/types"
-import { listenerEvents, publishEvent, NostrEvent } from "./events"
+import { listenerEvents, publishEvent, NostrEvent, getPubkeyFromTags } from "./events"
 import { getRelays } from "../memory/relays"
 import { getPairKey } from "../memory/pairkeys"
-import { NotificationApp } from "../notification/application"
 import { AppState } from "react-native"
 import { pushNotification } from "../notification"
 import { insertEvent } from "../memory/database/events"
+import useChatStore, { ChatUser } from "../zustand/chats"
+import { messageService } from "@/src/core/messageManager"
 
 export const getUserData = async (publicKey: string): Promise<User> => {
 
@@ -61,32 +62,31 @@ export const getNostrInstance = async ({ user }: NostrInstanceProps): Promise<ND
 
 type SubscribeProps = { 
     user: User,
-    homeState: boolean,
-    feedState: boolean,
-    ordersState: boolean,
-    messageState: boolean,
-    setNotificationApp?: (notification: NotificationApp) => void
+    addChat: (chat: ChatUser) => void
 }
 
-export const subscribeUser = ({ user, messageState, setNotificationApp }: SubscribeProps) => {
+export const subscribeUserChat = ({ user, addChat }: SubscribeProps) => {
     const pool = Nostr as NDK
 
     const subscriptionMessages = pool.subscribe([
-        { kinds: [4], "#p": [user.pubkey ?? ""] }, 
-        { kinds: [4], authors: [user.pubkey ?? ""] }
+        { kinds: [4], "#p": [user.pubkey ?? ""] }, { kinds: [4], authors: [user.pubkey ?? ""] }
     ])
 
     const processEventMessage = async (event: NDKEvent) => { 
-        if(await insertEvent({ event, category: "message" })) 
-        {
-            if(setNotificationApp && !messageState) 
-                setNotificationApp({ state: true, type: "message" })
+        
+        const chat_id = messageService.generateChatId(event)
 
-            if(["inactive", "background", "unknown", "extension"].includes(AppState.currentState))
+        if(await insertEvent({ event, category: "message", chat_id })) 
+        {
+            if(event.pubkey == user.pubkey)
+                event.pubkey = getPubkeyFromTags(event)
+
+            addChat({ chat_id, lastMessage: event })
+
+            if(["inactive", "background"].includes(AppState.currentState))
             {
                 await event.decrypt() 
                 const profile = await event.author.fetchProfile()
-                console.log(event.author)
                 await pushNotification({ 
                     title: profile?.displayName ?? profile?.name ?? "",
                     message: event.content.length <= 30 ? event.content : `${event.content.substring(0,30)}..`

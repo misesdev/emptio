@@ -5,14 +5,14 @@ import FeedScreen from "@screens/root/orders"
 import theme from "@src/theme"
 import ChatsScreen from '@screens/root/chats';
 import { useTranslateService } from '../providers/translateProvider';
-import { useNotificationBar } from '../providers/notificationsProvider';
+import useChatStore from '../services/zustand/chats';
 
 const Tab = createMaterialBottomTabNavigator()
 
 const TabRoutes = () => {
 
     const { useTranslate } = useTranslateService()
-    const { messageState, homeState, feedState, ordersState } = useNotificationBar()
+    const unreadChats = useChatStore((state) => state.unreadChats)
 
     return (
         <Tab.Navigator
@@ -29,7 +29,7 @@ const TabRoutes = () => {
                 options={{                    
                     tabBarLabel: useTranslate("menu.home"),
                     tabBarIcon: ({ color }) => <Ionicons name="wallet" color={color} size={theme.icons.medium} />,
-                    tabBarBadge: homeState
+                    tabBarBadge: false
                 }}
             />
             <Tab.Screen
@@ -38,7 +38,7 @@ const TabRoutes = () => {
                 options={{
                     tabBarLabel: useTranslate("menu.orders"),
                     tabBarIcon: ({ color }) => <Ionicons name="briefcase" color={color} size={theme.icons.large} />,
-                    tabBarBadge: ordersState
+                    tabBarBadge: false
                 }}
             />
             <Tab.Screen
@@ -47,7 +47,7 @@ const TabRoutes = () => {
                 options={{
                     tabBarLabel: useTranslate("menu.chats"),
                     tabBarIcon: ({ color }) => <Ionicons name="chatbox" color={color} size={theme.icons.medium} />,
-                    tabBarBadge: messageState,
+                    tabBarBadge: !!unreadChats.length ? unreadChats.length : false,
                 }}
             />
             {/* <Tab.Screen */}

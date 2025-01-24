@@ -8,16 +8,17 @@ import { useAuth } from "../providers/userProvider"
 import { emptioService } from "../core/emptio"
 import { useTranslateService } from "../providers/translateProvider"
 import { walletService } from "../core/walletManager"
-import NDK, { NostrEvent } from "@nostr-dev-kit/ndk"
-import theme from "@src/theme"
-import { getNostrInstance, subscribeUser } from "../services/nostr/pool"
+import { NostrEvent } from "@nostr-dev-kit/ndk"
+import { getNostrInstance, subscribeUserChat } from "../services/nostr/pool"
 import { getNotificationPermission } from "../services/permissions"
-import { useNotificationBar } from "../providers/notificationsProvider"
 import { initDatabase } from "../services/memory/database/events"
+import theme from "@src/theme"
+import { messageService } from "../core/messageManager"
+import useChatStore from "../services/zustand/chats"
 
 const InitializeScreen = ({ navigation }: any) => {
 
-    const { feedState, messageState, ordersState, homeState, setNotificationApp } = useNotificationBar()
+    const { setChats, addChat } = useChatStore()
     const { setUser, setEmptioData, setWallets, setFollowsEvent } = useAuth()
     const [loading, setLoading] = useState(true)
     const { useTranslate } = useTranslateService()
@@ -48,9 +49,12 @@ const InitializeScreen = ({ navigation }: any) => {
                 const eventFollow = await getEvent({ kinds:[3], authors: [user?.pubkey ?? ""], limit: 1 })
                 
                 if(eventFollow) setFollowsEvent(eventFollow as NostrEvent)
-               
-                subscribeUser({ user, homeState, feedState, ordersState, 
-                    messageState, setNotificationApp })
+
+                const chats = await messageService.listChats(user)
+
+                setChats(chats)
+
+                subscribeUserChat({ user, addChat })
             }                
 
             navigation.reset({ index: 0, routes: [{ name: "authenticate-stack" }] })

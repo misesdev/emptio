@@ -2,27 +2,22 @@ import { User } from "@/src/services/memory/types"
 import { FlatList, RefreshControl } from "react-native-gesture-handler"
 import { StyleSheet, View, Text, TouchableOpacity, Image } from "react-native"
 import { useTranslateService } from "@/src/providers/translateProvider"
-import { NostrEvent } from "@/src/services/nostr/events"
-import { memo, useState } from "react"
+import useChatStore, { ChatUser } from "@/src/services/zustand/chats"
+import { memo, useEffect, useState } from "react"
 import NDK, { NDKEvent, NostrEvent as NEvent } from "@nostr-dev-kit/ndk"
 import theme from "@/src/theme"
-
-export type UserChat = {
-    user: User,
-    lastMessage: NostrEvent
-}
+import { userService } from "@/src/core/userManager"
 
 type Props = {
     user: User, 
-    chats: UserChat[],
-    loading: boolean,
-    handleLoadChats: () => void,
-    handleOpenChat: (userChat: UserChat) => void
+    chats: ChatUser[],
+    handleOpenChat: (chat_id: string, user: User) => void
 }
 
-const ChatList = ({ user, chats, loading, handleLoadChats, handleOpenChat }: Props) => {
-   
+const ChatList = ({ user, chats, handleOpenChat }: Props) => {
+  
     const { useTranslate } = useTranslateService()
+    const unreadChats = useChatStore(state => state.unreadChats)
 
     const EmptyComponent = () => {
         return (
@@ -32,24 +27,27 @@ const ChatList = ({ user, chats, loading, handleLoadChats, handleOpenChat }: Pro
         )
     }
 
-    const ListItem = memo(({ item }: { item: UserChat }) => {
+    const ListItem = memo(({ item }: { item: ChatUser }) => {
 
-        const [status, setStatus] = useState(item.lastMessage.status)
+        const [follow, setFollow] = useState<User>({})
+        const [viewed, setViewed] = useState<boolean>(false)
         //const [event, setEvent] = useState(new NDKEvent(Nostr as NDK, item.lastMessage as NEvent))
 
+        useEffect(() => { loadFollow() }, [])
+
+        const loadFollow = async () => {
+            const followData = await userService.getProfile(item.lastMessage.pubkey)
+            setViewed(!!unreadChats.filter(c => c == item.chat_id).length)
+            setFollow(followData)
+        }
         // if(event.pubkey != user.pubkey) {
         //     event.decrypt().then(() => {
         //         setEvent({...event} as NDKEvent) 
         //     })
         // }
-
-        const handleClichUser = () => {
-            if(status == "new") setStatus("viewed")
-            handleOpenChat(item)
-        }
     
         const getUserName = () : string => {
-            var userName = item.user.display_name ?? item.user.name ?? ""
+            var userName = follow.display_name ?? follow.name ?? ""
 
             return userName.length > 20 ? `${userName?.substring(0,20)}..` : userName
         }
@@ -64,12 +62,12 @@ const ChatList = ({ user, chats, loading, handleLoadChats, handleOpenChat }: Pro
                 <TouchableOpacity
                     activeOpacity={.7}
                     style={styles.chatRow}
-                    onPress={handleClichUser}
+                    onPress={() => handleOpenChat(item.chat_id, follow)}
                 >
                     <View style={{ width: "15%" }}>
                         <View style={styles.profile}>
-                            {item.user?.picture && <Image onError={() => { item.user.picture = "" }} source={{ uri: item.user?.picture }} style={{ flex: 1 }} />}
-                            {!item.user?.picture && <Image source={require("assets/images/defaultProfile.png")} style={{ width: 50, height: 50 }} />}
+                            {follow?.picture && <Image onError={() => { follow.picture = "" }} source={{ uri: follow.picture }} style={{ flex: 1 }} />}
+                            {!follow?.picture && <Image source={require("assets/images/defaultProfile.png")} style={{ width: 50, height: 50 }} />}
                         </View>
                     </View>
                     <View style={{ width: "60%", overflow: "hidden" }}>
@@ -85,7 +83,7 @@ const ChatList = ({ user, chats, loading, handleLoadChats, handleOpenChat }: Pro
                             {new Date((item.lastMessage.created_at ?? 1) * 1000).toDateString()}
                         </Text>
                     </View>
-                    { status == "new" &&
+                    { viewed &&
                         <View style={styles.notify}></View>
                     }
                 </TouchableOpacity>
@@ -100,7 +98,6 @@ const ChatList = ({ user, chats, loading, handleLoadChats, handleOpenChat }: Pro
             keyExtractor={(item) => item.lastMessage.id ?? ""}
             style={styles.chatsScroll}
             ListEmptyComponent={EmptyComponent}
-            refreshControl={<RefreshControl refreshing={loading} onRefresh={handleLoadChats} />}
         />
     )
 }

@@ -2,6 +2,7 @@ import { NDKEvent } from '@nostr-dev-kit/ndk';
 import * as SQLite from 'expo-sqlite';
 import { TypeCategory } from '../../notification/application';
 import { NostrEvent } from "../../nostr/events"
+import { ChatUser } from '../../zustand/chats';
 
 const db: SQLite.SQLiteDatabase =  SQLite.openDatabaseSync('events.db');
 
@@ -26,19 +27,11 @@ export const initDatabase = async () => {
 
 type dbEventProps = {
     event: NDKEvent,
-    category: TypeCategory
+    category: TypeCategory,
+    chat_id?: string
 }
 
-export const insertEvent = async ({ event, category }: dbEventProps) : Promise<boolean> => {
-
-    var chat_id: string = ""
-    if(category == "message") {
-        const pubkeys: string[] = event?.tags?.filter(t => t[0] == "p").map(t => t[1]) ?? [""]
-        if(pubkeys.length) {
-            chat_id = pubkeys[0].substring(0, 30) + event.pubkey.substring(0, 30)
-            chat_id = chat_id.split("").sort().join("")
-        }
-    }
+export const insertEvent = async ({ event, category, chat_id }: dbEventProps) : Promise<boolean> => {
 
     const params: SQLite.SQLiteBindParams = [
         event.id, 
@@ -49,7 +42,7 @@ export const insertEvent = async ({ event, category }: dbEventProps) : Promise<b
         JSON.stringify(event.tags),
         event.created_at ?? 0,
         category,
-        chat_id
+        chat_id ?? ""
     ]
 
     const data = await db.runAsync(`
@@ -88,10 +81,10 @@ export const deleteEventsByCondition = async (condition: string, args: any[]) =>
     `, args)
 }
 
-export const selecMessageChats = async (): Promise<NostrEvent[]> => {
+export const selecMessageChats = async (): Promise<ChatUser[]> => {
     const rows = await db.getAllAsync(`
         --DELETE FROM events;
-        SELECT id, kind, pubkey, category, chat_id, content, sig, tags, status, created_at, deleted
+        SELECT id, kind, pubkey, chat_id, content, sig, tags, status, created_at
         FROM events
         WHERE deleted = 0
             AND category = 'message'
@@ -105,17 +98,20 @@ export const selecMessageChats = async (): Promise<NostrEvent[]> => {
         ORDER BY created_at DESC;
     `)
 
-    return rows.map((event: any): NostrEvent => {
+    return rows.map((event: any): ChatUser => {
         return { 
-            id: event.id,
-            kind: event.kind,
-            pubkey: event.pubkey,
-            content: event.content,
-            sig: event.sig,
-            tags: JSON.parse(event.tags),
-            created_at: event.created_at,
-            status: event.status,
-            chat_id: event.chat_id
+            chat_id: event.chat_id,
+            lastMessage: {
+                id: event.id as string,
+                kind: event.kind as number,
+                pubkey: event.pubkey as string,                                                                                                                                                                                                                
+                content: event.content as string,
+                sig: event.sig as string,
+                tags: JSON.parse(event.tags) as string[][],
+                created_at: event.created_at as number,
+                //status: event.status,
+                //chat_id: event.chat_id
+            } as NDKEvent
         } 
     })
 }

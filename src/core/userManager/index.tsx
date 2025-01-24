@@ -296,6 +296,17 @@ const listUsers = async (pubkeys: string[]): Promise<User[]> => {
     return users
 }
 
+const getProfile = async (pubkey: string) => {
+    
+    const event = await getEvent({ authors: [pubkey], kinds:[0], limit: 1 })
+
+    const user = event.content as User
+
+    user.pubkey = pubkey
+
+    return user
+}
+
 const convertPubkey = (pubkey: string) => nip19.npubEncode(pubkey)
 
 export const userService = {
@@ -304,6 +315,7 @@ export const userService = {
     signOut,
     isLogged,
     getUser: getUser,
+    getProfile,
     updateProfile,
     convertPubkey,
     listFollows,
