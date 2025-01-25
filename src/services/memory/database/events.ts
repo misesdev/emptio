@@ -1,7 +1,6 @@
 import { NDKEvent } from '@nostr-dev-kit/ndk';
 import * as SQLite from 'expo-sqlite';
 import { TypeCategory } from '../../notification/application';
-import { NostrEvent } from "../../nostr/events"
 import { ChatUser } from '../../zustand/chats';
 
 const db: SQLite.SQLiteDatabase =  SQLite.openDatabaseSync('events.db');
@@ -84,8 +83,24 @@ export const deleteEventsByCondition = async (condition: string, args: any[]) =>
 export const selecMessageChats = async (): Promise<ChatUser[]> => {
     const rows = await db.getAllAsync(`
         --DELETE FROM events;
-        SELECT id, kind, pubkey, chat_id, content, sig, tags, status, created_at
-        FROM events
+        SELECT even.id, 
+            even.kind, 
+            even.pubkey, 
+            even.chat_id, 
+            even.content, 
+            even.sig, 
+            even.tags, 
+            even.status, 
+            even.created_at,
+            (
+                SELECT COUNT(*)
+                FROM events as even2
+                WHERE even2.chat_id = even.chat_id
+                    AND even2.status = 'new'
+                    AND even2.category = 'message'
+                    AND deleted = 0
+            ) as unreadCount
+        FROM events as even
         WHERE deleted = 0
             AND category = 'message'
             AND created_at IN (
@@ -101,7 +116,8 @@ export const selecMessageChats = async (): Promise<ChatUser[]> => {
     return rows.map((event: any): ChatUser => {
         return { 
             chat_id: event.chat_id,
-            lastMessage: {
+            unreadCount: event.unreadCount,
+            lastMessage:  {
                 id: event.id as string,
                 kind: event.kind as number,
                 pubkey: event.pubkey as string,                                                                                                                                                                                                                
@@ -109,14 +125,12 @@ export const selecMessageChats = async (): Promise<ChatUser[]> => {
                 sig: event.sig as string,
                 tags: JSON.parse(event.tags) as string[][],
                 created_at: event.created_at as number,
-                //status: event.status,
-                //chat_id: event.chat_id
             } as NDKEvent
         } 
     })
 }
 
-export const selecMessages = async (chat_id: string): Promise<NostrEvent[]> => {
+export const selecMessages = async (chat_id: string): Promise<NDKEvent[]> => {
     const rows = await db.getAllAsync(`
         UPDATE events SET status = 'viewed' 
         WHERE category = 'message'
@@ -125,7 +139,7 @@ export const selecMessages = async (chat_id: string): Promise<NostrEvent[]> => {
         RETURNING *;
     `, [chat_id])
    
-    return rows.map((event: any): NostrEvent => {
+    return rows.map((event: any): NDKEvent => {
         return { 
             id: event.id,
             kind: event.kind,
@@ -134,9 +148,9 @@ export const selecMessages = async (chat_id: string): Promise<NostrEvent[]> => {
             sig: event.sig,
             tags: JSON.parse(event.tags),
             created_at: event.created_at,
-            status: event.status,
-            chat_id: event.chat_id
-        } 
+            // status: event.status,
+            // chat_id: event.chat_id
+        } as NDKEvent
     })
 }
 

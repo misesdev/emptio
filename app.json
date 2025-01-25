@@ -1,67 +1,89 @@
 {
-    "expo": {
-        "name": "EMPTIO P2P",
-        "slug": "EMPTIO is the real cambio!",
-        "version": "1.0.0",
-        "orientation": "portrait",
-        "icon": "./assets/icon.png",
-        "userInterfaceStyle": "dark",
-        "splash": {
-            "image": "./assets/splash.png",
-            "resizeMode": "contain",
-            "backgroundColor": "#000000"
-        },
-        "assetBundlePatterns": [
-            "**/*"
-        ],
-        "ios": {
-            "supportsTablet": true
-        },
-        "android": {
-            "newArchEnabled": true,
-            "experimental": {
-                "bridgeless": false
-            },
-            "adaptiveIcon": {
-                "foregroundImage": "./assets/adaptive-icon.png",
-                "backgroundColor": "transparent"
-            }
-        },
-        "web": {
-            "favicon": "./assets/favicon.png"
-        },
-        "plugins": [
-            [
-                "expo-camera",
-                {
-                    "cameraPermission": "Allow $(PRODUCT_NAME) to access your camera",
-                    "microphonePermission": "Allow $(PRODUCT_NAME) to access your microphone",
-                    "recordAudioAndroid": true
-                }
-            ],
-            [
-                "expo-local-authentication",
-                {
-                    "faceIDPermission": "Allow $(PRODUCT_NAME) to use Face ID."
-                }
-            ],
-            "expo-secure-store",
-            [
-                "expo-sqlite",
-                {
-                    "enableFTS": true,
-                    "useSQLCipher": true,
-                    "android": {
-                        // Override the shared configuration for Android
-                        "enableFTS": false,
-                        "useSQLCipher": false
-                    },
-                    "ios": {
-                        // You can also override the shared configurations for iOS
-                        "customBuildFlags": ["-DSQLITE_ENABLE_DBSTAT_VTAB=1 -DSQLITE_ENABLE_SNAPSHOT=1"]
-                    }
-                }
+  "expo": {
+    "name": "EMPTIO P2P",
+    "slug": "emptio_the_real_cambio",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "icon": "./assets/icon.png",
+    "userInterfaceStyle": "dark",
+    "splash": {
+      "image": "./assets/splash.png",
+      "resizeMode": "contain",
+      "backgroundColor": "#000000"
+    },
+    "assetBundlePatterns": [
+      "**/*"
+    ],
+    "ios": {
+      "supportsTablet": true
+    },
+    "android": {
+      "newArchEnabled": true,
+      "experimental": {
+        "bridgeless": false
+      },
+      "adaptiveIcon": {
+        "foregroundImage": "./assets/adaptive-icon.png",
+        "backgroundColor": "#000000"
+      },
+      "permissions": [
+        "android.permission.CAMERA",
+        "android.permission.RECORD_AUDIO",
+        "android.permission.USE_BIOMETRIC",
+        "android.permission.USE_FINGERPRINT",
+        "android.permission.CAMERA",
+        "android.permission.RECORD_AUDIO",
+        "android.permission.USE_BIOMETRIC",
+        "android.permission.USE_FINGERPRINT"
+      ],
+      "package": "com.elima_vale.emptio_the_real_cambio"
+    },
+    "web": {
+      "favicon": "./assets/favicon.png"
+    },
+    "plugins": [
+      [
+        "expo-camera",
+        {
+          "cameraPermission": "Allow $(PRODUCT_NAME) to access your camera",
+          "microphonePermission": "Allow $(PRODUCT_NAME) to access your microphone",
+          "recordAudioAndroid": true
+        }
+      ],
+      [
+        "expo-local-authentication",
+        {
+          "faceIDPermission": "Allow $(PRODUCT_NAME) to use Face ID."
+        }
+      ],
+      "expo-secure-store",
+      [
+        "expo-sqlite",
+        {
+          "enableFTS": true,
+          "useSQLCipher": true,
+          "android": {
+            "enableFTS": false,
+            "useSQLCipher": false
+          },
+          "ios": {
+            "customBuildFlags": [
+              "-DSQLITE_ENABLE_DBSTAT_VTAB=1 -DSQLITE_ENABLE_SNAPSHOT=1"
             ]
-        ]
+          }
+        }
+      ]
+    ],
+    "extra": {
+      "eas": {
+        "projectId": "547e713f-2a35-4cd8-a482-41e058535842"
+      }
+    },
+    "runtimeVersion": {
+      "policy": "appVersion"
+    },
+    "updates": {
+      "url": "https://u.expo.dev/547e713f-2a35-4cd8-a482-41e058535842"
     }
+  }
 }

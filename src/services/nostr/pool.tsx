@@ -1,13 +1,14 @@
-import NDK, { NDKEvent, NDKPrivateKeySigner } from "@nostr-dev-kit/ndk"
+import NDK, { NDKEvent, NDKPrivateKeySigner, NDKUser } from "@nostr-dev-kit/ndk"
 import { PairKey, User } from "../memory/types"
 import { listenerEvents, publishEvent, NostrEvent, getPubkeyFromTags } from "./events"
 import { getRelays } from "../memory/relays"
 import { getPairKey } from "../memory/pairkeys"
 import { AppState } from "react-native"
-import { pushNotification } from "../notification"
 import { insertEvent } from "../memory/database/events"
-import useChatStore, { ChatUser } from "../zustand/chats"
 import { messageService } from "@/src/core/messageManager"
+import { ChatUser } from "../zustand/chats"
+import { nip04, nip44 } from "nostr-tools"
+import { hexToBytes } from "@noble/curves/abstract/utils"
 
 export const getUserData = async (publicKey: string): Promise<User> => {
 
@@ -83,27 +84,20 @@ export const subscribeUserChat = ({ user, addChat }: SubscribeProps) => {
 
             addChat({ chat_id, lastMessage: event })
 
-            if(["inactive", "background"].includes(AppState.currentState))
-            {
-                await event.decrypt() 
-                const profile = await event.author.fetchProfile()
-                await pushNotification({ 
-                    title: profile?.displayName ?? profile?.name ?? "",
-                    message: event.content.length <= 30 ? event.content : `${event.content.substring(0,30)}..`
-                })
-            }
+            // if(["inactive", "background"].includes(AppState.currentState))
+            // {
+            //     await event.decrypt() 
+            //     const profile = await event.author.fetchProfile()
+            //     await pushNotification({ 
+            //         title: profile?.displayName ?? profile?.name ?? "",
+            //         message: event.content.length <= 30 ? event.content : `${event.content.substring(0,30)}..`
+            //     })
+            // }
         }
     }
     
-    subscriptionMessages.on("event", async (event: NDKEvent) => {
-        try 
-        {
-            if([4].includes(event.kind ?? 0)) 
-            {
-                await processEventMessage(event) 
-            }
-        } 
-        catch (ex) { console.log(ex) }
+    subscriptionMessages.on("event", (event) => { 
+        if(event.kind == 4) processEventMessage(event)
     })
 
     subscriptionMessages.start()

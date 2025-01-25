@@ -2,7 +2,7 @@ import theme from "@src/theme"
 import { StyleSheet, View } from "react-native"
 import { TouchableOpacity } from "react-native-gesture-handler"
 import { Ionicons } from "@expo/vector-icons"
-import { useEffect, useState } from "react"
+import { useState } from "react"
 import { HeaderChats } from "./header"
 import { SearchBox } from "@/src/components/form/SearchBox"
 import { useTranslateService } from "@/src/providers/translateProvider"
@@ -14,15 +14,8 @@ import { User } from "@/src/services/memory/types"
 const ChatsScreen = ({ navigation }: any) => {
    
     const { user } = useAuth()
-    const { chats, markAllRead, markReadChat } = useChatStore()
-    const { useTranslate } = useTranslateService()
-    const [loading, setLoading] = useState(false)
-    const [filteredChats, setFilteredChats] = useState<ChatUser[]>(chats)
+    const { chats } = useChatStore()
     const [searchTerm, setSearchTerm] = useState("")
-
-    useEffect(() => { 
-        markAllRead() 
-    }, [markAllRead])
 
     const handleSearch = (searchTerm: string) => {
         // if(!searchTerm.replace(" ", "").length) {
@@ -45,7 +38,7 @@ const ChatsScreen = ({ navigation }: any) => {
 
             <HeaderChats navigation={navigation} />
 
-            <SearchBox delayTime={0} seachOnLenth={0} label={useTranslate("commons.search")} onSearch={handleSearch} />
+            {/* <SearchBox delayTime={0} seachOnLenth={0} label={useTranslate("commons.search")} onSearch={handleSearch} /> */}
 
             {/* <ChatFilters onFilter={filterEvents} activeSection={activeSection} /> */}
 

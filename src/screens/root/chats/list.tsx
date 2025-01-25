@@ -1,23 +1,24 @@
 import { User } from "@/src/services/memory/types"
-import { FlatList, RefreshControl } from "react-native-gesture-handler"
+import { FlatList } from "react-native-gesture-handler"
 import { StyleSheet, View, Text, TouchableOpacity, Image } from "react-native"
 import { useTranslateService } from "@/src/providers/translateProvider"
-import useChatStore, { ChatUser } from "@/src/services/zustand/chats"
-import { memo, useEffect, useState } from "react"
-import NDK, { NDKEvent, NostrEvent as NEvent } from "@nostr-dev-kit/ndk"
+import { ChatUser } from "@/src/services/zustand/chats"
+import { useCallback, useEffect, useState } from "react"
+import { NDKEvent } from "@nostr-dev-kit/ndk"
 import theme from "@/src/theme"
 import { userService } from "@/src/core/userManager"
+import { memo } from "react"
+import { messageService } from "@/src/core/messageManager"
 
 type Props = {
     user: User, 
-    chats: ChatUser[],
+    chats?: ChatUser[],
     handleOpenChat: (chat_id: string, user: User) => void
 }
 
 const ChatList = ({ user, chats, handleOpenChat }: Props) => {
   
     const { useTranslate } = useTranslateService()
-    const unreadChats = useChatStore(state => state.unreadChats)
 
     const EmptyComponent = () => {
         return (
@@ -30,32 +31,12 @@ const ChatList = ({ user, chats, handleOpenChat }: Props) => {
     const ListItem = memo(({ item }: { item: ChatUser }) => {
 
         const [follow, setFollow] = useState<User>({})
-        const [viewed, setViewed] = useState<boolean>(false)
-        //const [event, setEvent] = useState(new NDKEvent(Nostr as NDK, item.lastMessage as NEvent))
+        const [event, setEvent] = useState<NDKEvent>(item.lastMessage)
 
-        useEffect(() => { loadFollow() }, [])
-
-        const loadFollow = async () => {
-            const followData = await userService.getProfile(item.lastMessage.pubkey)
-            setViewed(!!unreadChats.filter(c => c == item.chat_id).length)
-            setFollow(followData)
-        }
-        // if(event.pubkey != user.pubkey) {
-        //     event.decrypt().then(() => {
-        //         setEvent({...event} as NDKEvent) 
-        //     })
-        // }
-    
-        const getUserName = () : string => {
-            var userName = follow.display_name ?? follow.name ?? ""
-
-            return userName.length > 20 ? `${userName?.substring(0,20)}..` : userName
-        }
-
-        const getMessage = () => {
-            return item.lastMessage.content.length > 30 ? 
-                `${item.lastMessage.content.substring(0,30)}..`: item.lastMessage.content
-        }
+        useEffect(() => {             
+            userService.getProfile(item.lastMessage.pubkey).then(setFollow)
+            messageService.decryptMessage(user, item.lastMessage).then(setEvent)
+        }, [])
 
         return (
             <View style={{ width: "100%", paddingVertical: 3 }}>
@@ -71,31 +52,42 @@ const ChatList = ({ user, chats, handleOpenChat }: Props) => {
                         </View>
                     </View>
                     <View style={{ width: "60%", overflow: "hidden" }}>
-                        <Text style={styles.profileName}>
-                            {getUserName()}
-                        </Text>
+                        {(follow.display_name || follow.name) &&
+                            <Text style={styles.profileName}>
+                                { (follow?.display_name ?? follow?.name ?? "").substring(0, 20) }
+                            </Text>
+                        }
+                        
                         <Text style={styles.message}>
-                            {getMessage()} 
+                            {event.content.substring(0, 30)}..
                         </Text>
                     </View>                    
                     <View style={{ width: "25%", overflow: "hidden", flexDirection: "row-reverse" }}>
                         <Text style={styles.dateMessage}>
-                            {new Date((item.lastMessage.created_at ?? 1) * 1000).toDateString()}
+                            {new Date((event.created_at ?? 1) * 1000).toDateString()}
                         </Text>
                     </View>
-                    { viewed &&
-                        <View style={styles.notify}></View>
-                    }
+                    { !!item.unreadCount && 
+                        <View style={styles.notify}>
+                            <Text style={{ fontSize: 10, color: theme.colors.white }}>
+                                {item.unreadCount}
+                            </Text>
+                        </View>
+                    } 
                 </TouchableOpacity>
             </View>
         )
     })
 
+    const renderItem = useCallback(({ item }: { item: ChatUser }) => {
+        return <ListItem item={item}/>
+    }, [])
+
     return (
         <FlatList
             data={chats}
-            renderItem={({ item }) => <ListItem item={item} />}
-            keyExtractor={(item) => item.lastMessage.id ?? ""}
+            renderItem={renderItem}
+            keyExtractor={(item) => `${item.chat_id}-${item?.unreadCount??0}`}
             style={styles.chatsScroll}
             ListEmptyComponent={EmptyComponent}
         />
@@ -109,8 +101,8 @@ const styles = StyleSheet.create({
     profileName: { fontSize: 16, fontWeight: "500", color: theme.colors.white, paddingHorizontal: 5 },
     message: { color: theme.colors.gray, padding: 2 },
     dateMessage: { color: theme.colors.white, fontSize: 11, fontWeight: "500" },
-    notify: { position: "absolute", bottom: 36, right: 14, borderRadius: 50, 
-        backgroundColor: theme.colors.red, width: 12, height: 12 }
+    notify: { position: "absolute", bottom: 32, right: 14, borderRadius: 4, 
+        backgroundColor: theme.colors.red, padding: 2, minWidth: 18, alignItems: "center" }
 })
 
 export default ChatList

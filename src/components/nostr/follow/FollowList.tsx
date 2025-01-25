@@ -66,6 +66,10 @@ export const FollowList = ({ searchTerm, onPressFollow, toPayment = false,
 
     const ListItem = memo(({ item }: { item: User }) => <FollowItem follow={item} handleClickFollow={handleClickFollow} />)
 
+    const renderItem = useCallback(({ item }: { item: User }) => {
+        return <ListItem item={item} />
+    }, [])
+
     const handleLoaderEnd = () => {
         if (refreshing)
             // Show loader at the end of list when fetching next page data.
@@ -76,7 +80,7 @@ export const FollowList = ({ searchTerm, onPressFollow, toPayment = false,
         <>
             <FlatList
                 data={followList}
-                renderItem={({ item }) => <ListItem item={item} />}
+                renderItem={renderItem}
                 contentContainerStyle={[theme.styles.scroll_container, { paddingBottom: 30 }]}
                 ListFooterComponent={handleLoaderEnd}
                 keyExtractor={item => item.pubkey ?? Math.random().toString()}
@@ -84,3 +88,5 @@ export const FollowList = ({ searchTerm, onPressFollow, toPayment = false,
         </>
     )
 }
+
+

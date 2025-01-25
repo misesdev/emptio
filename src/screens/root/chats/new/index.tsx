@@ -2,12 +2,11 @@ import { SearchBox } from "@components/form/SearchBox"
 import { HeaderScreen } from "@components/general/HeaderScreen"
 import { FollowList } from "@components/nostr/follow/FollowList"
 import { StyleSheet, View } from "react-native"
-import theme from "@src/theme"
-import { useState } from "react"
 import { User } from "@src/services/memory/types"
 import { useTranslateService } from "@/src/providers/translateProvider"
 import { useAuth } from "@/src/providers/userProvider"
-import { UserChat } from "../list"
+import { useState } from "react"
+import theme from "@src/theme"
 
 const NewChatScreen = ({ navigation }: any) => {
 
@@ -18,11 +17,9 @@ const NewChatScreen = ({ navigation }: any) => {
     const handleChatFollow = (follow: User) => {
         var chat_id: string = ""
         chat_id = (user?.pubkey?.substring(0, 30) ?? "")+(follow?.pubkey?.substring(0, 30) ??"")
-        chat_id = chat_id.split("").sort().join("")
+        chat_id = chat_id.match(/.{1,2}/g)?.sort().join("") ?? ""
 
-        const userChat: UserChat = { user: follow, lastMessage: { chat_id } }
-
-        navigation.navigate("conversation-chat-stack", { userChat: userChat })
+        navigation.navigate("conversation-chat-stack", { follow, chat_id })
     }
 
     return (
@@ -32,7 +29,7 @@ const NewChatScreen = ({ navigation }: any) => {
 
             <SearchBox seachOnLenth={0} delayTime={100} label={`${useTranslate("commons.search")} npub..`} onSearch={(searchTerm) => setSearchTerm(searchTerm)} />
 
-            <FollowList searchable searchTerm={searchTerm} iNot onPressFollow={handleChatFollow} />
+            <FollowList searchable searchTimout={200} searchTerm={searchTerm} iNot onPressFollow={handleChatFollow} />
 
         </View>
     )
