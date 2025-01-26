@@ -75,7 +75,7 @@ const ManageRelaysScreen = ({ navigation }: any) => {
     }
 
     return (
-        <>
+        <View style={{ flex: 1 }}>
             <HeaderScreen title={useTranslate("settings.relays")} onClose={() => navigation.navigate("user-menu-stack")} />
             <ScrollView contentContainerStyle={theme.styles.scroll_container} >
 
@@ -91,7 +91,7 @@ const ManageRelaysScreen = ({ navigation }: any) => {
             </View>            
             <AddRelay visible={visible} relays={relays} onClose={() => setVisible(false)} onSaveRelay={handleSaveRelay} />
             <MessageBox />
-        </>
+        </View>
     )
 }
 

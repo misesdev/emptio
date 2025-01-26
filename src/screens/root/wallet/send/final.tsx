@@ -38,7 +38,7 @@ const SendFinalScreen = ({ navigation, route }: any) => {
             await walletService.transaction.send(result.data, network)
         }
 
-        if (!result.success) {
+        if (!result.success && result.message) {
             setLoading(false)
             return pushMessage(result.message)
         }

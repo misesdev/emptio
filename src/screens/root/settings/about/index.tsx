@@ -15,7 +15,7 @@ const AboutScreen = ({ navigation }: any) => {
     const handleToDiscord = () => Linking.openURL("https://discord.gg/pUxPZHPu")
 
     return (
-        <>
+        <View style={{ flex: 1 }}>
             <HeaderScreen title={useTranslate("settings.about")} onClose={() => navigation.navigate("user-menu-stack")} />
             <ScrollView contentContainerStyle={theme.styles.scroll_container} >
 
@@ -41,7 +41,7 @@ const AboutScreen = ({ navigation }: any) => {
                 </View>
 
             </ScrollView>
-        </>
+        </View>
     )
 }
 

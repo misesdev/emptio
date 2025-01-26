@@ -47,7 +47,7 @@ const ImportWalletScreen = ({ navigation, route }: any) => {
 
             if (response.success)
                 navigation.reset({ index: 0, routes: [{ name: "core-stack" }] })
-            else
+            else if(response.message)
                 pushMessage(response.message)
         }, 50)
     }
@@ -56,7 +56,7 @@ const ImportWalletScreen = ({ navigation, route }: any) => {
         return <SplashScreen />
 
     return (
-        <>
+        <View style={{ flex: 1 }}>
             {/* Header */}
             <HeaderScreen
                 title={useTranslate("screen.title.importwallet")}
@@ -94,7 +94,7 @@ const ImportWalletScreen = ({ navigation, route }: any) => {
             <View style={styles.buttonArea}>
                 <ButtonPrimary label={useTranslate("commons.import")} onPress={() => handleImport()} />
             </View>
-        </>
+        </View>
     )
 }
 

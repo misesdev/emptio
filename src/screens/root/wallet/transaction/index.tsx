@@ -55,7 +55,7 @@ const TransactionScreen = ({ navigation, route }: any) => {
     }
 
     return (
-        <>
+        <View style={{ flex: 1 }}>
             <HeaderScreen title={useTranslate("wallet.transaction.title")} onClose={() => navigation.navigate("wallet-stack", { wallet })} />
             
             <View style={{ alignItems: "center", alignContent: "center" }}>
@@ -157,7 +157,7 @@ const TransactionScreen = ({ navigation, route }: any) => {
                     </>
                 }
             </ScrollView>
-        </>
+        </View>
     )
 }
 

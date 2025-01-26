@@ -21,7 +21,7 @@ const HomeSearchScreen = ({ navigation }: any) => {
         <View style={theme.styles.container} >
             <HeaderScreen title="Search Home" onClose={() => navigation.navigate("core-stack")} />
 
-            <SearchBox label={`${useTranslate("commons.search")} npub..`} onSearch={handleSearch} />
+            <SearchBox seachOnLenth={1} label={`${useTranslate("commons.search")} npub..`} onSearch={handleSearch} />
 
             <View style={{ flex: 1 }}>
 

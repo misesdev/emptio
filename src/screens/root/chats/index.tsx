@@ -33,7 +33,6 @@ const ChatsScreen = ({ navigation }: any) => {
     }
 
     return (
-
         <View style={theme.styles.container}>
 
             <HeaderChats navigation={navigation} />

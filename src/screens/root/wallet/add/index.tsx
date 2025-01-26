@@ -59,7 +59,7 @@ const AddWalletScreen = ({ navigation }: any) => {
                     mnemonic: base.mnemonic.split(" ")
                 })
             }
-            else
+            else if(response.message)
                 pushMessage(response.message)
             
             setLoading(false)
@@ -76,7 +76,7 @@ const AddWalletScreen = ({ navigation }: any) => {
         return <SplashScreen />
 
     return (
-        <>
+        <View style={{ flex: 1 }}>
             <HeaderScreen
                 title={useTranslate("screen.title.addwallet")}
                 onClose={() => navigation.navigate("core-stack")}
@@ -153,7 +153,7 @@ const AddWalletScreen = ({ navigation }: any) => {
                 </View>
 
             </View>
-        </>
+        </View>
     )
 }
 

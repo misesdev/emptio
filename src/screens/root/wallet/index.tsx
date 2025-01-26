@@ -66,7 +66,7 @@ const WalletManagerScreen = ({ navigation, route }: any) => {
         return <SplashScreen />
 
     return (
-        <>
+        <View style={{ flex: 1 }}>
             <WalletHeader wallet={wallet} showOptions={() => showOptions(wallet)} />
 
             <SectionHeader
@@ -90,7 +90,7 @@ const WalletManagerScreen = ({ navigation, route }: any) => {
                 onReceive={() => navigation.navigate("add-wallet-receive-stack", { wallet })}
                 onSend={() => navigation.navigate("wallet-send-stack", { wallet })}
             />
-        </>
+        </View>
     )
 }
 

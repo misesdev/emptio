@@ -73,7 +73,7 @@ const FeedScreen = ({ navigation }: any) => {
     }
 
     return (
-        <>
+        <View style={{ flex: 1 }}>
             <HeaderFeed navigation={navigation} />
 
             <FlatList
@@ -92,7 +92,7 @@ const FeedScreen = ({ navigation }: any) => {
                     <Ionicons name="add" size={theme.icons.medium} color={theme.colors.white} />
                 </TouchableOpacity>
             </View>
-        </>
+        </View>
     )
 }
 

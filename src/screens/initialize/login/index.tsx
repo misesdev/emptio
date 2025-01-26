@@ -87,7 +87,7 @@ const LoginScreen = ({ navigation }: any) => {
         return <SplashScreen message="" />
 
     return (
-        <>
+        <View style ={{ flex: 1 }}>
             <View style={theme.styles.container}>
 
                 <Image style={styles.logo} source={require("@assets/emptio.png")} />
@@ -103,7 +103,7 @@ const LoginScreen = ({ navigation }: any) => {
                 </View>
             </View>
             <MessageBox />
-        </>
+        </View>
     )
 }
 

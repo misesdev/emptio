@@ -28,7 +28,7 @@ const CreatedSeedScren = ({ navigation, route }: any) => {
         return <SplashScreen />
 
     return (
-        <>
+        <View style={{ flex: 1 }}>
             {/* Header */}
             <HeaderScreen title={useTranslate("wallet.title.seed")} onClose={handleClose} />
 
@@ -49,7 +49,7 @@ const CreatedSeedScren = ({ navigation, route }: any) => {
             <View style={styles.buttonarea}>
                 <ButtonPrimary label={useTranslate("commons.ok")} onPress={handleClose} />
             </View>
-        </>
+        </View>
     )
 }
 

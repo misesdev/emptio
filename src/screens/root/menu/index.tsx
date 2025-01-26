@@ -80,7 +80,7 @@ const UserMenuScreen = ({ navigation }: any) => {
         return <SplashScreen message="deleting storage.." />
 
     return (
-        <>
+        <View style={{ flex: 1 }}>
             <ScrollView contentContainerStyle={theme.styles.scroll_container}>
                 {/* <View style={styles.banner}> */}
                 {/*     {user?.banner && <Image style={{ width: "100%", height: "100%" }} source={{ uri: user?.banner }} />}  */}
@@ -151,7 +151,7 @@ const UserMenuScreen = ({ navigation }: any) => {
             <SelectLanguageBox forceUpdate={setForceUpdate} />
             <View key={forceUpdate}></View>
             <MessageBox />
-        </>
+        </View>
     )
 }
 

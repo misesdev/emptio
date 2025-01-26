@@ -9,6 +9,7 @@ import { getSettings, saveSettings } from "@src/services/memory/settings"
 import theme from "@src/theme"
 import { useTranslateService } from "@/src/providers/translateProvider"
 import { useSettings } from "@/src/providers/settingsProvider"
+import { View } from "react-native-animatable"
 
 const ManageSecurityScreen = ({ navigation }: any) => {
 
@@ -32,14 +33,14 @@ const ManageSecurityScreen = ({ navigation }: any) => {
     }
 
     return (
-        <>
+        <View style={{ flex: 1 }}>
             <HeaderScreen title="Security" onClose={() => navigation.navigate("user-menu-stack")} />
             <ScrollView contentContainerStyle={theme.styles.scroll_container} >
 
                 <FormControlSwitch label="Use Biometrics" value={useBiometrics} onChangeValue={onHandleSetAuthenticate} />
 
             </ScrollView>
-        </>
+        </View>
     )
 }
 
