@@ -1,6 +1,6 @@
 import { getPublicKey } from "@noble/secp256k1"
 import { bytesToHex } from "@noble/hashes/utils"
-import { mnemonicToEntropy, entropyToMnemonic, generateMnemonic, mnemonicToSeedSync } from "bip39"
+import { mnemonicToEntropy, generateMnemonic, mnemonicToSeedSync } from "bip39"
 import { payments, Psbt, networks, address } from "bitcoinjs-lib"
 import { PairKey, Wallet } from "../memory/types"
 import { getRandomKey, signBuffer, verifySign } from "./signature"
@@ -59,19 +59,6 @@ export const importWallet = async (mnemonic: string, password?: string, network:
 export type SeedProps = {
     seed: string, // phrase with 12 or 24 words
     passPhrase: string // password with a 
-}
-
-export const seedToWallet = (seedPhrase: string): PairKey => {
-
-    const key = getRandomKey(10)
-
-    const privateKey = mnemonicToEntropy(seedPhrase)
-
-    const publicbytes = getPublicKey(privateKey)
-
-    const publicKey = bytesToHex(publicbytes)
-
-    return { key, privateKey, publicKey }
 }
 
 export const generateAddress = (publicKey: string, net: Network = "mainnet"): string => {

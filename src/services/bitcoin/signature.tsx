@@ -1,5 +1,4 @@
 import { secp256k1 } from "@noble/curves/secp256k1"
-import { Psbt } from "bitcoinjs-lib"
 
 export const signHex = (txHex: string, privKeyHex: string): string => {
 
@@ -13,10 +12,6 @@ export const signBuffer = (txHash: Buffer, privKeyHex: string, lowR?: boolean): 
     const signature = secp256k1.sign(txHash, privKeyHex, { lowS: lowR }).toDERHex()
 
     return Buffer.from(signature, "hex")
-}
-
-export const signTransaction = (transaction: Psbt) => {
-
 }
 
 export const verifySign = (pubkey: Buffer, msghash: Buffer, signature: Buffer) => secp256k1.verify(signature.toString('hex'), pubkey.toString('hex'), msghash.toString('hex'))

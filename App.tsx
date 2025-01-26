@@ -1,5 +1,8 @@
 // fixeds the problems with 'nostr-utils' on generate keys => include crypto.getRandomValues on native core
 import "react-native-get-random-values"
+import { enableScreens } from 'react-native-screens';
+
+enableScreens();
 
 // fixeds the problems with 'notr-utils' on encode and decode cophers => include TextDecoder and TextEncoder on native core 
 import './libs/global';

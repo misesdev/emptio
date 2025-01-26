@@ -1,39 +1,25 @@
-import { createWallet, getSeedPhrase, seedToWallet, generateAddress } from "@src/services/bitcoin";
+import { createWallet,  generateAddress, importWallet } from "@src/services/bitcoin";
 
 describe("wallets bitcoin functions", () => {
     it("create wallet", () => {
-        const { privateKey, publicKey } = createWallet()
+        const { privateKey, publicKey } = createWallet("", "testnet").pairkey
 
         expect(privateKey).toBeDefined()
         expect(publicKey).toBeDefined()
     })
-    it("get seed from private key", () => {
-        const { privateKey } = createWallet()
+    it("generate wallet from mnemonic seed", async () => {
+        const wallet = createWallet()
 
-        const seed = getSeedPhrase(privateKey)
+        const { pairkey } = await importWallet(wallet.mnemonic, "", "testnet")
 
-        expect(seed).toBeDefined()
-
-        let words = seed.split(" ")
-
-        expect(words.length).toBe(24)
-    })
-    it("generate wallet from mnemonic seed", () => {
-        const { privateKey, publicKey } = createWallet()
-
-        const seed = getSeedPhrase(privateKey)
-
-        const wallet = seedToWallet(seed)
-
-        expect(wallet.privateKey).toBe(privateKey)
-        expect(wallet.publicKey).toBe(publicKey)
+        expect(wallet.pairkey.privateKey).toBe(pairkey.privateKey)
+        expect(wallet.pairkey.publicKey).toBe(pairkey.publicKey)
     })
     it("generate address for transaction", () => {
-        const { publicKey } = createWallet()
+        const { publicKey } = createWallet("", "testnet").pairkey
 
-        const address = generateAddress(publicKey)
+        const address = generateAddress(publicKey, "testnet")
 
         expect(address).toBeDefined()
-        // expect(address.substring(0,1)).toBe("1")
     })
 })

@@ -1,9 +1,9 @@
 import mempool from "@mempool/mempool.js"
 import { Tx } from "@mempool/mempool.js/lib/interfaces/bitcoin/transactions"
-import { Transaction, TransactionInput, TransactionOutput, WalletInfo } from "../memory/types"
+import { Transaction, TransactionInput, TransactionOutput } from "../memory/types"
 import { useTranslate } from "../translate"
-import env from "@/env"
 import { Network } from "./types"
+import env from "@/env"
 
 // post a transaction
 export const sendUtxo = async (txhex: string, network: Network) => { 

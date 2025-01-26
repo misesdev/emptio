@@ -1,14 +1,12 @@
-import { createWallet, getSeedPhrase, importWallet } from "@/src/services/bitcoin";
+import { createWallet, importWallet } from "@/src/services/bitcoin";
 
 describe("bitcoin wallet", () => {
     it("import wallet from seedphrase with passphrase", async () => {
 
-        const { privateKey } = createWallet()
+        const wallet = createWallet("", "testnet")
 
-        const seedphrase = getSeedPhrase(privateKey)
+        const { pairkey } = await importWallet(wallet.mnemonic, "", "testnet")
 
-        const wallet = await importWallet(seedphrase)
-
-        expect(privateKey).toBe(wallet.privateKey)
+        expect(wallet.pairkey.privateKey).toBe(pairkey.privateKey)
     })
 })
