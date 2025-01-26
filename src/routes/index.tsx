@@ -34,7 +34,7 @@ const Stack = createStackNavigator()
 
 const AppRoutes = () => {
 
-    const ScreenCardOptions = { cardStyleInterpolator: CardStyleInterpolators.forVerticalIOS }
+    const ScreenCardOptions = { cardStyleInterpolator: CardStyleInterpolators.forFadeFromBottomAndroid }
 
     return (
         <NavigationContainer >

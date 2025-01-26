@@ -36,5 +36,4 @@ yarn-error.*
 
 .vscode
 
-.env
-env.ts
+

@@ -22,7 +22,7 @@ import { NostrEvent } from "@nostr-dev-kit/ndk"
 const UserMenuScreen = ({ navigation }: any) => {
 
     const opacity = .7 
-    const { user, setUser, setWallets, setEmptioData, setFollowsEvent } = useAuth()
+    const { user, setUser, setWallets, setFollows } = useAuth()
     const { useTranslate } = useTranslateService()
     const [forceUpdate, setForceUpdate] = useState()
     const [loading, setLoading] = useState(false) 
@@ -65,14 +65,12 @@ const UserMenuScreen = ({ navigation }: any) => {
                     {
                         if(setUser) setUser({})
                         if(setWallets) setWallets([])
-                        if(setEmptioData) setEmptioData({})
-                        if(setFollowsEvent) setFollowsEvent({} as NostrEvent)
+                        if(setFollows) setFollows({} as NostrEvent)
                         navigation.reset({ index: 0, routes: [{ name: "initial-stack" }] })
                     }
-                    else {
+                    else if(result.message) 
                         pushMessage(result.message)
-                        setLoading(false)
-                    }
+                    setLoading(false)
                 }
             }
         })

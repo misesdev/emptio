@@ -1,2 +1,0 @@
-// File for tor demandas
-

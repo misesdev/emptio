@@ -1,5 +1,5 @@
 import theme from '@/src/theme';
-import { View, Image, StyleSheet, TouchableOpacity, Linking, Button } from 'react-native';
+import { View, Image, StyleSheet, Linking, Button } from 'react-native';
 import ParsedText from 'react-native-parsed-text';
 import { WebView } from 'react-native-webview';
 import { useVideoPlayer, VideoView } from 'expo-video';
@@ -42,11 +42,11 @@ const NoteViewer = ({ note }: Props) => {
     const urlRegex = /(https?:\/\/[^\s]+)/g;
 
     const isImageUrl = (url: string): boolean => {
-        return /\.(jpeg|jpg|gif|png|webp|svg)(\?.*)?$/.test(url);
+        return /\.(jpeg|jpg|gif|png|webp|svg)(\?.*)?$/.test(url.toLowerCase());
     };
 
     const isVideoUrl = (url: string): boolean => {
-        return /\.(mp4|webm|ogg|mov|avi|mkv|flv)(\?.*)?$/.test(url);
+        return /\.(mp4|webm|ogg|mov|avi|mkv|flv)(\?.*)?$/.test(url.toLowerCase());
     };
 
     const renderText = (matchingString: string, matches: string[]) => {

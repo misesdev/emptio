@@ -8,7 +8,6 @@ const checkBiometric = async () => {
         const { success } = await authenticateAsync({
             promptMessage: useTranslate("commons.authenticate.message")
         })
-
         return success
     }
 

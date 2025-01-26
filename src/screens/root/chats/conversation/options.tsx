@@ -70,7 +70,8 @@ const MessageOptionsBox = ({ user, deleteMessage }: Props) => {
         <Modal animationType="fade" onRequestClose={() => setVisible(false)} visible={visible} transparent >
             <BlurView 
                 tint="dark" 
-                intensity={60} 
+                intensity={60}
+                // onTouchEnd={() => setVisible(false)}
                 style={styles.absolute}                
             >
                 <View style={{ flex: 1, alignItems: "center", justifyContent: "center", backgroundColor: "rgba(0,0,0, .6)" }}>
@@ -80,10 +81,10 @@ const MessageOptionsBox = ({ user, deleteMessage }: Props) => {
                             onPress={() => handleCopy()}
                         />
                         { isUser &&
-                           <OptionItem icon="trash-outline"
-                                label="Excluir para Todos" 
-                                onPress={() => handleDeleteMessage(false)}
-                            />
+                       <OptionItem icon="trash-outline"
+                            label="Excluir para Todos" 
+                            onPress={() => handleDeleteMessage(false)}
+                        />
                         }
                        <OptionItem icon="trash-bin-outline"
                             label="Excluir para min" 
@@ -101,9 +102,9 @@ export const showOptiosMessage = (props: ShowFunctionProps) => {
 }
 
 const styles = StyleSheet.create({
-    box: { padding: 10, width: "85%", borderRadius: 8, backgroundColor: theme.colors.section },
+    box: { padding: 10, width: "80%", borderRadius: 8, backgroundColor: theme.colors.section },
     option: { width: "100%", flexDirection: "row", padding: 5, borderRadius: 10, marginVertical: 2, backgroundColor: theme.colors.section },
-    labelOption: { width: "100%", color: theme.colors.white, padding: 12, fontWeight: "400", fontSize: 14 },
+    labelOption: { width: "100%", color: theme.colors.white, padding: 10, fontWeight: "400", fontSize: 14 },
     absolute: { position: "absolute", width: "100%", height: "100%", top: 0, left: 0, bottom: 0, right: 0 }
 })
 

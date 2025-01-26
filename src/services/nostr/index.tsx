@@ -16,7 +16,6 @@ export const createPairKeys = (): PairKey => {
 }
 
 export const validatePrivateKey = (privateKey: string) => {
-
     try {
         const { type } = nip19.decode(privateKey)
 
@@ -25,7 +24,6 @@ export const validatePrivateKey = (privateKey: string) => {
 }
 
 export const derivatePublicKey = (privateKey: string): string => {
-
     try {
         const { type, data } = nip19.decode(privateKey)
 

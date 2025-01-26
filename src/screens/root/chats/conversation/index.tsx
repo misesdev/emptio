@@ -1,10 +1,10 @@
 import { hexToNpub } from "@/src/services/converter"
 import theme from "@/src/theme"
-import { useEffect, useRef, useState } from "react"
+import { useEffect, useState } from "react"
 import { View, StyleSheet, Image, Text, TextInput, 
     KeyboardAvoidingView, Platform, TouchableOpacity, Vibration } from "react-native"
 import { Ionicons } from "@expo/vector-icons"
-import NDK, { NDKEvent, NostrEvent as NEvent } from "@nostr-dev-kit/ndk"
+import { NDKEvent } from "@nostr-dev-kit/ndk"
 import { useAuth } from "@/src/providers/userProvider"
 import { messageService } from "@/src/core/messageManager"
 import { User } from "@/src/services/memory/types"
@@ -100,17 +100,14 @@ const ConversationChat = ({ navigation, route }: any) => {
                 </View>
                 <View style={{ height: 45 }} ></View>
             </View>
-            <MessageOptionsBox 
-                user={user} 
-                deleteMessage={deleteMessage} 
-            />
+            <MessageOptionsBox user={user} deleteMessage={deleteMessage} />
         </KeyboardAvoidingView>
     )
 }
 
 const styles = StyleSheet.create({
     headerContainer: { flexDirection: "row", width: "100%", padding: 2, backgroundColor: theme.colors.black },
-    imageContainer: { width: 50, height: 50, borderRadius: 50, overflow: "hidden" },
+    imageContainer: { width: 40, height: 40, borderRadius: 50, overflow: "hidden" },
     userName: { fontSize: 18, fontWeight: "500", color: theme.colors.white },
     pubkey: { fontSize: 14, fontWeight: "400", color: theme.colors.gray },
 

@@ -20,7 +20,7 @@ type FriendListProps = {
 export const FollowList = ({ searchTerm, onPressFollow, toPayment = false, 
     searchable, iNot = true, searchTimout = 100 }: FriendListProps) => {
 
-    const { user, followsEvent } = useAuth()
+    const { user, follows } = useAuth()
     const searchTimeout:any = useRef(null);
     const [refreshing, setRefreshing] = useState(true)
     const [followList, setFollowList] = useState<User[]>([])
@@ -50,11 +50,10 @@ export const FollowList = ({ searchTerm, onPressFollow, toPayment = false,
     const handleListFollows = async () => {
         setRefreshing(true)
 
-        var follows = await userService.listFollows(user, followsEvent as NostrEvent, iNot)
+        const followList = await userService.listFollows(user, follows as NostrEvent, iNot)
 
-        setFollowList(follows)
-
-        setFollowListData(follows)
+        setFollowListData(followList)
+        setFollowList(followList) 
 
         setRefreshing(false)
     }

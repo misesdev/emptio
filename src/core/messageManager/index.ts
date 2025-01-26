@@ -1,9 +1,13 @@
-import { deleteEventsByCondition, selecMessageChats, selecMessages } from "@/src/services/memory/database/events"
+import { deleteEventsByCondition, 
+    selecMessageChats, 
+    selecMessages 
+} from "@/src/services/memory/database/events"
 import { getPairKey } from "@/src/services/memory/pairkeys"
 import { User } from "@/src/services/memory/types"
 import { getPubkeyFromTags } from "@/src/services/nostr/events"
 import { ChatUser } from "@/src/services/zustand/chats"
-import NDK, { NDKEvent } from "@nostr-dev-kit/ndk"
+import useNDKStore from "@/src/services/zustand/ndk"
+import { NDKEvent } from "@nostr-dev-kit/ndk"
 import { nip04 } from "nostr-tools"
 
 const listMessages = async (chat_id: string) : Promise<NDKEvent[]> => {
@@ -74,9 +78,10 @@ type MessageProps = {
 }
 
 const sendMessage = async ({ user, follow, message }: MessageProps) : Promise<NDKEvent> => {
-    const pool = Nostr as NDK
+    
+    const ndk = useNDKStore.getState().ndk
 
-    const event = await encryptMessage(user, follow, new NDKEvent(pool, {
+    const event = await encryptMessage(user, follow, new NDKEvent(ndk, {
         kind: 4,
         pubkey: user.pubkey ?? "",
         content: message,
@@ -97,13 +102,13 @@ type DeleteEventProps = {
 
 const deleteMessage = async ({ user, event, onlyForMe = false }: DeleteEventProps) => {
     
-    const pool = Nostr as NDK
+    const ndk = useNDKStore.getState().ndk
 
     deleteEventsByCondition("id = ?", [event.id])
 
     if(!onlyForMe) 
     {
-        const deleteEvent = new NDKEvent(pool, {
+        const deleteEvent = new NDKEvent(ndk, {
             pubkey: user.pubkey ?? "",
             kind: 5,
             content: "deleting event",

@@ -8,10 +8,15 @@ import { userService } from "@/src/core/userManager";
 import { useAuth } from "@/src/providers/userProvider";
 import theme from "@src/theme";
 import { useTranslateService } from "@/src/providers/translateProvider";
+import useNDKStore from "@/src/services/zustand/ndk";
+import { subscribeUserChat } from "@/src/services/nostr/pool";
+import useChatStore from "@/src/services/zustand/chats";
 
 const RegisterScreen = ({ navigation }: any) => {
 
-    const { setUser, setFollowsEvent } = useAuth()
+    const { addChat } = useChatStore()
+    const { setNdkSigner } = useNDKStore()
+    const { setUser, setFollows } = useAuth()
     const { useTranslate } = useTranslateService()
     const [userName, setUserName] = useState("")
     const [loading, setLoading] = useState(false)
@@ -24,15 +29,15 @@ const RegisterScreen = ({ navigation }: any) => {
 
             setLoading(true)
             setTimeout(async () => {
+                const result = await userService.signUp({ userName, setUser, setFollows })
 
-                const result = await userService.signUp({ 
-                    userName, 
-                    setUser, 
-                    setFollowsEvent
-                })
+                if (result.success && result.data) 
+                { 
+                    setNdkSigner(result.data)
+                    subscribeUserChat({ user: result.data, addChat })
 
-                if (result.success) 
                     return navigation.reset({ index: 0, routes: [{ name: "core-stack" }] })
+                }
                 else {
                     showMessage({ message: `${useTranslate("message.request.error")} ${result.message}` })
                     setLoading(false)
@@ -42,7 +47,7 @@ const RegisterScreen = ({ navigation }: any) => {
     }
 
     if (loading)
-        return <SplashScreen message="registering.." />
+        return <SplashScreen message="" />
 
     return (
         <>

@@ -154,7 +154,12 @@ export const selecMessages = async (chat_id: string): Promise<NDKEvent[]> => {
     })
 }
 
-
+// Deletar eventos por uma condição
+export const clearEvents = async () => {
+    await db.runAsync(`
+        DELETE FROM events;  
+    `)
+}
 
 
 

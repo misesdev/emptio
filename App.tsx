@@ -1,5 +1,3 @@
-// require('node-libs-react-native/globals')
-
 // fixeds the problems with 'nostr-utils' on generate keys => include crypto.getRandomValues on native core
 import "react-native-get-random-values"
 

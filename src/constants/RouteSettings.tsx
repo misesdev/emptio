@@ -28,7 +28,7 @@ export const stackOptions: StackNavigationOptions = {
         )
     },
     cardStyle: { backgroundColor: theme.colors.black },
-    cardStyleInterpolator: CardStyleInterpolators.forHorizontalIOS,
+    cardStyleInterpolator: CardStyleInterpolators.forFadeFromBottomAndroid,
     /* headerStyle: { height: 50, backgroundColor: theme.colors.black }, */
     headerShadowVisible: false,
 }

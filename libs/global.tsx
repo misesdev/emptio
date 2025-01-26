@@ -1,6 +1,6 @@
-const { TextEncoder, TextDecoder } = require("text-encoding")
+//import { TextEncoder, TextDecoder } from "text-encoding"
 import { MessageChannel, MessagePort } from "./channel"
-const { Buffer } = require("buffer")
+import { Buffer } from "buffer"
 
 Object.assign(global, {
     TextEncoder,

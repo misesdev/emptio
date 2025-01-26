@@ -5,21 +5,22 @@ import { getEvent } from "../services/nostr/events"
 import { userService } from "../core/userManager"
 import { useEffect, useState } from "react"
 import { useAuth } from "../providers/userProvider"
-import { emptioService } from "../core/emptio"
 import { useTranslateService } from "../providers/translateProvider"
 import { walletService } from "../core/walletManager"
-import { NostrEvent } from "@nostr-dev-kit/ndk"
 import { getNostrInstance, subscribeUserChat } from "../services/nostr/pool"
 import { getNotificationPermission } from "../services/permissions"
 import { initDatabase } from "../services/memory/database/events"
-import theme from "@src/theme"
 import { messageService } from "../core/messageManager"
 import useChatStore from "../services/zustand/chats"
+import useNDKStore from "../services/zustand/ndk"
+import { NostrEventKinds } from "../constants/Events"
+import theme from "@src/theme"
 
 const InitializeScreen = ({ navigation }: any) => {
 
+    const { setNDK, setNdkSigner } = useNDKStore()
     const { setChats, addChat } = useChatStore()
-    const { setUser, setEmptioData, setWallets, setFollowsEvent } = useAuth()
+    const { setUser, setWallets, setFollows } = useAuth()
     const [loading, setLoading] = useState(true)
     const { useTranslate } = useTranslateService()
 
@@ -28,33 +29,33 @@ const InitializeScreen = ({ navigation }: any) => {
     const handleVerifyLogon = async () => {
 
         await initDatabase()
-
+        
+        setNDK(await getNostrInstance({ }))
+        
         await getNotificationPermission()
         
         const wallets = await walletService.list()
 
         if(wallets && setWallets) setWallets(wallets)
 
-        if (await userService.isLogged({ setUser })) 
+        const result = await userService.isLogged({ setUser })
+        if (result.success && result.data) 
         {
-            if (setEmptioData)
-                setEmptioData(await emptioService.getInitalData())
+            setNdkSigner(result.data)
+
+            setChats(await messageService.listChats(result.data))
+
+            subscribeUserChat({ user: result.data, addChat })
             
-            if(setFollowsEvent) 
+            if(setFollows) 
             {
-                const user = await userService.getUser()
+                const eventFollow = await getEvent({ 
+                    kinds:[NostrEventKinds.followList], 
+                    authors: [result.data?.pubkey ?? ""], 
+                    limit: 1
+                })
                 
-                Nostr = await getNostrInstance({ user })
-
-                const eventFollow = await getEvent({ kinds:[3], authors: [user?.pubkey ?? ""], limit: 1 })
-                
-                if(eventFollow) setFollowsEvent(eventFollow as NostrEvent)
-
-                const chats = await messageService.listChats(user)
-
-                setChats(chats)
-
-                subscribeUserChat({ user, addChat })
+                if(eventFollow) setFollows(eventFollow)
             }                
 
             navigation.reset({ index: 0, routes: [{ name: "authenticate-stack" }] })
@@ -64,7 +65,7 @@ const InitializeScreen = ({ navigation }: any) => {
     }
 
     if (loading)
-        return <SplashScreen message="connecting to relays..." />
+        return <SplashScreen message="" />
 
     return (
         <View style={theme.styles.container}>
@@ -83,7 +84,8 @@ const InitializeScreen = ({ navigation }: any) => {
 const styles = StyleSheet.create({
     logo: { maxWidth: "70%", height: "26%", marginTop: -100 },
     title: { marginVertical: 10, color: theme.colors.gray },
-    buttonArea: { width: '100%', position: 'absolute', justifyContent: 'center', marginBottom: 40, flexDirection: "row", bottom: 10 }
+    buttonArea: { width: '100%', position: 'absolute', justifyContent: 'center', 
+        marginBottom: 40, flexDirection: "row", bottom: 10 }
 })
 
 export default InitializeScreen;

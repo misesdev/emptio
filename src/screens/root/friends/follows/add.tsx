@@ -9,11 +9,10 @@ import { UserList } from "@/src/components/nostr/user/UserList"
 import theme from "@src/theme"
 import { useState } from "react"
 import FollowModal, { showFollowModal } from "@/src/components/nostr/follow/FollowModal"
-import { NostrEvent } from "@nostr-dev-kit/ndk"
 
 const AddFolowScreen = ({ navigation }: any) => {
 
-    const { user, followsEvent, setFollowsEvent } = useAuth()
+    const { user, follows, setFollows } = useAuth()
     const { useTranslate } = useTranslateService()
     const [users, setUsers] = useState<User[]>([])
     const [loading, setLoading] = useState(false)
@@ -24,11 +23,10 @@ const AddFolowScreen = ({ navigation }: any) => {
             
         setLoading(true)
 
-        //const users = await 
         userService.searchUsers(user, searchTerm, 30).then(users => {
             users.sort((a, b) => (b.similarity ?? 1) - (a.similarity ?? 1))
 
-            const friends = followsEvent?.tags?.filter(t => t[0] == "p").map(t => t[1]) ?? []
+            const friends = follows?.tags?.filter(t => t[0] == "p").map(t => t[1]) ?? []
             
             users.forEach(user => {
                 user.friend = friends.includes(user.pubkey ?? "")
@@ -48,28 +46,14 @@ const AddFolowScreen = ({ navigation }: any) => {
             return user
         }))
 
-        if(friend.friend) 
-        {   
-            console.log("add friend")
-            followsEvent?.tags?.push(["p", friend.pubkey ?? ""])
+        if(friend.friend)    
+            follows?.tags?.push(["p", friend.pubkey ?? ""])
+        else
+            follows!.tags = follows?.tags?.filter(t => t[0] == "p" && t[1] != friend.pubkey) ?? []
 
-            if(setFollowsEvent) setFollowsEvent(followsEvent as NostrEvent)
+        if(setFollows && follows) setFollows(follows)
 
-            setTimeout(async () => await userService.addFollow({
-                user,
-                friend,
-                followsEvent: followsEvent as NostrEvent
-            }), 50)
-        } 
-        else {
-            followsEvent!.tags = followsEvent!.tags.filter(t => t[0] == "p" && t[1] != friend.pubkey)
-            
-            await userService.removeFollow({
-                user,
-                friend,
-                followsEvent: followsEvent as NostrEvent
-            })
-        }
+        await userService.updateFollows({ user, follows })
     }
 
     const handleAddFollow = async (follow: User) => {
@@ -81,7 +65,7 @@ const AddFolowScreen = ({ navigation }: any) => {
 
             <HeaderScreen title={useTranslate("screen.title.addfriend")} onClose={() => navigation.navigate("core-stack")} />
 
-            <SearchBox label={useTranslate("commons.search")} onSearch={handleSearch} />
+            <SearchBox seachOnLenth={1} label={useTranslate("commons.search")} onSearch={handleSearch} />
 
             {loading && <ActivityIndicator color={theme.colors.gray} size={50} />}
 

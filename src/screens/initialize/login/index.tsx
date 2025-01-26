@@ -11,10 +11,16 @@ import * as ClipBoard from 'expo-clipboard'
 import { AppState } from "react-native";
 import theme from "@src/theme";
 import { useTranslateService } from "@/src/providers/translateProvider";
+import { pushMessage } from "@/src/services/notification";
+import useNDKStore from "@/src/services/zustand/ndk";
+import useChatStore from "@/src/services/zustand/chats";
+import { subscribeUserChat } from "@/src/services/nostr/pool";
 
 const LoginScreen = ({ navigation }: any) => {
 
-    const { setUser, setFollowsEvent } = useAuth()
+    const { setNdkSigner } = useNDKStore()
+    const { addChat } = useChatStore()
+    const { setUser, setFollows } = useAuth()
     const { useTranslate } = useTranslateService()
     const [loading, setLoading] = useState(false)
     const [secretKey, setSecretKey] = useState("")
@@ -27,7 +33,7 @@ const LoginScreen = ({ navigation }: any) => {
 
     const checkClipboardContainsKey = async () => {
         // verify clipboard for a privateKey nostr
-        ClipBoard.getStringAsync().then((clipboardString) => handlerClipboard(clipboardString))
+        ClipBoard.getStringAsync().then(handlerClipboard)
     }
 
     const handleAppStateChange = (appstate: any) => {
@@ -54,10 +60,22 @@ const LoginScreen = ({ navigation }: any) => {
         setLoading(true)
 
         setTimeout(async () => {
-            if (validatePrivateKey(secretKey)) {
-                const result = await userService.signIn({ secretKey, setUser, setFollowsEvent })
-                if (result.success) 
-                    navigation.reset({ index: 0, routes: [{ name: "core-stack" }] })
+            if (validatePrivateKey(secretKey))
+            {
+                try 
+                {
+                    const result = await userService.signIn({ secretKey, setUser, setFollows })
+
+                    if (result.success && result.data) {
+                        setNdkSigner(result.data)
+
+                        subscribeUserChat({ user: result.data, addChat })
+
+                        navigation.reset({ index: 0, routes: [{ name: "core-stack" }] })                  
+                    }
+                } catch (ex) { 
+                    pushMessage(ex as string)
+                }
             } else
                 showMessage({ message: useTranslate("message.invalidkey"), infolog: secretKey })
 
@@ -66,7 +84,7 @@ const LoginScreen = ({ navigation }: any) => {
     }
 
     if (loading)
-        return <SplashScreen message={useTranslate("commons.signin")} />
+        return <SplashScreen message="" />
 
     return (
         <>

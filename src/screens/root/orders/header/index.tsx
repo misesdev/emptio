@@ -42,6 +42,6 @@ const styles = StyleSheet.create({
         height: theme.icons.extra,
         borderRadius: 20,
         borderColor: theme.colors.gray,
-        borderWidth: 1
+        //borderWidth: 1
     }
 })

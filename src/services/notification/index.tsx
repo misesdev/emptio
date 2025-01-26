@@ -40,7 +40,8 @@ export const pushNotification = async (props: NotificationProps) => {
 }
 
 export const pushMessage = async (message: string) => {
-    ToastAndroid.show(message, ToastAndroid.BOTTOM)
+    if(!!message.trim())
+        ToastAndroid.show(message, ToastAndroid.BOTTOM)
 }
 
 

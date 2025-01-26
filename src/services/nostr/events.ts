@@ -1,14 +1,15 @@
 
-import NDK, { NDKUserProfile, NDKEvent } from "@nostr-dev-kit/ndk"
+import { NDKUserProfile, NDKEvent } from "@nostr-dev-kit/ndk"
 import { Filter } from "nostr-tools"
-import { PairKey } from "../memory/types"
+import { PairKey, User } from "../memory/types"
 import { NostrEventKinds } from "@/src/constants/Events"
+import useNDKStore from "../zustand/ndk"
 
 export type NostrEvent = {
     id?: string,
     kind?: number,
     pubkey?: string,
-    content?: any,
+    content?: string | User,
     created_at?: number,
     tags?: string[][],
     sig?: string,
@@ -18,9 +19,9 @@ export type NostrEvent = {
 
 export const publishUser = async (profile: NDKUserProfile, keys: PairKey) => {
 
-    const pool = Nostr as NDK
+    const ndk = useNDKStore.getState().ndk
 
-    const user = pool.getUser({ hexpubkey: keys.publicKey })
+    const user = ndk.getUser({ hexpubkey: keys.publicKey })
 
     await user.fetchProfile()
 
@@ -31,13 +32,13 @@ export const publishUser = async (profile: NDKUserProfile, keys: PairKey) => {
 
 export const publishEvent = async (event: NostrEvent, keys: PairKey, replacable: boolean = false) => {
 
-    const pool = Nostr as NDK
+    const ndk = useNDKStore.getState().ndk
     
-    const eventSend = new NDKEvent(pool);
+    const eventSend = new NDKEvent(ndk);
 
     eventSend.kind = event.kind
     eventSend.pubkey = event.pubkey ?? ""
-    eventSend.content = event.content
+    eventSend.content = typeof(event.content) == "string" ? event.content : JSON.stringify(event.content)
     eventSend.created_at = event.created_at
     eventSend.tags = event.tags ?? [[]]
 
@@ -50,9 +51,9 @@ export const publishEvent = async (event: NostrEvent, keys: PairKey, replacable:
 
 export const listenerEvents = async (filters: Filter) : Promise<NostrEvent[]> => {
 
-    const pool = Nostr as NDK
+    const ndk = useNDKStore.getState().ndk
 
-    const events = await pool.fetchEvents(filters)
+    const events = await ndk.fetchEvents(filters)
 
     const eventsResut: NostrEvent[] = []
 
@@ -77,9 +78,9 @@ export const getEvent = async (filters: Filter) : Promise<NostrEvent> => {
 
     var eventResut: NostrEvent
 
-    const pool = Nostr as NDK
+    const ndk = useNDKStore.getState().ndk
 
-    const event = await pool.fetchEvent(filters)
+    const event = await ndk.fetchEvent(filters)
 
     if (event) {
         let jsonContent = [NostrEventKinds.metadata].includes(event.kind ?? 0)

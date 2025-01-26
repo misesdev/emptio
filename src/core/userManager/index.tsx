@@ -7,18 +7,19 @@ import { Response, trackException } from "../../services/telemetry"
 import { getUser, insertUpdateUser } from "../../services/memory/user"
 import { getPairKey, insertPairKey } from "../../services/memory/pairkeys"
 import { NostrEventKinds } from "@/src/constants/Events"
+import useNDKStore from "@/src/services/zustand/ndk"
 import { nip19 } from "nostr-tools"
 import env from "@/env"
-import NDK from "@nostr-dev-kit/ndk"
+import { clearEvents } from "@/src/services/memory/database/events"
 
 type SignUpProps = { 
     userName: string, 
-    setUser?: (user: User) => void, 
-    setFollowsEvent?: (event: NostrEvent) => void  
+    setUser?: (user: User) => void,  
+    setFollows?: (event: NostrEvent) => void  
 }
 
-const signUp = async ({ userName, setUser, setFollowsEvent }: SignUpProps): Promise<Response<any>> => {
-    try {
+const signUp = async ({ userName, setUser, setFollows }: SignUpProps): Promise<Response<User|null>> => {
+    try {        
         const pairKey: PairKey = createPairKeys()
 
         const userData: User = {
@@ -39,29 +40,28 @@ const signUp = async ({ userName, setUser, setFollowsEvent }: SignUpProps): Prom
         await insertPairKey(pairKey)
 
         if (setUser) setUser(userData)
-        if (setFollowsEvent) setFollowsEvent(followsEvent)
+        if (setFollows) setFollows(followsEvent)
 
-        return { success: true, message: "" }
+        return { success: true, data: userData }
     }
     catch (ex) {
-        return trackException(ex)
+        return trackException(ex, null)
     }
 }
 
 type SignProps = { 
     secretKey: string, 
     setUser?: (user: User) => void,
-    setFollowsEvent?: (event: NostrEvent) => void
+    setFollows?: (event: NostrEvent) => void
 }
 
-const signIn = async ({ secretKey, setUser, setFollowsEvent }: SignProps) => {
-
+const signIn = async ({ secretKey, setUser, setFollows }: SignProps) : Promise<Response<User|null>>=> {
     try {
         const pairKey: PairKey = getHexKeys(secretKey)
 
         const userData = await getUserData(pairKey.publicKey)
 
-        const followsEvent = await getEvent({ 
+        const follows = await getEvent({ 
             kinds: [NostrEventKinds.followList],
             authors: [pairKey.publicKey],
             limit: 1
@@ -74,12 +74,12 @@ const signIn = async ({ secretKey, setUser, setFollowsEvent }: SignProps) => {
         await insertPairKey(pairKey)
 
         if (setUser) setUser(userData)
-        if (setFollowsEvent) setFollowsEvent(followsEvent as NostrEvent)
+        if (setFollows) setFollows(follows)
 
-        return { success: true }
+        return { success: true, data: userData }
     }
     catch (ex) {
-        return trackException(ex)
+        return trackException(ex, null)
     }
 }
 
@@ -94,19 +94,21 @@ const updateProfile = async ({ user, setUser, upNostr = false }: UpdateProfilePr
     if (!upNostr) {
         const event = await getEvent({ kinds: [NostrEventKinds.metadata], authors: [user.pubkey ?? ""] })
 
-        if (event) {
-            user.picture = event.content?.picture
-            user.image = event.content?.image
-            user.banner = event.content?.banner
-            user.lud06 = event.content?.lud06
-            user.lud16 = event.content?.lud16
-            user.nip05 = event.content?.nip05
-            user.bio = event.content?.bio
-            user.name = event.content?.name
-            user.website = event.content?.website
-            user.about = event.content?.about
-            user.zapService = event.content?.zapService
-            user.bitcoin_address = event.content?.bitcoin_address
+        if (event) 
+        {
+            const userData = event.content as User
+            user.picture = userData?.picture
+            user.image = userData?.image
+            user.banner = userData?.banner
+            user.lud06 = userData?.lud06
+            user.lud16 = userData?.lud16
+            user.nip05 = userData?.nip05
+            user.bio = userData?.bio
+            user.name = userData?.name
+            user.website = userData?.website
+            user.about = userData?.about
+            user.zapService = userData?.zapService
+            user.bitcoin_address = userData?.bitcoin_address
         }
     } else {
         const pairkey = await getPairKey(user.keychanges ?? "")
@@ -126,8 +128,8 @@ const updateProfile = async ({ user, setUser, upNostr = false }: UpdateProfilePr
 const signOut = async (): Promise<Response<any>> => {
     try {
         await clearStorage()
-
-        return { success: true, message: "" }
+        await clearEvents()
+        return { success: true }
     }
     catch (ex) {
         return trackException(ex)
@@ -138,34 +140,34 @@ type loggedProps = {
     setUser?: (user: User) => void
 }
 
-const isLogged = async ({ setUser }: loggedProps) => {
-
-    try 
-    {
+const isLogged = async ({ setUser }: loggedProps) : Promise<Response<User|null>> => {
+    try {
         const user: User = await getUser()
 
-        const { publicKey, privateKey } = await getPairKey(user.keychanges ?? "")
+        const pairKey = await getPairKey(user.keychanges ?? "")
 
-        user.pubkey = publicKey
+        user.pubkey = pairKey.publicKey
 
-        if (setUser && !!privateKey)
+        if (setUser && !!pairKey.privateKey)
             setUser(user)
 
-        return !!privateKey
+        return { success: !!pairKey.privateKey, data: user }
     } 
-    catch { return false }
+    catch(ex) { 
+        return trackException(ex, null)
+    }
 }
 
-const listFollows = async (user: User,  followsEvent: NostrEvent, iNot: boolean = true): Promise<User[]> => {
+const listFollows = async (user: User, follows: NostrEvent, iNot: boolean = true): Promise<User[]> => {
 
-    var follows: User[] = []
+    var friends: User[] = []
 
     try {
-        const authors = followsEvent?.tags?.filter(t => t[0] == "p").map(t => t[1])
+        const authors = follows?.tags?.filter(t => t[0] == "p").map(t => t[1])
 
         const events = await listenerEvents({ authors, kinds: [0], limit: authors?.length })
 
-        follows = events.filter((u: NostrEvent) => u.pubkey != user.pubkey).map((event: NostrEvent): User => {
+        friends = events.filter((u: NostrEvent) => u.pubkey != user.pubkey).map((event: NostrEvent): User => {
             const follow = event.content as User
             follow.pubkey = event.pubkey
             return follow
@@ -176,64 +178,34 @@ const listFollows = async (user: User,  followsEvent: NostrEvent, iNot: boolean 
     }
 
     if (iNot) 
-        return follows.filter(follow => follow.pubkey != user.pubkey) 
+        return friends.filter(follow => follow.pubkey != user.pubkey) 
 
-    return follows
+    return friends
 }
 
-type addFollowProps = {
+type UpdateFollowsProps = {
     user: User,
-    friend: User,
-    followsEvent: NostrEvent
+    follows?: NostrEvent
 }
 
-const addFollow = async ({ user, friend, followsEvent }: addFollowProps) => {
+const updateFollows = async ({ user, follows } : UpdateFollowsProps) => {
     try {
-
-        await fetch(`${env.nosbook.api}/friends/add`, {
-            method: "post",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({
-                pubkey: user.pubkey,
-                friends: [friend.pubkey]
-            })
-        })
-        
         const pairKey = await getPairKey(user.keychanges ?? "")
 
-        await publishEvent(followsEvent, pairKey, true)
-    }
-    catch (ex) { console.log(ex) }
-}
-
-const removeFollow = async ({ user, friend, followsEvent }: addFollowProps) => {
-    try {
-        // await fetch(`${env.nosbook.api}/friends/remove`, {
-        //     method: "post",
-        //     headers: { "Content-Type": "application/json" },
-        //     body: JSON.stringify({
-        //         pubkey: user.pubkey,
-        //         friends: [friend.pubkey]
-        //     })
-        // })
-        
-        const pairKey = await getPairKey(user.keychanges ?? "")
-
-        followsEvent.created_at = Date.now()
-
-        await publishEvent(followsEvent, pairKey, true)
+        if(follows)
+            await publishEvent(follows, pairKey, true)
     } 
-    catch (ex) { console.log(ex) }
+    catch {  }
 }
 
 const createFollowEvent = (user: User, friends: [string[]]) : NostrEvent => {
 
-    const pool = Nostr as NDK
+    const ndk = useNDKStore.getState().ndk
 
     return {
         pubkey: user.pubkey ?? "",
         kind: NostrEventKinds.followList,
-        content: JSON.stringify(pool.explicitRelayUrls),
+        content: JSON.stringify(ndk.explicitRelayUrls),
         created_at: Date.now(),
         tags: friends
     }
@@ -319,8 +291,7 @@ export const userService = {
     updateProfile,
     convertPubkey,
     listFollows,
-    addFollow,
-    removeFollow,
+    updateFollows,
     searchUsers,
     lastNotes,
     listUsers,

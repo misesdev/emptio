@@ -1,20 +1,24 @@
 import NDK, { NDKEvent, NDKPrivateKeySigner, NDKUser } from "@nostr-dev-kit/ndk"
 import { PairKey, User } from "../memory/types"
-import { listenerEvents, publishEvent, NostrEvent, getPubkeyFromTags } from "./events"
+import { publishEvent, NostrEvent, getPubkeyFromTags, getEvent } from "./events"
 import { getRelays } from "../memory/relays"
 import { getPairKey } from "../memory/pairkeys"
 import { AppState } from "react-native"
 import { insertEvent } from "../memory/database/events"
 import { messageService } from "@/src/core/messageManager"
 import { ChatUser } from "../zustand/chats"
-import { nip04, nip44 } from "nostr-tools"
-import { hexToBytes } from "@noble/curves/abstract/utils"
+import useNDKStore from "../zustand/ndk"
+import { NostrEventKinds } from "@/src/constants/Events"
 
 export const getUserData = async (publicKey: string): Promise<User> => {
 
-    const event = (await listenerEvents({ authors: [publicKey], kinds: [0] }))[0]
+    const event = await getEvent({ 
+        authors: [publicKey], 
+        kinds: [NostrEventKinds.metadata], 
+        limit: 1 
+    })
 
-    return event.content
+    return event.content as User
 }
 
 export const pushUserData = async (user: User, pairKey: PairKey) => {
@@ -44,18 +48,21 @@ export const pushUserFollows = async (event: NostrEvent, pairKey: PairKey) => {
     await publishEvent(event, pairKey, true)
 }
 
-type NostrInstanceProps = { user: User }
+type NostrInstanceProps = { user?: User }
 
 export const getNostrInstance = async ({ user }: NostrInstanceProps): Promise<NDK> => {
 
     const relays = await getRelays()
 
-    const pairKey = await getPairKey(user.keychanges ?? "")
-
     const ndk = new NDK({ explicitRelayUrls: relays })
 
-    ndk.signer = new NDKPrivateKeySigner(pairKey.privateKey)
-    
+    if(user) 
+    {
+        const pairKey = await getPairKey(user.keychanges ?? "")
+
+        ndk.signer = new NDKPrivateKeySigner(pairKey.privateKey)
+    }
+
     await ndk.connect()
 
     return ndk
@@ -67,9 +74,10 @@ type SubscribeProps = {
 }
 
 export const subscribeUserChat = ({ user, addChat }: SubscribeProps) => {
-    const pool = Nostr as NDK
+    
+    const ndk = useNDKStore.getState().ndk
 
-    const subscriptionMessages = pool.subscribe([
+    const subscriptionMessages = ndk.subscribe([
         { kinds: [4], "#p": [user.pubkey ?? ""] }, { kinds: [4], authors: [user.pubkey ?? ""] }
     ])
 
@@ -99,6 +107,4 @@ export const subscribeUserChat = ({ user, addChat }: SubscribeProps) => {
     subscriptionMessages.on("event", (event) => { 
         if(event.kind == 4) processEventMessage(event)
     })
-
-    subscriptionMessages.start()
 }

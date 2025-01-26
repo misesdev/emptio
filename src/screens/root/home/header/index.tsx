@@ -62,6 +62,6 @@ const styles = StyleSheet.create({
         height: theme.icons.extra,
         borderRadius: 20,
         borderColor: theme.colors.blue,
-        borderWidth: 2
+        // borderWidth: 2
     }
 })

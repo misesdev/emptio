@@ -1,24 +1,25 @@
-import { View, Text, FlatList, ActivityIndicator, StyleSheet, TouchableOpacity } from "react-native"
+import { View, Text, FlatList, StyleSheet, TouchableOpacity } from "react-native"
 import { SectionContainer } from "@components/general/section"
 import { ButtonDanger, ButtonSuccess } from "@components/form/Buttons"
 import { listenerEvents } from "@src/services/nostr/events"
 import { NostrEventKinds } from "@src/constants/Events"
 import { useAuth } from "@src/providers/userProvider"
-import { HeaderFeed } from "./header"
 import { memo, useEffect, useState } from "react"
-import theme from "@src/theme"
 import { useTranslateService } from "@/src/providers/translateProvider"
 import { Ionicons } from "@expo/vector-icons"
-import { User } from "@/src/services/memory/types"
 import { RefreshControl } from "react-native-gesture-handler"
 import { pushMessage } from "@/src/services/notification"
+import { NostrEvent } from "@/src/services/nostr/events"
+import { HeaderFeed } from "./header"
+import theme from "@src/theme"
+import { User } from "@/src/services/memory/types"
 
 const FeedScreen = ({ navigation }: any) => {
 
-    const { followsEvent, wallets } = useAuth()
+    const { follows, wallets } = useAuth()
     const { useTranslate } = useTranslateService()
     const [loading, setLoading] = useState(false)
-    const [posts, setPosts] = useState<User[]>([])
+    const [posts, setPosts] = useState<NostrEvent[]>([])
 
     useEffect(() => {
     }, [])
@@ -26,19 +27,15 @@ const FeedScreen = ({ navigation }: any) => {
     const handleData = async () => {
         setLoading(true)
         
-        if(followsEvent?.tags?.length) 
+        if(follows?.tags?.length) 
         {
-            const friends = followsEvent.tags?.filter(tag => tag[0] == "p").map(e => e[1]);
+            const friends = follows.tags?.filter(tag => tag[0] == "p").map(e => e[1]);
 
-            //const resultPosts = await 
             listenerEvents({ 
                 limit: friends?.length, 
                 kinds: [NostrEventKinds.metadata],
                 authors: friends 
-            }).then(resultPosts => {
-                const users = resultPosts.map(event => event.content as User);
-                setPosts(users)
-            })
+            }).then(setPosts)
         }
 
         if(!wallets.length)
@@ -47,10 +44,13 @@ const FeedScreen = ({ navigation }: any) => {
         setLoading(false)
     }
 
-    const ListItem = memo(({ item }: { item: User }) => {
+    const ListItem = memo(({ item }: { item: NostrEvent }) => {
+        const follow = item.content as User
         return (
-            <SectionContainer >
-                <Text style={{ fontSize: 16, color: theme.colors.gray, margin: 10, textAlign: "center" }}>{item.display_name}</Text>
+            <SectionContainer style={{ backgroundColor: theme.colors.blueOpacity }}>
+                <Text style={{ fontSize: 16, color: theme.colors.gray, margin: 10, textAlign: "center" }}>
+                    {follow.display_name ?? follow?.name}
+                </Text>
                 <View style={{ width: "100%", flexDirection: "row", alignItems: "center" }}>
                     <ButtonSuccess label="Buy" onPress={() => { }} />
                     <ButtonDanger label="Sell" onPress={() => { }} />
@@ -83,13 +83,12 @@ const FeedScreen = ({ navigation }: any) => {
                 ListEmptyComponent={EmptyComponent}
                 onEndReachedThreshold={.1}
                 contentContainerStyle={[theme.styles.scroll_container]}
-                //ListFooterComponent={listEndLoader}
                 refreshControl={<RefreshControl refreshing={loading} onRefresh={handleData} />}
-                keyExtractor={event => event.pubkey ?? Math.random().toString()}
+                keyExtractor={event => event.id ?? ""}
             />
 
             <View style={styles.rightButton}>
-                <TouchableOpacity activeOpacity={.7} style={styles.newChatButton} onPress={newOrder}>
+                <TouchableOpacity activeOpacity={.7} style={styles.newOrderButton} onPress={newOrder}>
                     <Ionicons name="add" size={theme.icons.medium} color={theme.colors.white} />
                 </TouchableOpacity>
             </View>
@@ -98,8 +97,8 @@ const FeedScreen = ({ navigation }: any) => {
 }
 
 const styles = StyleSheet.create({
-    newChatButton: { backgroundColor: theme.colors.blue, padding: 18, borderRadius: 50 },
-    rightButton: { position: "absolute", bottom: 10, right: 0, width: 100, height: 70, justifyContent: "center", alignItems: "center" }
+    newOrderButton: { backgroundColor: theme.colors.blue, padding: 18, borderRadius: 50 },
+    rightButton: { position: "absolute", bottom: 8, right: 0, width: 90, height: 70, justifyContent: "center", alignItems: "center" }
 })
 
 export default FeedScreen
