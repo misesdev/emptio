@@ -24,6 +24,3 @@ includeBuild(new File(["node", "--print", "require.resolve('@react-native/gradle
 include ':react-native-vision-camera'
 project(':react-native-vision-camera').projectDir = new File(rootProject.projectDir, '../node_modules/react-native-vision-camera/android')
 
-include ':vision-camera-code-scanner'
-project(':vision-camera-code-scanner').projectDir = new File(rootProject.projectDir, '../node_modules/vision-camera-code-scanner/android')
-

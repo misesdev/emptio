@@ -1,3 +1,4 @@
+import 'react-native-reanimated'
 // fixeds the problems with 'nostr-utils' on generate keys => include crypto.getRandomValues on native core
 import "react-native-get-random-values"
 import { enableScreens } from 'react-native-screens';

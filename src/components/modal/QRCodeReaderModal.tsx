@@ -1,9 +1,7 @@
 import { View, StyleSheet, TouchableOpacity, Modal } from 'react-native'
 import { Camera, useCameraDevices, useFrameProcessor } from "react-native-vision-camera"
-import { BarcodeFormat, scanBarcodes } from 'vision-camera-code-scanner'
 import Ionicons from '@react-native-vector-icons/ionicons'
 import { useEffect } from 'react'
-import { runOnJS } from 'react-native-reanimated'
 import theme from '@src/theme'
 
 type Props = {
@@ -29,12 +27,12 @@ export default function QRCodeReaderModal({ visible, setValue, runClose }: Props
         setValue(data)
     }
     
-    const frameProcessor = useFrameProcessor((frame) => {
-        'worklet'
-        const qrcodes = scanBarcodes(frame, [BarcodeFormat.QR_CODE])
-        if(qrcodes.length) 
-            runOnJS(handleBarCodeScanned)(qrcodes[0].content)
-    }, [])
+    // const frameProcessor = useFrameProcessor((frame) => {
+    //     'worklet'
+    //     const qrcodes = scanBarcodes(frame, [BarcodeFormat.QR_CODE])
+    //     if(qrcodes.length) 
+    //         runOnJS(handleBarCodeScanned)(qrcodes[0].content)
+    // }, [])
 
     if(!devices.length) return <></>
 
@@ -45,7 +43,7 @@ export default function QRCodeReaderModal({ visible, setValue, runClose }: Props
         >
             <Camera
                 device={devices[0]} isActive
-                frameProcessor={frameProcessor}
+                ///frameProcessor={frameProcessor}
                 style={[styles.scanner, StyleSheet.absoluteFillObject]}
             >
                 <View style={styles.frameCode}></View>
@@ -77,8 +75,6 @@ const styles = StyleSheet.create({
     },
     closeButton: {
         bottom: 80,
-        // borderWidth: 1,
-        // borderColor: theme.colors.white,
         borderRadius: 50,
         position: 'absolute',  
         backgroundColor: "rgba(0,0,0,.5)"      
