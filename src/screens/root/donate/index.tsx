@@ -5,7 +5,7 @@ import { getWallet } from "@src/services/memory/wallets"
 import theme from "@src/theme"
 import { useEffect, useState } from "react"
 import { AmountBox } from "@components/wallet/inputs"
-import { Ionicons } from "@expo/vector-icons"
+import Ionicons from "@react-native-vector-icons/ionicons"
 import { useTranslateService } from "@/src/providers/translateProvider"
 import { Wallet } from "@/src/services/memory/types"
 

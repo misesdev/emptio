@@ -1,7 +1,7 @@
 import SearchButton from "@components/form/SearchButton"
 import { useAuth } from "@src/providers/userProvider"
 import { TouchableOpacity, View, Image, StyleSheet } from "react-native"
-import { Ionicons } from "@expo/vector-icons"
+import Ionicons from "@react-native-vector-icons/ionicons"
 import theme from "@src/theme"
 import { useTranslateService } from "@/src/providers/translateProvider"
 

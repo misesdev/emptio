@@ -1,7 +1,7 @@
 
 import { StyleSheet, View, Text, TouchableOpacity } from "react-native"
 import { ButtonLink, ButtonPrimary } from "@components/form/Buttons"
-import { Ionicons } from "@expo/vector-icons"
+import Ionicons from "@react-native-vector-icons/ionicons"
 import SplashScreen from "@components/general/SplashScreen"
 import { walletService } from "@src/core/walletManager"
 import { HeaderScreen } from "@components/general/HeaderScreen"

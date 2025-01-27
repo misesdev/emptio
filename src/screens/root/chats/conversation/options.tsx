@@ -1,16 +1,13 @@
 
 import { useState } from "react"
 import { Modal, StyleSheet, Text, TouchableOpacity, View } from "react-native"
-import { Language } from "@/src/services/translate/types"
 import { useTranslateService } from "@src/providers/translateProvider"
-import theme from "@src/theme"
-import { BlurView } from "expo-blur"
-import { Ionicons } from "@expo/vector-icons"
+import Ionicons from "@react-native-vector-icons/ionicons"
 import { User } from "@/src/services/memory/types"
 import { NDKEvent } from "@nostr-dev-kit/ndk"
 import { IconNames } from "@/src/services/types/icons"
-import { setStringAsync } from "expo-clipboard"
-import { pushMessage } from "@/src/services/notification"
+import { copyToClipboard } from "@/src/utils"
+import theme from "@src/theme"
 
 type OptionProps = { 
     label: string, 
@@ -47,9 +44,8 @@ const MessageOptionsBox = ({ user, deleteMessage }: Props) => {
     }
 
     const handleCopy = async () => {
-        await setStringAsync(eventMessage?.content ?? "")
+        copyToClipboard(eventMessage?.content ?? "")
 
-        pushMessage(useTranslate("message.copied"))
         setVisible(false)
     }
     
@@ -68,31 +64,24 @@ const MessageOptionsBox = ({ user, deleteMessage }: Props) => {
 
     return (
         <Modal animationType="fade" onRequestClose={() => setVisible(false)} visible={visible} transparent >
-            <BlurView 
-                tint="dark" 
-                intensity={60}
-                // onTouchEnd={() => setVisible(false)}
-                style={styles.absolute}                
-            >
-                <View style={{ flex: 1, alignItems: "center", justifyContent: "center", backgroundColor: "rgba(0,0,0, .6)" }}>
-                    <View style={styles.box}>
-                       <OptionItem icon="copy-outline"
-                            label="Copiar texto" 
-                            onPress={() => handleCopy()}
-                        />
-                        { isUser &&
-                       <OptionItem icon="trash-outline"
-                            label="Excluir para Todos" 
-                            onPress={() => handleDeleteMessage(false)}
-                        />
-                        }
-                       <OptionItem icon="trash-bin-outline"
-                            label="Excluir para min" 
-                            onPress={() => handleDeleteMessage(true)}
-                        />
-                    </View>
+            <View style={{ flex: 1, alignItems: "center", justifyContent: "center", backgroundColor: "rgba(0,0,0, .6)" }}>
+                <View style={styles.box}>
+                   <OptionItem icon="copy-outline"
+                        label="Copiar texto" 
+                        onPress={() => handleCopy()}
+                    />
+                    { isUser &&
+                   <OptionItem icon="trash-outline"
+                        label="Excluir para Todos" 
+                        onPress={() => handleDeleteMessage(false)}
+                    />
+                    }
+                   <OptionItem icon="trash-bin-outline"
+                        label="Excluir para min" 
+                        onPress={() => handleDeleteMessage(true)}
+                    />
                 </View>
-            </BlurView> 
+            </View> 
         </Modal>
     )
 }

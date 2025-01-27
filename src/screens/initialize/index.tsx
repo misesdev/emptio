@@ -1,11 +1,11 @@
 import { useEffect, useState } from "react";
 import { Image, StyleSheet, View } from "react-native";
 import { ButtonPrimary } from "@components/form/Buttons";
-import { hasHardwareAsync, authenticateAsync } from 'expo-local-authentication';
 import SplashScreen from "@components/general/SplashScreen";
 import { useSettings } from "@src/providers/settingsProvider";
-import theme from "@src/theme";
 import { useTranslateService } from "@/src/providers/translateProvider";
+import { authService } from "@/src/core/authManager";
+import theme from "@src/theme";
 
 const AuthenticateScreen = ({ navigation }: any) => {
 
@@ -14,32 +14,24 @@ const AuthenticateScreen = ({ navigation }: any) => {
     const [loading, setLoading] = useState(true)
     const [biometrics, setBiometrics] = useState(true)
 
-    useEffect(() => { checkBiometric() }, [settings])
+    useEffect(() => { 
+        checkBiometric() 
+        setLoading(false)
+    }, [settings])
 
     const checkBiometric = async () => {
         if (settings.useBiometrics)
-            await checkBiometricAvailability()
+            await authenticateWithBiometrics()
         else
             navigation.reset({ index: 0, routes: [{ name: "core-stack" }] })
     }
 
-    const checkBiometricAvailability = async () => {
-        const isBiometricAvailable = await hasHardwareAsync()
-
-        if (isBiometricAvailable)
-            return authenticateWithBiometrics()
-
-        setBiometrics(isBiometricAvailable)
-    }
-
     const authenticateWithBiometrics = async () => {
-        setLoading(false)
-        const { success } = await authenticateAsync({
-            promptMessage: useTranslate("commons.authenticate.message"),
-        })
-
+        const success = await authService.checkBiometric() 
         if (success)
             navigation.reset({ index: 0, routes: [{ name: "core-stack" }] })
+
+        setBiometrics(success)
     }
 
     if (!biometrics)
@@ -53,7 +45,7 @@ const AuthenticateScreen = ({ navigation }: any) => {
             <Image style={styles.logo} source={require("@assets/emptio.png")} />
 
             <View style={styles.buttonArea}>
-                <ButtonPrimary label={useTranslate("commons.authenticate")} leftIcon="finger-print" onPress={checkBiometricAvailability} />
+                <ButtonPrimary label={useTranslate("commons.authenticate")} leftIcon="finger-print" onPress={authenticateWithBiometrics} />
             </View>
         </View>
     )

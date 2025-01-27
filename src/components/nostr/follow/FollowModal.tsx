@@ -1,15 +1,13 @@
 import { useState } from "react"
 import { Modal, StyleSheet, Text, TouchableOpacity, View, Image } from "react-native"
 import { useTranslateService } from "@src/providers/translateProvider"
-import theme from "@src/theme"
-import { BlurView } from "expo-blur"
 import { User } from "@/src/services/memory/types"
 import { hexToNpub } from "@/src/services/converter"
 import { userService } from "@/src/core/userManager"
 import { NoteList } from "../user/NoteList"
 import { ActivityIndicator } from "react-native-paper"
-import { setStringAsync } from "expo-clipboard"
-import { pushMessage } from "@/src/services/notification"
+import theme from "@src/theme"
+import { copyToClipboard } from "@/src/utils"
 
 type followModalProps = {
     user: User,
@@ -70,62 +68,58 @@ const FollowModal = ({ handleAddFollow }: FollowProps) => {
         
         const npub = hexToNpub(user?.pubkey ?? "")
 
-        await setStringAsync(npub)
-
-        pushMessage(useTranslate("message.copied"))
+        copyToClipboard(npub)
     }
 
     return (
         <Modal animationType="fade" onRequestClose={handleClose} visible={visible} transparent >
-            <BlurView intensity={75} tint="dark" style={styles.absolute}>
-                <View style={{ flex: 1, alignItems: "center", justifyContent: "center", backgroundColor: "rgba(0,0,0, .6)" }}>
-                    <View style={styles.box}>
+            <View style={{ flex: 1, alignItems: "center", justifyContent: "center", backgroundColor: "rgba(0,0,0, .6)" }}>
+                <View style={styles.box}>
 
-                        <View style={{ flexDirection: "row" }}>
-                            <TouchableOpacity activeOpacity={.3} onPress={handleCopyPubkey}>
-                                <View style={styles.image}>
-                                    {user?.picture && <Image onError={() => user.picture = ""} source={{ uri: user?.picture }} style={{ flex: 1 }} />}
-                                    {!user?.picture && <Image source={require("assets/images/defaultProfile.png")} style={{ width: 60, height: 60 }} />}
-                                </View>
-                            </TouchableOpacity>
-                            <TouchableOpacity style={{ paddingHorizontal: 12 }} onPress={handleCopyPubkey}>
-                                <Text style={{ color: theme.colors.white, fontSize: 20, fontWeight: 'bold' }}>
-                                    {user?.display_name?.substring(0, 18)}
-                                </Text>
-                                <Text style={{ fontSize: 14, fontWeight: "500", color: theme.colors.gray }}>
-                                    {hexToNpub(user?.pubkey ?? "").substring(0, 25)}..
-                                </Text>
-                            </TouchableOpacity>
-                        </View>
-                                              
-                        {user?.friend && <Text style={styles.infolog}>
-                            <Text style={{ color: theme.colors.gray, fontWeight: "500" }}>
-                                {user?.display_name?.substring(0, 14)}  
-                            </Text> {' '}
-                            {useTranslate("message.friend.already")}
-                        </Text>}
-
-                        <Text style={{ margin: 10, fontWeight: "500", color: theme.colors.white }}>
-                            {useTranslate("friends.notes.lasts")}
-                        </Text>
-                        
-                        {notes.length > 0 && <NoteList notes={notes} /> }
-                        {notes.length <= 0 && loading && <ActivityIndicator color={theme.colors.gray} size={45} />}
-                        {notes.length <= 0 && !loading &&
-                            <Text style={{ color: theme.colors.gray, textAlign: "center", margin: 15 }}>
-                                {useTranslate("friends.notes.empty")}
+                    <View style={{ flexDirection: "row" }}>
+                        <TouchableOpacity activeOpacity={.3} onPress={handleCopyPubkey}>
+                            <View style={styles.image}>
+                                {user?.picture && <Image onError={() => user.picture = ""} source={{ uri: user?.picture }} style={{ flex: 1 }} />}
+                                {!user?.picture && <Image source={require("assets/images/defaultProfile.png")} style={{ width: 60, height: 60 }} />}
+                            </View>
+                        </TouchableOpacity>
+                        <TouchableOpacity style={{ paddingHorizontal: 12 }} onPress={handleCopyPubkey}>
+                            <Text style={{ color: theme.colors.white, fontSize: 20, fontWeight: 'bold' }}>
+                                {user?.display_name?.substring(0, 18)}
                             </Text>
-                        }
-
-                        <View style={styles.sectionButtons}>
-                            {!user?.friend && <ButtonLight label={useTranslate("commons.add")} onPress={handleAction} />}
-                            {user?.friend && <ButtonLight label={useTranslate("commons.remove")} onPress={handleAction} />}
-                            <ButtonLight label={useTranslate("commons.close")} onPress={handleClose} />
-                        </View>
-
+                            <Text style={{ fontSize: 14, fontWeight: "500", color: theme.colors.gray }}>
+                                {hexToNpub(user?.pubkey ?? "").substring(0, 25)}..
+                            </Text>
+                        </TouchableOpacity>
                     </View>
+                                          
+                    {user?.friend && <Text style={styles.infolog}>
+                        <Text style={{ color: theme.colors.gray, fontWeight: "500" }}>
+                            {user?.display_name?.substring(0, 14)}  
+                        </Text> {' '}
+                        {useTranslate("message.friend.already")}
+                    </Text>}
+
+                    <Text style={{ margin: 10, fontWeight: "500", color: theme.colors.white }}>
+                        {useTranslate("friends.notes.lasts")}
+                    </Text>
+                    
+                    {notes.length > 0 && <NoteList notes={notes} /> }
+                    {notes.length <= 0 && loading && <ActivityIndicator color={theme.colors.gray} size={45} />}
+                    {notes.length <= 0 && !loading &&
+                        <Text style={{ color: theme.colors.gray, textAlign: "center", margin: 15 }}>
+                            {useTranslate("friends.notes.empty")}
+                        </Text>
+                    }
+
+                    <View style={styles.sectionButtons}>
+                        {!user?.friend && <ButtonLight label={useTranslate("commons.add")} onPress={handleAction} />}
+                        {user?.friend && <ButtonLight label={useTranslate("commons.remove")} onPress={handleAction} />}
+                        <ButtonLight label={useTranslate("commons.close")} onPress={handleClose} />
+                    </View>
+
                 </View>
-            </BlurView>
+            </View>
         </Modal>
     )
 }

@@ -1,9 +1,9 @@
-import { View, Text, TouchableOpacity, Image, SafeAreaView, ScrollView, Modal, StatusBar } from "react-native";
+import { View, Text, TouchableOpacity, Image } from "react-native";
 import { Transaction, Wallet } from "@src/services/memory/types";
 import { formatSats, toBitcoin } from "@src/services/converter";
 import { useTranslate } from "@src/services/translate";
 import { IconNames } from "@src/services/types/icons";
-import { Ionicons } from "@expo/vector-icons"
+import Ionicons from '@react-native-vector-icons/ionicons'
 import { styles } from "./style"
 import theme from "@src/theme";
 

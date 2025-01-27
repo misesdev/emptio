@@ -9,19 +9,20 @@ import { hexToBytes } from "@noble/hashes/utils"
 import { useState } from "react"
 import { nip19 } from "nostr-tools";
 import theme from "@src/theme"
-import { setStringAsync } from "expo-clipboard";
-import { Ionicons } from "@expo/vector-icons"
+import Ionicons from "@react-native-vector-icons/ionicons"
 import { authService } from "@src/core/authManager";
 import MessageBox, { showMessage } from "@components/general/MessageBox"
 import SelectLanguageBox, { showSelectLanguage } from "@components/modal/SelectLanguageBox"
 import { pushMessage } from "@src/services/notification"
 import { useTranslateService } from "@/src/providers/translateProvider"
-import Constants from "expo-constants"
 import { NostrEvent } from "@nostr-dev-kit/ndk"
+import { copyToClipboard } from "@/src/utils"
+import DeviceInfo from 'react-native-device-info'
 
 const UserMenuScreen = ({ navigation }: any) => {
 
     const opacity = .7 
+    const appVersion = DeviceInfo.getVersion()
     const { user, setUser, setWallets, setFollows } = useAuth()
     const { useTranslate } = useTranslateService()
     const [forceUpdate, setForceUpdate] = useState()
@@ -29,15 +30,11 @@ const UserMenuScreen = ({ navigation }: any) => {
 
     const handleCopySecretKey = async () => {
         const biometrics = await authService.checkBiometric()
-
-        const { privateKey } = await getPairKey(user?.keychanges ?? "")
-
+        
         if (biometrics) {
+            const { privateKey } = await getPairKey(user?.keychanges ?? "")
             const secretkey = nip19.nsecEncode(hexToBytes(privateKey))
-
-            await setStringAsync(secretkey)
-
-            pushMessage(useTranslate("message.copied"))
+            copyToClipboard(secretkey)
         }
     }
 
@@ -46,9 +43,7 @@ const UserMenuScreen = ({ navigation }: any) => {
 
         const pubKey = nip19.npubEncode(publicKey)
 
-        await setStringAsync(pubKey)
-
-        pushMessage(useTranslate("message.copied"))
+        copyToClipboard(pubKey)
     }
 
     const handleDeleteAccount = async () => {
@@ -144,7 +139,9 @@ const UserMenuScreen = ({ navigation }: any) => {
                 <View style={{ height: 45 }}></View>
 
                 <View style={{ flexDirection: "row", marginBottom: 40 }}>
-                    <Text style={{ textAlign: "center", color: theme.colors.gray, fontWeight: "400", fontSize: 14 }}>version {Constants.expoConfig?.version}</Text>
+                    <Text style={{ textAlign: "center", color: theme.colors.gray, fontWeight: "400", fontSize: 14 }}>
+                        version {appVersion}
+                    </Text>
                 </View>
 
             </ScrollView>

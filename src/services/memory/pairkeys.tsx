@@ -1,9 +1,9 @@
-import { setItemAsync, getItemAsync } from "expo-secure-store"
+import EncryptedStorage from "react-native-encrypted-storage"
 import { PairKey } from "./types"
 
 export const getPairKeys = async () : Promise<PairKey[]> => {
     
-    const data = await getItemAsync("pairkeys")
+    const data = await EncryptedStorage.getItem("pairkeys")
 
     if (data) {
         var pairkeys = JSON.parse(data) as PairKey[]
@@ -19,7 +19,7 @@ export const insertPairKey = async (pairKey: PairKey) => {
 
     pairkeys.push(pairKey)
 
-    await setItemAsync("pairkeys", JSON.stringify(pairkeys))
+    await EncryptedStorage.setItem("pairkeys", JSON.stringify(pairkeys))
 }
 
 export const getPairKey = async (key: string): Promise<PairKey> => {
@@ -39,5 +39,5 @@ export const deletePairKey = async (key: string) => {
 
     let filtered = pairkeys.filter(k => k.key != key)
 
-    await setItemAsync("pairkeys", JSON.stringify(filtered))
+    await EncryptedStorage.setItem("pairkeys", JSON.stringify(filtered))
 }

@@ -1,5 +1,5 @@
 
-import { StyleSheet, View, ScrollView, Text, ActivityIndicator } from "react-native"
+import { StyleSheet, View, ScrollView, Text } from "react-native"
 import { HeaderScreen } from "@components/general/HeaderScreen"
 import MessageBox, { showMessage } from "@components/general/MessageBox"
 import { ButtonPrimary } from "@components/form/Buttons"
@@ -11,7 +11,6 @@ import theme from "@src/theme"
 import AddRelay from "./add"
 import axios from "axios"
 import { useTranslateService } from "@/src/providers/translateProvider"
-import NDK from "@nostr-dev-kit/ndk"
 
 const ManageRelaysScreen = ({ navigation }: any) => {
 

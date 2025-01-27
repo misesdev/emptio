@@ -1,7 +1,7 @@
 import AsyncStorage from "@react-native-async-storage/async-storage"
-import { deleteItemAsync, setItemAsync } from "expo-secure-store"
+import EncryptedStorage from "react-native-encrypted-storage"
 
 export const clearStorage = async () => {
     await AsyncStorage.clear()
-    await setItemAsync("pairkeys", "")
+    await EncryptedStorage.setItem("pairkeys", "")
 }

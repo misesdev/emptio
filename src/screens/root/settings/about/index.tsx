@@ -4,7 +4,6 @@ import theme from "@src/theme"
 import { HeaderScreen } from "@components/general/HeaderScreen"
 import { Ionicons } from "@expo/vector-icons"
 import { useTranslateService } from "@/src/providers/translateProvider"
-import Constants from "expo-constants"
 
 const AboutScreen = ({ navigation }: any) => {
 
@@ -34,10 +33,6 @@ const AboutScreen = ({ navigation }: any) => {
                     <TouchableOpacity activeOpacity={.7} onPress={handleToDiscord} style={styles.itemContact}>
                         <Ionicons name="logo-discord" size={theme.icons.extra} color={theme.colors.white} />
                     </TouchableOpacity>
-                </View>
-
-                <View style={{ flexDirection: "row", marginVertical: 10 }}>
-                    <Text style={{ textAlign: "center", color: theme.colors.gray, fontWeight: "400", fontSize: 14 }}>version {Constants.expoConfig?.version}</Text>
                 </View>
 
             </ScrollView>

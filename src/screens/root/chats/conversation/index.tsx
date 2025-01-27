@@ -3,7 +3,6 @@ import theme from "@/src/theme"
 import { useEffect, useState } from "react"
 import { View, StyleSheet, Image, Text, TextInput, 
     KeyboardAvoidingView, Platform, TouchableOpacity, Vibration } from "react-native"
-import { Ionicons } from "@expo/vector-icons"
 import { NDKEvent } from "@nostr-dev-kit/ndk"
 import { useAuth } from "@/src/providers/userProvider"
 import { messageService } from "@/src/core/messageManager"
@@ -11,6 +10,7 @@ import { User } from "@/src/services/memory/types"
 import useChatStore from "@/src/services/zustand/chats"
 import ConversationList from "./list"
 import MessageOptionsBox, { showOptiosMessage } from "./options"
+import Ionicons from "@react-native-vector-icons/ionicons"
 
 const ConversationChat = ({ navigation, route }: any) => {
     

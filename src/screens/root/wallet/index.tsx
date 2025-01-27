@@ -3,12 +3,12 @@ import { SectionHeader } from "@components/general/section/headers"
 import { Transaction, TransactionInfo, Wallet } from "@src/services/memory/types"
 import { View, ScrollView, RefreshControl, TouchableOpacity } from "react-native"
 import { useEffect, useState } from "react"
-import { Ionicons } from "@expo/vector-icons"
+import Ionicons from "@react-native-vector-icons/ionicons"
 import SplashScreen from "@components/general/SplashScreen"
-import theme from "@src/theme"
 import { walletService } from "@/src/core/walletManager"
 import { useTranslateService } from "@/src/providers/translateProvider"
 import { Network } from "@/src/services/bitcoin/types"
+import theme from "@src/theme"
 
 const WalletManagerScreen = ({ navigation, route }: any) => {
 

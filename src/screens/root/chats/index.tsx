@@ -1,7 +1,7 @@
 import theme from "@src/theme"
 import { StyleSheet, View } from "react-native"
 import { TouchableOpacity } from "react-native-gesture-handler"
-import { Ionicons } from "@expo/vector-icons"
+import Ionicons from "@react-native-vector-icons/ionicons"
 import { useState } from "react"
 import { HeaderChats } from "./header"
 import { SearchBox } from "@/src/components/form/SearchBox"

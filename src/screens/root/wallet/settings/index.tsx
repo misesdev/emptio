@@ -11,10 +11,10 @@ import { SectionHeader } from "@components/general/section/headers"
 import { LinkSection, SectionContainer } from "@components/general/section"
 import { authService } from "@src/core/authManager"
 import { pushMessage } from "@src/services/notification"
-import { useState } from "react"
-import theme from "@src/theme"
 import { useTranslateService } from "@/src/providers/translateProvider"
 import { Wallet } from "@/src/services/memory/types"
+import { useState } from "react"
+import theme from "@src/theme"
 
 const WalletSettings = ({ navigation, route }: any) => {
 

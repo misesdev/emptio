@@ -1,37 +1,20 @@
 import theme from '@/src/theme';
-import { View, Image, StyleSheet, Linking, Button } from 'react-native';
+import { View, Image, StyleSheet, Linking } from 'react-native';
 import ParsedText from 'react-native-parsed-text';
 import { WebView } from 'react-native-webview';
-import { useVideoPlayer, VideoView } from 'expo-video';
-import { useEvent } from 'expo';
+import { Video } from 'react-native-video';
 import { ButtonLink } from '../../form/Buttons';
 
 type VideoProps = { url: string }
 
 const VideoScreen = ({ url }: VideoProps) => {
-
-    const player = useVideoPlayer(url, player => {
-        player.loop = true
-        player.play()
-    })
-
-    const { isPlaying } = useEvent(player, 'playingChange', { isPlaying: player.playing });
-
     return (
         <View style={styles.contentContainer}>
-            <VideoView style={styles.video} player={player} allowsFullscreen allowsPictureInPicture />
-            <View style={styles.controlsContainer}>
-                <Button
-                    title={isPlaying ? 'Pause' : 'Play'}
-                    onPress={() => {
-                        if (isPlaying) {
-                            player.pause();
-                        } else {
-                            player.play();
-                        }
-                    }}
-                />
-            </View>
+            <Video controls repeat
+                source={{ uri: url }}
+                style={styles.video}
+                resizeMode='contain'
+            />
         </View>
     )
 }
@@ -54,14 +37,14 @@ const NoteViewer = ({ note }: Props) => {
         if (isImageUrl(url)) {
             return <Image source={{ uri: url }} style={styles.image} />
         } else if(isVideoUrl(url)) {
-            //return <VideoScreen url={url} />
-            return <View style={{}}>
-                <ButtonLink 
-                    label={url} 
-                    color={theme.colors.blue} 
-                    onPress={() => Linking.openURL(url)}
-                />
-            </View>
+            return <VideoScreen url={url} />
+            // return <View style={{}}>
+            //     <ButtonLink 
+            //         label={url} 
+            //         color={theme.colors.blue} 
+            //         onPress={() => Linking.openURL(url)}
+            //     />
+            // </View>
         } else {
             // return (
             //     <TouchableOpacity onPress={() => Linking.openURL(url)}>
@@ -75,13 +58,13 @@ const NoteViewer = ({ note }: Props) => {
             //         </View>
             //     </TouchableOpacity>
             // )
-            return <View style={{}}>
+            return ( 
                 <ButtonLink 
                     label={url} 
                     color={theme.colors.blue} 
                     onPress={() => Linking.openURL(url)}
                 />
-            </View>
+            )
         }
     }
 
@@ -89,7 +72,8 @@ const NoteViewer = ({ note }: Props) => {
         <View style={styles.webview}>
             <ParsedText
                 style={styles.text}
-                parse={[{ pattern: urlRegex, 
+                parse={[{ 
+                    pattern: urlRegex, 
                     style: styles.link, 
                     renderText: renderText 
                 }]}

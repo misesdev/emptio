@@ -1,11 +1,13 @@
 import { useTranslate } from "@/src/services/translate"
-import { authenticateAsync, hasHardwareAsync } from "expo-local-authentication"
+import ReactNativeBiometrics from "react-native-biometrics";
 
 const checkBiometric = async () => {
-    const isBiometricAvailable = await hasHardwareAsync()
+    
+    const rnBiometrics = new ReactNativeBiometrics()
+    const { available } = await rnBiometrics.isSensorAvailable()
 
-    if (isBiometricAvailable) {
-        const { success } = await authenticateAsync({
+    if (available) {
+        const { success } = await rnBiometrics.simplePrompt({
             promptMessage: useTranslate("commons.authenticate.message")
         })
         return success

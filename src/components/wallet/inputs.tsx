@@ -1,9 +1,9 @@
 import { StyleSheet, TextInput, View, Text, TouchableOpacity } from "react-native"
 import { useTranslate } from "@src/services/translate"
 import { formatSats, toNumber } from "@src/services/converter"
-import theme from "@src/theme"
 import SelectWalletBox, { showSelectWallet } from "./WalletSelection"
 import { Wallet } from "@/src/services/memory/types"
+import theme from "@src/theme"
 
 type AmountBoxProps = {
     value?: string | "",

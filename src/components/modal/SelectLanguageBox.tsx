@@ -1,11 +1,10 @@
 import { useState } from "react"
 import { Modal, StyleSheet, Text, TouchableOpacity, View } from "react-native"
 import { Language } from "@/src/services/translate/types"
-import { getLanguage, getLanguages, saveLanguage } from "@/src/services/memory/language"
+import { getLanguages, saveLanguage } from "@/src/services/memory/language"
 import { useTranslateService } from "@src/providers/translateProvider"
-import { Ionicons } from "@expo/vector-icons"
+import Ionicons from '@react-native-vector-icons/ionicons'
 import theme from "@src/theme"
-import { BlurView } from "expo-blur"
 
 var showLanguagesFunction: () => void
 
@@ -50,19 +49,13 @@ const SelectLanguageBox = ({ forceUpdate }: Props) => {
 
     return (
         <Modal animationType="fade" onRequestClose={() => setVisible(false)} visible={visible} transparent >
-            <BlurView 
-                tint="dark" 
-                intensity={60} 
-                style={styles.absolute}
-            >
-                <View style={{ flex: 1, alignItems: "center", justifyContent: "center", backgroundColor: "rgba(0,0,0, .6)" }}>
-                    <View style={styles.box}>
-                        {languagesList &&
-                            languagesList.map((item, key) => renderLanguageOption(item, key))
-                        }
-                    </View>
+            <View style={{ flex: 1, alignItems: "center", justifyContent: "center", backgroundColor: "rgba(0,0,0, .6)" }}>
+                <View style={styles.box}>
+                    {languagesList &&
+                        languagesList.map((item, key) => renderLanguageOption(item, key))
+                    }
                 </View>
-            </BlurView>
+            </View>
         </Modal>
     )
 }

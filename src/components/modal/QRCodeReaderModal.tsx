@@ -1,7 +1,10 @@
-import { View, StyleSheet, TouchableOpacity, Modal } from 'react-native';
-import { CameraView, useCameraPermissions } from "expo-camera"
-import { Ionicons } from '@expo/vector-icons';
-import theme from '@src/theme';
+import { View, StyleSheet, TouchableOpacity, Modal } from 'react-native'
+import { Camera, useCameraDevices, useFrameProcessor } from "react-native-vision-camera"
+import { BarcodeFormat, scanBarcodes } from 'vision-camera-code-scanner'
+import Ionicons from '@react-native-vector-icons/ionicons'
+import { useEffect } from 'react'
+import { runOnJS } from 'react-native-reanimated'
+import theme from '@src/theme'
 
 type Props = {
     visible: boolean,
@@ -11,30 +14,46 @@ type Props = {
 
 export default function QRCodeReaderModal({ visible, setValue, runClose }: Props) {
 
-    useCameraPermissions()
+    const devices = useCameraDevices();
+
+    useEffect(() => {
+        (async () => {
+            try {
+                await Camera.requestCameraPermission()            
+            } catch { runClose(false) }
+        })()
+    }, [])
 
     const handleBarCodeScanned = ({ type, data }: any) => {
         runClose(false)
         setValue(data)
     }
+    
+    const frameProcessor = useFrameProcessor((frame) => {
+        'worklet'
+        const qrcodes = scanBarcodes(frame, [BarcodeFormat.QR_CODE])
+        if(qrcodes.length) 
+            runOnJS(handleBarCodeScanned)(qrcodes[0].content)
+    }, [])
+
+    if(!devices.length) return <></>
 
     return (
-        <Modal visible={visible} animationType="slide" transparent onRequestClose={() => runClose(false)}
+        <Modal visible={visible} animationType="slide" transparent 
+            onRequestClose={() => runClose(false)}
             style={{ backgroundColor: "transparent", padding: 0 }}
         >
-            <CameraView
-                onBarcodeScanned={handleBarCodeScanned}
-                barcodeScannerSettings={{
-                    barcodeTypes: ["qr", "pdf417"],
-                }}
-                style={[styles.scanner, { ...StyleSheet.absoluteFillObject }]}
+            <Camera
+                device={devices[0]} isActive
+                frameProcessor={frameProcessor}
+                style={[styles.scanner, StyleSheet.absoluteFillObject]}
             >
                 <View style={styles.frameCode}></View>
 
                 <TouchableOpacity onPress={() => { runClose(false); }} style={styles.closeButton}>
                     <Ionicons name="close" size={24} color="white" style={{ textAlign: "center", padding: 10 }} />
                 </TouchableOpacity>
-            </CameraView>
+            </Camera>
         </Modal>
     );
 }

@@ -7,7 +7,6 @@ import { validatePrivateKey } from "@src/services/nostr";
 import { userService } from "@/src/core/userManager";
 import { useAuth } from "@/src/providers/userProvider";
 import { useEffect, useState } from "react";
-import * as ClipBoard from 'expo-clipboard'
 import { AppState } from "react-native";
 import theme from "@src/theme";
 import { useTranslateService } from "@/src/providers/translateProvider";
@@ -15,6 +14,7 @@ import { pushMessage } from "@/src/services/notification";
 import useNDKStore from "@/src/services/zustand/ndk";
 import useChatStore from "@/src/services/zustand/chats";
 import { subscribeUserChat } from "@/src/services/nostr/pool";
+import Clipboard from "@react-native-clipboard/clipboard";
 
 const LoginScreen = ({ navigation }: any) => {
 
@@ -33,7 +33,8 @@ const LoginScreen = ({ navigation }: any) => {
 
     const checkClipboardContainsKey = async () => {
         // verify clipboard for a privateKey nostr
-        ClipBoard.getStringAsync().then(handlerClipboard)
+        const nsec = await Clipboard.getString()
+        handlerClipboard(nsec)
     }
 
     const handleAppStateChange = (appstate: any) => {

@@ -5,8 +5,8 @@ import { User } from "@src/services/memory/types"
 import { memo, useCallback, useEffect, useRef, useState } from "react"
 import { walletService } from "@src/core/walletManager"
 import { FollowItem } from "./FollowItem"
-import theme from "@src/theme"
 import { NostrEvent } from "@nostr-dev-kit/ndk"
+import theme from "@src/theme"
 
 type FriendListProps = {
     iNot?: boolean,

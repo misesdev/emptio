@@ -1,12 +1,11 @@
 
 import { useState } from "react"
 import { Modal, StyleSheet, Text, TouchableOpacity, View } from "react-native"
-import { Ionicons } from "@expo/vector-icons"
-import theme from "@src/theme"
-import { BlurView } from "expo-blur"
+import Ionicons from '@react-native-vector-icons/ionicons'
 import { Wallet } from "@/src/services/memory/types"
 import { useAuth } from "@/src/providers/userProvider"
 import { formatSats } from "@/src/services/converter"
+import theme from "@src/theme"
 
 var showWalletsFunction: () => void
 
@@ -53,19 +52,13 @@ const SelectWalletBox = ({ wallet, setWallet }: Props) => {
 
     return (
         <Modal animationType="fade" onRequestClose={() => setVisible(false)} visible={visible} transparent >
-            <BlurView 
-                tint="dark" 
-                intensity={60} 
-                style={styles.absolute}
-            >
-                <View style={{ flex: 1, alignItems: "center", justifyContent: "center", backgroundColor: "rgba(0,0,0, .6)" }}>
-                    <View style={styles.box}>
-                        {wallets &&
-                            wallets.map((item, key) => renderWalletOption(item, key))
-                        }
-                    </View>
+            <View style={{ flex: 1, alignItems: "center", justifyContent: "center", backgroundColor: "rgba(0,0,0, .6)" }}>
+                <View style={styles.box}>
+                    {wallets &&
+                        wallets.map((item, key) => renderWalletOption(item, key))
+                    }
                 </View>
-            </BlurView>
+            </View>
         </Modal>
     )
 }

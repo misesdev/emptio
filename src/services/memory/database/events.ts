@@ -1,13 +1,20 @@
 import { NDKEvent } from '@nostr-dev-kit/ndk';
-import * as SQLite from 'expo-sqlite';
+import SQLite, { SQLiteDatabase, DatabaseParams } from 'react-native-sqlite-storage';
 import { TypeCategory } from '../../notification/application';
 import { ChatUser } from '../../zustand/chats';
 
-const db: SQLite.SQLiteDatabase =  SQLite.openDatabaseSync('events.db');
+let database: SQLiteDatabase
+
+const getDatabaseConnection = async () : Promise<SQLiteDatabase> => {
+    if(!database)
+        database = await SQLite.openDatabase({ name: 'events.db', location: "default" });
+    return database
+}
 
 export const initDatabase = async () => {
-    
-    await db.execAsync(`
+    const db = await getDatabaseConnection()
+
+    await db.executeSql(`
         CREATE TABLE IF NOT EXISTS events (
             id TEXT PRIMARY KEY,            -- Unique ID of event
             kind INTEGER,
@@ -31,8 +38,9 @@ type dbEventProps = {
 }
 
 export const insertEvent = async ({ event, category, chat_id }: dbEventProps) : Promise<boolean> => {
+    const db = await getDatabaseConnection()
 
-    const params: SQLite.SQLiteBindParams = [
+    const params = [
         event.id, 
         event.kind ?? 0,
         event.pubkey,
@@ -44,19 +52,20 @@ export const insertEvent = async ({ event, category, chat_id }: dbEventProps) : 
         chat_id ?? ""
     ]
 
-    const data = await db.runAsync(`
+    const [data] = await db.executeSql(`
         INSERT OR IGNORE INTO events (id, kind, pubkey, content, sig, tags, created_at, category, chat_id) 
         VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?);
 
         SELECT changes() AS wasInserted;
     `, params)
 
-    return !!data.changes;
+    return !!data.rowsAffected;
 }
 
 export const listEventsByCategory = async (category: TypeCategory, limit = 50): Promise<NDKEvent[]> => {
-    
-    const rows = await db.getAllAsync(`
+    const db = await getDatabaseConnection()
+
+    const rows = await db.executeSql(`
         SELECT * FROM events WHERE category = ? AND deleted = 0 ORDER BY created_at DESC LIMIT ?;
     `, [category as string, limit])
 
@@ -75,13 +84,17 @@ export const listEventsByCategory = async (category: TypeCategory, limit = 50): 
 
 // Deletar eventos por uma condição
 export const deleteEventsByCondition = async (condition: string, args: any[]) => {
-    await db.runAsync(`
+    const db = await getDatabaseConnection()
+
+    await db.executeSql(`
         UPDATE events SET deleted = 1 WHERE ${condition};  
     `, args)
 }
 
 export const selecMessageChats = async (): Promise<ChatUser[]> => {
-    const rows = await db.getAllAsync(`
+    const db = await getDatabaseConnection()
+
+    const rows = await db.executeSql(`
         --DELETE FROM events;
         SELECT even.id, 
             even.kind, 
@@ -131,13 +144,17 @@ export const selecMessageChats = async (): Promise<ChatUser[]> => {
 }
 
 export const selecMessages = async (chat_id: string): Promise<NDKEvent[]> => {
-    const rows = await db.getAllAsync(`
+    const db = await getDatabaseConnection()
+
+    const rows = await db.executeSql(`
         UPDATE events SET status = 'viewed' 
         WHERE category = 'message'
             AND deleted = 0
             AND chat_id = ?
         RETURNING *;
     `, [chat_id])
+    
+    db.close()
    
     return rows.map((event: any): NDKEvent => {
         return { 
@@ -156,9 +173,11 @@ export const selecMessages = async (chat_id: string): Promise<NDKEvent[]> => {
 
 // Deletar eventos por uma condição
 export const clearEvents = async () => {
-    await db.runAsync(`
-        DELETE FROM events;  
-    `)
+    const db = await getDatabaseConnection()
+
+    await db.executeSql(` DELETE FROM events; `)
+
+    await db.close()
 }
 
 

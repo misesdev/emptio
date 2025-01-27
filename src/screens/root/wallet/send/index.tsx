@@ -1,10 +1,10 @@
 import { StyleSheet, Text, TouchableOpacity, View } from "react-native"
 import { HeaderScreen } from "@components/general/HeaderScreen"
 import { AmountBox } from "@components/wallet/inputs"
-import { Ionicons } from "@expo/vector-icons"
+import Ionicons from "@react-native-vector-icons/ionicons"
+import { useTranslateService } from "@/src/providers/translateProvider"
 import { useState } from "react"
 import theme from "@src/theme"
-import { useTranslateService } from "@/src/providers/translateProvider"
 
 const SendScreen = ({ navigation, route }: any) => {
 

@@ -1,6 +1,6 @@
 import { useTranslate } from "@src/services/translate"
 import { ScrollView, StyleSheet, Text, TouchableOpacity, View } from "react-native"
-import { Ionicons } from "@expo/vector-icons"
+import Ionicons from '@react-native-vector-icons/ionicons'
 import { useEffect, useState } from "react"
 import theme from "@src/theme"
 import axios from "axios"

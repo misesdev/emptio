@@ -1,6 +1,6 @@
 import theme from "@src/theme"
 import { View, Text, TouchableOpacity, StyleProp, ViewStyle, StyleSheet } from "react-native"
-import { Ionicons } from "@expo/vector-icons"
+import Ionicons from '@react-native-vector-icons/ionicons'
 
 type HeaderProps = {
     title: string,

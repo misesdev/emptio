@@ -1,8 +1,6 @@
-import { TouchableOpacity, StyleSheet, Text, View, ViewStyle } from 'react-native';
+import { TouchableOpacity, StyleSheet, Text, View, ViewStyle, StyleProp, TextStyle} from 'react-native';
 import { IconNames } from '@src/services/types/icons';
-import { Ionicons } from '@expo/vector-icons';
-import { StyleProp } from 'react-native';
-import { TextStyle } from 'react-native';
+import Ionicons from '@react-native-vector-icons/ionicons'
 import theme from '@src/theme';
 
 type Props = {

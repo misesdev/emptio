@@ -1,8 +1,8 @@
 import { TouchableOpacity, View, Image, Text, StyleSheet } from "react-native"
 import { User } from "@src/services/memory/types"
-import theme from "@src/theme"
 import { hexToNpub } from "@/src/services/converter"
 import { useTranslate } from "@/src/services/translate"
+import theme from "@src/theme"
 
 type UserItemProps = {
     follow: User,

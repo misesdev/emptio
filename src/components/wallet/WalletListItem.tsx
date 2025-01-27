@@ -2,11 +2,11 @@ import { walletService } from "@/src/core/walletManager"
 import { formatSats, toBitcoin } from "@/src/services/converter"
 import { Wallet, WalletType } from "@/src/services/memory/types"
 import { useTranslate } from "@/src/services/translate"
-import theme from "@/src/theme"
 import { Network } from "@/src/services/bitcoin/types"
 import { useEffect, useState } from "react"
 import { TouchableOpacity, View, Text, StyleSheet, Image } from "react-native"
 import { ActivityIndicator } from "react-native-paper"
+import theme from "@/src/theme"
 
 type Props = {
     wallet: Wallet,

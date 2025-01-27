@@ -14,9 +14,9 @@ export const ButtonScanQRCode = ({ style, label, onChangeText }: Props) => {
     const [qrReader, setQrReader] = useState(false)
     
     return (
-        <>
+        <View>
             <ButtonPrimary style={style} leftIcon="qr-code" label={label} onPress={() => setQrReader(!qrReader)} />
             <QRCodeReaderModal setValue={onChangeText} visible={qrReader} runClose={setQrReader} />
-        </>
+        </View>
     )
 }

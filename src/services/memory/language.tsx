@@ -1,13 +1,15 @@
-import { getItem, setItem } from "expo-secure-store"
+import AsyncStorage from "@react-native-async-storage/async-storage"
 import { Language } from "../translate/types"
 
-export const saveLanguage = (language: Language) => setItem("language", JSON.stringify(language))
+export const saveLanguage = async (language: Language) => { 
+    await AsyncStorage.setItem("language", JSON.stringify(language))
+}
 
-export const getLanguage = (): Language => {
+export const getLanguage = async (): Promise<Language> => {
 
     var language: Language = { label: "English", selector: "en" }
     
-    const register = getItem("language")
+    const register = await AsyncStorage.getItem("language")
 
     if(register)
         language = JSON.parse(register)

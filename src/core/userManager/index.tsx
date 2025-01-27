@@ -158,7 +158,7 @@ const isLogged = async ({ setUser }: loggedProps) : Promise<Response<User|null>>
     }
 }
 
-const listFollows = async (user: User, follows: NostrEvent, iNot: boolean = true): Promise<User[]> => {
+const listFollows = async (user: User, follows?: NostrEvent, iNot: boolean = true): Promise<User[]> => {
 
     var friends: User[] = []
 

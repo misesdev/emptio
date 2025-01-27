@@ -2,7 +2,6 @@ import { useState } from "react"
 import { Modal, StyleSheet, Text, TouchableOpacity, View } from "react-native"
 import { useTranslateService } from "@src/providers/translateProvider"
 import theme from "@src/theme"
-import { BlurView } from "expo-blur"
 
 type typeMessage = "alert" | "error" | "success"
 
@@ -68,26 +67,24 @@ const MessageBox = () => {
 
     return (
         <Modal animationType="fade" onRequestClose={handleClose} visible={visible} transparent >
-            <BlurView intensity={75} tint="dark" style={styles.absolute}>
-                <View style={{ flex: 1, alignItems: "center", justifyContent: "center", backgroundColor: "rgba(0,0,0, .6)" }}>
-                    <View style={styles.box}>
+            <View style={{ flex: 1, alignItems: "center", justifyContent: "center", backgroundColor: "rgba(0,0,0, .6)" }}>
+                <View style={styles.box}>
 
-                        <Text style={{ color: theme.colors.white, fontSize: 20, marginVertical: 10, fontWeight: 'bold' }}>{title ?? useTranslate("commons.oops")}</Text>
-                        
-                        <View style={{ width: "100%", marginTop: 10, marginBottom: 20 }}>
-                            <Text style={styles.message}>{message}</Text>
-                        </View>
-
-                        {infolog && <Text style={styles.infolog}>{infolog}</Text>}
-
-                        <View style={styles.sectionButtons}>
-                            {action && <ButtonLight label={action.label} onPress={handleAction} />}
-                            <ButtonLight label={useTranslate("commons.close")} onPress={handleClose} />
-                        </View>
-
+                    <Text style={{ color: theme.colors.white, fontSize: 20, marginVertical: 10, fontWeight: 'bold' }}>{title ?? useTranslate("commons.oops")}</Text>
+                    
+                    <View style={{ width: "100%", marginTop: 10, marginBottom: 20 }}>
+                        <Text style={styles.message}>{message}</Text>
                     </View>
+
+                    {infolog && <Text style={styles.infolog}>{infolog}</Text>}
+
+                    <View style={styles.sectionButtons}>
+                        {action && <ButtonLight label={action.label} onPress={handleAction} />}
+                        <ButtonLight label={useTranslate("commons.close")} onPress={handleClose} />
+                    </View>
+
                 </View>
-            </BlurView>
+            </View>
         </Modal>
     )
 }

@@ -1,8 +1,7 @@
 import { ScrollView } from "react-native-gesture-handler"
-import { SafeAreaView, StyleSheet, Text } from "react-native"
-import theme from "@/src/theme"
-import { View } from "react-native-animatable"
+import { StyleSheet, View } from "react-native"
 import NoteViewer from "../event/NoteViewer"
+import theme from "@/src/theme"
 
 type NoteProps = { note: string }
 

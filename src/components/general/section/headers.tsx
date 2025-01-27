@@ -1,6 +1,6 @@
 import { IconNames } from "@src/services/types/icons"
-import { StyleSheet, View, Text, Touchable, TouchableOpacity } from "react-native"
-import { Ionicons } from "@expo/vector-icons"
+import { StyleSheet, View, Text, TouchableOpacity } from "react-native"
+import Ionicons from '@react-native-vector-icons/ionicons'
 import theme from "@src/theme"
 
 export type ActionHeader = {

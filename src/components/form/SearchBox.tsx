@@ -1,6 +1,6 @@
 import theme from "@src/theme"
 import { useRef, useState } from "react"
-import { Ionicons } from "@expo/vector-icons"
+import Ionicons from '@react-native-vector-icons/ionicons'
 import { StyleSheet, TextInput, View } from "react-native"
 import { TouchableOpacity } from "react-native-gesture-handler"
 

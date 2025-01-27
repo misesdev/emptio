@@ -1,5 +1,5 @@
 import theme from "@src/theme"
-import { Ionicons } from "@expo/vector-icons"
+import Ionicons from '@react-native-vector-icons/ionicons'
 import { StyleProp, StyleSheet, Text, TouchableOpacity, View, ViewStyle } from "react-native"
 import { IconNames } from "@src/services/types/icons"
 import { useState } from "react"

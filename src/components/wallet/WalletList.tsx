@@ -1,8 +1,8 @@
-import { SafeAreaView, ScrollView, TouchableOpacity, Image, View, Text, StyleSheet } from "react-native"
+import { SafeAreaView, ScrollView, TouchableOpacity, View, Text, StyleSheet } from "react-native"
 import { useTranslateService } from "@/src/providers/translateProvider"
 import { Wallet } from "@src/services/memory/types"
-import theme from "@src/theme"
 import WalletListItem from "./WalletListItem"
+import theme from "@src/theme"
 
 type Props = {
     wallets: Wallet[],

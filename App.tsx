@@ -9,8 +9,7 @@ import './libs/global';
 
 import theme from '@src/theme';
 import AppRoutes from './src/routes';
-import { StatusBar } from 'expo-status-bar';
-import { View, StyleSheet } from 'react-native';
+import { View, StyleSheet, StatusBar } from 'react-native';
 import { AuthProvider } from "./src/providers/userProvider";
 import { SettingsProvider } from "./src/providers/settingsProvider";
 import { TranslateProvider } from "./src/providers/translateProvider";

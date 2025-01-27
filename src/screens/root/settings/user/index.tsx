@@ -1,18 +1,18 @@
 
 import { StyleSheet, View, TouchableOpacity, Image } from "react-native"
-import { MediaTypeOptions, launchImageLibraryAsync, requestMediaLibraryPermissionsAsync } from "expo-image-picker"
+import { launchImageLibrary } from "react-native-image-picker"
 import { useAuth } from "@src/providers/userProvider"
 import { ButtonPrimary } from "@components/form/Buttons"
 import { FormControl } from "@components/form/FormControl"
 import { ScrollView } from "react-native-gesture-handler"
-import { Ionicons } from "@expo/vector-icons"
-import { useEffect, useState } from "react"
+import Ionicons from "@react-native-vector-icons/ionicons"
 import { userService } from "@src/core/userManager"
 import SplashScreen from "@components/general/SplashScreen"
-import theme from "@src/theme"
 import { uploadImage } from "@src/services/blob"
 import { pushMessage } from "@src/services/notification"
 import { useTranslateService } from "@/src/providers/translateProvider"
+import { useState } from "react"
+import theme from "@src/theme"
 
 const UserEditScreen = ({ navigation }: any) => {
 
@@ -26,32 +26,20 @@ const UserEditScreen = ({ navigation }: any) => {
     const [prifile, setProfile] = useState(user.picture)
     const { useTranslate } = useTranslateService()
 
-    useEffect(() => {
-        (async () => {
-            const { status } = await requestMediaLibraryPermissionsAsync()
-            if (status !== 'granted')
-                pushMessage(useTranslate("message.error.notaccessgallery"))
-        })
-    }, [])
-
     const handlePickImage = async (location: "profile" | "banner") => {
         // allow to user select a image of your galery
-        let result = await launchImageLibraryAsync({
-            mediaTypes: MediaTypeOptions.Images,
-            allowsMultipleSelection: false,
-            allowsEditing: true,
-            aspect: location == "profile" ? [4, 4] : [4, 2],
-            quality: 1
-        })
+        launchImageLibrary({
+            mediaType: "photo",
+            selectionLimit: 1
+        }, (result) => {
+            if (!result.didCancel) {
+                if (location == "banner" && result.assets)
+                    setBanner(result.assets[0].uri)
+                else if(result.assets)
+                    setProfile(result.assets[0].uri)
 
-        if (!result.canceled) {
-            if (location == "banner")
-                setBanner(result.assets[0].uri)
-            else
-                setProfile(result.assets[0].uri)
-
-            await uploadImage(result.assets[0].uri)
-        }
+            //await uploadImage(result.assets[0].uri)
+        }})
     }
 
     const handleSave = async () => {

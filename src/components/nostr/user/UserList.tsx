@@ -2,8 +2,8 @@ import { FlatList, Text } from "react-native"
 import { User } from "@src/services/memory/types"
 import { useCallback } from "react"
 import { FollowItem } from "../follow/FollowItem"
-import theme from "@src/theme"
 import { useTranslateService } from "@/src/providers/translateProvider"
+import theme from "@src/theme"
 
 type FriendListProps = {
     users: User[],

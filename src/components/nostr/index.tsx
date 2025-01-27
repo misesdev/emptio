@@ -1,4 +1,4 @@
-import { ActivityIndicator, FlatList } from "react-native"
+import { ActivityIndicator, FlatList, View } from "react-native"
 import { userService } from "@/src/core/userManager"
 import { useTranslate } from "@/src/services/translate"
 import { useAuth } from "@src/providers/userProvider"
@@ -19,7 +19,7 @@ type FriendListProps = {
 
 export const FriendList = ({ searchTerm, onPressFollow, loadCombo = 20, toPayment = false, searchable }: FriendListProps) => {
 
-    const { user } = useAuth()
+    const { user, follows } = useAuth()
     const [listCounter, setListCounter] = useState(loadCombo)
     const [refreshing, setRefreshing] = useState(true)
     const [followList, setFollowList] = useState<User[]>([])
@@ -48,18 +48,17 @@ export const FriendList = ({ searchTerm, onPressFollow, loadCombo = 20, toPaymen
     const handleListFollows = async () => {
         setRefreshing(true)
 
-        var follows = await userService.listFollows(user)
+        var friends = await userService.listFollows(user, follows)
 
-        setFollowList(follows.slice(0, loadCombo))
+        setFollowList(friends.slice(0, loadCombo))
 
-        setFollowListData(follows)
+        setFollowListData(friends)
 
         setRefreshing(false)
     }
 
     const handleClickFollow = useCallback((follow: User) => {
-        if (onPressFollow)
-            onPressFollow(follow)
+        if (onPressFollow) onPressFollow(follow)
     }, [])
 
     const handleLoadScroll = () => {
@@ -78,8 +77,9 @@ export const FriendList = ({ searchTerm, onPressFollow, loadCombo = 20, toPaymen
             // Show loader at the end of list when fetching next page data.
             return <ActivityIndicator color={theme.colors.gray} style={{ margin: 10 }} size={50} />
     }
+
     return (
-        <>
+        <View>
             <SectionHeader label={useTranslate("labels.friends")} icon="people" actions={[{ label: followListData.length.toString(), action: () => { } }]} />
             <FlatList
                 data={followList}
@@ -89,6 +89,6 @@ export const FriendList = ({ searchTerm, onPressFollow, loadCombo = 20, toPaymen
                 contentContainerStyle={theme.styles.scroll_container}
                 ListFooterComponent={handleLoaderEnd}
             />
-        </>
+        </View>
     )
 }
