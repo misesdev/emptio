@@ -1,14 +1,14 @@
-import { User } from "@/src/services/memory/types"
+import { User } from "@services/memory/types"
 import { FlatList } from "react-native-gesture-handler"
 import { StyleSheet, View, Text, TouchableOpacity, Image } from "react-native"
-import { useTranslateService } from "@/src/providers/translateProvider"
-import { ChatUser } from "@/src/services/zustand/chats"
+import { useTranslateService } from "@src/providers/translateProvider"
+import { ChatUser } from "@services/zustand/chats"
 import { useCallback, useEffect, useState } from "react"
 import { NDKEvent } from "@nostr-dev-kit/ndk"
-import theme from "@/src/theme"
-import { userService } from "@/src/core/userManager"
+import theme from "@src/theme"
+import { userService } from "@src/core/userManager"
 import { memo } from "react"
-import { messageService } from "@/src/core/messageManager"
+import { messageService } from "@src/core/messageManager"
 
 type Props = {
     user: User, 
@@ -48,7 +48,7 @@ const ChatList = ({ user, chats, handleOpenChat }: Props) => {
                     <View style={{ width: "15%" }}>
                         <View style={styles.profile}>
                             {follow?.picture && <Image onError={() => { follow.picture = "" }} source={{ uri: follow.picture }} style={{ flex: 1 }} />}
-                            {!follow?.picture && <Image source={require("assets/images/defaultProfile.png")} style={{ width: 50, height: 50 }} />}
+                            {!follow?.picture && <Image source={require("@assets/images/defaultProfile.png")} style={{ width: 50, height: 50 }} />}
                         </View>
                     </View>
                     <View style={{ width: "60%", overflow: "hidden" }}>

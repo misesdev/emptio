@@ -1,11 +1,12 @@
 import { View, Text, TouchableOpacity, Image } from "react-native";
-import { Transaction, Wallet } from "@src/services/memory/types";
-import { formatSats, toBitcoin } from "@src/services/converter";
-import { useTranslate } from "@src/services/translate";
-import { IconNames } from "@src/services/types/icons";
+import { Transaction, Wallet } from "@services/memory/types";
+import { formatSats, toBitcoin } from "@services/converter";
+import { useTranslate } from "@services/translate";
+import { IconNames } from "@services/types/icons";
 import Ionicons from '@react-native-vector-icons/ionicons'
 import { styles } from "./style"
 import theme from "@src/theme";
+import { useEffect, useState } from "react";
 
 type WalletProps = {
     wallet: Wallet,
@@ -16,24 +17,34 @@ export const WalletHeader = ({ wallet, showOptions }: WalletProps) => {
 
     let balanceSats = formatSats(wallet.lastBalance)
     let balanceBTC = toBitcoin(wallet.lastBalance)
-    let formatName = (!!wallet.name && wallet.name?.length >= 28) ? `${wallet.name?.substring(0, 28)}..` : wallet?.name
-
+    let formatName = (!!wallet.name && wallet.name?.length >= 28) ? 
+        `${wallet.name?.substring(0, 28)}..` : wallet?.name
     let walletColor = wallet.type == "bitcoin" ? theme.colors.orange : theme.colors.blue
+
+    const [mainnetTag, setMainnetTag] = useState<string>("")
+    const [testnetTag, setTestnetTag] = useState<string>("")
+    const [lightningTag, setLightningTag] = useState<string>("")
+
+    useEffect(() => {
+        useTranslate("wallet.bitcoin.tag").then(setMainnetTag)
+        useTranslate("wallet.bitcoin.testnet.tag").then(setTestnetTag)
+        useTranslate("wallet.lightning.tag").then(setLightningTag)
+    }, [])
 
     return (
         <>
-            {wallet!.type == "bitcoin" && <Image source={require("assets/images/bitcoin-wallet-header3.jpg")} style={{ width: "100%", height: 240 }} />}
-            {wallet!.type == "testnet" && <Image source={require("assets/images/bitcoin-wallet-header.jpg")} style={{ width: "100%", height: 240 }} />}
-            {wallet!.type == "lightning" && <Image source={require("assets/images/lightning-wallet-header.png")} style={{ width: "100%", height: 240 }} />}
+            {wallet!.type == "bitcoin" && <Image source={require("@assets/images/bitcoin-wallet-header3.jpg")} style={{ width: "100%", height: 240 }} />}
+            {wallet!.type == "testnet" && <Image source={require("@assets/images/bitcoin-wallet-header.jpg")} style={{ width: "100%", height: 240 }} />}
+            {wallet!.type == "lightning" && <Image source={require("@assets/images/lightning-wallet-header.png")} style={{ width: "100%", height: 240 }} />}
             <View style={styles.headerWallet}>
                 <View style={{ height: 50 }}></View>
                 <Text style={[{ fontSize: 18 }, styles.headerText]}>{formatName}</Text>
                 <Text style={[{ fontSize: 30 }, styles.headerText]}>{balanceSats} Sats</Text>
                 <Text style={[{ fontSize: 14 }, styles.headerText]}>{balanceBTC} BTC</Text>
                 <Text style={[styles.headerText, { fontSize: 12, backgroundColor: walletColor, padding: 10, borderRadius: 15, maxWidth: 130, textAlign: "center" }]}>
-                    {wallet?.type == "bitcoin" && useTranslate("wallet.bitcoin.tag") }
-                    {wallet?.type == "testnet" && useTranslate("wallet.bitcoin.testnet.tag")}
-                    {wallet?.type == "lightning" && useTranslate("wallet.lightning.tag")}
+                    {wallet?.type == "bitcoin" && mainnetTag }
+                    {wallet?.type == "testnet" && testnetTag }
+                    {wallet?.type == "lightning" && lightningTag }
                 </Text>
             </View>
         </>
@@ -46,6 +57,12 @@ type WalletTransactionsProps = {
 }
 
 export const WalletTransactions = ({ transactions, onPressTransaction }: WalletTransactionsProps) => {
+
+    const [noFoundMessage, setNoFoundMessage] = useState<string>("")
+
+    useEffect(() => {
+        useTranslate("section.title.transactions.empty").then(setNoFoundMessage)
+    }, [])
 
     const AmmountText = ({ type, amount }: Transaction) => {
 
@@ -104,7 +121,7 @@ export const WalletTransactions = ({ transactions, onPressTransaction }: WalletT
             {
                 transactions.length <= 0 &&
                 <Text style={{ color: theme.colors.gray, textAlign: "center" }}>
-                    {useTranslate("section.title.transactions.empty")}
+                    {noFoundMessage}
                 </Text>
             }
 
@@ -120,6 +137,14 @@ type WalletButtonProps = {
 
 export const WalletButtons = ({ onReceive, onSend }: WalletButtonProps) => {
 
+    const [labelSend, setLabelSend] = useState<string>("")
+    const [labelReceive, setLabelReceive] = useState<string>("")
+
+    useEffect(() => {
+        useTranslate("commons.send").then(setLabelSend)
+        useTranslate("commons.receive").then(setLabelReceive)
+    }, [])
+
     return (
         <View style={styles.walletButtonsSection}>
             <View style={{ flexDirection: "row" }}>
@@ -128,14 +153,14 @@ export const WalletButtons = ({ onReceive, onSend }: WalletButtonProps) => {
                     style={[styles.walletActionButton, { borderRightWidth: .2, borderBottomLeftRadius: 15, borderTopLeftRadius: 15 }]}
                 >
                     <Ionicons style={{ margin: 5 }} name="enter" color={theme.colors.white} size={theme.icons.medium} />
-                    <Text style={styles.walletaAtionText} >{useTranslate("commons.receive")}</Text>
+                    <Text style={styles.walletaAtionText} >{labelReceive}</Text>
 
                 </TouchableOpacity>
                 <TouchableOpacity activeOpacity={.7} onPress={onSend}
                     style={[styles.walletActionButton, { borderLeftWidth: .2, borderBottomRightRadius: 15, borderTopRightRadius: 15 }]}
                 >
 
-                    <Text style={styles.walletaAtionText} >{useTranslate("commons.send")}</Text>
+                    <Text style={styles.walletaAtionText} >{labelSend}</Text>
                     <Ionicons style={{ margin: 5 }} name="exit" color={theme.colors.white} size={theme.icons.medium} />
 
                 </TouchableOpacity>

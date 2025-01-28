@@ -3,18 +3,18 @@ import { Image, StyleSheet, Text, View } from "react-native";
 import { QRCodeTextBox } from "@components/form/TextBoxs";
 import { ButtonPrimary } from "@components/form/Buttons";
 import SplashScreen from "@components/general/SplashScreen";
-import { validatePrivateKey } from "@src/services/nostr";
-import { userService } from "@/src/core/userManager";
-import { useAuth } from "@/src/providers/userProvider";
+import { validatePrivateKey } from "@services/nostr";
+import { userService } from "@src/core/userManager";
+import { useAuth } from "@src/providers/userProvider";
 import { useEffect, useState } from "react";
+import { useTranslateService } from "@src/providers/translateProvider";
+import { pushMessage } from "@services/notification";
+import useNDKStore from "@services/zustand/ndk";
+import useChatStore from "@services/zustand/chats";
+import { subscribeUserChat } from "@services/nostr/pool";
+import Clipboard from "@react-native-clipboard/clipboard";
 import { AppState } from "react-native";
 import theme from "@src/theme";
-import { useTranslateService } from "@/src/providers/translateProvider";
-import { pushMessage } from "@/src/services/notification";
-import useNDKStore from "@/src/services/zustand/ndk";
-import useChatStore from "@/src/services/zustand/chats";
-import { subscribeUserChat } from "@/src/services/nostr/pool";
-import Clipboard from "@react-native-clipboard/clipboard";
 
 const LoginScreen = ({ navigation }: any) => {
 

@@ -1,8 +1,8 @@
 import { Modal, StyleSheet, View, Text, TouchableOpacity, ActivityIndicator } from "react-native"
 import { FormControl } from "@components/form/FormControl"
-import { pushMessage } from "@src/services/notification"
+import { pushMessage } from "@services/notification"
+import { useTranslateService } from "@src/providers/translateProvider"
 import React, { useState } from "react"
-import { useTranslateService } from "@/src/providers/translateProvider"
 import theme from "@src/theme"
 
 type ButtonProps = {

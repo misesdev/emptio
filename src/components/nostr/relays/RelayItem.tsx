@@ -1,4 +1,4 @@
-import { useTranslate } from "@src/services/translate"
+import { useTranslate } from "@services/translate"
 import { ScrollView, StyleSheet, Text, TouchableOpacity, View } from "react-native"
 import Ionicons from '@react-native-vector-icons/ionicons'
 import { useEffect, useState } from "react"
@@ -21,8 +21,16 @@ type RelayMetadata = {
 export const RelayItem = ({ relay, onDelete }: RelayProps) => {
 
     const [metadata, setMetadata] = useState<RelayMetadata>()
+    const [version, setVersion] = useState<string>("")
+    const [description, setDescription] = useState<string>("")
+    const [supportedNips, setSupportedNips] = useState<string>("")
 
-    useEffect(() => { loadRelayData() }, [])
+    useEffect(() => { 
+        loadRelayData() 
+        useTranslate("commons.version").then(setVersion)
+        useTranslate("commons.description").then(setDescription)
+        useTranslate("message.relay.supported_nips").then(setDescription)
+    }, [])
 
     const loadRelayData = async () => {
         try {
@@ -51,7 +59,7 @@ export const RelayItem = ({ relay, onDelete }: RelayProps) => {
                 {metadata?.description &&
                     <View style={styles.relay_row}>
                         <View style={{ width: "50%" }}>
-                            <Text style={{ color: theme.colors.white }}>{useTranslate("commons.description")}</Text>
+                            <Text style={{ color: theme.colors.white }}>{description}</Text>
                         </View>
                         <View style={{ width: "50%" }}>
                             <Text style={{ color: theme.colors.gray }}>{metadata.description}</Text>
@@ -73,7 +81,7 @@ export const RelayItem = ({ relay, onDelete }: RelayProps) => {
                 {metadata?.version &&
                     <View style={styles.relay_row}>
                         <View style={{ width: "50%" }}>
-                            <Text style={{ color: theme.colors.white }}>{useTranslate("commons.version")}</Text>
+                            <Text style={{ color: theme.colors.white }}>{version}</Text>
                         </View>
                         <View style={{ width: "50%" }}>
                             <Text style={{ color: theme.colors.gray }}>{metadata.version}</Text>
@@ -84,7 +92,7 @@ export const RelayItem = ({ relay, onDelete }: RelayProps) => {
                 {metadata?.supported_nips && metadata.supported_nips.length &&
                     <View style={{ padding: 5 }}>
                         <View style={{}}>
-                            <Text style={{ color: theme.colors.white }}>{useTranslate("message.relay.supported_nips")}</Text>
+                            <Text style={{ color: theme.colors.white }}>{supportedNips}</Text>
                         </View>
                         <ScrollView contentContainerStyle={{ padding: 10, flexDirection: "row" }} horizontal>
                             {metadata.supported_nips.map((nip, index) => <View key={index} style={styles.nip}><Text style={styles.nip_text}>{nip}</Text></View>)}

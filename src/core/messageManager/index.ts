@@ -1,12 +1,12 @@
 import { deleteEventsByCondition, 
     selecMessageChats, 
     selecMessages 
-} from "@/src/services/memory/database/events"
-import { getPairKey } from "@/src/services/memory/pairkeys"
-import { User } from "@/src/services/memory/types"
-import { getPubkeyFromTags } from "@/src/services/nostr/events"
-import { ChatUser } from "@/src/services/zustand/chats"
-import useNDKStore from "@/src/services/zustand/ndk"
+} from "@services/memory/database/events"
+import { getPairKey } from "@services/memory/pairkeys"
+import { User } from "@services/memory/types"
+import { getPubkeyFromTags } from "@services/nostr/events"
+import { ChatUser } from "@services/zustand/chats"
+import useNDKStore from "@services/zustand/ndk"
 import { NDKEvent } from "@nostr-dev-kit/ndk"
 import { nip04 } from "nostr-tools"
 

@@ -1,8 +1,9 @@
 import { StyleSheet, TextInput, View, Text, TouchableOpacity } from "react-native"
-import { useTranslate } from "@src/services/translate"
-import { formatSats, toNumber } from "@src/services/converter"
+import { useTranslate } from "@services/translate"
+import { formatSats, toNumber } from "@services/converter"
 import SelectWalletBox, { showSelectWallet } from "./WalletSelection"
-import { Wallet } from "@/src/services/memory/types"
+import { Wallet } from "@services/memory/types"
+import { useEffect, useState } from "react"
 import theme from "@src/theme"
 
 type AmountBoxProps = {
@@ -16,6 +17,14 @@ type AmountBoxProps = {
 }
 
 export const AmountBox = ({ value, placeholder, onChangeText, isValidHandle, wallet, setWallet, manageWallet = false }: AmountBoxProps) => {
+
+    const [walletTag, setWalletTag] = useState<string>("")
+    const [walletBalance, setWalletBalance] = useState<string>("")
+
+    useEffect(() => {
+        useTranslate("wallet.tag").then(setWalletTag)
+        useTranslate("wallet.subtitle.balance").then(setWalletBalance)
+    }, [])
 
     const hadleValidateFormat = (text: string) => {
 
@@ -57,11 +66,15 @@ export const AmountBox = ({ value, placeholder, onChangeText, isValidHandle, wal
                 textAlign="center"
                 autoFocus
             />
-            <Text style={styles.balance}>{`${useTranslate("wallet.subtitle.balance")}${formatSats(wallet.lastBalance)} sats.`}</Text>
+            <Text style={styles.balance}>
+                {`${walletBalance}${formatSats(wallet.lastBalance)} sats.`}
+            </Text>
             
             {manageWallet &&
                 <TouchableOpacity style={styles.wallets} onPress={showSelectWallet}>
-                    <Text style={[styles.balance, {color: theme.colors.white, textAlign:"center"}]}>{useTranslate("wallet.tag")}: {walletName()}</Text>
+                    <Text style={[styles.balance, {color: theme.colors.white, textAlign:"center"}]}>
+                        {walletTag}: {walletName()}
+                    </Text>
                 </TouchableOpacity>
             }
 

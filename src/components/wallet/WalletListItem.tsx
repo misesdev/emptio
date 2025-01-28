@@ -1,12 +1,13 @@
-import { walletService } from "@/src/core/walletManager"
-import { formatSats, toBitcoin } from "@/src/services/converter"
-import { Wallet, WalletType } from "@/src/services/memory/types"
-import { useTranslate } from "@/src/services/translate"
-import { Network } from "@/src/services/bitcoin/types"
+import { walletService } from "@src/core/walletManager"
+import { formatSats, toBitcoin } from "@services/converter"
+import { Wallet, WalletType } from "@services/memory/types"
+import { useTranslate } from "@services/translate"
+import { Network } from "@services/bitcoin/types"
 import { useEffect, useState } from "react"
 import { TouchableOpacity, View, Text, StyleSheet, Image } from "react-native"
 import { ActivityIndicator } from "react-native-paper"
-import theme from "@/src/theme"
+import { getDescriptionTypeWallet } from "@src/utils"
+import theme from "@src/theme"
 
 type Props = {
     wallet: Wallet,
@@ -14,32 +15,23 @@ type Props = {
     handleOpen: (wallet: Wallet) => void
 }
 
-const getDescriptionTypeWallet = (type: WalletType) => {
-    switch(type)
-    {
-        case "testnet":
-            return useTranslate("wallet.bitcoin.testnet.tag")
-        case "bitcoin":
-            return useTranslate("wallet.bitcoin.tag")
-        case "lightning":
-            return useTranslate("wallet.lightning.tag")
-        default:
-            return useTranslate("wallet.bitcoin.tag")
-    }
-}
-
 const WalletListItem = ({ wallet, reload, handleOpen }: Props) => {
     
     const [loading, setLoading] = useState<boolean>()
+    const [labelOpen, setLabelOpen] = useState<string>("")
+    const [typeWallet, setTypeWallet] = useState<string>("")
 
-    useEffect(() => { loadData() }, [reload])
+    useEffect(() => { 
+        loadData() 
+        useTranslate("commons.open").then(setLabelOpen)
+        getDescriptionTypeWallet(wallet.type ?? "bitcoin").then(setTypeWallet)
+    }, [reload])
 
     const loadData = async () => {
 
         setLoading(true)
 
         const network: Network = wallet.type == "bitcoin" ? "mainnet" : "testnet"
-        const walletInfo = 
         walletService.listTransactions(wallet.address ?? "", network).then(walletInfo => {
             if(wallet.lastBalance != walletInfo.balance)
             {
@@ -55,17 +47,15 @@ const WalletListItem = ({ wallet, reload, handleOpen }: Props) => {
 
     }
 
-    let balanceSats = formatSats(wallet.lastBalance)
     let balanceBTC = toBitcoin(wallet.lastBalance)
-    let typeWallet = getDescriptionTypeWallet(wallet.type ?? "bitcoin") 
-    
+    let balanceSats = formatSats(wallet.lastBalance)
     let formatName = (!!wallet.name && wallet.name?.length >= 18) ? `${wallet.name?.substring(0, 17)}..` : wallet?.name
 
     return (
         <TouchableOpacity style={[styles.wallet, { paddingHorizontal: 5 }]} key={wallet.key} activeOpacity={1}>
-            {wallet!.type === "bitcoin" && <Image source={require("assets/images/bitcoin-wallet-header3.jpg")} style={{ position: "absolute", borderRadius: 18, width: "100%", height: "100%" }} />}
-            {wallet!.type === "testnet" && <Image source={require("assets/images/bitcoin-wallet-header.jpg")} style={{ position: "absolute", borderRadius: 18, width: "100%", height: "100%" }} />}
-            {wallet!.type === "lightning" && <Image source={require("assets/images/lightning-wallet-header.png")} style={{ position: "absolute", borderRadius: 18, width: "100%", height: "100%" }} />}
+            {wallet!.type === "bitcoin" && <Image source={require("@assets/images/bitcoin-wallet-header3.jpg")} style={{ position: "absolute", borderRadius: 18, width: "100%", height: "100%" }} />}
+            {wallet!.type === "testnet" && <Image source={require("@assets/images/bitcoin-wallet-header.jpg")} style={{ position: "absolute", borderRadius: 18, width: "100%", height: "100%" }} />}
+            {wallet!.type === "lightning" && <Image source={require("@assets/images/lightning-wallet-header.png")} style={{ position: "absolute", borderRadius: 18, width: "100%", height: "100%" }} />}
             <View style={{ position: "absolute", width: "100%", height: "100%", borderRadius: 18, backgroundColor: "rgba(0,55,55,.7)" }}></View>
 
             <Text style={styles.title}>{formatName}</Text>
@@ -86,14 +76,16 @@ const WalletListItem = ({ wallet, reload, handleOpen }: Props) => {
                 style={[styles.button, { 
                     backgroundColor: wallet.type == "bitcoin" ? theme.colors.orange : theme.colors.blue 
                 }]} onPress={() => handleOpen(wallet)}>
-                <Text style={styles.buttonText}> {useTranslate("commons.open")} </Text>
+                <Text style={styles.buttonText}> {labelOpen} </Text>
             </TouchableOpacity>
 
             <Text style={{
                 backgroundColor:  wallet.type == "bitcoin" ? theme.colors.orange : theme.colors.blue,
                 color: theme.colors.white, margin: 10, borderRadius: 10,
                 fontSize: 10, fontWeight: "bold", paddingHorizontal: 10, paddingVertical: 4, position: "absolute", top: -18, right: 14,
-            }}>{typeWallet}</Text>
+            }}>
+                {typeWallet}
+            </Text>
         </TouchableOpacity>
     );
 }

@@ -8,8 +8,8 @@ import Ionicons from "@react-native-vector-icons/ionicons"
 import { useEffect, useState } from "react"
 import { SectionHeader } from "@components/general/section/headers"
 import { HeaderScreen } from "@components/general/HeaderScreen"
+import { useTranslateService } from "@src/providers/translateProvider"
 import theme from "@src/theme"
-import { useTranslateService } from "@/src/providers/translateProvider"
 
 const SendReceiverScreen = ({ navigation, route }: any) => {
 

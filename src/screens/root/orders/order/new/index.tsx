@@ -2,11 +2,11 @@ import { StyleSheet, Text, TouchableOpacity, View } from "react-native"
 import { HeaderScreen } from "@components/general/HeaderScreen"
 import { AmountBox } from "@components/wallet/inputs"
 import Ionicons from "@react-native-vector-icons/ionicons"
+import { useTranslateService } from "@src/providers/translateProvider"
+import { useAuth } from "@src/providers/userProvider"
+import { Wallet } from "@services/memory/types"
 import { useEffect, useState } from "react"
 import theme from "@src/theme"
-import { useTranslateService } from "@/src/providers/translateProvider"
-import { useAuth } from "@/src/providers/userProvider"
-import { Wallet } from "@/src/services/memory/types"
 
 const NewOrderScreen = ({ navigation }: any) => {
 

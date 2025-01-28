@@ -1,10 +1,10 @@
 import { StyleSheet, View, Text, Image, ScrollView, TouchableOpacity } from "react-native"
 import { LinkSection, SectionContainer } from "@components/general/section"
-import { getPairKey } from "@src/services/memory/pairkeys"
+import { getPairKey } from "@services/memory/pairkeys"
 import SplashScreen from "@components/general/SplashScreen"
 import { useAuth } from "@src/providers/userProvider"
 import { ButtonLink } from "@components/form/Buttons"
-import { userService } from "@/src/core/userManager"
+import { userService } from "@src/core/userManager"
 import { hexToBytes } from "@noble/hashes/utils"
 import { useState } from "react"
 import { nip19 } from "nostr-tools";
@@ -13,10 +13,10 @@ import Ionicons from "@react-native-vector-icons/ionicons"
 import { authService } from "@src/core/authManager";
 import MessageBox, { showMessage } from "@components/general/MessageBox"
 import SelectLanguageBox, { showSelectLanguage } from "@components/modal/SelectLanguageBox"
-import { pushMessage } from "@src/services/notification"
-import { useTranslateService } from "@/src/providers/translateProvider"
+import { pushMessage } from "@services/notification"
+import { useTranslateService } from "@src/providers/translateProvider"
 import { NostrEvent } from "@nostr-dev-kit/ndk"
-import { copyToClipboard } from "@/src/utils"
+import { copyToClipboard } from "@src/utils"
 import DeviceInfo from 'react-native-device-info'
 
 const UserMenuScreen = ({ navigation }: any) => {
@@ -89,7 +89,7 @@ const UserMenuScreen = ({ navigation }: any) => {
                         <TouchableOpacity activeOpacity={opacity} onPress={() => navigation.navigate("manage-account-stack")}>
                             <View style={styles.image}>
                                 {user?.picture && <Image onError={() => user.picture = ""} source={{ uri: user?.picture }} style={{ flex: 1 }} />}
-                                {!user?.picture && <Image source={require("assets/images/defaultProfile.png")} style={{ width: 97, height: 97 }} />}
+                                {!user?.picture && <Image source={require("@assets/images/defaultProfile.png")} style={{ width: 97, height: 97 }} />}
                             </View> 
                         </TouchableOpacity>                
                     </View> 

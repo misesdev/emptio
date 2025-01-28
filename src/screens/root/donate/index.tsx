@@ -1,13 +1,13 @@
 import { StyleSheet, View, Text, TouchableOpacity } from "react-native"
 import { HeaderScreen } from "@components/general/HeaderScreen"
 import { useAuth } from "@src/providers/userProvider"
-import { getWallet } from "@src/services/memory/wallets"
+import { getWallet } from "@services/memory/wallets"
 import theme from "@src/theme"
 import { useEffect, useState } from "react"
 import { AmountBox } from "@components/wallet/inputs"
 import Ionicons from "@react-native-vector-icons/ionicons"
-import { useTranslateService } from "@/src/providers/translateProvider"
-import { Wallet } from "@/src/services/memory/types"
+import { useTranslateService } from "@src/providers/translateProvider"
+import { Wallet } from "@services/memory/types"
 
 const DonateScreen = ({ navigation, route }: any) => {
 

@@ -2,9 +2,9 @@
 import { useState } from "react"
 import { Modal, StyleSheet, Text, TouchableOpacity, View } from "react-native"
 import Ionicons from '@react-native-vector-icons/ionicons'
-import { Wallet } from "@/src/services/memory/types"
-import { useAuth } from "@/src/providers/userProvider"
-import { formatSats } from "@/src/services/converter"
+import { Wallet } from "@services/memory/types"
+import { useAuth } from "@src/providers/userProvider"
+import { formatSats } from "@services/converter"
 import theme from "@src/theme"
 
 var showWalletsFunction: () => void

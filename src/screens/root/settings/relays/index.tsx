@@ -4,19 +4,22 @@ import { HeaderScreen } from "@components/general/HeaderScreen"
 import MessageBox, { showMessage } from "@components/general/MessageBox"
 import { ButtonPrimary } from "@components/form/Buttons"
 import { RelayList } from "@components/nostr/relays/RelayList"
-import { deleteRelay, getRelays, insertRelay } from "@/src/services/memory/relays"
-import { pushMessage } from "@src/services/notification"
+import { deleteRelay, getRelays, insertRelay } from "@services/memory/relays"
+import { pushMessage } from "@services/notification"
+import { useTranslateService } from "@src/providers/translateProvider"
+import useNDKStore from "@/src/services/zustand/ndk"
 import { useEffect, useState } from "react"
 import theme from "@src/theme"
 import AddRelay from "./add"
 import axios from "axios"
-import { useTranslateService } from "@/src/providers/translateProvider"
 
 const ManageRelaysScreen = ({ navigation }: any) => {
 
+    const { ndk } = useNDKStore()
     const { useTranslate } = useTranslateService()
     const [visible, setVisible] = useState(false)
     const [relays, setRelays] = useState<string[]>([])
+
 
     useEffect(() => { loadDataRelays() }, [])
 
@@ -40,7 +43,7 @@ const ManageRelaysScreen = ({ navigation }: any) => {
             if (response.status != 200)
                 return await pushMessage(useTranslate("message.relay.invalid"))
 
-            Nostr.addExplicitRelay(relay, undefined, true)
+            ndk.addExplicitRelay(relay, undefined, true)
 
             await insertRelay(relay)
 
@@ -65,7 +68,7 @@ const ManageRelaysScreen = ({ navigation }: any) => {
                     
                     setRelays(prevItems => prevItems.filter(item => item != relay))
 
-                    Nostr.explicitRelayUrls?.splice(Nostr.explicitRelayUrls.indexOf(relay), 1)
+                    ndk.explicitRelayUrls?.splice(ndk.explicitRelayUrls.indexOf(relay), 1)
 
                     pushMessage(useTranslate("message.relay.delete_success"))
                 }
@@ -78,7 +81,11 @@ const ManageRelaysScreen = ({ navigation }: any) => {
             <HeaderScreen title={useTranslate("settings.relays")} onClose={() => navigation.navigate("user-menu-stack")} />
             <ScrollView contentContainerStyle={theme.styles.scroll_container} >
 
-                {!relays.length && <Text style={{ color: theme.colors.gray }}>{useTranslate("message.relay.empty")}</Text>}
+                {!relays.length && 
+                    <Text style={{ color: theme.colors.gray }}>
+                        {useTranslate("message.relay.empty")}
+                    </Text>
+                }
 
                 <RelayList relays={relays} onDelete={handleDeleteRelay} />
 

@@ -1,9 +1,9 @@
 
 import { StyleSheet, View, Text, ScrollView, Image, TouchableOpacity, Linking } from "react-native"
-import theme from "@src/theme"
 import { HeaderScreen } from "@components/general/HeaderScreen"
-import { Ionicons } from "@expo/vector-icons"
-import { useTranslateService } from "@/src/providers/translateProvider"
+import Ionicons from "@react-native-vector-icons/ionicons"
+import { useTranslateService } from "@src/providers/translateProvider"
+import theme from "@src/theme"
 
 const AboutScreen = ({ navigation }: any) => {
 
@@ -18,7 +18,7 @@ const AboutScreen = ({ navigation }: any) => {
             <HeaderScreen title={useTranslate("settings.about")} onClose={() => navigation.navigate("user-menu-stack")} />
             <ScrollView contentContainerStyle={theme.styles.scroll_container} >
 
-                <Image source={require("assets/emptio.png")} style={styles.logo} />
+                <Image source={require("@assets/emptio.png")} style={styles.logo} />
 
                 <View style={{ padding: 15, marginVertical: 20 }}>
                     <Text style={{ color: theme.colors.gray, fontSize: 16 }}>

@@ -1,4 +1,3 @@
-
 import { Animated, Image, StyleSheet, Text, View } from "react-native"
 import { useRef, useState } from "react"
 import theme from "@src/theme"

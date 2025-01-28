@@ -1,4 +1,4 @@
-import { useTranslate } from "@/src/services/translate"
+import { useTranslate } from "@services/translate"
 import ReactNativeBiometrics from "react-native-biometrics";
 
 const checkBiometric = async () => {
@@ -8,7 +8,7 @@ const checkBiometric = async () => {
 
     if (available) {
         const { success } = await rnBiometrics.simplePrompt({
-            promptMessage: useTranslate("commons.authenticate.message")
+            promptMessage: await useTranslate("commons.authenticate.message")
         })
         return success
     }

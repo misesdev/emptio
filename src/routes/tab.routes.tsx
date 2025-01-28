@@ -1,13 +1,13 @@
-import { createMaterialBottomTabNavigator } from '@react-navigation/material-bottom-tabs';
-import { Ionicons } from "@expo/vector-icons"
+import { createBottomTabNavigator } from '@react-navigation/bottom-tabs'
+import Ionicons from "@react-native-vector-icons/ionicons"
 import HomeScreen from "@screens/root/home"
 import FeedScreen from "@screens/root/orders"
+import ChatsScreen from '@screens/root/chats'
+import { useTranslateService } from '../providers/translateProvider'
+import useChatStore from '../services/zustand/chats'
 import theme from "@src/theme"
-import ChatsScreen from '@screens/root/chats';
-import { useTranslateService } from '../providers/translateProvider';
-import useChatStore from '../services/zustand/chats';
 
-const Tab = createMaterialBottomTabNavigator()
+const Tab = createBottomTabNavigator()
 
 const TabRoutes = () => {
 
@@ -17,11 +17,14 @@ const TabRoutes = () => {
     return (
         <Tab.Navigator
             initialRouteName="home"
-            activeColor={theme.colors.white}
-            inactiveColor={theme.colors.gray}
-            screenOptions={{ tabBarColor: theme.colors.gray }}
-            barStyle={{ backgroundColor: theme.colors.semitransparent, height: 92 }}
-            activeIndicatorStyle={{ backgroundColor: theme.colors.blue }}
+            //activeColor={theme.colors.white}
+            //inactiveColor={theme.colors.gray}
+            screenOptions={{ 
+                tabBarActiveTintColor: theme.colors.white,
+                tabBarInactiveTintColor: theme.colors.gray
+            }}
+            //barStyle={{ backgroundColor: theme.colors.semitransparent, height: 92 }}
+            //activeIndicatorStyle={{ backgroundColor: theme.colors.blue }}
         >
             <Tab.Screen
                 name="home"
@@ -29,7 +32,7 @@ const TabRoutes = () => {
                 options={{                    
                     tabBarLabel: useTranslate("menu.home"),
                     tabBarIcon: ({ color }) => <Ionicons name="wallet" color={color} size={theme.icons.medium} />,
-                    tabBarBadge: false
+                    // tabBarBadge: false
                 }}
             />
             <Tab.Screen
@@ -38,7 +41,7 @@ const TabRoutes = () => {
                 options={{
                     tabBarLabel: useTranslate("menu.orders"),
                     tabBarIcon: ({ color }) => <Ionicons name="briefcase" color={color} size={theme.icons.large} />,
-                    tabBarBadge: false
+                    // tabBarBadge: false
                 }}
             />
             <Tab.Screen
@@ -47,9 +50,10 @@ const TabRoutes = () => {
                 options={{
                     tabBarLabel: useTranslate("menu.chats"),
                     tabBarIcon: ({ color }) => <Ionicons name="chatbox" color={color} size={theme.icons.medium} />,
-                    tabBarBadge: !!unreadChats.length ? unreadChats.length : false,
+                    // tabBarBadge: !!unreadChats.length ? unreadChats.length : false,
                 }}
             />
+
             {/* <Tab.Screen */}
             {/*     name="notifications" */}
             {/*     component={NotificationScreen} */}

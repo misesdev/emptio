@@ -1,6 +1,6 @@
 import { SafeAreaView, ScrollView, TouchableOpacity, View, Text, StyleSheet } from "react-native"
-import { useTranslateService } from "@/src/providers/translateProvider"
-import { Wallet } from "@src/services/memory/types"
+import { useTranslateService } from "@src/providers/translateProvider"
+import { Wallet } from "@services/memory/types"
 import WalletListItem from "./WalletListItem"
 import theme from "@src/theme"
 
@@ -24,7 +24,6 @@ const WalletList = ({ wallets, navigation, reload }: Props) => {
                 {wallets &&
                     wallets.map((wallet) => <WalletListItem reload={reload} key={wallet.key} wallet={wallet} handleOpen={handleOpenWallet} />)
                 }
-
                 <View style={[styles.wallet, { backgroundColor: theme.colors.section, padding: 5 }]}>
                     <Text style={styles.title}>{useTranslate("labels.wallet.add")}</Text>
                     <Text style={[styles.description, { color: theme.colors.gray }]}>{useTranslate("message.wallet.create")}</Text>

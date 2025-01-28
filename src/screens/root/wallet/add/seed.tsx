@@ -1,9 +1,9 @@
 import SplashScreen from "@components/general/SplashScreen"
 import { HeaderScreen } from "@components/general/HeaderScreen"
-import { useEffect, useState } from "react"
 import { ScrollView, StyleSheet, Text, View } from "react-native"
 import { ButtonPrimary } from "@components/form/Buttons"
-import { useTranslateService } from "@/src/providers/translateProvider"
+import { useTranslateService } from "@src/providers/translateProvider"
+import { useEffect, useState } from "react"
 import theme from "@src/theme"
 
 const CreatedSeedScren = ({ navigation, route }: any) => {

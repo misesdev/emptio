@@ -1,18 +1,18 @@
 import { View, Text, FlatList, StyleSheet, TouchableOpacity } from "react-native"
 import { SectionContainer } from "@components/general/section"
 import { ButtonDanger, ButtonSuccess } from "@components/form/Buttons"
-import { listenerEvents } from "@src/services/nostr/events"
+import { listenerEvents } from "@services/nostr/events"
 import { NostrEventKinds } from "@src/constants/Events"
 import { useAuth } from "@src/providers/userProvider"
 import { memo, useEffect, useState } from "react"
 import { useTranslateService } from "@/src/providers/translateProvider"
 import Ionicons from "@react-native-vector-icons/ionicons"
 import { RefreshControl } from "react-native-gesture-handler"
-import { pushMessage } from "@/src/services/notification"
-import { NostrEvent } from "@/src/services/nostr/events"
+import { pushMessage } from "@services/notification"
+import { NostrEvent } from "@services/nostr/events"
+import { User } from "@services/memory/types"
 import { HeaderFeed } from "./header"
 import theme from "@src/theme"
-import { User } from "@/src/services/memory/types"
 
 const FeedScreen = ({ navigation }: any) => {
 

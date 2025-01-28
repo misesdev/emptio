@@ -1,10 +1,10 @@
-import NoteViewer from "@/src/components/nostr/event/NoteViewer"
-import { messageService } from "@/src/core/messageManager"
-import { User } from "@/src/services/memory/types"
-import theme from "@/src/theme"
+import NoteViewer from "@components/nostr/event/NoteViewer"
+import { messageService } from "@src/core/messageManager"
+import { User } from "@services/memory/types"
 import { NDKEvent } from "@nostr-dev-kit/ndk"
 import { useCallback, useEffect, useState } from "react"
 import { TouchableOpacity, View, Text, StyleSheet, FlatList } from "react-native"
+import theme from "@/src/theme"
 
 type Props = {
     user: User,

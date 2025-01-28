@@ -2,10 +2,10 @@ import { useAuth } from "@src/providers/userProvider"
 import { TouchableOpacity, View, Text, Image, StyleSheet } from "react-native"
 import Ionicons from "@react-native-vector-icons/ionicons"
 import SearchButton from "@components/form/SearchButton"
-import theme from "@/src/theme"
-import { useTranslateService } from "@/src/providers/translateProvider"
-import { pushMessage } from "@/src/services/notification"
-import { Wallet } from "@/src/services/memory/types"
+import theme from "@src/theme"
+import { useTranslateService } from "@src/providers/translateProvider"
+import { pushMessage } from "@services/notification"
+import { Wallet } from "@services/memory/types"
 
 export const HeaderHome = ({ navigation }: any) => {
 
@@ -26,7 +26,7 @@ export const HeaderHome = ({ navigation }: any) => {
             <View style={{ width: "15%", alignItems: "center", justifyContent: "center" }}>
                 <TouchableOpacity onPress={() => navigation.navigate("user-menu-stack")}>
                     {user?.picture && <Image source={{ uri: user?.picture }} style={styles.userMenu} />}
-                    {!!!user?.picture && <Image source={require("assets/images/defaultProfile.png")} style={styles.userMenu} />}
+                    {!!!user?.picture && <Image source={require("@assets/images/defaultProfile.png")} style={styles.userMenu} />}
                 </TouchableOpacity>
             </View>
             <View style={{ width: "60%", alignItems: "center", justifyContent: "center" }}>

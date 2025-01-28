@@ -4,13 +4,13 @@ import { Image, StyleSheet, Text, View } from "react-native";
 import { ButtonPrimary } from "@components/form/Buttons";
 import { TextBox } from "@components/form/TextBoxs";
 import MessageBox, { showMessage } from "@components/general/MessageBox";
-import { userService } from "@/src/core/userManager";
-import { useAuth } from "@/src/providers/userProvider";
+import { userService } from "@src/core/userManager";
+import { useAuth } from "@src/providers/userProvider";
+import { useTranslateService } from "@src/providers/translateProvider";
+import useNDKStore from "@services/zustand/ndk";
+import { subscribeUserChat } from "@services/nostr/pool";
+import useChatStore from "@services/zustand/chats";
 import theme from "@src/theme";
-import { useTranslateService } from "@/src/providers/translateProvider";
-import useNDKStore from "@/src/services/zustand/ndk";
-import { subscribeUserChat } from "@/src/services/nostr/pool";
-import useChatStore from "@/src/services/zustand/chats";
 
 const RegisterScreen = ({ navigation }: any) => {
 

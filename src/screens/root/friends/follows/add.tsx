@@ -1,14 +1,14 @@
 import { SearchBox } from "@components/form/SearchBox"
 import { HeaderScreen } from "@components/general/HeaderScreen"
 import { ActivityIndicator, View, Text } from "react-native"
-import { User } from "@src/services/memory/types"
+import { User } from "@services/memory/types"
 import { useAuth } from "@src/providers/userProvider"
-import { useTranslateService } from "@/src/providers/translateProvider"
-import { userService } from "@/src/core/userManager"
-import { UserList } from "@/src/components/nostr/user/UserList"
-import theme from "@src/theme"
+import { useTranslateService } from "@src/providers/translateProvider"
+import { userService } from "@src/core/userManager"
+import { UserList } from "@components/nostr/user/UserList"
+import FollowModal, { showFollowModal } from "@components/nostr/follow/FollowModal"
 import { useState } from "react"
-import FollowModal, { showFollowModal } from "@/src/components/nostr/follow/FollowModal"
+import theme from "@src/theme"
 
 const AddFolowScreen = ({ navigation }: any) => {
 

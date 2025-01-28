@@ -1,6 +1,7 @@
 import { NavigationContainer } from "@react-navigation/native"
 
 import TabRoutes from "./tab.routes"
+import { stackOptions } from "../constants/RouteSettings"
 import { CardStyleInterpolators, createStackNavigator } from "@react-navigation/stack"
 import InitializeScreen from "../screens"
 import RegisterScreen from "@screens/initialize/register"
@@ -9,7 +10,6 @@ import UserMenuScreen from "@screens/root/menu"
 import HomeSearchScreen from "@screens/root/home/search/HomeSearch"
 import FeedSearchScreen from "@screens/root/orders/search/FeedSearch"
 import AuthenticateScreen from "@screens/initialize"
-import { stackOptions } from "../constants/RouteSettings"
 import UserEditScreen from "@screens/root/settings/user"
 import ManageRelaysScreen from "@screens/root/settings/relays"
 import AboutScreen from "@screens/root/settings/about"
@@ -26,9 +26,9 @@ import NewChatScreen from "@screens/root/chats/new"
 import WalletReceiveScreen from "@screens/root/wallet/receive"
 import ImportWalletScreen from "@screens/root/wallet/add/import"
 import CreatedSeedScren from "@screens/root/wallet/add/seed"
-import TransactionScreen from "../screens/root/wallet/transaction"
-import NewOrderScreen from "../screens/root/orders/order/new"
-import ConversationChat from "../screens/root/chats/conversation"
+import TransactionScreen from "@screens/root/wallet/transaction"
+import NewOrderScreen from "@screens/root/orders/order/new"
+import ConversationChat from "@screens/root/chats/conversation"
 
 const Stack = createStackNavigator()
 

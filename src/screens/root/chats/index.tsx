@@ -4,12 +4,12 @@ import { TouchableOpacity } from "react-native-gesture-handler"
 import Ionicons from "@react-native-vector-icons/ionicons"
 import { useState } from "react"
 import { HeaderChats } from "./header"
-import { SearchBox } from "@/src/components/form/SearchBox"
-import { useTranslateService } from "@/src/providers/translateProvider"
-import { useAuth } from "@/src/providers/userProvider"
+import { SearchBox } from "@components/form/SearchBox"
+import { useTranslateService } from "@src/providers/translateProvider"
+import { useAuth } from "@src/providers/userProvider"
 import ChatList from "./list"
-import useChatStore, { ChatUser } from "@/src/services/zustand/chats"
-import { User } from "@/src/services/memory/types"
+import useChatStore, { ChatUser } from "@services/zustand/chats"
+import { User } from "@services/memory/types"
 
 const ChatsScreen = ({ navigation }: any) => {
    

@@ -8,9 +8,9 @@ import { ScrollView } from "react-native-gesture-handler"
 import Ionicons from "@react-native-vector-icons/ionicons"
 import { userService } from "@src/core/userManager"
 import SplashScreen from "@components/general/SplashScreen"
-import { uploadImage } from "@src/services/blob"
-import { pushMessage } from "@src/services/notification"
-import { useTranslateService } from "@/src/providers/translateProvider"
+import { uploadImage } from "@services/blob"
+import { pushMessage } from "@services/notification"
+import { useTranslateService } from "@src/providers/translateProvider"
 import { useState } from "react"
 import theme from "@src/theme"
 
@@ -88,7 +88,7 @@ const UserEditScreen = ({ navigation }: any) => {
                     <TouchableOpacity activeOpacity={.7} onPress={() => handlePickImage("profile")}>
                         <View style={styles.image}>
                             {prifile && <Image source={{ uri: prifile }} style={{ flex: 1 }} />}
-                            {!prifile && <Image source={require("assets/images/defaultProfile.png")} style={{ flex: 1 }} />}
+                            {!prifile && <Image source={require("@assets/images/defaultProfile.png")} style={{ flex: 1 }} />}
                         </View>
                         <Ionicons
                             size={theme.icons.mine}

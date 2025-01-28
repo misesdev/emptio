@@ -4,10 +4,10 @@ import { useTranslateService } from "@src/providers/translateProvider"
 import { useAuth } from "@src/providers/userProvider"
 import WalletList from "@components/wallet/WalletList"
 import { useEffect, useState } from "react"
+import { pushMessage } from "@services/notification"
+import { walletService } from "@src/core/walletManager"
 import { HeaderHome } from "./header"
 import theme from "@src/theme"
-import { pushMessage } from "@src/services/notification"
-import { walletService } from "@/src/core/walletManager"
 
 const HomeScreen = ({ navigation }: any) => {
 

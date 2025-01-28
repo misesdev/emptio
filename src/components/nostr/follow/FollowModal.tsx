@@ -1,13 +1,13 @@
 import { useState } from "react"
 import { Modal, StyleSheet, Text, TouchableOpacity, View, Image } from "react-native"
 import { useTranslateService } from "@src/providers/translateProvider"
-import { User } from "@/src/services/memory/types"
-import { hexToNpub } from "@/src/services/converter"
-import { userService } from "@/src/core/userManager"
+import { User } from "@services/memory/types"
+import { hexToNpub } from "@services/converter"
+import { userService } from "@src/core/userManager"
 import { NoteList } from "../user/NoteList"
 import { ActivityIndicator } from "react-native-paper"
 import theme from "@src/theme"
-import { copyToClipboard } from "@/src/utils"
+import { copyToClipboard } from "@src/utils"
 
 type followModalProps = {
     user: User,
@@ -80,7 +80,7 @@ const FollowModal = ({ handleAddFollow }: FollowProps) => {
                         <TouchableOpacity activeOpacity={.3} onPress={handleCopyPubkey}>
                             <View style={styles.image}>
                                 {user?.picture && <Image onError={() => user.picture = ""} source={{ uri: user?.picture }} style={{ flex: 1 }} />}
-                                {!user?.picture && <Image source={require("assets/images/defaultProfile.png")} style={{ width: 60, height: 60 }} />}
+                                {!user?.picture && <Image source={require("@assets/images/defaultProfile.png")} style={{ width: 60, height: 60 }} />}
                             </View>
                         </TouchableOpacity>
                         <TouchableOpacity style={{ paddingHorizontal: 12 }} onPress={handleCopyPubkey}>

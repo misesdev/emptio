@@ -1,9 +1,9 @@
 import { StyleSheet, View, Text } from "react-native"
 import { SearchBox } from "@components/form/SearchBox"
 import { HeaderScreen } from "@components/general/HeaderScreen"
+import { useTranslateService } from "@src/providers/translateProvider"
 import { useEffect } from "react"
 import theme from "@src/theme"
-import { useTranslateService } from "@/src/providers/translateProvider"
 
 const FeedSearchScreen = ({ navigation }: any) => {
 

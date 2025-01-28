@@ -1,12 +1,11 @@
-
 import { useState } from "react"
 import { Modal, StyleSheet, Text, TouchableOpacity, View } from "react-native"
 import { useTranslateService } from "@src/providers/translateProvider"
 import Ionicons from "@react-native-vector-icons/ionicons"
-import { User } from "@/src/services/memory/types"
+import { User } from "@services/memory/types"
 import { NDKEvent } from "@nostr-dev-kit/ndk"
-import { IconNames } from "@/src/services/types/icons"
-import { copyToClipboard } from "@/src/utils"
+import { IconNames } from "@services/types/icons"
+import { copyToClipboard } from "@src/utils"
 import theme from "@src/theme"
 
 type OptionProps = { 

@@ -1,15 +1,18 @@
-import { getTransactionInfo, getUtxo, getUtxos } from "@/src/services/bitcoin/mempool"
-import { getUser } from "@/src/services/memory/user"
-import { useTranslate } from "@/src/services/translate"
+import { getTransactionInfo, getUtxo, getUtxos } from "@services/bitcoin/mempool"
+import { getUser } from "@services/memory/user"
+import { useTranslate } from "@services/translate"
 import { Tx } from "@mempool/mempool.js/lib/interfaces/bitcoin/transactions"
-import { generateAddress, createTransaction, createWallet, ValidateAddress, sendTransaction, importWallet, getSeedPhrase, BaseWallet } from "@src/services/bitcoin"
-import { getRandomKey } from "@src/services/bitcoin/signature"
-import { deletePairKey, getPairKey, insertPairKey } from "@src/services/memory/pairkeys"
-import { PairKey, Transaction, TransactionInput, TransactionOutput, Wallet, WalletInfo, WalletType } from "@src/services/memory/types"
-import { clearDefaultWallets, deleteWallet, getWallet, getWallets, insertWallet, updateWallet } from "@src/services/memory/wallets"
-import { Response, trackException } from "@src/services/telemetry"
+import { generateAddress, createTransaction, createWallet, ValidateAddress, 
+    sendTransaction, importWallet, BaseWallet } from "@services/bitcoin"
+import { getRandomKey } from "@services/bitcoin/signature"
+import { deletePairKey, getPairKey, insertPairKey } from "@services/memory/pairkeys"
+import { PairKey, Transaction, TransactionInput, TransactionOutput, Wallet,
+    WalletInfo, WalletType } from "@services/memory/types"
+import { clearDefaultWallets, deleteWallet, getWallet, getWallets, 
+    insertWallet, updateWallet } from "@services/memory/wallets"
+import { Response, trackException } from "@services/telemetry"
 import { userService } from "../userManager"
-import { Network } from "../../services/bitcoin/types"
+import { Network } from "@services/bitcoin/types"
 
 type Props = {
     name: string,
@@ -95,7 +98,7 @@ const seedphrase = async (pairkey: string): Promise<Response<string>> => {
     {
         const pairKey = await getPairKey(pairkey)
 
-        const seedphrase = getSeedPhrase(pairKey.privateKey)
+        const seedphrase = ""// getSeedPhrase(pairKey.privateKey)
 
         return { success: true, message: "", data: seedphrase }
     } catch (ex) {
@@ -146,7 +149,7 @@ const listTransactions = async (address: string, network: Network): Promise<Wall
 
     const utxos: Tx[] = await getUtxos(address, network)
 
-    utxos.forEach(utxo => {
+    utxos.forEach(async (utxo) => {
         let received = utxo.vout.reduce((acumulator, tx) => {
             if (tx.scriptpubkey_address == address)
                 return acumulator + tx.value
@@ -165,10 +168,14 @@ const listTransactions = async (address: string, network: Network): Promise<Wall
             txid: utxo.txid,
             fee: utxo.fee,
             confirmed: utxo.status.confirmed,
-            description: utxo.status.confirmed ? useTranslate("message.transaction.confirmed") : useTranslate("message.transaction.notconfirmed"),
+            description: utxo.status.confirmed ? 
+                await useTranslate("message.transaction.confirmed") :
+                await useTranslate("message.transaction.notconfirmed"),
             type: received > sended ? "received" : "sended",
             amount: received > sended ? received : sended,
-            date: utxo.status.confirmed ? new Date(utxo.status.block_time * 1000).toLocaleString() : useTranslate("message.transaction.notconfirmed"),
+            date: utxo.status.confirmed ? 
+                new Date(utxo.status.block_time * 1000).toLocaleString() : 
+                await useTranslate("message.transaction.notconfirmed"),
             timestamp: utxo.status.confirmed ? utxo.status.block_time : Date.now()
         }
 

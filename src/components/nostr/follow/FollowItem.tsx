@@ -1,7 +1,8 @@
 import { TouchableOpacity, View, Image, Text, StyleSheet } from "react-native"
-import { User } from "@src/services/memory/types"
-import { hexToNpub } from "@/src/services/converter"
-import { useTranslate } from "@/src/services/translate"
+import { User } from "@services/memory/types"
+import { hexToNpub } from "@services/converter"
+import { useTranslate } from "@services/translate"
+import { useEffect, useState } from "react"
 import theme from "@src/theme"
 
 type UserItemProps = {
@@ -13,6 +14,11 @@ type UserItemProps = {
 
 export const FollowItem = ({ follow, handleClickFollow, toFollow = false, isFriend = false }: UserItemProps) => {
 
+    const [isFriendMessage, setIsFriendMessage] = useState("")
+    useEffect(() => { 
+        useTranslate("friends.user.is-friend").then(setIsFriendMessage)
+    }, [])
+
     return (
         <TouchableOpacity
             activeOpacity={.7}
@@ -23,7 +29,7 @@ export const FollowItem = ({ follow, handleClickFollow, toFollow = false, isFrie
             <View style={styles.profileArea}>
                 <View style={styles.profileView}>
                     {follow.picture && <Image onError={() => follow.picture = ""} source={{ uri: follow.picture }} style={styles.profile} />}
-                    {!follow.picture && <Image source={require("assets/images/defaultProfile.png")} style={styles.profileView} />}
+                    {!follow.picture && <Image source={require("@assets/images/defaultProfile.png")} style={styles.profileView} />}
                 </View>
             </View>
             {/* Transaction Description and Date */}
@@ -44,7 +50,7 @@ export const FollowItem = ({ follow, handleClickFollow, toFollow = false, isFrie
                     <Text style={{ position: "absolute", right: 10, top: -2, paddingHorizontal: 12, 
                         borderRadius: 5, fontWeight: "400", fontSize: 11, paddingVertical: 3,
                         color: theme.colors.white, backgroundColor: theme.colors.blue }}>
-                        {useTranslate("friends.user.is-friend")}
+                        {isFriendMessage}
                     </Text>
                 }
             </View>            

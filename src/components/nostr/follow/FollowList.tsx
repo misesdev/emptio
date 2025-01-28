@@ -1,7 +1,7 @@
 import { ActivityIndicator, FlatList } from "react-native"
-import { userService } from "@/src/core/userManager"
+import { userService } from "@src/core/userManager"
 import { useAuth } from "@src/providers/userProvider"
-import { User } from "@src/services/memory/types"
+import { User } from "@services/memory/types"
 import { memo, useCallback, useEffect, useRef, useState } from "react"
 import { walletService } from "@src/core/walletManager"
 import { FollowItem } from "./FollowItem"
@@ -81,7 +81,7 @@ export const FollowList = ({ searchTerm, onPressFollow, toPayment = false,
                 data={followList}
                 renderItem={renderItem}
                 contentContainerStyle={[theme.styles.scroll_container, { paddingBottom: 30 }]}
-                ListFooterComponent={handleLoaderEnd}
+                // ListFooterComponent={handleLoaderEnd}
                 keyExtractor={item => item.pubkey ?? Math.random().toString()}
             />
         </>

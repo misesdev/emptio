@@ -1,16 +1,16 @@
-import { hexToNpub } from "@/src/services/converter"
-import theme from "@/src/theme"
+import { hexToNpub } from "@services/converter"
 import { useEffect, useState } from "react"
 import { View, StyleSheet, Image, Text, TextInput, 
     KeyboardAvoidingView, Platform, TouchableOpacity, Vibration } from "react-native"
 import { NDKEvent } from "@nostr-dev-kit/ndk"
-import { useAuth } from "@/src/providers/userProvider"
-import { messageService } from "@/src/core/messageManager"
-import { User } from "@/src/services/memory/types"
-import useChatStore from "@/src/services/zustand/chats"
+import { useAuth } from "@src/providers/userProvider"
+import { messageService } from "@src/core/messageManager"
+import { User } from "@services/memory/types"
+import useChatStore from "@services/zustand/chats"
 import ConversationList from "./list"
 import MessageOptionsBox, { showOptiosMessage } from "./options"
 import Ionicons from "@react-native-vector-icons/ionicons"
+import theme from "@/src/theme"
 
 const ConversationChat = ({ navigation, route }: any) => {
     
@@ -58,7 +58,7 @@ const ConversationChat = ({ navigation, route }: any) => {
                 <View style={{ width: "15%", padding: 5 }}>
                     <View style={styles.imageContainer}>
                         {follow?.picture && <Image onError={() => { follow.picture = "" }} source={{ uri: follow?.picture }} style={{ flex: 1 }} />}
-                        {!follow?.picture && <Image source={require("assets/images/defaultProfile.png")} style={{ width: 50, height: 50 }} />}                               
+                        {!follow?.picture && <Image source={require("@assets/images/defaultProfile.png")} style={{ width: 50, height: 50 }} />}                               
                     </View>
                 </View>
                 <View style={{ width: "70%", padding: 5 }}>

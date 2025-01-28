@@ -87,9 +87,13 @@ export const getTransactionInfo = async (txid: string, network: Network) => {
         size: utxo.size,
         confirmed: utxo.status.confirmed,
         block_height: utxo.status.block_height,
-        description: utxo.status.confirmed ? useTranslate("message.transaction.confirmed") : useTranslate("message.transaction.notconfirmed"),
+        description: utxo.status.confirmed ? 
+            await useTranslate("message.transaction.confirmed") : 
+            await useTranslate("message.transaction.notconfirmed"),
         amount: amount,
-        date: utxo.status.confirmed ? new Date(utxo.status.block_time * 1000).toLocaleString() : useTranslate("message.transaction.notconfirmed"),
+        date: utxo.status.confirmed ? 
+            new Date(utxo.status.block_time * 1000).toLocaleString() : 
+            await useTranslate("message.transaction.notconfirmed"),
         timestamp: utxo.status.confirmed ? utxo.status.block_time : Date.now(),
         inputs: inputs,
         outputs: outputs

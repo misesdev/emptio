@@ -2,8 +2,8 @@ import SearchButton from "@components/form/SearchButton"
 import { useAuth } from "@src/providers/userProvider"
 import { TouchableOpacity, View, Image, StyleSheet } from "react-native"
 import Ionicons from "@react-native-vector-icons/ionicons"
+import { useTranslateService } from "@src/providers/translateProvider"
 import theme from "@src/theme"
-import { useTranslateService } from "@/src/providers/translateProvider"
 
 export const HeaderFeed = ({ navigation }: any) => {
 
@@ -15,7 +15,7 @@ export const HeaderFeed = ({ navigation }: any) => {
             <View style={{ width: "15%", alignItems: "center", justifyContent: "center" }}>
                 <TouchableOpacity onPress={() => navigation.navigate("user-menu-stack")}>
                     {user?.picture && <Image source={{ uri: user?.picture }} style={styles.userMenu} />}
-                    {!user?.picture && <Image source={require("assets/images/defaultProfile.png")} style={styles.userMenu} />}
+                    {!user?.picture && <Image source={require("@assets/images/defaultProfile.png")} style={styles.userMenu} />}
                 </TouchableOpacity>
             </View>
             <View style={{ width: "70%", alignItems: "center", justifyContent: "center" }}>

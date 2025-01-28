@@ -1,8 +1,8 @@
 import { ActivityIndicator, FlatList, View } from "react-native"
-import { userService } from "@/src/core/userManager"
-import { useTranslate } from "@/src/services/translate"
+import { userService } from "@src/core/userManager"
+import { useTranslate } from "@services/translate"
 import { useAuth } from "@src/providers/userProvider"
-import { User } from "@src/services/memory/types"
+import { User } from "@services/memory/types"
 import { useCallback, useEffect, useState } from "react"
 import { walletService } from "@src/core/walletManager"
 import { SectionHeader } from "../general/section/headers"
@@ -23,9 +23,13 @@ export const FriendList = ({ searchTerm, onPressFollow, loadCombo = 20, toPaymen
     const [listCounter, setListCounter] = useState(loadCombo)
     const [refreshing, setRefreshing] = useState(true)
     const [followList, setFollowList] = useState<User[]>([])
+    const [labelFriends, setLabelFriends] = useState<string>("")
     const [followListData, setFollowListData] = useState<User[]>([])
 
-    useEffect(() => { handleListFollows() }, [])
+    useEffect(() => {
+        handleListFollows() 
+        useTranslate("labels.friends").then(setLabelFriends)
+    }, [])
 
     if (searchable) {
         useEffect(() => {
@@ -80,14 +84,14 @@ export const FriendList = ({ searchTerm, onPressFollow, loadCombo = 20, toPaymen
 
     return (
         <View>
-            <SectionHeader label={useTranslate("labels.friends")} icon="people" actions={[{ label: followListData.length.toString(), action: () => { } }]} />
+            <SectionHeader label={labelFriends} icon="people" actions={[{ label: followListData.length.toString(), action: () => { } }]} />
             <FlatList
                 data={followList}
                 renderItem={handleRenderItem}
                 onEndReached={handleLoadScroll}
                 onEndReachedThreshold={.3}
                 contentContainerStyle={theme.styles.scroll_container}
-                ListFooterComponent={handleLoaderEnd}
+                //ListFooterComponent={handleLoaderEnd}
             />
         </View>
     )

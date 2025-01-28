@@ -1,8 +1,8 @@
 import { CardStyleInterpolators, StackNavigationOptions } from "@react-navigation/stack"
 import { ViewStyle } from "react-native"
-import theme from "../theme"
 import { TouchableOpacity } from "react-native-gesture-handler"
-import { Ionicons } from "@expo/vector-icons"
+import Ionicons from "@react-native-vector-icons/ionicons"
+import theme from "../theme"
 
 export const tabBarStyle: ViewStyle = {
     backgroundColor: theme.colors.transparent,

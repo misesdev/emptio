@@ -3,7 +3,7 @@ import { View, Image, StyleSheet, Linking } from 'react-native';
 import ParsedText from 'react-native-parsed-text';
 import { WebView } from 'react-native-webview';
 import { Video } from 'react-native-video';
-import { ButtonLink } from '../../form/Buttons';
+import { ButtonLink } from '@components/form/Buttons';
 
 type VideoProps = { url: string }
 

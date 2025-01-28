@@ -1,7 +1,7 @@
 import { ScrollView } from "react-native-gesture-handler"
 import { StyleSheet, View } from "react-native"
 import NoteViewer from "../event/NoteViewer"
-import theme from "@/src/theme"
+import theme from "@src/theme"
 
 type NoteProps = { note: string }
 

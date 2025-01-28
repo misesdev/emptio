@@ -3,10 +3,10 @@ import QRCode from "react-native-qrcode-svg"
 import { HeaderScreen } from "@components/general/HeaderScreen"
 import { ButtonPrimary } from "@components/form/Buttons"
 import { useAuth } from "@src/providers/userProvider"
+import { useTranslateService } from "@src/providers/translateProvider"
+import { copyToClipboard } from "@src/utils"
 import { useState } from "react"
 import theme from "@src/theme"
-import { useTranslateService } from "@/src/providers/translateProvider"
-import { copyToClipboard } from "@/src/utils"
 
 const WalletReceiveScreen = ({ navigation, route }: any) => {
 
@@ -37,7 +37,7 @@ const WalletReceiveScreen = ({ navigation, route }: any) => {
                 {/* Profile Picture */}
                 <View style={styles.image}>
                     {user.picture && <Image onError={() => user.picture = ""} source={{ uri: user.picture }} style={{ flex: 1 }} />}
-                    {!user.picture && <Image source={require("assets/images/defaultProfile.png")} style={{ width: 100, height: 100 }} />}
+                    {!user.picture && <Image source={require("@assets/images/defaultProfile.png")} style={{ width: 100, height: 100 }} />}
                 </View>
                 {/* Profile Name */}
                 <Text style={styles.userName}>{user.name}</Text>
@@ -49,7 +49,7 @@ const WalletReceiveScreen = ({ navigation, route }: any) => {
                         value={address}
                         logoSize={75}
                         logoBorderRadius={12}
-                        logo={require("assets/icon.png")}
+                        logo={require("@assets/icon.png")}
                         backgroundColor={theme.colors.white}
                     />
                 </View>

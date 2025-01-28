@@ -1,25 +1,22 @@
-import 'react-native-reanimated'
-// fixeds the problems with 'nostr-utils' on generate keys => include crypto.getRandomValues on native core
+import "react-native-reanimated"
 import "react-native-get-random-values"
-import { enableScreens } from 'react-native-screens';
 
-enableScreens();
+import { enableScreens } from "react-native-screens";
+enableScreens()
 
-// fixeds the problems with 'notr-utils' on encode and decode cophers => include TextDecoder and TextEncoder on native core 
-import './libs/global';
-
-import theme from '@src/theme';
+import React from 'react';
+import { StatusBar, StyleSheet, View } from 'react-native'
+import { TranslateProvider } from './src/providers/translateProvider';
+import { SettingsProvider } from './src/providers/settingsProvider';
+import { AuthProvider } from './src/providers/userProvider';
 import AppRoutes from './src/routes';
-import { View, StyleSheet, StatusBar } from 'react-native';
-import { AuthProvider } from "./src/providers/userProvider";
-import { SettingsProvider } from "./src/providers/settingsProvider";
-import { TranslateProvider } from "./src/providers/translateProvider";
+import theme from './src/theme';
 
-export default function App() {
+export default function App(): React.JSX.Element {
+    
     return (
-        <View style={styles.root} >
-            <StatusBar hidden translucent /> 
-            <View style={styles.space}></View>
+        <View style={styles.root}>
+            <StatusBar hidden translucent />
             <TranslateProvider>
                 <SettingsProvider>
                     <AuthProvider>
@@ -27,19 +24,12 @@ export default function App() {
                     </AuthProvider>
                 </SettingsProvider>
             </TranslateProvider>
-            {/* <View style={styles.space}></View> */}
         </View>
     )
 }
 
 const styles = StyleSheet.create({
-    root: { 
-        flex: 1,
-        backgroundColor: theme.colors.black,
-    },
-    space: {
-        height: 48,
-        width: "100%",
-        backgroundColor: theme.colors.transparent
-    }
+    root: { flex: 1, backgroundColor: theme.colors.black }
 })
+
+
