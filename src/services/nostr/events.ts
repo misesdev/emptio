@@ -1,5 +1,5 @@
 
-import { NDKUserProfile, NDKEvent } from "@nostr-dev-kit/ndk"
+import { NDKUserProfile, NDKEvent } from "@nostr-dev-kit/ndk-mobile"
 import { Filter } from "nostr-tools"
 import { PairKey, User } from "../memory/types"
 import { NostrEventKinds } from "@/src/constants/Events"

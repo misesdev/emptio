@@ -4,7 +4,7 @@ import { ButtonScanQRCode } from "@components/wallet/buttons"
 import { TextBox } from "@components/form/TextBoxs"
 import SplashScreen from "@components/general/SplashScreen"
 import { walletService } from "@src/core/walletManager"
-import Ionicons from "@react-native-vector-icons/ionicons"
+import Ionicons from 'react-native-vector-icons/Ionicons'
 import { useEffect, useState } from "react"
 import { SectionHeader } from "@components/general/section/headers"
 import { HeaderScreen } from "@components/general/HeaderScreen"

@@ -1,4 +1,4 @@
-import NDK, { NDKPrivateKeySigner } from "@nostr-dev-kit/ndk"
+import NDK, { NDKPrivateKeySigner } from "@nostr-dev-kit/ndk-mobile"
 import { create } from "zustand"
 import { User } from "../memory/types"
 import { getPairKey } from "../memory/pairkeys"

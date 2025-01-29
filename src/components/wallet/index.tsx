@@ -3,7 +3,7 @@ import { Transaction, Wallet } from "@services/memory/types";
 import { formatSats, toBitcoin } from "@services/converter";
 import { useTranslate } from "@services/translate";
 import { IconNames } from "@services/types/icons";
-import Ionicons from '@react-native-vector-icons/ionicons'
+import Ionicons from 'react-native-vector-icons/Ionicons'
 import { styles } from "./style"
 import theme from "@src/theme";
 import { useEffect, useState } from "react";

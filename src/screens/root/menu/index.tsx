@@ -9,7 +9,7 @@ import { hexToBytes } from "@noble/hashes/utils"
 import { useState } from "react"
 import { nip19 } from "nostr-tools";
 import theme from "@src/theme"
-import Ionicons from "@react-native-vector-icons/ionicons"
+import Ionicons from 'react-native-vector-icons/Ionicons'
 import { authService } from "@src/core/authManager";
 import MessageBox, { showMessage } from "@components/general/MessageBox"
 import SelectLanguageBox, { showSelectLanguage } from "@components/modal/SelectLanguageBox"

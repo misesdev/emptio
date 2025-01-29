@@ -17,6 +17,9 @@ const config = {
             '@services': path.resolve(__dirname, './src/services'), // Adicione o alias para o caminho correto.
             '@components': path.resolve(__dirname, 'src/components'), // Adicione o alias para o caminho correto.
         },
+        extraModules: {
+            "expo-sqlite": require.resolve("react-native-sqlite-storage")
+        }
     }, 
 };
 

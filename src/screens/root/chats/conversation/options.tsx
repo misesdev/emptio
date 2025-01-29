@@ -1,7 +1,7 @@
 import { useState } from "react"
 import { Modal, StyleSheet, Text, TouchableOpacity, View } from "react-native"
 import { useTranslateService } from "@src/providers/translateProvider"
-import Ionicons from "@react-native-vector-icons/ionicons"
+import Ionicons from 'react-native-vector-icons/Ionicons'
 import { User } from "@services/memory/types"
 import { NDKEvent } from "@nostr-dev-kit/ndk"
 import { IconNames } from "@services/types/icons"

@@ -1,6 +1,6 @@
 import { StyleSheet, TextInput, TouchableOpacity, View, Keyboard } from "react-native"
 import QRCodeReaderModal from "@components/modal/QRCodeReaderModal"
-import Ionicons from '@react-native-vector-icons/ionicons'
+import Ionicons from 'react-native-vector-icons/Ionicons'
 import { useEffect, useRef, useState } from "react"
 import theme from "@src/theme"
 

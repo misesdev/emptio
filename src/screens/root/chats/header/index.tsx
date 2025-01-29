@@ -1,6 +1,6 @@
 import { StyleSheet, View, Text } from "react-native"
-import theme from "@/src/theme"
 import { useTranslateService } from "@src/providers/translateProvider"
+import theme from "@/src/theme"
 
 export const HeaderChats = ({ navigation }: any) => {
 

@@ -1,6 +1,6 @@
 import { useAuth } from "@src/providers/userProvider"
 import { TouchableOpacity, View, Text, Image, StyleSheet } from "react-native"
-import Ionicons from "@react-native-vector-icons/ionicons"
+import Ionicons from 'react-native-vector-icons/Ionicons'
 import SearchButton from "@components/form/SearchButton"
 import theme from "@src/theme"
 import { useTranslateService } from "@src/providers/translateProvider"

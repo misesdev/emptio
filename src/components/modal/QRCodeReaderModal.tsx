@@ -1,6 +1,6 @@
 import { View, StyleSheet, TouchableOpacity, Modal } from 'react-native'
 /* import { Camera, useCameraDevices, useFrameProcessor } from "react-native-vision-camera" */
-import Ionicons from '@react-native-vector-icons/ionicons'
+import Ionicons from 'react-native-vector-icons/Ionicons'
 import { useEffect } from 'react'
 import theme from '@src/theme'
 

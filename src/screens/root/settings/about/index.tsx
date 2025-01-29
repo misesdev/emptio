@@ -1,7 +1,7 @@
 
 import { StyleSheet, View, Text, ScrollView, Image, TouchableOpacity, Linking } from "react-native"
 import { HeaderScreen } from "@components/general/HeaderScreen"
-import Ionicons from "@react-native-vector-icons/ionicons"
+import Ionicons from 'react-native-vector-icons/Ionicons'
 import { useTranslateService } from "@src/providers/translateProvider"
 import theme from "@src/theme"
 

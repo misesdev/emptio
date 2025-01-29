@@ -4,7 +4,7 @@ import { IconNames } from "@services/types/icons"
 import { HeaderScreen } from "@components/general/HeaderScreen"
 import { useEffect, useState } from "react"
 import { Linking, ScrollView, StyleSheet, Text, View } from "react-native"
-import Ionicons from "@react-native-vector-icons/ionicons"
+import Ionicons from 'react-native-vector-icons/Ionicons'
 import { walletService } from "@src/core/walletManager"
 import { SectionHeader } from "@components/general/section/headers"
 import { ActivityIndicator } from "react-native-paper"

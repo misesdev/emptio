@@ -1,4 +1,4 @@
-import NDK, { NDKEvent, NDKPrivateKeySigner, NDKUser } from "@nostr-dev-kit/ndk"
+import NDK, { NDKEvent, NDKPrivateKeySigner, NDKRelay, NDKUser } from "@nostr-dev-kit/ndk-mobile"
 import { PairKey, User } from "../memory/types"
 import { publishEvent, NostrEvent, getPubkeyFromTags, getEvent } from "./events"
 import { getRelays } from "../memory/relays"
@@ -53,7 +53,7 @@ type NostrInstanceProps = { user?: User }
 export const getNostrInstance = async ({ user }: NostrInstanceProps): Promise<NDK> => {
 
     const relays = await getRelays()
-
+       
     const ndk = new NDK({ explicitRelayUrls: relays })
 
     if(user) 

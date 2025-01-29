@@ -6,7 +6,7 @@ import { NostrEventKinds } from "@src/constants/Events"
 import { useAuth } from "@src/providers/userProvider"
 import { memo, useEffect, useState } from "react"
 import { useTranslateService } from "@/src/providers/translateProvider"
-import Ionicons from "@react-native-vector-icons/ionicons"
+import Ionicons from 'react-native-vector-icons/Ionicons'
 import { RefreshControl } from "react-native-gesture-handler"
 import { pushMessage } from "@services/notification"
 import { NostrEvent } from "@services/nostr/events"

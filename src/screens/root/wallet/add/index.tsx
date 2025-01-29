@@ -1,7 +1,7 @@
 
 import { StyleSheet, View, Text, TouchableOpacity } from "react-native"
 import { ButtonLink, ButtonPrimary } from "@components/form/Buttons"
-import Ionicons from "@react-native-vector-icons/ionicons"
+import Ionicons from 'react-native-vector-icons/Ionicons'
 import SplashScreen from "@components/general/SplashScreen"
 import { walletService } from "@src/core/walletManager"
 import { HeaderScreen } from "@components/general/HeaderScreen"
@@ -95,7 +95,7 @@ const AddWalletScreen = ({ navigation }: any) => {
                     >
                         <View style={{ width: "15%", height: "100%", alignItems: "center", justifyContent: "center" }}>
                             {/* <Image source={{ uri: "" }} style={{ }}/> */}
-                            <Ionicons name="logo-bitcoin" size={theme.icons.large} color={theme.colors.orange} />
+                            <Icon name="logo-bitcoin" size={theme.icons.large} color={theme.colors.orange} />
                         </View>
                         <View style={{ width: "85%" }}>
                             <Text style={[styles.typeTitle, { color: theme.colors.white }]}>
@@ -113,7 +113,7 @@ const AddWalletScreen = ({ navigation }: any) => {
                     >
                         <View style={{ width: "15%", height: "100%", alignItems: "center", justifyContent: "center" }}>
                             {/* <Image source={{ uri: "" }} style={{ }}/> */}
-                            <Ionicons name="logo-bitcoin" size={theme.icons.large} color={theme.colors.green} />
+                            <Icon name="logo-bitcoin" size={theme.icons.large} color={theme.colors.green} />
                         </View>
                         <View style={{ width: "85%" }}>
                             <Text style={[styles.typeTitle, { color: theme.colors.white }]}>
@@ -131,7 +131,7 @@ const AddWalletScreen = ({ navigation }: any) => {
                     {/* > */}
                     {/*     <View style={{ width: "15%", height: "100%", alignItems: "center", justifyContent: "center" }}> */}
                           {/* <Image source={{ uri: "" }} style={{ }}/> */}
-                    {/*         <Ionicons name="flash" size={theme.icons.large} color={theme.colors.yellow} /> */}
+                    {/*         <Icon name="flash" size={theme.icons.large} color={theme.colors.yellow} /> */}
                     {/*     </View> */}
                     {/*     <View style={{ width: "85%" }}> */}
                     {/*         <Text style={[styles.typeTitle, { color: theme.colors.white }]}> */}

@@ -24,7 +24,9 @@ const InitializeScreen = ({ navigation }: any) => {
     const [loading, setLoading] = useState(true)
     const { useTranslate } = useTranslateService()
 
-    useEffect(() => { handleVerifyLogon() }, [])
+    useEffect(() => { 
+        handleVerifyLogon().then(() => setLoading(false))
+    }, [])
 
     const handleVerifyLogon = async () => {
 
@@ -32,7 +34,7 @@ const InitializeScreen = ({ navigation }: any) => {
         
         setNDK(await getNostrInstance({ }))
         
-        await getNotificationPermission()
+        await getNotificationPermission() 
         
         const wallets = await walletService.list()
 
@@ -54,14 +56,12 @@ const InitializeScreen = ({ navigation }: any) => {
                     authors: [result.data?.pubkey ?? ""], 
                     limit: 1
                 })
-                
+
                 if(eventFollow) setFollows(eventFollow)
             }                
 
             navigation.reset({ index: 0, routes: [{ name: "authenticate-stack" }] })
         }
-        else
-            setLoading(false)
     }
 
     if (loading)

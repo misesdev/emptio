@@ -2,7 +2,7 @@ import { WalletButtons, WalletHeader, WalletTransactions } from "@components/wal
 import { SectionHeader } from "@components/general/section/headers"
 import { Transaction, TransactionInfo, Wallet } from "@services/memory/types"
 import { View, ScrollView, RefreshControl, TouchableOpacity } from "react-native"
-import Ionicons from "@react-native-vector-icons/ionicons"
+import Ionicons from 'react-native-vector-icons/Ionicons'
 import SplashScreen from "@components/general/SplashScreen"
 import { walletService } from "@src/core/walletManager"
 import { useTranslateService } from "@src/providers/translateProvider"

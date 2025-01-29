@@ -1,8 +1,11 @@
 import "react-native-reanimated"
+import "react-native-gesture-handler"
 import "react-native-get-random-values"
 
 import { enableScreens } from "react-native-screens";
 enableScreens()
+
+import "./libs/global"
 
 import React from 'react';
 import { StatusBar, StyleSheet, View } from 'react-native'

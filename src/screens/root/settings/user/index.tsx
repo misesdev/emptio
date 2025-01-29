@@ -5,7 +5,7 @@ import { useAuth } from "@src/providers/userProvider"
 import { ButtonPrimary } from "@components/form/Buttons"
 import { FormControl } from "@components/form/FormControl"
 import { ScrollView } from "react-native-gesture-handler"
-import Ionicons from "@react-native-vector-icons/ionicons"
+import Ionicons from 'react-native-vector-icons/Ionicons'
 import { userService } from "@src/core/userManager"
 import SplashScreen from "@components/general/SplashScreen"
 import { uploadImage } from "@services/blob"

@@ -2,7 +2,7 @@ import { useState } from "react"
 import { Modal, StyleSheet, Text, TouchableOpacity, View } from "react-native"
 import { getLanguages, saveLanguage } from "@services/memory/language"
 import { useTranslateService } from "@src/providers/translateProvider"
-import Ionicons from '@react-native-vector-icons/ionicons'
+import Ionicons from 'react-native-vector-icons/Ionicons'
 import { Language } from "@services/translate/types"
 import theme from "@src/theme"
 

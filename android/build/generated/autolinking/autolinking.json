@@ -149,6 +149,34 @@
         }
       }
     },
+    "react-native-gesture-handler": {
+      "root": "/home/evale/Projects/bitcoin/emptio_p2p/node_modules/react-native-gesture-handler",
+      "name": "react-native-gesture-handler",
+      "platforms": {
+        "ios": {
+          "podspecPath": "/home/evale/Projects/bitcoin/emptio_p2p/node_modules/react-native-gesture-handler/RNGestureHandler.podspec",
+          "version": "2.22.1",
+          "configurations": [],
+          "scriptPhases": []
+        },
+        "android": {
+          "sourceDir": "/home/evale/Projects/bitcoin/emptio_p2p/node_modules/react-native-gesture-handler/android",
+          "packageImportPath": "import com.swmansion.gesturehandler.RNGestureHandlerPackage;",
+          "packageInstance": "new RNGestureHandlerPackage()",
+          "buildTypes": [],
+          "libraryName": "rngesturehandler_codegen",
+          "componentDescriptors": [
+            "RNGestureHandlerButtonComponentDescriptor",
+            "RNGestureHandlerRootViewComponentDescriptor"
+          ],
+          "cmakeListsPath": "/home/evale/Projects/bitcoin/emptio_p2p/node_modules/react-native-gesture-handler/android/build/generated/source/codegen/jni/CMakeLists.txt",
+          "cxxModuleCMakeListsModuleName": null,
+          "cxxModuleCMakeListsPath": null,
+          "cxxModuleHeaderName": null,
+          "isPureCxxDependency": false
+        }
+      }
+    },
     "react-native-get-random-values": {
       "root": "/home/evale/Projects/bitcoin/emptio_p2p/node_modules/react-native-get-random-values",
       "name": "react-native-get-random-values",
@@ -240,6 +268,34 @@
           "libraryName": "rnreanimated",
           "componentDescriptors": [],
           "cmakeListsPath": "/home/evale/Projects/bitcoin/emptio_p2p/node_modules/react-native-reanimated/android/build/generated/source/codegen/jni/CMakeLists.txt",
+          "cxxModuleCMakeListsModuleName": null,
+          "cxxModuleCMakeListsPath": null,
+          "cxxModuleHeaderName": null,
+          "isPureCxxDependency": false
+        }
+      }
+    },
+    "react-native-safe-area-context": {
+      "root": "/home/evale/Projects/bitcoin/emptio_p2p/node_modules/react-native-safe-area-context",
+      "name": "react-native-safe-area-context",
+      "platforms": {
+        "ios": {
+          "podspecPath": "/home/evale/Projects/bitcoin/emptio_p2p/node_modules/react-native-safe-area-context/react-native-safe-area-context.podspec",
+          "version": "5.1.0",
+          "configurations": [],
+          "scriptPhases": []
+        },
+        "android": {
+          "sourceDir": "/home/evale/Projects/bitcoin/emptio_p2p/node_modules/react-native-safe-area-context/android",
+          "packageImportPath": "import com.th3rdwave.safeareacontext.SafeAreaContextPackage;",
+          "packageInstance": "new SafeAreaContextPackage()",
+          "buildTypes": [],
+          "libraryName": "safeareacontext",
+          "componentDescriptors": [
+            "RNCSafeAreaProviderComponentDescriptor",
+            "RNCSafeAreaViewComponentDescriptor"
+          ],
+          "cmakeListsPath": "/home/evale/Projects/bitcoin/emptio_p2p/node_modules/react-native-safe-area-context/android/src/main/jni/CMakeLists.txt",
           "cxxModuleCMakeListsModuleName": null,
           "cxxModuleCMakeListsPath": null,
           "cxxModuleHeaderName": null,

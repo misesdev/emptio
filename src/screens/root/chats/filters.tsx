@@ -1,5 +1,5 @@
-import theme from "@src/theme"
 import { TouchableOpacity, View, Text, StyleSheet } from "react-native"
+import theme from "@src/theme"
 
 export type ChatFilterType = "friends" | "request" | "all"
 

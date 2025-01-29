@@ -9,7 +9,7 @@ import { User } from "@services/memory/types"
 import useChatStore from "@services/zustand/chats"
 import ConversationList from "./list"
 import MessageOptionsBox, { showOptiosMessage } from "./options"
-import Ionicons from "@react-native-vector-icons/ionicons"
+import Ionicons from 'react-native-vector-icons/Ionicons'
 import theme from "@/src/theme"
 
 const ConversationChat = ({ navigation, route }: any) => {
