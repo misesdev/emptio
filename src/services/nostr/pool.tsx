@@ -82,8 +82,10 @@ export const subscribeUserChat = ({ user, addChat }: SubscribeProps) => {
     ])
 
     const processEventMessage = async (event: NDKEvent) => { 
-        
+       
         const chat_id = messageService.generateChatId(event)
+
+        console.log("chat_id", chat_id)
 
         if(await insertEvent({ event, category: "message", chat_id })) 
         {

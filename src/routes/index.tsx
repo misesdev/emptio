@@ -29,6 +29,8 @@ import CreatedSeedScren from "@screens/root/wallet/add/seed"
 import TransactionScreen from "@screens/root/wallet/transaction"
 import NewOrderScreen from "@screens/root/orders/order/new"
 import ConversationChat from "@screens/root/chats/conversation"
+import { styles } from "../components/wallet/style"
+import theme from "../theme"
 
 const Stack = createStackNavigator()
 
@@ -38,7 +40,15 @@ const AppRoutes = () => {
 
     return (
         <NavigationContainer >
-            <Stack.Navigator screenOptions={stackOptions} initialRouteName="initial-stack">
+            <Stack.Navigator 
+                screenOptions={{ 
+                    headerTitle: "",
+                    headerShown: false,
+                    headerStyle: { backgroundColor: theme.colors.blue }
+                }} 
+                
+                initialRouteName="initial-stack"
+            >
                 <Stack.Screen name="initial-stack" component={InitializeScreen} />
                 <Stack.Screen name="authenticate-stack" component={AuthenticateScreen} />
                 <Stack.Screen name="login-stack" component={LoginScreen} options={{ headerShown: true }} />
@@ -60,7 +70,7 @@ const AppRoutes = () => {
                 <Stack.Screen name="about-stack" component={AboutScreen} options={ScreenCardOptions} />
 
                 <Stack.Screen name="wallet-stack" component={WalletManagerScreen} options={{ headerShown: true }} />
-                <Stack.Screen name="add-wallet-stack" component={AddWalletScreen} options={ScreenCardOptions} />
+                <Stack.Screen name="add-wallet-stack" component={AddWalletScreen} options={{...ScreenCardOptions, headerShown: true }} />
                 <Stack.Screen name="seed-wallet-stack" component={CreatedSeedScren} options={ScreenCardOptions} />
                 <Stack.Screen name="import-wallet-stack" component={ImportWalletScreen} options={ScreenCardOptions} />
                 <Stack.Screen name="add-wallet-receive-stack" component={WalletReceiveScreen} options={ScreenCardOptions} />

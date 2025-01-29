@@ -59,7 +59,8 @@ const InitializeScreen = ({ navigation }: any) => {
 
                 if(eventFollow) setFollows(eventFollow)
             }                
-
+            
+            console.log("navigate to index")
             navigation.reset({ index: 0, routes: [{ name: "authenticate-stack" }] })
         }
     }

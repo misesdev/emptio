@@ -13,10 +13,11 @@ import { useTranslateService } from "@src/providers/translateProvider"
 import { WalletType } from "@services/memory/types"
 import { getWallets } from "@services/memory/wallets"
 import { BaseWallet } from "@services/bitcoin"
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import theme from "@src/theme"
+import { StackScreenProps } from "@react-navigation/stack"
 
-const AddWalletScreen = ({ navigation }: any) => {
+const AddWalletScreen = ({ navigation }: StackScreenProps<any>) => {
 
     const { user, wallets, setWallets } = useAuth()
     const { useTranslate } = useTranslateService()
@@ -24,6 +25,15 @@ const AddWalletScreen = ({ navigation }: any) => {
     const [walletName, setWalletName] = useState<string>("")
     const [walletPassword, setWalletPassword] = useState<string>("")
     const [walletType, setWalletType] = useState<WalletType>("bitcoin")
+
+    useEffect(() => {
+        navigation.setOptions({ 
+            header: () => <HeaderScreen
+                title={useTranslate("screen.title.addwallet")}
+                onClose={() => navigation.navigate("core-stack")}
+            /> 
+        })
+    }, [])
 
     const handleWalletType = (type: WalletType) => {
         setWalletType(type)
@@ -77,11 +87,6 @@ const AddWalletScreen = ({ navigation }: any) => {
 
     return (
         <View style={{ flex: 1 }}>
-            <HeaderScreen
-                title={useTranslate("screen.title.addwallet")}
-                onClose={() => navigation.navigate("core-stack")}
-            />
-
             <View style={theme.styles.container} >
 
                 <FormControl label={useTranslate("labels.wallet.name")} value={walletName} onChangeText={setWalletName} />
@@ -95,7 +100,7 @@ const AddWalletScreen = ({ navigation }: any) => {
                     >
                         <View style={{ width: "15%", height: "100%", alignItems: "center", justifyContent: "center" }}>
                             {/* <Image source={{ uri: "" }} style={{ }}/> */}
-                            <Icon name="logo-bitcoin" size={theme.icons.large} color={theme.colors.orange} />
+                            <Ionicons name="logo-bitcoin" size={theme.icons.large} color={theme.colors.orange} />
                         </View>
                         <View style={{ width: "85%" }}>
                             <Text style={[styles.typeTitle, { color: theme.colors.white }]}>
@@ -113,7 +118,7 @@ const AddWalletScreen = ({ navigation }: any) => {
                     >
                         <View style={{ width: "15%", height: "100%", alignItems: "center", justifyContent: "center" }}>
                             {/* <Image source={{ uri: "" }} style={{ }}/> */}
-                            <Icon name="logo-bitcoin" size={theme.icons.large} color={theme.colors.green} />
+                            <Ionicons name="logo-bitcoin" size={theme.icons.large} color={theme.colors.green} />
                         </View>
                         <View style={{ width: "85%" }}>
                             <Text style={[styles.typeTitle, { color: theme.colors.white }]}>
@@ -131,7 +136,7 @@ const AddWalletScreen = ({ navigation }: any) => {
                     {/* > */}
                     {/*     <View style={{ width: "15%", height: "100%", alignItems: "center", justifyContent: "center" }}> */}
                           {/* <Image source={{ uri: "" }} style={{ }}/> */}
-                    {/*         <Icon name="flash" size={theme.icons.large} color={theme.colors.yellow} /> */}
+                    {/*         <Ionicons name="flash" size={theme.icons.large} color={theme.colors.yellow} /> */}
                     {/*     </View> */}
                     {/*     <View style={{ width: "85%" }}> */}
                     {/*         <Text style={[styles.typeTitle, { color: theme.colors.white }]}> */}

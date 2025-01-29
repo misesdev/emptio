@@ -51,6 +51,7 @@ const ConversationList = ({ user, events, onMessageOptions }: Props) => {
     return (
         <FlatList inverted
             data={events}
+            style={{ backgroundColor: theme.colors.black }}
             showsVerticalScrollIndicator
             renderItem={renderItem}
             keyExtractor={(item) => item.id}

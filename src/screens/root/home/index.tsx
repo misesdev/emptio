@@ -8,15 +8,19 @@ import { pushMessage } from "@services/notification"
 import { walletService } from "@src/core/walletManager"
 import { HeaderHome } from "./header"
 import theme from "@src/theme"
+import { StackScreenProps } from "@react-navigation/stack"
 
-const HomeScreen = ({ navigation }: any) => {
+const HomeScreen = ({ navigation }: StackScreenProps<any>) => {
 
     const { wallets, setWallets } = useAuth()
     const { useTranslate } = useTranslateService()
     const [loading, setLoading] = useState(false)
-    const [reloadWallets, setReloadWallets] = useState<boolean>(true)
+    const [reloadWallets, setReloadWallets] = useState<boolean>(true)                                                               
 
-    useEffect(() => { handleData() }, [])
+    useEffect(() => { 
+        navigation.setOptions({ header: () => <HeaderHome navigation={navigation} /> })
+        handleData() 
+    }, [])
 
     const handleData = async () => {
         setLoading(true)
@@ -36,8 +40,7 @@ const HomeScreen = ({ navigation }: any) => {
     }
 
     return (
-        <View style={styles.container}>
-            <HeaderHome navigation={navigation} />
+        <View style={styles.container}>            
             <ScrollView
                 contentContainerStyle={[theme.styles.scroll_container, {}]}
                 refreshControl={<RefreshControl refreshing={loading} onRefresh={handleData} />}

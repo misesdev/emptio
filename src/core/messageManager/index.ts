@@ -7,7 +7,7 @@ import { User } from "@services/memory/types"
 import { getPubkeyFromTags } from "@services/nostr/events"
 import { ChatUser } from "@services/zustand/chats"
 import useNDKStore from "@services/zustand/ndk"
-import { NDKEvent } from "@nostr-dev-kit/ndk"
+import { NDKEvent } from "@nostr-dev-kit/ndk-mobile"
 import { nip04 } from "nostr-tools"
 
 const listMessages = async (chat_id: string) : Promise<NDKEvent[]> => {

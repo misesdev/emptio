@@ -13,8 +13,9 @@ import { NostrEvent } from "@services/nostr/events"
 import { User } from "@services/memory/types"
 import { HeaderFeed } from "./header"
 import theme from "@src/theme"
+import { StackScreenProps } from "@react-navigation/stack"
 
-const FeedScreen = ({ navigation }: any) => {
+const FeedScreen = ({ navigation }: StackScreenProps<any>) => {
 
     const { follows, wallets } = useAuth()
     const { useTranslate } = useTranslateService()
@@ -22,6 +23,7 @@ const FeedScreen = ({ navigation }: any) => {
     const [posts, setPosts] = useState<NostrEvent[]>([])
 
     useEffect(() => {
+        navigation.setOptions({ header: () => <HeaderFeed navigation={navigation} /> })
     }, [])
 
     const handleData = async () => {
@@ -74,7 +76,6 @@ const FeedScreen = ({ navigation }: any) => {
 
     return (
         <View style={{ flex: 1 }}>
-            <HeaderFeed navigation={navigation} />
 
             <FlatList
                 data={posts}

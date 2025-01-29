@@ -51,7 +51,7 @@ const ConversationChat = ({ navigation, route }: any) => {
         <KeyboardAvoidingView 
             style={{ flex: 1 }}
             behavior={Platform.OS === "ios" ? "padding": "height"}
-            keyboardVerticalOffset={Platform.OS === "ios" ? 90 : 20}
+            keyboardVerticalOffset={Platform.OS === "ios" ? 90 : 0}
         >
             {/* Header */}
             <View style={styles.headerContainer}>

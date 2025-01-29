@@ -17,14 +17,13 @@ const TabRoutes = () => {
     return (
         <Tab.Navigator
             initialRouteName="home"
-            //activeColor={theme.colors.white}
-            //inactiveColor={theme.colors.gray}
             screenOptions={{ 
-                tabBarActiveTintColor: theme.colors.white,
-                tabBarInactiveTintColor: theme.colors.gray
+                tabBarActiveTintColor: theme.colors.blue,
+                tabBarInactiveTintColor: theme.colors.gray,
+                tabBarStyle: { backgroundColor: theme.colors.black, borderTopWidth: 0 },
+                headerStyle: { backgroundColor: theme.colors.blue },
+                headerTitle: ""
             }}
-            //barStyle={{ backgroundColor: theme.colors.semitransparent, height: 92 }}
-            //activeIndicatorStyle={{ backgroundColor: theme.colors.blue }}
         >
             <Tab.Screen
                 name="home"
@@ -32,7 +31,7 @@ const TabRoutes = () => {
                 options={{                    
                     tabBarLabel: useTranslate("menu.home"),
                     tabBarIcon: ({ color }) => <Ionicons name="wallet" color={color} size={theme.icons.medium} />,
-                    // tabBarBadge: false
+                    //tabBarBadge: 1
                 }}
             />
             <Tab.Screen
@@ -50,7 +49,7 @@ const TabRoutes = () => {
                 options={{
                     tabBarLabel: useTranslate("menu.chats"),
                     tabBarIcon: ({ color }) => <Ionicons name="chatbox" color={color} size={theme.icons.medium} />,
-                    // tabBarBadge: !!unreadChats.length ? unreadChats.length : false,
+                    tabBarBadge: !!unreadChats.length ? unreadChats.length : undefined,
                 }}
             />
 
