@@ -25,6 +25,7 @@
     "react-native": "0.77.0",
     "react-native-biometrics": "^3.0.1",
     "react-native-device-info": "^14.0.2",
+    "react-native-elements": "^3.4.3",
     "react-native-encrypted-storage": "^4.0.3",
     "react-native-fs": "^2.20.0",
     "react-native-get-random-values": "^1.11.0",
