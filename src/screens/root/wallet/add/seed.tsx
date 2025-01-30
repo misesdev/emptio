@@ -5,15 +5,27 @@ import { ButtonPrimary } from "@components/form/Buttons"
 import { useTranslateService } from "@src/providers/translateProvider"
 import { useEffect, useState } from "react"
 import theme from "@src/theme"
+import { StackScreenProps } from "@react-navigation/stack"
+import { Wallet } from "@/src/services/memory/types"
 
-const CreatedSeedScren = ({ navigation, route }: any) => {
+type SeedParams = {
+    wallet: Wallet,
+    mnemonic: string[]
+}
 
-    const { wallet, mnemonic } = route.params
+const CreatedSeedScren = ({ navigation, route }: StackScreenProps<any>) => {
+
+    const { wallet, mnemonic } = route?.params as SeedParams
     const { useTranslate } = useTranslateService()
     const [loading, setLoading] = useState(false)
     const [wordList, setWordList] = useState<string[]>()
 
-    useEffect(() => setWordList(mnemonic as string[]), [])
+    useEffect(() => {
+        navigation.setOptions({
+            header: () => <HeaderScreen title={useTranslate("wallet.title.seed")} onClose={handleClose} />
+        })
+        setWordList(mnemonic as string[])
+    }, [])
 
     const handleClose = () => {
         if (route?.params?.origin == "options")
@@ -26,10 +38,8 @@ const CreatedSeedScren = ({ navigation, route }: any) => {
         return <SplashScreen />
 
     return (
-        <View style={{ flex: 1 }}>
-            {/* Header */}
-            <HeaderScreen title={useTranslate("wallet.title.seed")} onClose={handleClose} />
-
+        <View style={theme.styles.container}>
+            
             <Text style={styles.title}>{useTranslate("message.wallet.saveseed")}</Text>
 
             {/* Body */}

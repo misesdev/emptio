@@ -11,10 +11,11 @@ import SplashScreen from "@components/general/SplashScreen"
 import { uploadImage } from "@services/blob"
 import { pushMessage } from "@services/notification"
 import { useTranslateService } from "@src/providers/translateProvider"
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import theme from "@src/theme"
+import { StackScreenProps } from "@react-navigation/stack"
 
-const UserEditScreen = ({ navigation }: any) => {
+const UserEditScreen = ({ navigation }: StackScreenProps<any>) => {
 
     const { user, setUser } = useAuth()
     const [loading, setLoading] = useState(false)

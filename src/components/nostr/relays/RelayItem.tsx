@@ -29,7 +29,7 @@ export const RelayItem = ({ relay, onDelete }: RelayProps) => {
         loadRelayData() 
         useTranslate("commons.version").then(setVersion)
         useTranslate("commons.description").then(setDescription)
-        useTranslate("message.relay.supported_nips").then(setDescription)
+        useTranslate("message.relay.supported_nips").then(setSupportedNips)
     }, [])
 
     const loadRelayData = async () => {
@@ -44,7 +44,6 @@ export const RelayItem = ({ relay, onDelete }: RelayProps) => {
     }
 
     return (
-        <>
             <View style={styles.relay_container}>
                 <View style={[styles.relay_row, { borderBottomWidth: .5, borderBottomColor: theme.colors.default }]}>
                     <View style={{ width: "60%" }}>
@@ -100,7 +99,6 @@ export const RelayItem = ({ relay, onDelete }: RelayProps) => {
                     </View>
                 }
             </View>
-        </>
     )
 }
 
@@ -108,6 +106,6 @@ const styles = StyleSheet.create({
     relay_container: { width: "94%", padding: 12, marginVertical: 5, borderRadius: 10, backgroundColor: "rgba(0, 55, 55, .2)" },
     button_delete: { borderRadius: 20, padding: 2, backgroundColor: theme.colors.default },
     relay_row: { width: "100%", flexDirection: "row", padding: 5 },
-    nip: { borderRadius: 8, margin: 10, padding: 5, backgroundColor: theme.colors.black },
+    nip: { borderRadius: 8, marginHorizontal: 10, padding: 5, backgroundColor: theme.colors.black },
     nip_text: { color: theme.colors.gray, fontWeight: "bold" }
 })

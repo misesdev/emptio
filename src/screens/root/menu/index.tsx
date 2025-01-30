@@ -3,10 +3,9 @@ import { LinkSection, SectionContainer } from "@components/general/section"
 import { getPairKey } from "@services/memory/pairkeys"
 import SplashScreen from "@components/general/SplashScreen"
 import { useAuth } from "@src/providers/userProvider"
-import { ButtonLink } from "@components/form/Buttons"
 import { userService } from "@src/core/userManager"
 import { hexToBytes } from "@noble/hashes/utils"
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import { nip19 } from "nostr-tools";
 import theme from "@src/theme"
 import Ionicons from 'react-native-vector-icons/Ionicons'
@@ -18,15 +17,23 @@ import { useTranslateService } from "@src/providers/translateProvider"
 import { NostrEvent } from "@nostr-dev-kit/ndk"
 import { copyToClipboard } from "@src/utils"
 import DeviceInfo from 'react-native-device-info'
+import { StackScreenProps } from "@react-navigation/stack"
 
-const UserMenuScreen = ({ navigation }: any) => {
+const UserMenuScreen = ({ navigation }: StackScreenProps<any>) => {
 
     const opacity = .7 
     const appVersion = DeviceInfo.getVersion()
     const { user, setUser, setWallets, setFollows } = useAuth()
     const { useTranslate } = useTranslateService()
     const [forceUpdate, setForceUpdate] = useState()
-    const [loading, setLoading] = useState(false) 
+    const [loading, setLoading] = useState(false)
+
+    useEffect(() => {
+        // navigation.setOptions({ 
+        //     //headerTransparent: false,
+        //     headerStyle: { backgroundColor: theme.colors.transparent }            
+        // })
+    }, [])
 
     const handleCopySecretKey = async () => {
         const biometrics = await authService.checkBiometric()
@@ -76,14 +83,10 @@ const UserMenuScreen = ({ navigation }: any) => {
 
     return (
         <View style={{ flex: 1 }}>
-            <ScrollView contentContainerStyle={theme.styles.scroll_container}>
-                {/* <View style={styles.banner}> */}
-                {/*     {user?.banner && <Image style={{ width: "100%", height: "100%" }} source={{ uri: user?.banner }} />}  */}
-                {/* </View> */}
-                {/* <View style={styles.banner}> */}
-                {/*     <View style={styles.bunnerBlur}></View> */}
-                {/* </View> */}
-                <View style={{ height: 10 }}></View>
+            <ScrollView showsVerticalScrollIndicator={false} 
+                contentContainerStyle={theme.styles.scroll_container}
+            >
+                <View style={{ height: 60 }}></View>
                 <View style={styles.area}>
                     <View style={styles.profileArea}>
                         <TouchableOpacity activeOpacity={opacity} onPress={() => navigation.navigate("manage-account-stack")}>
@@ -132,10 +135,7 @@ const UserMenuScreen = ({ navigation }: any) => {
                     <LinkSection label={useTranslate("commons.signout")} icon="exit" onPress={handleDeleteAccount} />
                 </SectionContainer>
 
-
-                {/* <View> */}
-                {/*     <ButtonLink color={theme.colors.red} label={useTranslate("commons.signout")} onPress={handleDeleteAccount} /> */}
-                {/* </View> */}
+     
                 <View style={{ height: 45 }}></View>
 
                 <View style={{ flexDirection: "row", marginBottom: 40 }}>

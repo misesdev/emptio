@@ -3,25 +3,30 @@ import { HeaderScreen } from "@components/general/HeaderScreen"
 import { AmountBox } from "@components/wallet/inputs"
 import Ionicons from 'react-native-vector-icons/Ionicons'
 import { useTranslateService } from "@src/providers/translateProvider"
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import theme from "@src/theme"
+import { StackScreenProps } from "@react-navigation/stack"
+import { Wallet } from "@/src/services/memory/types"
 
-const SendScreen = ({ navigation, route }: any) => {
+type ScreenParams = {
+    wallet: Wallet
+}
 
-    const { wallet } = route.params
+const SendScreen = ({ navigation, route }: StackScreenProps<any>) => {
+
+    const { wallet } = route.params as ScreenParams
     const { useTranslate } = useTranslateService()
     const [amount, setAmount] = useState<string>("0")
     const [nextDisabled, setNextDisabled] = useState(true)
 
-    return (
-        <View style={{
-            flex: 1,
-            alignItems: 'center',
-            backgroundColor: theme.colors.black
-        }}>
-            {/* Hader */}
-            <HeaderScreen title={useTranslate("wallet.title.send")} onClose={() => navigation.navigate("wallet-stack", { wallet })} />
+    useEffect(() => {
+        navigation.setOptions({
+            header: () => <HeaderScreen title={useTranslate("wallet.title.send")} onClose={() => navigation.navigate("wallet-stack", { wallet })} />
+        })
+    }, [])
 
+    return (
+        <View style={theme.styles.container}>
             {/* Body */}
             <Text style={styles.title}>{useTranslate("wallet.title.sendvalue")}</Text>
 

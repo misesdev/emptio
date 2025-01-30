@@ -23,12 +23,12 @@ export const UserList = ({ users, setUsers, onPressUser, toPayment = false,
         if (onPressUser) onPressUser(follow)
     }, [onPressUser])
 
-    const ListItem = ({ item }: { item: User }) => {
+    const ListItem = useCallback(({ item }: { item: User }) => {
         return <FollowItem 
             follow={item} toFollow={toFollow} isFriend={item.friend ?? false}
             handleClickFollow={handleClickFollow} 
         />
-    }
+    },[])
 
     const EmptyComponent = () => (
         <Text style={{ color: theme.colors.gray, marginTop: 200, textAlign: "center" }}>

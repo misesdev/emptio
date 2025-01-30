@@ -1,4 +1,4 @@
-import { CardStyleInterpolators, StackNavigationOptions } from "@react-navigation/stack"
+import { StackNavigationOptions } from "@react-navigation/stack"
 import { ViewStyle } from "react-native"
 import { TouchableOpacity } from "react-native-gesture-handler"
 import Ionicons from "react-native-vector-icons/Ionicons"
@@ -13,10 +13,10 @@ export const tabBarStyle: ViewStyle = {
 }
 
 export const stackOptions: StackNavigationOptions = {
-    title: "",
+    headerTitle: "",
     headerShown: false,
     headerTransparent: true,
-    /* headertintcolor: theme.colors.white, */
+    headerStyle: { backgroundColor: theme.colors.transparent },
     headerLeft: (props: any) => {
         return (
             <TouchableOpacity onPress={() => props?.onPress()} 
@@ -27,9 +27,7 @@ export const stackOptions: StackNavigationOptions = {
             </TouchableOpacity>
         )
     },
-    cardStyle: { backgroundColor: theme.colors.black },
-    cardStyleInterpolator: CardStyleInterpolators.forFadeFromBottomAndroid,
-    /* headerStyle: { height: 50, backgroundColor: theme.colors.black }, */
+    cardStyle: { backgroundColor: theme.colors.transparent },
     headerShadowVisible: false,
 }
 

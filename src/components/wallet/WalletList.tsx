@@ -20,7 +20,7 @@ const WalletList = ({ wallets, navigation, reload }: Props) => {
 
     return (
         <SafeAreaView style={{ width: "100%", height: 220 }}>
-            <ScrollView horizontal>
+            <ScrollView horizontal showsHorizontalScrollIndicator={false}>
                 {wallets &&
                     wallets.map((wallet) => <WalletListItem reload={reload} key={wallet.key} wallet={wallet} handleOpen={handleOpenWallet} />)
                 }

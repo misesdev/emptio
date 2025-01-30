@@ -15,6 +15,7 @@ describe("wallets bitcoin functions", () => {
         expect(wallet.pairkey.privateKey).toBe(pairkey.privateKey)
         expect(wallet.pairkey.publicKey).toBe(pairkey.publicKey)
     })
+
     it("generate address for transaction", () => {
         const { publicKey } = createWallet("", "testnet").pairkey
 

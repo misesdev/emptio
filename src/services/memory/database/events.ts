@@ -179,7 +179,7 @@ export const clearEvents = async () => {
 
     await db.execAsync(` DELETE FROM events; `)
 
-    await db.closeAsync()
+    //await db.closeAsync()
 }
 
 

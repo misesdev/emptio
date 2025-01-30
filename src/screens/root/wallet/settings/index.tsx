@@ -13,17 +13,31 @@ import { authService } from "@src/core/authManager"
 import { pushMessage } from "@services/notification"
 import { useTranslateService } from "@src/providers/translateProvider"
 import { Wallet } from "@services/memory/types"
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import theme from "@src/theme"
+import { StackScreenProps } from "@react-navigation/stack"
 
-const WalletSettings = ({ navigation, route }: any) => {
+type ScreenParams = {
+    wallet: Wallet
+}
 
-    const { wallet } = route.params as { wallet: Wallet }
+const WalletSettings = ({ navigation, route }: StackScreenProps<any>) => {
+
+    const { wallet } = route.params as ScreenParams
     const { useTranslate } = useTranslateService()
     const { setWallets, user, setUser } = useAuth()
     const [loading, setLoading] = useState(false)
     const [walletName, setWalletName] = useState(wallet.name)
     const [defaultWallet, setDefaultWallet] = useState<boolean>(wallet.default ?? false)
+
+    useEffect(() => {
+        navigation.setOptions({
+            header: () => <HeaderScreen
+                title={useTranslate("wallet.title.settings")}
+                onClose={() => navigation.navigate("wallet-stack", { wallet })}
+            />
+        })
+    }, [])
 
     const hadleDeleteWallet = async () => {
         showMessage({
@@ -80,11 +94,6 @@ const WalletSettings = ({ navigation, route }: any) => {
 
     return (
         <View style={styles.container}>
-            {/* Header */}
-            <HeaderScreen
-                title={useTranslate("wallet.title.settings")}
-                onClose={() => navigation.navigate("wallet-stack", { wallet })}
-            />
 
             <ScrollView contentContainerStyle={[theme.styles.scroll_container, { justifyContent: "center" }]}>
 
@@ -92,11 +101,11 @@ const WalletSettings = ({ navigation, route }: any) => {
 
                 <FormControl label={useTranslate("labels.wallet.name")} value={walletName} onChangeText={setWalletName} />
                 
-                <SectionHeader label={useTranslate("commons.options")} />
+                {/* <SectionHeader label={useTranslate("commons.options")} /> */}
 
-                <SectionContainer style={{ width: "94%" }}>
-                    <LinkSection icon="eye" label={useTranslate("labels.wallet.getseed")} onPress={handleViewSeed}/>
-                </SectionContainer>
+                {/* <SectionContainer style={{ width: "94%" }}> */}
+                {/*     <LinkSection icon="eye" label={useTranslate("labels.wallet.getseed")} onPress={handleViewSeed}/> */}
+                {/* </SectionContainer> */}
 
                 <ButtonLink label={useTranslate("commons.delete")} color={theme.colors.red} onPress={hadleDeleteWallet}/>
 

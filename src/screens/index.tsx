@@ -25,7 +25,7 @@ const InitializeScreen = ({ navigation }: any) => {
     const { useTranslate } = useTranslateService()
 
     useEffect(() => { 
-        handleVerifyLogon().then(() => setLoading(false))
+        handleVerifyLogon()
     }, [])
 
     const handleVerifyLogon = async () => {
@@ -41,6 +41,7 @@ const InitializeScreen = ({ navigation }: any) => {
         if(wallets && setWallets) setWallets(wallets)
 
         const result = await userService.isLogged({ setUser })
+        console.log("is logged", result)
         if (result.success && result.data) 
         {
             setNdkSigner(result.data)
@@ -60,9 +61,9 @@ const InitializeScreen = ({ navigation }: any) => {
                 if(eventFollow) setFollows(eventFollow)
             }                
             
-            console.log("navigate to index")
             navigation.reset({ index: 0, routes: [{ name: "authenticate-stack" }] })
         }
+        setLoading(false)
     }
 
     if (loading)

@@ -2,7 +2,7 @@ import { TouchableOpacity, View, Image, Text, StyleSheet } from "react-native"
 import { User } from "@services/memory/types"
 import { hexToNpub } from "@services/converter"
 import { useTranslate } from "@services/translate"
-import { useEffect, useState } from "react"
+import { memo, useEffect, useState } from "react"
 import theme from "@src/theme"
 
 type UserItemProps = {
@@ -12,7 +12,7 @@ type UserItemProps = {
     handleClickFollow: (follow: User) => void
 }
 
-export const FollowItem = ({ follow, handleClickFollow, toFollow = false, isFriend = false }: UserItemProps) => {
+export const FollowItem = memo(({ follow, handleClickFollow, toFollow = false, isFriend = false }: UserItemProps) => {
 
     const [isFriendMessage, setIsFriendMessage] = useState("")
     useEffect(() => { 
@@ -57,7 +57,7 @@ export const FollowItem = ({ follow, handleClickFollow, toFollow = false, isFrie
 
         </TouchableOpacity>
     )
-}
+})
 
 const styles = StyleSheet.create({
     profile: { flex: 1 },

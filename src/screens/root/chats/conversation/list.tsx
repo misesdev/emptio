@@ -17,16 +17,14 @@ const ConversationList = ({ user, events, onMessageOptions }: Props) => {
     const ListItem = ({ item }: { item: NDKEvent }) => {
         const isUser = (item.pubkey == user.pubkey)
         const [event, setEvent] = useState<NDKEvent>(item)
-        const [showDetails, setShowDetails] = useState(false)
 
         useEffect(() => {
             messageService.decryptMessage(user, item).then(setEvent)
         }, [])
 
         return (
-            <TouchableOpacity 
+            <TouchableOpacity activeOpacity={1}
                 onLongPress={() => onMessageOptions(item, isUser)}
-                onPress={() => setShowDetails(!showDetails)} activeOpacity={1} 
                 style={[styles.messageContainer, { flexDirection: isUser ? "row-reverse" : "row" }]}
             >
                 <View style={[styles.contentMessage, 
@@ -51,7 +49,7 @@ const ConversationList = ({ user, events, onMessageOptions }: Props) => {
     return (
         <FlatList inverted
             data={events}
-            style={{ backgroundColor: theme.colors.black }}
+            style={styles.scrollContainer}
             showsVerticalScrollIndicator
             renderItem={renderItem}
             keyExtractor={(item) => item.id}
@@ -61,14 +59,15 @@ const ConversationList = ({ user, events, onMessageOptions }: Props) => {
 }
 
 const styles = StyleSheet.create({
+    scrollContainer: { width: "100%", padding: 10, backgroundColor: theme.colors.black },
     messageContainer: { width: "100%", padding: 10 },
     contentMessage: { width: "70%", padding: 15, borderBottomLeftRadius: 12, borderBottomRightRadius: 12 },
     messageReceived: { backgroundColor: theme.colors.section, borderTopRightRadius: 12 },
     messageSended: { backgroundColor: theme.colors.blueOpacity, borderTopLeftRadius: 12 },
 
     messageDetailBox: { width: "100%", flexDirection: "row-reverse", marginTop: 12 },
-    messageDetailsText: { }
 })
+
 export default ConversationList
 
 

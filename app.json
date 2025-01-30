@@ -1,4 +1,6 @@
 {
-  "name": "emptio_p2p",
-  "displayName": "emptio_p2p"
+    "name": "emptio_p2p",
+    "displayName": "EMPTIO P2P",
+    "icon": "assets/icon.png",
+    "useInterfaceStyle": "dark"
 }

@@ -15,8 +15,7 @@ const AuthenticateScreen = ({ navigation }: any) => {
     const [biometrics, setBiometrics] = useState(true)
 
     useEffect(() => {
-        checkBiometric() 
-        setLoading(false)
+        checkBiometric().then(() => setLoading(false))
     }, [settings])
 
     const checkBiometric = async () => {

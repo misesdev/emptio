@@ -1,6 +1,4 @@
-import { deleteEventsByCondition, 
-    selecMessageChats, 
-    selecMessages 
+import { deleteEventsByCondition, selecMessageChats, selecMessages 
 } from "@services/memory/database/events"
 import { getPairKey } from "@services/memory/pairkeys"
 import { User } from "@services/memory/types"
@@ -68,7 +66,7 @@ const decryptMessage = async (user: User, event: NDKEvent) : Promise<NDKEvent> =
         event.content = await nip04.decrypt(pair.privateKey, pubkey, event.content)
     }
 
-    return event
+    return {...event} as NDKEvent
 }
 
 type MessageProps = {

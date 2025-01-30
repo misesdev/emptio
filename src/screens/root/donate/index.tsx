@@ -1,25 +1,29 @@
 import { StyleSheet, View, Text, TouchableOpacity } from "react-native"
 import { HeaderScreen } from "@components/general/HeaderScreen"
 import { useAuth } from "@src/providers/userProvider"
-import { getWallet } from "@services/memory/wallets"
-import theme from "@src/theme"
 import { useEffect, useState } from "react"
 import { AmountBox } from "@components/wallet/inputs"
 import Ionicons from 'react-native-vector-icons/Ionicons'
 import { useTranslateService } from "@src/providers/translateProvider"
 import { Wallet } from "@services/memory/types"
+import { StackScreenProps } from "@react-navigation/stack"
+import theme from "@src/theme"
 
-const DonateScreen = ({ navigation, route }: any) => {
+const DonateScreen = ({ navigation, route }: StackScreenProps<any>) => {
 
     const { wallets } = useAuth()
     const [amount, setAmount] = useState<string>()
     const [disabled, setDisabled] = useState(true)
     const { useTranslate } = useTranslateService()
-    const [wallet, setWallet] = useState<Wallet>(route.params.wallet as Wallet)
+    const [wallet, setWallet] = useState<Wallet>(route?.params?.wallet as Wallet)
 
-    // useEffect(() => {
-    //     handleLoadData()
-    // }, [])
+    useEffect(() => {
+        navigation.setOptions({
+            headerShown: true,
+            header: () => <HeaderScreen title={useTranslate("screen.title.donate")} onClose={() => navigation.navigate("core-stack")} />
+        })
+        // handleLoadData()
+    }, [])
 
     const selecteWallet = (wallet: Wallet) => {
         setWallet(wallet)
@@ -31,13 +35,7 @@ const DonateScreen = ({ navigation, route }: any) => {
     }
 
     return (
-        <View style={{
-            flex: 1,
-            alignItems: 'center',
-            backgroundColor: theme.colors.black
-        }} >
-            <HeaderScreen title={useTranslate("screen.title.donate")} onClose={() => navigation.navigate("core-stack")} />
-
+        <View style={theme.styles.container} >
             {/* Body */}
             <Text style={styles.title}>{useTranslate("wallet.title.sendvalue")}</Text>
 

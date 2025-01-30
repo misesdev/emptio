@@ -8,18 +8,28 @@ import { pushMessage } from "@services/notification"
 import { useTranslateService } from "@src/providers/translateProvider"
 import { useAuth } from "@src/providers/userProvider"
 import { WalletType } from "@services/memory/types"
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import theme from "@src/theme"
+import { StackScreenProps } from "@react-navigation/stack"
 
-const ImportWalletScreen = ({ navigation, route }: any) => {
+const ImportWalletScreen = ({ navigation, route }: StackScreenProps<any>) => {
 
     const { setWallets } = useAuth()
-    const type = route.params.type as WalletType
+    const type = route?.params?.type as WalletType
     const [loading, setLoading] = useState(false)
     const [walletName, setWalletName] = useState<string>("")
     const [seedPhrase, setSeedPhrase] = useState<string>("")
     const [passPhrase, setPassPhrase] = useState<string>()
     const { useTranslate } = useTranslateService()
+
+    useEffect(() => {
+        navigation.setOptions({
+            header: () => <HeaderScreen
+                title={useTranslate("screen.title.importwallet")}
+                onClose={() => navigation.navigate("add-wallet-stack")}
+            />
+        })
+    })
 
     const handleImport = async () => {
 
@@ -56,14 +66,7 @@ const ImportWalletScreen = ({ navigation, route }: any) => {
         return <SplashScreen />
 
     return (
-        <View style={{ flex: 1 }}>
-            {/* Header */}
-            <HeaderScreen
-                title={useTranslate("screen.title.importwallet")}
-                onClose={() => navigation.navigate("add-wallet-stack")}
-            />
-
-            {/* Body */}
+        <View style={theme.styles.container}>
             <Text style={styles.title}>{useTranslate("wallet.title.import")}</Text>
 
             <View style={{ alignItems: "center", marginVertical: 26 }}>
