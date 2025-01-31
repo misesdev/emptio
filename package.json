@@ -26,6 +26,7 @@
         "buffer": "^6.0.3",
         "expo": "^52.0.0",
         "expo-sqlite": "^15.1.1",
+        "link-preview-js": "^3.0.13",
         "react": "18.3.1",
         "react-native": "0.77.0",
         "react-native-biometrics": "^3.0.1",
@@ -46,7 +47,6 @@
         "react-native-svg": "^15.11.1",
         "react-native-vector-icons": "^10.2.0",
         "react-native-video": "^6.10.0",
-        "react-native-webview": "^13.13.1",
         "text-encoding": "^0.7.0",
         "zustand": "^5.0.3"
     },

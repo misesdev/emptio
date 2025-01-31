@@ -45,9 +45,9 @@ export const ButtonHead = ({ label, style, leftIcon, rightIcon, onPress }: Props
     return <TouchableEmptio label={label} leftIcon={leftIcon} rightIcon={rightIcon} onPress={onPress} style={[styles.button, styles.default, style]} />
 }
 
-export const ButtonLink = ({ label, color, onPress }: Props) => {
+export const ButtonLink = ({ label, color, style, onPress }: Props) => {
     return (
-        <TouchableOpacity style={styles.buttonLink} onPress={onPress} >
+        <TouchableOpacity style={[styles.buttonLink, style]} onPress={onPress} >
             <Text style={[styles.textLink, { color: color }]}>{label}</Text>
         </TouchableOpacity>
     )

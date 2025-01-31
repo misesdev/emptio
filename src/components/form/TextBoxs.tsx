@@ -53,6 +53,8 @@ export const QRCodeTextBox = ({ value, placeholder, onChangeText }: TextBoxProps
                 placeholder={placeholder}
                 onChangeText={onChangeText}
                 placeholderTextColor={theme.colors.gray}
+                multiline={false}
+                numberOfLines={1}
                 value={value}                
             />
             <TouchableOpacity style={styles.pastButton} onPress={() => { setQrReader(true) }} activeOpacity={.7}>

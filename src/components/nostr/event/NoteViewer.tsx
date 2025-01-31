@@ -1,70 +1,75 @@
 import theme from '@/src/theme';
-import { View, Image, StyleSheet, Linking } from 'react-native';
+import { View, Image, StyleSheet } from 'react-native';
 import ParsedText from 'react-native-parsed-text';
-import { WebView } from 'react-native-webview';
-import { Video } from 'react-native-video';
-import { ButtonLink } from '@components/form/Buttons';
+import { Video, VideoRef } from 'react-native-video';
+import LinkPreview from './LinkPreview';
+import { useRef } from 'react';
+import { useFocusEffect } from '@react-navigation/native';
+import { useCallback } from 'react';
 
-type VideoProps = { url: string }
+type VideoProps = { 
+    url: string,
+    hideFullscreen: boolean
+}
 
-const VideoScreen = ({ url }: VideoProps) => {
+const VideoScreen = ({ url, hideFullscreen = false }: VideoProps) => {
+
+    const videoRef = useRef<VideoRef>(null)
+
+    useFocusEffect(() => {
+        useCallback(() => {
+            return () => {
+                if(videoRef.current) videoRef.current?.pause()
+            }
+        }, [])
+    })
+
     return (
-        <View style={styles.contentContainer}>
-            <Video controls repeat
+        <View style={styles.contentVideo}>
+            <Video ref={videoRef} controls repeat paused 
+                playInBackground={false}
+                fullscreenOrientation='portrait'
+                controlsStyles={{ 
+                    hideNext: true, 
+                    hideForward: true,
+                    hidePrevious: true,
+                    hideRewind: true,
+                    hideFullscreen
+                }}
                 source={{ uri: url }}
                 style={styles.video}
-                resizeMode='contain'
+                
+                resizeMode="contain"
             />
         </View>
     )
 }
 
-type Props = { note: string }
+type Props = { note: string, videoFullScreen?: boolean }
 
-const NoteViewer = ({ note }: Props) => {
+const NoteViewer = ({ note, videoFullScreen = false }: Props) => {
     const urlRegex = /(https?:\/\/[^\s]+)/g;
 
     const isImageUrl = (url: string): boolean => {
         return /\.(jpeg|jpg|gif|png|webp|svg)(\?.*)?$/.test(url.toLowerCase());
-    };
+    }
 
     const isVideoUrl = (url: string): boolean => {
         return /\.(mp4|webm|ogg|mov|avi|mkv|flv)(\?.*)?$/.test(url.toLowerCase());
-    };
+    }
 
     const renderText = (matchingString: string, matches: string[]) => {
         const url = matches[0];
         if (isImageUrl(url)) {
-            return <Image source={{ uri: url }} style={styles.image} />
-        } else if(isVideoUrl(url)) {
-            return <VideoScreen url={url} />
-            // return <View style={{}}>
-            //     <ButtonLink 
-            //         label={url} 
-            //         color={theme.colors.blue} 
-            //         onPress={() => Linking.openURL(url)}
-            //     />
-            // </View>
-        } else {
-            // return (
-            //     <TouchableOpacity onPress={() => Linking.openURL(url)}>
-            //         <View style={styles.previewContainer}>
-            //             <WebView 
-            //                 source={{ uri: url }}
-            //                 style={[styles.webview,{ width: 280, height: "auto" }]}
-            //                 scalesPageToFit={false}
-            //                 scrollEnabled={false}
-            //             />
-            //         </View>
-            //     </TouchableOpacity>
-            // )
-            return ( 
-                <ButtonLink 
-                    label={url} 
-                    color={theme.colors.blue} 
-                    onPress={() => Linking.openURL(url)}
-                />
+            return (
+                <View style={styles.image}>
+                    <Image source={{ uri: url }} style={{ flex: 1 }} />
+                </View>
             )
+        } else if(isVideoUrl(url)) {
+            return <VideoScreen hideFullscreen={!videoFullScreen} url={url} />
+        } else {
+            return <LinkPreview link={url} />
         }
     }
 
@@ -96,43 +101,28 @@ const styles = StyleSheet.create({
         textDecorationLine: 'underline',
     },
     image: {
-        width: "90%",
-        height: 200,
+        width: "100%",
+        height: 150,
         margin: 10,
         resizeMode: 'contain',
-        marginVertical: 10,
-        borderRadius: 14,
-    },
-    previewContainer: {
-        width: "96%",
-        height: 130,
-        marginVertical: 10,
-        borderRadius: 14,
-        overflow: 'hidden',
-        borderWidth: 1,
-        borderColor: theme.colors.white
-    },
-    video: {
-        width: "100%",
-        height: 250,
-        marginVertical: 10,
-        borderRadius: 14,
+        borderRadius: 10,
+        overflow: "hidden"
     },
     webview: {
         padding: 0,
+        overflow: "hidden"
     },
-    contentContainer: {
+    contentVideo: {
+        width: "100%",
+        height: 320,
+        borderRadius: 10,
+        overflow: "hidden",
+        backgroundColor: theme.colors.black
+    },
+    video: {
         flex: 1,
-        padding: 10,
-        paddingHorizontal: 50,
-    },
-    // video: {
-    //   width: 350,
-    //   height: 275,
-    // },
-    controlsContainer: {
-        padding: 10,
-    },
+        borderRadius: 10
+    }
 });
 
 export default NoteViewer;

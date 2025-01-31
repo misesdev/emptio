@@ -67,8 +67,6 @@ const AddFolowScreen = ({ navigation }: any) => {
 
             <SearchBox seachOnLenth={1} label={useTranslate("commons.search")} onSearch={handleSearch} />
 
-            {loading && <ActivityIndicator color={theme.colors.gray} size={50} />}
-
             {!users.length && !loading &&
                 <View style={{ width: "100%", alignItems: "center", paddingHorizontal: 42, marginTop: 120 }}>
                     {/* <Icon name="search" color={theme.colors.gray} size={120}/> */}
@@ -78,7 +76,7 @@ const AddFolowScreen = ({ navigation }: any) => {
                 </View>
             } 
 
-            <UserList toFollow users={users} setUsers={setUsers} onPressUser={handleAddFollow} />
+            <UserList refreshing={loading} toFollow users={users} setUsers={setUsers} onPressUser={handleAddFollow} />
 
             <View style={{ height: 38 }}></View>
 

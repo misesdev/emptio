@@ -1,7 +1,8 @@
-import { ScrollView } from "react-native-gesture-handler"
+import { FlatList, ScrollView } from "react-native-gesture-handler"
 import { StyleSheet, View } from "react-native"
 import NoteViewer from "../event/NoteViewer"
 import theme from "@src/theme"
+import { useCallback } from "react"
 
 type NoteProps = { note: string }
 
@@ -25,17 +26,19 @@ type NoteListProps = { notes: string [] }
 
 export const NoteList = ({ notes }: NoteListProps) => {
     
+    const renderItem = useCallback(({ item }: { item: string }) => {
+        return <NoteItem note={item}/>
+    },[])
+
     return (
-        <ScrollView 
-            pagingEnabled 
+        <FlatList
+            data={notes}
             horizontal
+            pagingEnabled
             style={styles.scroll}
+            renderItem={renderItem}
             showsHorizontalScrollIndicator={false}
-        >
-            {
-                notes.reverse().map((note, key) => <NoteItem key={key} note={note} />)
-            }
-        </ScrollView>
+        />
     )
 }
 

@@ -4,18 +4,20 @@ import { FollowItem } from "../follow/FollowItem"
 import { useTranslateService } from "@src/providers/translateProvider"
 import { useCallback } from "react"
 import theme from "@src/theme"
+import { RefreshControl } from "react-native-gesture-handler"
 
 type FriendListProps = {
     users: User[],
     setUsers: (user: User[]) => void,
     toPayment?: boolean,
     toFollow?: boolean,
+    refreshing: boolean,
     showEmptyMessage?: boolean,
     onPressUser?: (user: User) => void,
 }
 
 export const UserList = ({ users, setUsers, onPressUser, toPayment = false, 
-    toFollow = false, showEmptyMessage = false }: FriendListProps) => {
+    toFollow = false, showEmptyMessage = false, refreshing }: FriendListProps) => {
 
     const { useTranslate } = useTranslateService()
 
@@ -37,14 +39,13 @@ export const UserList = ({ users, setUsers, onPressUser, toPayment = false,
     )
 
     return (
-        <>
-            <FlatList
-                data={users}
-                //ListEmptyComponent={EmptyComponent}
-                renderItem={({ item }) => <ListItem item={item} />}
-                contentContainerStyle={theme.styles.scroll_container}
-                keyExtractor={item => item.pubkey ?? Math.random().toString()}
-            />
-        </>
+        <FlatList
+            data={users}
+            //ListEmptyComponent={EmptyComponent}
+            renderItem={({ item }) => <ListItem item={item} />}
+            contentContainerStyle={theme.styles.scroll_container}
+            keyExtractor={item => item.pubkey ?? Math.random().toString()}
+            refreshControl={<RefreshControl refreshing={refreshing}/>}
+        />
     )
 }
