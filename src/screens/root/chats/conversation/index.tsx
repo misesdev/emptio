@@ -6,7 +6,7 @@ import { useAuth } from "@src/providers/userProvider"
 import { messageService } from "@src/core/messageManager"
 import { User } from "@services/memory/types"
 import useChatStore from "@services/zustand/chats"
-import ConversationList from "./list"
+import ConversationList from "./listMessages"
 import MessageOptionsBox, { showOptiosMessage } from "./options"
 import Ionicons from 'react-native-vector-icons/Ionicons'
 import theme from "@/src/theme"
@@ -38,12 +38,13 @@ const ConversationChat = ({ navigation, route }: StackScreenProps<any>) => {
     }, [unreadChats])
 
     const loadMessages = async () => {
+        
+        if(unreadChats.filter(c => c == chat_id).length) 
+            markReadChat(chat_id)
+
         const chatMessages = await messageService.listMessages(chat_id)
         
         setMessages(chatMessages)
-
-        if(unreadChats.filter(c => c == chat_id).length) 
-            markReadChat(chat_id)
     }
 
     const sendMessage = async (follow: User) => {
@@ -53,7 +54,7 @@ const ConversationChat = ({ navigation, route }: StackScreenProps<any>) => {
     }
 
     const messageOptions = async (event: NDKEvent, isUser: boolean) => {
-        Vibration.vibrate(75)
+        Vibration.vibrate(45)
         showOptiosMessage({ event, isUser })
     }
 

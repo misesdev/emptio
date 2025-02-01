@@ -14,12 +14,12 @@ import { useTranslateService } from "@src/providers/translateProvider"
 import { Network } from "@services/bitcoin/types"
 import theme from "@src/theme"
 import env from "@/env"
+import { StackScreenProps } from "@react-navigation/stack"
 
 const TransactionIcon = ({ type, confirmed }: TransactionInfo) => {
     let color = theme.colors.red
     let rotate = type == "received" ? "90deg" : "-90deg"
     let icon: IconNames = type == "received" ? "enter" : "exit"
-
 
     if (type == "received")
         color = confirmed ? theme.colors.green : theme.colors.yellow
@@ -27,7 +27,7 @@ const TransactionIcon = ({ type, confirmed }: TransactionInfo) => {
     return <Ionicons name={icon} size={60} color={color} style={{ margin: 10, transform: [{ rotate: rotate }] }} />
 }
 
-const TransactionScreen = ({ navigation, route }: any) => {
+const TransactionScreen = ({ navigation, route }: StackScreenProps<any>) => {
 
     const { useTranslate } = useTranslateService()
     const [loading, setLoading] = useState<boolean>(true)
@@ -56,7 +56,7 @@ const TransactionScreen = ({ navigation, route }: any) => {
 
     return (
         <View style={{ flex: 1 }}>
-            <HeaderScreen title={useTranslate("wallet.transaction.title")} onClose={() => navigation.navigate("wallet-stack", { wallet })} />
+            <HeaderScreen title={useTranslate("wallet.transaction.title")} onClose={() => navigation.goBack()} />
             
             <View style={{ alignItems: "center", alignContent: "center" }}>
                 <TransactionIcon type={transaction.type} confirmed={transaction.confirmed} /> 
@@ -72,7 +72,7 @@ const TransactionScreen = ({ navigation, route }: any) => {
                                
                 {loading && <ActivityIndicator size={40} color={theme.colors.gray}/>}
 
-                { !loading &&
+                {!loading &&
                     <>                        
                         <SectionContainer style={{ width: "94%", padding: 14 }}>
                             <View style={{ flexDirection: "row" }}>

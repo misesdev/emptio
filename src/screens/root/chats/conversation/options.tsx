@@ -44,15 +44,14 @@ const MessageOptionsBox = ({ user, deleteMessage }: Props) => {
 
     const handleCopy = async () => {
         copyToClipboard(eventMessage?.content ?? "")
-
         setVisible(false)
     }
     
     const OptionItem = ({ label, icon, onPress }: OptionProps) => {
         return (
-            <TouchableOpacity onPress={onPress} style={[styles.option]} >
+            <TouchableOpacity onPress={onPress} style={styles.option} >
                 <View style={{ width: "8%", height: "100%", alignItems: "center" }}>
-                    <Ionicons style={{ paddingVertical: 12 }} name={icon} size={18} color={theme.colors.white} />
+                    <Ionicons style={{ paddingVertical: 10 }} name={icon} size={18} color={theme.colors.white} />
                 </View>
                 <View style={{ width: "92%", height: "100%", alignItems: "center" }}>
                     <Text style={styles.labelOption}>{label}</Text>
@@ -62,22 +61,25 @@ const MessageOptionsBox = ({ user, deleteMessage }: Props) => {
     }
 
     return (
-        <Modal animationType="fade" onRequestClose={() => setVisible(false)} visible={visible} transparent >
-            <View style={{ flex: 1, alignItems: "center", justifyContent: "center", backgroundColor: "rgba(0,0,0, .6)" }}>
+        <Modal animationType="fade" 
+            onRequestClose={() => setVisible(false)} 
+            visible={visible} transparent
+        >
+            <View style={{ flex: 1, alignItems: "center", justifyContent: "center", backgroundColor: theme.colors.semitransparent }}>
                 <View style={styles.box}>
                    <OptionItem icon="copy-outline"
                         label="Copiar texto" 
                         onPress={() => handleCopy()}
                     />
                     { isUser &&
-                   <OptionItem icon="trash-outline"
-                        label="Excluir para Todos" 
-                        onPress={() => handleDeleteMessage(false)}
-                    />
+                       <OptionItem icon="trash-outline"
+                            label="Excluir para Todos" 
+                            onPress={() => handleDeleteMessage(false)} // onlyForMe=false
+                        />
                     }
                    <OptionItem icon="trash-bin-outline"
                         label="Excluir para min" 
-                        onPress={() => handleDeleteMessage(true)}
+                        onPress={() => handleDeleteMessage(true)} // onlyForMe=true
                     />
                 </View>
             </View> 
@@ -86,11 +88,11 @@ const MessageOptionsBox = ({ user, deleteMessage }: Props) => {
 }
 
 export const showOptiosMessage = (props: ShowFunctionProps) => {
-    setTimeout(() => { showMessageOptionsFunction(props) }, 10)
+    showMessageOptionsFunction(props)
 }
 
 const styles = StyleSheet.create({
-    box: { padding: 10, width: "80%", borderRadius: 8, backgroundColor: theme.colors.section },
+    box: { padding: 10, width: "75%", borderRadius: 10, backgroundColor: theme.colors.section },
     option: { width: "100%", flexDirection: "row", padding: 5, borderRadius: 10, marginVertical: 2, backgroundColor: theme.colors.section },
     labelOption: { width: "100%", color: theme.colors.white, padding: 10, fontWeight: "400", fontSize: 14 },
     absolute: { position: "absolute", width: "100%", height: "100%", top: 0, left: 0, bottom: 0, right: 0 }

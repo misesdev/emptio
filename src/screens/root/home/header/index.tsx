@@ -6,8 +6,9 @@ import theme from "@src/theme"
 import { useTranslateService } from "@src/providers/translateProvider"
 import { pushMessage } from "@services/notification"
 import { Wallet } from "@services/memory/types"
+import { StackScreenProps } from "@react-navigation/stack"
 
-export const HeaderHome = ({ navigation }: any) => {
+export const HeaderHome = ({ navigation }: StackScreenProps<any>) => {
 
     const { user, wallets } = useAuth()
     const { useTranslate } = useTranslateService()

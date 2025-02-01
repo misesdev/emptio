@@ -14,8 +14,9 @@ import { WalletType } from "@services/memory/types"
 import { getWallets } from "@services/memory/wallets"
 import { BaseWallet } from "@services/bitcoin"
 import { useEffect, useState } from "react"
-import theme from "@src/theme"
 import { StackScreenProps } from "@react-navigation/stack"
+import theme from "@src/theme"
+
 
 const AddWalletScreen = ({ navigation }: StackScreenProps<any>) => {
 
@@ -30,7 +31,7 @@ const AddWalletScreen = ({ navigation }: StackScreenProps<any>) => {
         navigation.setOptions({ 
             header: () => <HeaderScreen
                 title={useTranslate("screen.title.addwallet")}
-                onClose={() => navigation.navigate("core-stack")}
+                onClose={() => navigation.goBack()}
             /> 
         })
     }, [])

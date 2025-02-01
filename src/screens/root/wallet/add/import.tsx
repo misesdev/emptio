@@ -26,7 +26,7 @@ const ImportWalletScreen = ({ navigation, route }: StackScreenProps<any>) => {
         navigation.setOptions({
             header: () => <HeaderScreen
                 title={useTranslate("screen.title.importwallet")}
-                onClose={() => navigation.navigate("add-wallet-stack")}
+                onClose={() => navigation.goBack()}
             />
         })
     })

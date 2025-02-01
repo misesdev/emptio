@@ -5,10 +5,11 @@ import { StyleSheet, View } from "react-native"
 import { User } from "@services/memory/types"
 import { useTranslateService } from "@/src/providers/translateProvider"
 import { useAuth } from "@src/providers/userProvider"
+import { StackScreenProps } from "@react-navigation/stack"
 import { useState } from "react"
 import theme from "@src/theme"
 
-const NewChatScreen = ({ navigation }: any) => {
+const NewChatScreen = ({ navigation }: StackScreenProps<any>) => {
 
     const { user } = useAuth()
     const { useTranslate } = useTranslateService()
@@ -25,7 +26,7 @@ const NewChatScreen = ({ navigation }: any) => {
     return (
         <View style={theme.styles.container}>
 
-            <HeaderScreen title={useTranslate("screen.title.newchat")} onClose={() => navigation.navigate("core-stack")} />
+            <HeaderScreen title={useTranslate("screen.title.newchat")} onClose={() => navigation.goBack()} />
 
             <SearchBox seachOnLenth={0} delayTime={100} label={`${useTranslate("commons.search")} npub..`} onSearch={(searchTerm) => setSearchTerm(searchTerm)} />
 

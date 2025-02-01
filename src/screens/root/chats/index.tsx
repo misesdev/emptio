@@ -10,7 +10,7 @@ import { useAuth } from "@src/providers/userProvider"
 import ChatList from "./list"
 import useChatStore, { ChatUser } from "@services/zustand/chats"
 import { User } from "@services/memory/types"
-import { StackScreenProps } from "@react-navigation/stack"
+import { StackNavigationProp, StackScreenProps } from "@react-navigation/stack"
 
 const ChatsScreen = ({ navigation }: StackScreenProps<any>) => {
    
@@ -41,8 +41,6 @@ const ChatsScreen = ({ navigation }: StackScreenProps<any>) => {
 
     return (
         <View style={theme.styles.container}>
-
-            {/* <HeaderChats navigation={navigation} /> */}
 
             {/* <SearchBox delayTime={0} seachOnLenth={0} label={useTranslate("commons.search")} onSearch={handleSearch} /> */}
 

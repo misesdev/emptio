@@ -15,23 +15,23 @@ type SeedParams = {
 
 const CreatedSeedScren = ({ navigation, route }: StackScreenProps<any>) => {
 
-    const { wallet, mnemonic } = route?.params as SeedParams
+    const { mnemonic } = route?.params as SeedParams
     const { useTranslate } = useTranslateService()
     const [loading, setLoading] = useState(false)
     const [wordList, setWordList] = useState<string[]>()
 
     useEffect(() => {
         navigation.setOptions({
-            header: () => <HeaderScreen title={useTranslate("wallet.title.seed")} onClose={handleClose} />
+            header: () => <HeaderScreen 
+                title={useTranslate("wallet.title.seed")} 
+                onClose={() => navigation.goBack()} 
+            />
         })
         setWordList(mnemonic as string[])
     }, [])
 
     const handleClose = () => {
-        if (route?.params?.origin == "options")
-            navigation.navigate("wallet-settings-stack", { wallet })
-        else if (route?.params?.origin == "create")
-            navigation.reset({ index: 0, routes: [{ name: "core-stack" }] })
+        navigation.reset({ index: 0, routes: [{ name: "core-stack" }] })
     }
 
     if (loading)
@@ -65,7 +65,7 @@ const styles = StyleSheet.create({
     title: { fontSize: 30, maxWidth: "90%", fontWeight: "bold", textAlign: "center", color: theme.colors.white, marginVertical: 20 },
     seedarea: { width: "100%", marginVertical: 20, flexDirection: "row" },
     buttonarea: { width: "100%", paddingVertical: 6, marginBottom: 40, justifyContent: "center", alignItems: "center" },
-    word: { color: theme.colors.white, fontSize: 14, fontWeight: "bold", marginVertical: 4, padding: 15, borderRadius: 10, backgroundColor: theme.colors.blueOpacity }
+    word: { color: theme.colors.white, fontSize: 14, fontWeight: "bold", marginVertical: 10, padding: 15, borderRadius: 10, backgroundColor: theme.colors.blueOpacity }
 })
 
 export default CreatedSeedScren

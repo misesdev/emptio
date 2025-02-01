@@ -7,6 +7,7 @@ import { walletService } from "@src/core/walletManager"
 import { FollowItem } from "./FollowItem"
 import { NostrEvent } from "@nostr-dev-kit/ndk"
 import theme from "@src/theme"
+import { RefreshControl } from "react-native-gesture-handler"
 
 type FriendListProps = {
     iNot?: boolean,
@@ -26,8 +27,6 @@ export const FollowList = ({ searchTerm, onPressFollow, toPayment = false,
     const [followList, setFollowList] = useState<User[]>([])
     const [followListData, setFollowListData] = useState<User[]>([])
 
-    useEffect(() => { handleListFollows() }, [])
-
     if (searchable) {
         useEffect(() => {
             clearTimeout(searchTimeout.current)
@@ -46,16 +45,16 @@ export const FollowList = ({ searchTerm, onPressFollow, toPayment = false,
 
         }, [searchTerm])
     }
+   
+    useEffect(() => { handleListFollows() }, [])
 
     const handleListFollows = async () => {
-        setRefreshing(true)
-
-        const followList = await userService.listFollows(user, follows as NostrEvent, iNot)
-
-        setFollowListData(followList)
-        setFollowList(followList) 
-
-        setRefreshing(false)
+        userService.listFollows(user, follows as NostrEvent, iNot).then(followList => {
+            setFollowListData(followList)
+            setFollowList(followList) 
+            setRefreshing(false)
+        })
+        .catch(() => setRefreshing(false))
     }
 
     const handleClickFollow = useCallback((follow: User) => {
@@ -69,20 +68,14 @@ export const FollowList = ({ searchTerm, onPressFollow, toPayment = false,
         return <ListItem item={item} />
     }, [])
 
-    const handleLoaderEnd = () => {
-        if (refreshing)
-            // Show loader at the end of list when fetching next page data.
-            return <ActivityIndicator color={theme.colors.gray} style={{ margin: 10 }} size={50} />
-    }
-
     return (
         <>
             <FlatList
                 data={followList}
                 renderItem={renderItem}
                 contentContainerStyle={[theme.styles.scroll_container, { paddingBottom: 30 }]}
-                // ListFooterComponent={handleLoaderEnd}
                 keyExtractor={item => item.pubkey ?? Math.random().toString()}
+                refreshControl={<RefreshControl refreshing={refreshing} onRefresh={handleListFollows} />}
             />
         </>
     )

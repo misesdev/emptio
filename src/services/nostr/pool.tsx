@@ -1,4 +1,4 @@
-import NDK, { NDKEvent, NDKPrivateKeySigner, NDKRelay, NDKUser } from "@nostr-dev-kit/ndk-mobile"
+import NDK, { NDKCacheAdapterSqlite, NDKEvent, NDKPrivateKeySigner, NDKRelay, NDKUser } from "@nostr-dev-kit/ndk-mobile"
 import { PairKey, User } from "../memory/types"
 import { publishEvent, NostrEvent, getPubkeyFromTags, getEvent } from "./events"
 import { getRelays } from "../memory/relays"
@@ -54,7 +54,10 @@ export const getNostrInstance = async ({ user }: NostrInstanceProps): Promise<ND
 
     const relays = await getRelays()
        
-    const ndk = new NDK({ explicitRelayUrls: relays })
+    const ndk = new NDK({ 
+        explicitRelayUrls: relays, 
+        cacheAdapter: new NDKCacheAdapterSqlite("nevents") 
+    })
 
     if(user) 
     {
@@ -81,32 +84,30 @@ export const subscribeUserChat = ({ user, addChat }: SubscribeProps) => {
         { kinds: [4], "#p": [user.pubkey ?? ""] }, { kinds: [4], authors: [user.pubkey ?? ""] }
     ])
 
-    const processEventMessage = async (event: NDKEvent) => { 
-       
-        const chat_id = messageService.generateChatId(event)
+    const processEventMessage = (event: NDKEvent) => { 
+        return new Promise(async (resolve) => { 
+            const chat_id = messageService.generateChatId(event)
 
-        console.log("chat_id", chat_id)
+            if(await insertEvent({ event, category: "message", chat_id })) 
+            {
+                if(event.pubkey == user.pubkey)
+                    event.pubkey = getPubkeyFromTags(event)
 
-        if(await insertEvent({ event, category: "message", chat_id })) 
-        {
-            if(event.pubkey == user.pubkey)
-                event.pubkey = getPubkeyFromTags(event)
+                addChat({ chat_id, lastMessage: event })
 
-            addChat({ chat_id, lastMessage: event })
-
-            // if(["inactive", "background"].includes(AppState.currentState))
-            // {
-            //     await event.decrypt() 
-            //     const profile = await event.author.fetchProfile()
-            //     await pushNotification({ 
-            //         title: profile?.displayName ?? profile?.name ?? "",
-            //         message: event.content.length <= 30 ? event.content : `${event.content.substring(0,30)}..`
-            //     })
-            // }
-        }
+                // if(["inactive", "background"].includes(AppState.currentState))
+                // {
+                //     await event.decrypt() 
+                //     const profile = await event.author.fetchProfile()
+                //     await pushNotification({ 
+                //         title: profile?.displayName ?? profile?.name ?? "",
+                //         message: event.content.length <= 30 ? event.content : `${event.content.substring(0,30)}..`
+                //     })
+                // }
+            }
+            resolve(null)
+        })
     }
     
-    subscriptionMessages.on("event", (event) => { 
-        if(event.kind == 4) processEventMessage(event)
-    })
+    subscriptionMessages.on("event", processEventMessage)
 }

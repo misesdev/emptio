@@ -41,7 +41,6 @@ const InitializeScreen = ({ navigation }: any) => {
         if(wallets && setWallets) setWallets(wallets)
 
         const result = await userService.isLogged({ setUser })
-        console.log("is logged", result)
         if (result.success && result.data) 
         {
             setNdkSigner(result.data)

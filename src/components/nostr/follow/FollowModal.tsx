@@ -73,7 +73,7 @@ const FollowModal = ({ handleAddFollow }: FollowProps) => {
 
     return (
         <Modal animationType="fade" onRequestClose={handleClose} visible={visible} transparent >
-            <View style={{ flex: 1, alignItems: "center", justifyContent: "center", backgroundColor: "rgba(0,0,0, .6)" }}>
+            <View style={{ flex: 1, alignItems: "center", justifyContent: "center", backgroundColor: theme.colors.black }}>
                 <View style={styles.box}>
 
                     <View style={{ flexDirection: "row" }}>
@@ -104,7 +104,7 @@ const FollowModal = ({ handleAddFollow }: FollowProps) => {
                         {useTranslate("friends.notes.lasts")}
                     </Text>
                     
-                    {notes.length > 0 && <NoteList notes={notes} /> }
+                    {notes.length > 0 && <NoteList isVisible={visible} notes={notes} /> }
                     {notes.length <= 0 && loading && <ActivityIndicator color={theme.colors.gray} size={45} />}
                     {notes.length <= 0 && !loading &&
                         <Text style={{ color: theme.colors.gray, textAlign: "center", margin: 15 }}>
@@ -129,7 +129,7 @@ export const showFollowModal = (props: followModalProps) => {
 }
 
 const styles = StyleSheet.create({
-    box: { padding: 15, width: "85%", borderRadius: 8, backgroundColor: theme.colors.section },
+    box: { padding: 15, width: "90%", borderRadius: 10, backgroundColor: theme.colors.section },
     message: { fontSize: 14, color: theme.colors.gray },
     infolog: { paddingHorizontal: 15, paddingVertical: 8, marginVertical: 18, borderRadius: 10, backgroundColor: theme.colors.semitransparent, color: theme.colors.gray },
     image: { width: 60, height: 60, borderRadius: 50, overflow: "hidden", borderWidth: 1, borderColor: theme.colors.blue },

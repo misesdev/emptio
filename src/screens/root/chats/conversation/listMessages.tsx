@@ -2,7 +2,7 @@ import NoteViewer from "@components/nostr/event/NoteViewer"
 import { messageService } from "@src/core/messageManager"
 import { User } from "@services/memory/types"
 import { NDKEvent } from "@nostr-dev-kit/ndk"
-import { useCallback, useEffect, useState } from "react"
+import { memo, useCallback, useEffect, useState } from "react"
 import { TouchableOpacity, View, Text, StyleSheet, FlatList } from "react-native"
 import theme from "@/src/theme"
 
@@ -14,7 +14,7 @@ type Props = {
 
 const ConversationList = ({ user, events, onMessageOptions }: Props) => {
         
-    const ListItem = ({ item }: { item: NDKEvent }) => {
+    const ListItem = memo(({ item }: { item: NDKEvent }) => {
         const isUser = (item.pubkey == user.pubkey)
         const [event, setEvent] = useState<NDKEvent>(item)
 
@@ -24,7 +24,7 @@ const ConversationList = ({ user, events, onMessageOptions }: Props) => {
 
         return (
             <TouchableOpacity activeOpacity={1}
-                onLongPress={() => onMessageOptions(item, isUser)}
+                onPress={() => onMessageOptions(item, isUser)}
                 style={[styles.messageContainer, { flexDirection: isUser ? "row-reverse" : "row" }]}
             >
                 <View style={[styles.contentMessage, 
@@ -40,7 +40,7 @@ const ConversationList = ({ user, events, onMessageOptions }: Props) => {
                 </View>
             </TouchableOpacity>
         )
-    }
+    })
 
     const renderItem = useCallback(({ item }:{ item: NDKEvent }) => {
         return <ListItem item={item} />
@@ -61,10 +61,9 @@ const ConversationList = ({ user, events, onMessageOptions }: Props) => {
 const styles = StyleSheet.create({
     scrollContainer: { width: "100%", padding: 10, backgroundColor: theme.colors.black },
     messageContainer: { width: "100%", padding: 10 },
-    contentMessage: { width: "70%", padding: 15, borderBottomLeftRadius: 12, borderBottomRightRadius: 12 },
+    contentMessage: { width: "82%", padding: 15, borderBottomLeftRadius: 12, borderBottomRightRadius: 12 },
     messageReceived: { backgroundColor: theme.colors.section, borderTopRightRadius: 12 },
     messageSended: { backgroundColor: theme.colors.blueOpacity, borderTopLeftRadius: 12 },
-
     messageDetailBox: { width: "100%", flexDirection: "row-reverse", marginTop: 12 },
 })
 

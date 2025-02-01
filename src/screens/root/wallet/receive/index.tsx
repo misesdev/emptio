@@ -4,17 +4,21 @@ import { HeaderScreen } from "@components/general/HeaderScreen"
 import { ButtonPrimary } from "@components/form/Buttons"
 import { useAuth } from "@src/providers/userProvider"
 import { useTranslateService } from "@src/providers/translateProvider"
+import { StackScreenProps } from "@react-navigation/stack"
 import { copyToClipboard } from "@src/utils"
 import { useState } from "react"
 import theme from "@src/theme"
+import { Wallet } from "@/src/services/memory/types"
 
-const WalletReceiveScreen = ({ navigation, route }: any) => {
+type ScreenProps = { wallet: Wallet }
+
+const WalletReceiveScreen = ({ navigation, route }: StackScreenProps<any>) => {
 
     const { user } = useAuth()
-    const { wallet } = route.params
+    const { wallet } = route.params as ScreenProps
     const { useTranslate } = useTranslateService()
-    const [address, setAddress] = useState<string>(wallet?.address)
-    const [valueText, setValueText] = useState<string>(wallet?.address)
+    const [address, setAddress] = useState<string>(wallet?.address ?? "")
+    const [valueText, setValueText] = useState<string>(wallet?.address ?? "")
 
     const handleCopyValue = async () => {
 
@@ -29,7 +33,7 @@ const WalletReceiveScreen = ({ navigation, route }: any) => {
         <View style={styles.content}>
 
             {/* Header */}
-            <HeaderScreen title={useTranslate("wallet.title.receive")} onClose={() => navigation.navigate("wallet-stack", { wallet })} />
+            <HeaderScreen title={useTranslate("wallet.title.receive")} onClose={() => navigation.goBack()} />
 
             {/* Body */}
             <View style={{ flex: 1, alignItems: "center" }}>

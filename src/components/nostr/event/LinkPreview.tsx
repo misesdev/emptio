@@ -30,7 +30,8 @@ const LinkPreview = ({ link }: Props) => {
         try {
             getLinkPreview(link).then((metadata: any) => {
                 setData(metadata)
-                console.log(metadata)
+                if(!metadata?.images?.length) 
+                    setNotPreview(true)
                 setLoading(false)
             })
         } catch { 
@@ -73,9 +74,9 @@ const LinkPreview = ({ link }: Props) => {
 }
 
 const styles = StyleSheet.create({
-    webContainer: { width: "100%", padding: 4, borderRadius: 10, overflow: "hidden", 
+    webContainer: { width: "98%", padding: 4, borderRadius: 10, overflow: "hidden", 
         backgroundColor: theme.colors.blueOpacity },
-    imageView: { width: "100%", borderRadius: 10, height: 150 },
+    imageView: { width: "100%", borderTopLeftRadius: 10, borderTopRightRadius: 10, height: 150 },
     subSection: { width: "100%", padding: 10 },
     domain: { color: theme.colors.gray, fontSize: 11 },
     title: { color: theme.colors.white },

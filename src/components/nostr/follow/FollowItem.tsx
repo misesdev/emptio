@@ -14,7 +14,9 @@ type UserItemProps = {
 
 export const FollowItem = memo(({ follow, handleClickFollow, toFollow = false, isFriend = false }: UserItemProps) => {
 
+    const [pictureError, setPictureError] = useState(false)
     const [isFriendMessage, setIsFriendMessage] = useState("")
+    
     useEffect(() => { 
         useTranslate("friends.user.is-friend").then(setIsFriendMessage)
     }, [])
@@ -28,8 +30,8 @@ export const FollowItem = memo(({ follow, handleClickFollow, toFollow = false, i
             {/* Transaction Type */}
             <View style={styles.profileArea}>
                 <View style={styles.profileView}>
-                    {follow.picture && <Image onError={() => follow.picture = ""} source={{ uri: follow.picture }} style={styles.profile} />}
-                    {!follow.picture && <Image source={require("@assets/images/defaultProfile.png")} style={styles.profileView} />}
+                    {follow.picture && <Image onError={() => setPictureError(true)} source={{ uri: follow.picture }} style={styles.profile} />}
+                    {(!follow.picture || pictureError) && <Image source={require("@assets/images/defaultProfile.png")} style={styles.profileView} />}
                 </View>
             </View>
             {/* Transaction Description and Date */}

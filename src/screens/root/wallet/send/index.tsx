@@ -21,7 +21,9 @@ const SendScreen = ({ navigation, route }: StackScreenProps<any>) => {
 
     useEffect(() => {
         navigation.setOptions({
-            header: () => <HeaderScreen title={useTranslate("wallet.title.send")} onClose={() => navigation.navigate("wallet-stack", { wallet })} />
+            header: () => <HeaderScreen 
+                title={useTranslate("wallet.title.send")} 
+                onClose={() => navigation.goBack()} />
         })
     }, [])
 

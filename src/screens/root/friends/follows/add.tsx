@@ -1,16 +1,17 @@
 import { SearchBox } from "@components/form/SearchBox"
 import { HeaderScreen } from "@components/general/HeaderScreen"
-import { ActivityIndicator, View, Text } from "react-native"
+import { View, Text } from "react-native"
 import { User } from "@services/memory/types"
 import { useAuth } from "@src/providers/userProvider"
 import { useTranslateService } from "@src/providers/translateProvider"
 import { userService } from "@src/core/userManager"
 import { UserList } from "@components/nostr/user/UserList"
 import FollowModal, { showFollowModal } from "@components/nostr/follow/FollowModal"
+import { StackScreenProps } from "@react-navigation/stack"
 import { useState } from "react"
 import theme from "@src/theme"
 
-const AddFolowScreen = ({ navigation }: any) => {
+const AddFolowScreen = ({ navigation }: StackScreenProps<any>) => {
 
     const { user, follows, setFollows } = useAuth()
     const { useTranslate } = useTranslateService()
@@ -23,7 +24,7 @@ const AddFolowScreen = ({ navigation }: any) => {
             
         setLoading(true)
 
-        userService.searchUsers(user, searchTerm, 30).then(users => {
+        userService.searchUsers(user, searchTerm, 100).then(users => {
             users.sort((a, b) => (b.similarity ?? 1) - (a.similarity ?? 1))
 
             const friends = follows?.tags?.filter(t => t[0] == "p").map(t => t[1]) ?? []
@@ -63,7 +64,7 @@ const AddFolowScreen = ({ navigation }: any) => {
     return (
         <View style={theme.styles.container}>
 
-            <HeaderScreen title={useTranslate("screen.title.addfriend")} onClose={() => navigation.navigate("core-stack")} />
+            <HeaderScreen title={useTranslate("screen.title.addfriend")} onClose={() => navigation.goBack()} />
 
             <SearchBox seachOnLenth={1} label={useTranslate("commons.search")} onSearch={handleSearch} />
 

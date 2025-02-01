@@ -1,10 +1,14 @@
 import { StyleSheet, View, Text, TouchableOpacity, Image } from "react-native"
 import { useTranslateService } from "@src/providers/translateProvider"
-import theme from "@/src/theme"
-import { StackScreenProps } from "@react-navigation/stack"
+import { StackNavigationProp } from "@react-navigation/stack"
 import { useAuth } from "@/src/providers/userProvider"
+import Ionicons from "react-native-vector-icons/Ionicons"
+import theme from "@/src/theme"
 
-export const HeaderChats = ({ navigation }: any) => {
+type ScreenProps = { 
+    navigation: StackNavigationProp<any> 
+}
+export const HeaderChats = ({ navigation }: ScreenProps) => {
 
     const { user } = useAuth()
     const { useTranslate } = useTranslateService()
@@ -18,10 +22,15 @@ export const HeaderChats = ({ navigation }: any) => {
                 </TouchableOpacity>
             </View>
 
-            <View style={{ width: "75%", padding: 6 }}>
+            <View style={{ width: "70%", padding: 6 }}>
                 <Text style={styles.title}>
                     {useTranslate("chats.title")}
                 </Text>
+            </View>
+            <View style={{ width: "15%", alignItems: "center", justifyContent: "center" }}>
+                <TouchableOpacity onPress={() => navigation.navigate("add-follow-stack")}>
+                    <Ionicons name="person-add-sharp" color={theme.colors.gray} size={theme.icons.large} />
+                </TouchableOpacity>
             </View>
         </View>
     )
@@ -40,7 +49,5 @@ const styles = StyleSheet.create({
         height: theme.icons.extra,
         borderRadius: 20,
         borderColor: theme.colors.blue,
-        // borderWidth: 2
     }
-
 })

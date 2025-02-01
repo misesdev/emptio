@@ -34,7 +34,7 @@ const WalletSettings = ({ navigation, route }: StackScreenProps<any>) => {
         navigation.setOptions({
             header: () => <HeaderScreen
                 title={useTranslate("wallet.title.settings")}
-                onClose={() => navigation.navigate("wallet-stack", { wallet })}
+                onClose={() => navigation.goBack()}
             />
         })
     }, [])
