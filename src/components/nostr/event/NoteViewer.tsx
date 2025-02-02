@@ -1,25 +1,24 @@
 import theme from '@/src/theme';
-import { View, Image, StyleSheet } from 'react-native';
+import { View, StyleSheet } from 'react-native';
 import ParsedText from 'react-native-parsed-text';
 import LinkPreview from './LinkPreview';
 import VideoViewer from './VideoViewer';
 import { useRef } from 'react';
+import ImagePreview from './ImagePreview';
 
 type Props = { 
     note: string, 
+    videoMuted?: boolean, 
+    setMutedVideo?: (mutted: boolean) => void, 
     videoPaused?: boolean, 
     videoFullScreen?: boolean 
 }
 
-const NoteViewer = ({ note, videoPaused = true, videoFullScreen = false }: Props) => {
+const NoteViewer = ({ note, videoMuted=true, videoPaused=true, videoFullScreen=false, setMutedVideo }: Props) => {
     
     const viewRef = useRef(null)
     const urlRegex = /(https?:\/\/[^\s]+)/g;
    
-    const handleUrl = (matchingString: string) => {
-        return `\n${matchingString}`; // Adiciona quebra de linha antes do link
-    }
-
     const isImageUrl = (url: string): boolean => {
         return /\.(jpeg|jpg|gif|png|webp|svg)(\?.*)?$/.test(url.toLowerCase());
     }
@@ -31,14 +30,18 @@ const NoteViewer = ({ note, videoPaused = true, videoFullScreen = false }: Props
     const renderText = (matchingString: string, matches: string[]) => {
         const url = matches[0];
         if (isImageUrl(url)) {
-            return (
-                <View style={styles.image}>
-                    <Image source={{ uri: url }} style={{ flex: 1 }} />
-                </View>
-            )
-        } else if(isVideoUrl(url)) {
-            return <VideoViewer paused={videoPaused} hideFullscreen={!videoFullScreen} url={url} />
-        } else {
+            return <ImagePreview url={url} />
+        } 
+        else if(isVideoUrl(url)) {
+            return <VideoViewer 
+                muted={videoMuted} 
+                setMuted={setMutedVideo}
+                paused={videoPaused} 
+                hideFullscreen={!videoFullScreen} 
+                url={url}
+            />
+        } 
+        else {
             return <LinkPreview link={url} />
         }
     }
@@ -71,14 +74,6 @@ const styles = StyleSheet.create({
     link: {
         color: theme.colors.blue,
         textDecorationLine: 'underline',
-    },
-    image: {
-        width: "98%",
-        height: 150,
-        marginVertical: 10,
-        resizeMode: 'contain',
-        borderRadius: 10,
-        overflow: "hidden"
     },
     webview: {
         padding: 0,

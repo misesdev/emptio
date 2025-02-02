@@ -5,10 +5,10 @@ import { ButtonPrimary } from "@components/form/Buttons"
 import { useAuth } from "@src/providers/userProvider"
 import { useTranslateService } from "@src/providers/translateProvider"
 import { StackScreenProps } from "@react-navigation/stack"
+import { Wallet } from "@/src/services/memory/types"
 import { copyToClipboard } from "@src/utils"
 import { useState } from "react"
 import theme from "@src/theme"
-import { Wallet } from "@/src/services/memory/types"
 
 type ScreenProps = { wallet: Wallet }
 

@@ -68,15 +68,6 @@ const AddFolowScreen = ({ navigation }: StackScreenProps<any>) => {
 
             <SearchBox seachOnLenth={1} label={useTranslate("commons.search")} onSearch={handleSearch} />
 
-            {!users.length && !loading &&
-                <View style={{ width: "100%", alignItems: "center", paddingHorizontal: 42, marginTop: 120 }}>
-                    {/* <Icon name="search" color={theme.colors.gray} size={120}/> */}
-                    <Text style={{ color: theme.colors.gray, fontSize: 16, fontWeight: "400", textAlign: "center", marginVertical: 20 }}>
-                        {useTranslate("friends.search.subtitle")}
-                    </Text>
-                </View>
-            } 
-
             <UserList refreshing={loading} toFollow users={users} setUsers={setUsers} onPressUser={handleAddFollow} />
 
             <View style={{ height: 38 }}></View>

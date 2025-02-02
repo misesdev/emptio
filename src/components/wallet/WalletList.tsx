@@ -1,8 +1,10 @@
-import { SafeAreaView, ScrollView, TouchableOpacity, View, Text, StyleSheet } from "react-native"
+import { SafeAreaView, ScrollView, TouchableOpacity, View, Text, StyleSheet, Dimensions } from "react-native"
 import { useTranslateService } from "@src/providers/translateProvider"
 import { Wallet } from "@services/memory/types"
 import WalletListItem from "./WalletListItem"
 import theme from "@src/theme"
+import { FlatList } from "react-native-gesture-handler"
+import { useEffect, useState } from "react"
 
 type Props = {
     wallets: Wallet[],
@@ -11,33 +13,86 @@ type Props = {
 }
 
 const WalletList = ({ wallets, navigation, reload }: Props) => {
+    const { width } = Dimensions.get("window")
+    const itemWidth = width * .82
+    const spacing = width * .06
 
     const { useTranslate } = useTranslateService()
+    const [walletList, setWalletList] = useState<Wallet[]>([])
+
+    useEffect(() => {
+        setWalletList([...wallets, { key: "create" }])
+    }, [wallets])
 
     const handleOpenWallet = (wallet: Wallet) => {
         navigation.navigate("wallet-stack", { wallet })
     }
 
+    const renderItem = ({ item }: { item: Wallet }) => {
+        if(item.key === "create")
+            return (
+                 <View style={[styles.wallet, {width: itemWidth, marginRight: spacing, backgroundColor: theme.colors.section, padding: 5 }]}> 
+                     <Text style={styles.title}>{useTranslate("labels.wallet.add")}</Text>
+                     <Text style={[styles.description, { color: theme.colors.gray }]}>{useTranslate("message.wallet.create")}</Text> 
+                     <TouchableOpacity style={[styles.button, { backgroundColor: theme.colors.blue }]} activeOpacity={.7} onPress={() => navigation.navigate("add-wallet-stack")}> 
+                         <Text style={styles.buttonText}> {useTranslate("commons.add")} </Text>
+                     </TouchableOpacity> 
+                </View>
+            )
+
+        return (
+            <WalletListItem reload={reload} wallet={item}
+                style={{ width: itemWidth, marginRight: spacing }}
+                handleOpen={handleOpenWallet} 
+            />
+        )
+    }
+
     return (
         <SafeAreaView style={{ width: "100%", height: 220 }}>
-            <ScrollView horizontal showsHorizontalScrollIndicator={false}>
-                {wallets &&
-                    wallets.map((wallet) => <WalletListItem reload={reload} key={wallet.key} wallet={wallet} handleOpen={handleOpenWallet} />)
-                }
-                <View style={[styles.wallet, { backgroundColor: theme.colors.section, padding: 5 }]}>
-                    <Text style={styles.title}>{useTranslate("labels.wallet.add")}</Text>
-                    <Text style={[styles.description, { color: theme.colors.gray }]}>{useTranslate("message.wallet.create")}</Text>
-                    <TouchableOpacity style={[styles.button, { backgroundColor: theme.colors.blue }]} activeOpacity={.7} onPress={() => navigation.navigate("add-wallet-stack")}>
-                        <Text style={styles.buttonText}> {useTranslate("commons.add")} </Text>
-                    </TouchableOpacity>
-                </View>
-            </ScrollView>
+            <FlatList horizontal pagingEnabled
+                data={walletList}
+                snapToInterval={itemWidth+spacing}
+                renderItem={renderItem}
+                contentContainerStyle={{ 
+                    marginLeft: -(spacing), 
+                    paddingHorizontal: (width - itemWidth) / 2
+                }}
+                showsHorizontalScrollIndicator={false}
+                keyExtractor={(item) => item.key ?? ""}
+            />
         </SafeAreaView>
     )
 }
+        {/* <SafeAreaView style={{ width: "100%", height: 220 }}> */}
+        {/*     <ScrollView */}
+        {/*         pagingEnabled */}
+        {/*         //snapToInterval={20} */}
+        {/*         contentContainerStyle={{  */}
+        {/*             //paddingHorizontal: (width - walletWidth) / 2, */}
+        {/*             //marginRight: -(width * .2), */}
+        {/*              */}
+        {/*             backgroundColor: theme.colors.red  */}
+        {/*         }} */}
+        {/*         horizontal showsHorizontalScrollIndicator={false}> */}
+        {/*         {wallets && */}
+        {/*             wallets.map((wallet) => <WalletListItem reload={reload} key={wallet.key} wallet={wallet} handleOpen={handleOpenWallet} />) */}
+        {/*         } */}
+        {/*         <View style={[styles.wallet, { width: walletWidth, backgroundColor: theme.colors.section, padding: 5 }]}> */}
+        {/*             <Text style={styles.title}>{useTranslate("labels.wallet.add")}</Text> */}
+        {/*             <Text style={[styles.description, { color: theme.colors.gray }]}>{useTranslate("message.wallet.create")}</Text> */}
+        {/*             <TouchableOpacity style={[styles.button, { backgroundColor: theme.colors.blue }]} activeOpacity={.7} onPress={() => navigation.navigate("add-wallet-stack")}> */}
+        {/*                 <Text style={styles.buttonText}> {useTranslate("commons.add")} </Text> */}
+        {/*             </TouchableOpacity> */}
+        {/*         </View> */}
+        {/*     </ScrollView> */}
+        {/* </SafeAreaView> */}
+//     )
+// }
 
 const styles = StyleSheet.create({
-    wallet: { width: 360, marginVertical: 10, marginHorizontal: 6, borderRadius: 18 },
+    scroll: { },
+    wallet: { marginVertical: 10, marginHorizontal: 6, borderRadius: 18 },
     title: { color: theme.colors.white, fontSize: 24, fontWeight: "bold", marginTop: 20, marginHorizontal: 10 },
     description: { fontSize: 12, marginHorizontal: 10, marginVertical: 6 },
     button: { margin: 10, maxWidth: 150, paddingVertical: 14, borderRadius: 15, },

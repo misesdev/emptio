@@ -31,6 +31,7 @@ const ChatList = ({ user, chats, handleOpenChat }: Props) => {
     const ListItem = memo(({ item }: { item: ChatUser }) => {
 
         const [follow, setFollow] = useState<User>({})
+        const [pictureError, setPictureError] = useState(false)
         const [event, setEvent] = useState<NDKEvent>(item.lastMessage)
 
         useEffect(() => {             
@@ -47,8 +48,8 @@ const ChatList = ({ user, chats, handleOpenChat }: Props) => {
                 >
                     <View style={{ width: "15%" }}>
                         <View style={styles.profile}>
-                            {follow?.picture && <Image onError={() => { follow.picture = "" }} source={{ uri: follow.picture }} style={{ flex: 1 }} />}
-                            {!follow?.picture && <Image source={require("@assets/images/defaultProfile.png")} style={{ width: 50, height: 50 }} />}
+                            {follow?.picture && <Image onError={() => setPictureError(true)} source={{ uri: follow.picture }} style={{ flex: 1 }} />}
+                            {(!follow?.picture || pictureError) && <Image source={require("@assets/images/defaultProfile.png")} style={{ width: 50, height: 50 }} />}
                         </View>
                     </View>
                     <View style={{ width: "60%", overflow: "hidden" }}>

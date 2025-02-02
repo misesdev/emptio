@@ -4,7 +4,7 @@ import { Wallet, WalletType } from "@services/memory/types"
 import { useTranslate } from "@services/translate"
 import { Network } from "@services/bitcoin/types"
 import { useEffect, useState } from "react"
-import { TouchableOpacity, View, Text, StyleSheet, Image } from "react-native"
+import { TouchableOpacity, View, Text, StyleSheet, Image, Dimensions, ViewStyle } from "react-native"
 import { ActivityIndicator } from "react-native-paper"
 import { getDescriptionTypeWallet } from "@src/utils"
 import theme from "@src/theme"
@@ -12,11 +12,14 @@ import theme from "@src/theme"
 type Props = {
     wallet: Wallet,
     reload: boolean,
+    style: ViewStyle,
     handleOpen: (wallet: Wallet) => void
 }
 
-const WalletListItem = ({ wallet, reload, handleOpen }: Props) => {
+const WalletListItem = ({ wallet, reload, handleOpen, style }: Props) => {
     
+    const { width } = Dimensions.get("window")
+    const walletWidth = width * .8
     const [loading, setLoading] = useState<boolean>()
     const [labelOpen, setLabelOpen] = useState<string>("")
     const [typeWallet, setTypeWallet] = useState<string>("")
@@ -52,7 +55,9 @@ const WalletListItem = ({ wallet, reload, handleOpen }: Props) => {
     let formatName = (!!wallet.name && wallet.name?.length >= 18) ? `${wallet.name?.substring(0, 17)}..` : wallet?.name
 
     return (
-        <TouchableOpacity style={[styles.wallet, { paddingHorizontal: 5 }]} key={wallet.key} activeOpacity={1}>
+        <TouchableOpacity key={wallet.key} activeOpacity={.7} 
+            style={[styles.wallet,style]} onPress={() => handleOpen(wallet)}
+        >
             {wallet!.type === "bitcoin" && <Image source={require("@assets/images/bitcoin-wallet-header3.jpg")} style={{ position: "absolute", borderRadius: 18, width: "100%", height: "100%" }} />}
             {wallet!.type === "testnet" && <Image source={require("@assets/images/bitcoin-wallet-header.jpg")} style={{ position: "absolute", borderRadius: 18, width: "100%", height: "100%" }} />}
             {wallet!.type === "lightning" && <Image source={require("@assets/images/lightning-wallet-header.png")} style={{ position: "absolute", borderRadius: 18, width: "100%", height: "100%" }} />}
@@ -91,7 +96,7 @@ const WalletListItem = ({ wallet, reload, handleOpen }: Props) => {
 }
 
 const styles = StyleSheet.create({
-    wallet: { width: 360, marginVertical: 10, marginHorizontal: 6, borderRadius: 18 },
+    wallet: { marginVertical: 10, marginHorizontal: 6, borderRadius: 18 },
     title: { color: theme.colors.white, fontSize: 24, fontWeight: "bold", marginTop: 20, marginHorizontal: 10 },
     description: { fontSize: 12, marginHorizontal: 10, marginVertical: 6 },
     button: { margin: 10, maxWidth: 150, paddingVertical: 14, borderRadius: 15, },

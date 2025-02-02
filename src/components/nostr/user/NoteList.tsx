@@ -4,9 +4,14 @@ import NoteViewer from "../event/NoteViewer"
 import theme from "@src/theme"
 import { useCallback, useRef, useState } from "react"
 
-type NoteProps = { note: string, videoPaused?: boolean }
+type NoteProps = { 
+    note: string, 
+    videoMuted?: boolean, 
+    setVideoMuted?: (muted: boolean) => void, 
+    videoPaused?: boolean
+}
 
-const NoteItem = ({ note, videoPaused = true }: NoteProps) => {
+const NoteItem = ({ note, videoMuted=true, setVideoMuted, videoPaused=true }: NoteProps) => {
 
     const scrollRef = useRef(null)
     const { width } = Dimensions.get("window")
@@ -15,12 +20,12 @@ const NoteItem = ({ note, videoPaused = true }: NoteProps) => {
     return (
         <View> 
             <ScrollView ref={scrollRef}
-                contentContainerStyle={{ minHeight: 300, justifyContent: "center" }}
+                contentContainerStyle={{ minHeight: 300 }}
                 showsVerticalScrollIndicator 
                 style={[styles.scrollNote, { width: noteWidth }]}
             >
-                <View style={{ padding: 24 }}>
-                    <NoteViewer videoPaused={videoPaused} note={note} />
+                <View style={{ flex: 1, justifyContent: "center", padding: 24 }}>
+                    <NoteViewer setMutedVideo={setVideoMuted} videoMuted={videoMuted} videoPaused={videoPaused} note={note} />
                 </View>
             </ScrollView>
         </View>
@@ -38,23 +43,27 @@ export const NoteList = ({ notes, isVisible, horizontal=true, pagingEnabled=true
     
     const listRef = useRef(null)
     const [playingIndex, setPlayingIndex] = useState(null)
+    const [videoMuted, setVideoMuted] = useState<boolean>(false)
 
-    // Detecta o item visível
     const onViewableItemsChanged = useCallback(({ viewableItems }: any) => {
-        if (viewableItems.length > 0) {
-            setPlayingIndex(viewableItems[0].index);
-        }
+        const playing = (viewableItems.length > 0 && isVisible) ? viewableItems[0].index : null 
+        setPlayingIndex(playing)
     }, [isVisible])
 
     const renderItem = useCallback(({ item, index }: { item: string, index: number }) => {
-        return <NoteItem note={item} videoPaused={index != playingIndex}/>
-    },[playingIndex])
+        return <NoteItem 
+            note={item} 
+            videoMuted={videoMuted}
+            setVideoMuted={setVideoMuted}
+            videoPaused={index != playingIndex}
+        />
+    },[playingIndex, isVisible])
 
     if(!isVisible) setPlayingIndex(null)
 
     return (
         <FlatList
-            data={notes}
+            data={notes}            
             ref={listRef}
             horizontal={horizontal}
             pagingEnabled={pagingEnabled}
@@ -75,9 +84,9 @@ const styles = StyleSheet.create({
         marginBottom: 10,
     },
     scrollNote: {
-        height: 320, 
+        height: 340, 
         margin: 6,
-        borderRadius: 14,
+        borderRadius: 10,
         backgroundColor: theme.colors.black,
     },
     note: { 

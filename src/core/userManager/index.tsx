@@ -249,7 +249,7 @@ const lastNotes = async (user: User, limit: number = 3, onlyPrincipal = false) :
     if(onlyPrincipal) 
         events = events.filter(e => !e.tags?.filter(t => t[0] == "e").length)
 
-    return events.sort((a,b) => (a.created_at ?? 1) - (b.created_at ?? 1))
+    return events //.sort((a,b) => (a.created_at ?? 1) - (b.created_at ?? 1))
         .map(event => event.content as string)
 }
 

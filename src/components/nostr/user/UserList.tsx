@@ -34,14 +34,14 @@ export const UserList = ({ users, setUsers, onPressUser, toPayment = false,
 
     const EmptyComponent = () => (
         <Text style={{ color: theme.colors.gray, marginTop: 200, textAlign: "center" }}>
-            {useTranslate("chat.empty")}
+            {useTranslate("friends.search.subtitle")}
         </Text>
     )
 
     return (
         <FlatList
             data={users}
-            //ListEmptyComponent={EmptyComponent}
+            ListEmptyComponent={EmptyComponent}
             renderItem={({ item }) => <ListItem item={item} />}
             contentContainerStyle={theme.styles.scroll_container}
             keyExtractor={item => item.pubkey ?? Math.random().toString()}

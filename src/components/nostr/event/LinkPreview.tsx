@@ -2,8 +2,8 @@ import theme from "@/src/theme"
 import { getLinkPreview } from "link-preview-js"
 import { useEffect, useState } from "react"
 import { StyleSheet, Text, View, Image, Linking, TouchableOpacity } from "react-native"
-import { ButtonLink } from "../../form/Buttons"
 import { ActivityIndicator } from "react-native-paper"
+import LinkError from "./LinkError"
 
 type MetadadaLink = {
     url?: string,
@@ -26,31 +26,26 @@ const LinkPreview = ({ link }: Props) => {
     const [loading, setLoading] = useState<boolean>(true)
     const [notPreview, setNotPreview] = useState<boolean>(false)
 
-    useEffect(() => {
+    useEffect(() => { loadPreviewData() }, [])
+
+    const loadPreviewData = async () => {
         try {
-            getLinkPreview(link).then((metadata: any) => {
-                setData(metadata)
-                if(!metadata?.images?.length) 
-                    setNotPreview(true)
-                setLoading(false)
-            })
+            const metadata:any = await getLinkPreview(link)
+                
+            if(!metadata?.images?.length) 
+                setNotPreview(true)
+            
+            setLoading(false)
+
+            setData(metadata)
         } catch { 
             setNotPreview(true)
             setLoading(false)
         }
-    }, [])
+    }
 
     if(notPreview) 
-        return (
-            <View style={{ position: "relative", width: "100%", padding: 10 }}>
-                <ButtonLink 
-                    label={link} 
-                    style={{ marginVertical: 0 }}
-                    color={theme.colors.blue} 
-                    onPress={() => Linking.openURL(link)}
-                />
-            </View>
-        )
+        return <LinkError url={link} /> 
 
     if(loading)
         return (

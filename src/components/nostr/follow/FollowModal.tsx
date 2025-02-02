@@ -1,4 +1,4 @@
-import { memo, useState } from "react"
+import { memo, useEffect, useState } from "react"
 import { Modal, StyleSheet, Text, TouchableOpacity, View, Image } from "react-native"
 import { useTranslateService } from "@src/providers/translateProvider"
 import { User } from "@services/memory/types"
@@ -49,7 +49,7 @@ const FollowModal = ({ handleAddFollow }: FollowProps) => {
         setUser(user)
         setloading(true)
         setVisible(true)
-        setNotes(await userService.lastNotes(user, 6, true))
+        setNotes(await userService.lastNotes(user, 6))
         setloading(false)
     }
 
@@ -105,7 +105,7 @@ const FollowModal = ({ handleAddFollow }: FollowProps) => {
                     </Text>
                     
                     {notes.length > 0 && <NoteList isVisible={visible} notes={notes} /> }
-                    {notes.length <= 0 && loading && <ActivityIndicator color={theme.colors.gray} size={45} />}
+                    {notes.length <= 0 && loading && <ActivityIndicator color={theme.colors.gray} size={34} />}
                     {notes.length <= 0 && !loading &&
                         <Text style={{ color: theme.colors.gray, textAlign: "center", margin: 15 }}>
                             {useTranslate("friends.notes.empty")}
@@ -131,8 +131,10 @@ export const showFollowModal = (props: followModalProps) => {
 const styles = StyleSheet.create({
     box: { padding: 15, width: "90%", borderRadius: 10, backgroundColor: theme.colors.section },
     message: { fontSize: 14, color: theme.colors.gray },
-    infolog: { paddingHorizontal: 15, paddingVertical: 8, marginVertical: 18, borderRadius: 10, backgroundColor: theme.colors.semitransparent, color: theme.colors.gray },
-    image: { width: 60, height: 60, borderRadius: 50, overflow: "hidden", borderWidth: 1, borderColor: theme.colors.blue },
+    infolog: { paddingHorizontal: 15, paddingVertical: 8, marginVertical: 18, borderRadius: 10,
+        backgroundColor: theme.colors.semitransparent, color: theme.colors.gray },
+    image: { width: 60, height: 60, borderRadius: 50, overflow: "hidden", borderWidth: 1, 
+        borderColor: theme.colors.blue },
     sectionButtons: { width: "100%", flexDirection: "row-reverse" },
     absolute: {
         position: "absolute",

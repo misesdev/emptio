@@ -22,6 +22,7 @@ const CreatedSeedScren = ({ navigation, route }: StackScreenProps<any>) => {
 
     useEffect(() => {
         navigation.setOptions({
+            headerTransparent: false,
             header: () => <HeaderScreen 
                 title={useTranslate("wallet.title.seed")} 
                 onClose={() => navigation.goBack()} 
