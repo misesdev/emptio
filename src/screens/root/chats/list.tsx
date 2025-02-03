@@ -9,6 +9,7 @@ import theme from "@src/theme"
 import { userService } from "@src/core/userManager"
 import { memo } from "react"
 import { messageService } from "@src/core/messageManager"
+import { getUserName } from "@/src/utils"
 
 type Props = {
     user: User, 
@@ -55,12 +56,12 @@ const ChatList = ({ user, chats, handleOpenChat }: Props) => {
                     <View style={{ width: "60%", overflow: "hidden" }}>
                         {(follow.display_name || follow.name) &&
                             <Text style={styles.profileName}>
-                                { (follow?.display_name ?? follow?.name ?? "").substring(0, 20) }
+                                {getUserName(follow, 24)}
                             </Text>
                         }
                         
                         <Text style={styles.message}>
-                            {event.content.substring(0, 30)}..
+                            {event.content.substring(0, 30).replace("\n", " ")}..
                         </Text>
                     </View>                    
                     <View style={{ width: "25%", overflow: "hidden", flexDirection: "row-reverse" }}>

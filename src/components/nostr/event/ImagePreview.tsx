@@ -11,13 +11,15 @@ const ImagePreview = ({ url }: ScreenProps) => {
     const [imageHeight, setImageHeight] = useState<number>(200)
 
     useEffect(() => {
-        Image.getSize(url, (sourceWidth, sourceHeight) => {
-            const scaleFactor = (width - 100) / sourceWidth
-            //const scaleFactorHeight = (height - 300) / sourceHeight
-            //setImageHeight(sourceWidth * scaleFactor)
-            
-            //setImageHeight(sourceHeight * scaleFactor)
-        })
+        try {
+            Image.getSize(url, (sourceWidth, sourceHeight) => {
+                const scaleFactor = (width - 100) / sourceWidth
+                //const scaleFactorHeight = (height - 300) / sourceHeight
+                //setImageHeight(sourceWidth * scaleFactor)
+                
+                //setImageHeight(sourceHeight * scaleFactor)
+            })
+        } catch { }
     }, [])
 
     if(error) 

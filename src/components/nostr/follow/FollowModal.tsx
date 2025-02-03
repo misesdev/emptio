@@ -1,4 +1,4 @@
-import { memo, useEffect, useState } from "react"
+import { useState } from "react"
 import { Modal, StyleSheet, Text, TouchableOpacity, View, Image } from "react-native"
 import { useTranslateService } from "@src/providers/translateProvider"
 import { User } from "@services/memory/types"
@@ -6,8 +6,9 @@ import { hexToNpub } from "@services/converter"
 import { userService } from "@src/core/userManager"
 import { NoteList } from "../user/NoteList"
 import { ActivityIndicator } from "react-native-paper"
+import { copyToClipboard, getDisplayPubkey, getUserName } from "@src/utils"
+import { NDKEvent } from "@nostr-dev-kit/ndk-mobile"
 import theme from "@src/theme"
-import { copyToClipboard } from "@src/utils"
 
 type followModalProps = {
     user: User,
@@ -40,7 +41,7 @@ type FollowProps = {
 const FollowModal = ({ handleAddFollow }: FollowProps) => {
 
     const [user, setUser] = useState<User>()
-    const [notes, setNotes] = useState<string[]>([])
+    const [notes, setNotes] = useState<NDKEvent[]>([])
     const [visible, setVisible] = useState(false)
     const [loading, setloading] = useState(true)
     const { useTranslate } = useTranslateService()
@@ -59,15 +60,13 @@ const FollowModal = ({ handleAddFollow }: FollowProps) => {
     }
 
     const handleAction = async () => {
-        setNotes([])
-        setVisible(false)
         handleAddFollow(user as User)
+        setVisible(false)
+        setNotes([])
     }
 
     const handleCopyPubkey = async () => {
-        
         const npub = hexToNpub(user?.pubkey ?? "")
-
         copyToClipboard(npub)
     }
 
@@ -85,17 +84,17 @@ const FollowModal = ({ handleAddFollow }: FollowProps) => {
                         </TouchableOpacity>
                         <TouchableOpacity style={{ paddingHorizontal: 12 }} onPress={handleCopyPubkey}>
                             <Text style={{ color: theme.colors.white, fontSize: 20, fontWeight: 'bold' }}>
-                                {user?.display_name?.substring(0, 18)}
+                                {getUserName(user ?? {})}
                             </Text>
                             <Text style={{ fontSize: 14, fontWeight: "500", color: theme.colors.gray }}>
-                                {hexToNpub(user?.pubkey ?? "").substring(0, 25)}..
+                                {getDisplayPubkey(user?.pubkey ?? "", 20)}
                             </Text>
                         </TouchableOpacity>
                     </View>
                                           
                     {user?.friend && <Text style={styles.infolog}>
-                        <Text style={{ color: theme.colors.gray, fontWeight: "500" }}>
-                            {user?.display_name?.substring(0, 14)}  
+                        <Text style={{ color: theme.colors.blue, fontWeight: "500" }}>
+                            {getUserName(user)}  
                         </Text> {' '}
                         {useTranslate("message.friend.already")}
                     </Text>}
@@ -104,9 +103,9 @@ const FollowModal = ({ handleAddFollow }: FollowProps) => {
                         {useTranslate("friends.notes.lasts")}
                     </Text>
                     
-                    {notes.length > 0 && <NoteList isVisible={visible} notes={notes} /> }
-                    {notes.length <= 0 && loading && <ActivityIndicator color={theme.colors.gray} size={34} />}
-                    {notes.length <= 0 && !loading &&
+                    {notes?.length > 0 && <NoteList isVisible={visible} user={user} notes={notes} /> }
+                    {notes?.length <= 0 && loading && <ActivityIndicator color={theme.colors.gray} size={34} />}
+                    {notes?.length <= 0 && !loading &&
                         <Text style={{ color: theme.colors.gray, textAlign: "center", margin: 15 }}>
                             {useTranslate("friends.notes.empty")}
                         </Text>

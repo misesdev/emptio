@@ -11,6 +11,7 @@ import { PairKey, User } from "@services/memory/types"
 import useNDKStore from "@services/zustand/ndk"
 import { nip19 } from "nostr-tools"
 import env from "@/env"
+import { NDKEvent, NDKSubscriptionCacheUsage } from "@nostr-dev-kit/ndk-mobile"
 
 type SignUpProps = { 
     userName: string, 
@@ -161,13 +162,16 @@ const isLogged = async ({ setUser }: loggedProps) : Promise<Response<User|null>>
 const listFollows = async (user: User, follows?: NostrEvent, iNot: boolean = true): Promise<User[]> => {
 
     var friends: User[] = []
-
+    //const ndk = useNDKStore.getState().ndk
     try {
         const authors = follows?.tags?.filter(t => t[0] == "p").map(t => t[1])
 
+        // const events = await ndk.fetchEvents({ authors, kinds: [0], limit: authors?.length }, {
+        //     cacheUsage: NDKSubscriptionCacheUsage.CACHE_FIRST
+        // })
         const events = await listenerEvents({ authors, kinds: [0], limit: authors?.length })
 
-        friends = events.filter((u: NostrEvent) => u.pubkey != user.pubkey).map((event: NostrEvent): User => {
+        friends = Array.from(events).filter((u: NostrEvent) => u.pubkey != user.pubkey).map((event: NostrEvent): User => {
             const follow = event.content as User
             follow.pubkey = event.pubkey
             return follow
@@ -238,19 +242,21 @@ const searchUsers = async (user: User, searchTerm: string, limit: number = 50): 
     catch { return [] }
 }
 
-const lastNotes = async (user: User, limit: number = 3, onlyPrincipal = false) : Promise<string[]> => {
+const lastNotes = async (user: User, limit: number = 3) : Promise<NDKEvent[]> => {
+    try {
+        const ndk = useNDKStore.getState().ndk
 
-    var events = await listenerEvents({ 
-        authors: [user.pubkey ?? ""], 
-        kinds: [1], 
-        limit: limit
-    })
-
-    if(onlyPrincipal) 
-        events = events.filter(e => !e.tags?.filter(t => t[0] == "e").length)
-
-    return events //.sort((a,b) => (a.created_at ?? 1) - (b.created_at ?? 1))
-        .map(event => event.content as string)
+        const events = await ndk.fetchEvents({
+            authors: [user.pubkey ?? ""],
+            kinds: [1],
+            limit: limit,
+        }, { cacheUsage: NDKSubscriptionCacheUsage.CACHE_FIRST })
+        
+        return Array.from(events)
+            .filter(e => !e.tags.filter(t => t[0] == "e").length)
+            .filter(e => e.content.length > 0)
+    } 
+    catch { return [] }
 }
 
 const listUsers = async (pubkeys: string[]): Promise<User[]> => {

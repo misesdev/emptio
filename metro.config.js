@@ -1,23 +1,24 @@
 const {getDefaultConfig, mergeConfig} = require('@react-native/metro-config')
 const path = require('path')
-/**
- * Metro configuration
- * https://reactnative.dev/docs/metro
- *
- * @type {import('@react-native/metro-config').MetroConfig}
- */
+
+const defaultConfig = getDefaultConfig(__dirname)
+
 const config = {
     resolver: {
-        sourceExts: ['tsx', 'ts', 'js', 'jsx', 'json'], // Certifique-se de incluir as extensões do TypeScript.
+        sourceExts: ['tsx', 'ts', 'js', 'jsx', 'json'], 
         alias: {
-            '@': path.resolve(__dirname, './'), // Adicione o alias para o caminho correto.
-            '@assets': path.resolve(__dirname, './assets'), // Adicione o alias para o caminho correto.
-            '@src': path.resolve(__dirname, './src'), // Adicione o alias para o caminho correto.
-            '@screens': path.resolve(__dirname, './src/screens'), // Adicione o alias para o caminho correto.
-            '@services': path.resolve(__dirname, './src/services'), // Adicione o alias para o caminho correto.
-            '@components': path.resolve(__dirname, 'src/components'), // Adicione o alias para o caminho correto.
+            '@': path.resolve(__dirname, './'),
+            '@assets': path.resolve(__dirname, './assets'), 
+            '@src': path.resolve(__dirname, './src'), 
+            '@screens': path.resolve(__dirname, './src/screens'), 
+            '@services': path.resolve(__dirname, './src/services'), 
+            '@components': path.resolve(__dirname, 'src/components'), 
         },
-    }, 
-};
+        blockList: [
+            // /.*\/node_modules\/.*/,
+            /.*\/__tests__\/.*/
+        ]
+    }
+}
 
-module.exports = mergeConfig(getDefaultConfig(__dirname), config);
+module.exports = mergeConfig(defaultConfig, config);

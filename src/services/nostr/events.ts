@@ -1,5 +1,5 @@
 
-import { NDKUserProfile, NDKEvent } from "@nostr-dev-kit/ndk-mobile"
+import { NDKUserProfile, NDKEvent, NDKSubscriptionCacheUsage } from "@nostr-dev-kit/ndk-mobile"
 import { Filter } from "nostr-tools"
 import { PairKey, User } from "../memory/types"
 import { NostrEventKinds } from "@/src/constants/Events"
@@ -53,7 +53,9 @@ export const listenerEvents = async (filters: Filter) : Promise<NostrEvent[]> =>
 
     const ndk = useNDKStore.getState().ndk
 
-    const events = await ndk.fetchEvents(filters)
+    const events = await ndk.fetchEvents(filters, {
+        cacheUsage: NDKSubscriptionCacheUsage.CACHE_FIRST
+    })
 
     const eventsResut: NostrEvent[] = []
 
@@ -80,7 +82,9 @@ export const getEvent = async (filters: Filter) : Promise<NostrEvent> => {
 
     const ndk = useNDKStore.getState().ndk
 
-    const event = await ndk.fetchEvent(filters)
+    const event = await ndk.fetchEvent(filters, {
+        cacheUsage: NDKSubscriptionCacheUsage.CACHE_FIRST
+    })
 
     if (event) {
         let jsonContent = [NostrEventKinds.metadata].includes(event.kind ?? 0)

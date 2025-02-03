@@ -1,6 +1,6 @@
 import { Video, VideoRef } from 'react-native-video';
 import { useEffect, useRef, useState } from "react"
-import { View, StyleSheet, TouchableOpacity, Text } from 'react-native';
+import { View, StyleSheet, TouchableOpacity, Text, Dimensions } from 'react-native';
 import Ionicons from 'react-native-vector-icons/Ionicons'
 import Slider from '@react-native-community/slider';
 import { downloadFile, ExternalDirectoryPath } from 'react-native-fs'
@@ -19,10 +19,11 @@ type VideoProps = {
 
 const VideoViewer = ({ url, hideFullscreen = false, muted=false, paused=true, setMuted }: VideoProps) => {
 
+    const { width } = Dimensions.get("window")
     const timeoutRef:any = useRef(null)
     const videoRef = useRef<VideoRef>(null)
     const [error, setError] = useState<boolean>(false)
-    const [height, setHeight] = useState<number>(300)
+    const [videoHeight, setVideoHeight] = useState<number>(300)
     const [duration, setDuration] = useState<number>(0)
     const [currentTime, setCurrentTime] = useState<number>(0)
     const [mutedVideo, setMutedVideo] = useState<boolean>(muted)
@@ -36,18 +37,15 @@ const VideoViewer = ({ url, hideFullscreen = false, muted=false, paused=true, se
     
     const showUpControls = () => {
         setShowControls(true)
-
-        if(timeoutRef.current) 
-            clearTimeout(timeoutRef.current)
-            
+        if(timeoutRef.current) clearTimeout(timeoutRef.current)
         timeoutRef.current = setTimeout(() => setShowControls(false), 3000)
     }
 
     const onLoadVideo = (data: any) => {
         if(data?.duration) setDuration(data.duration)
         if(data?.naturalSize?.height) {
-            if(data.naturalSize.height < 800) setHeight(data.naturalSize.height)
-            else setHeight(280)
+            const scaleFactory = width / data.naturalSize.height 
+            setVideoHeight(data.naturalSize.height * scaleFactory)
         }
     }
 
@@ -94,7 +92,7 @@ const VideoViewer = ({ url, hideFullscreen = false, muted=false, paused=true, se
         return <LinkError url={url} /> 
         
     return (
-        <View style={[styles.contentVideo, { height: height }]}>
+        <View style={[styles.contentVideo, { height: videoHeight }]}>
             <Video onError={() => setError(true)} 
                 ref={videoRef} repeat paused={pausedVideo} muted={mutedVideo}
                 playInBackground={false}

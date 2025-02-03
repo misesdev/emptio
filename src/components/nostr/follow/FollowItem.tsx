@@ -4,6 +4,7 @@ import { hexToNpub } from "@services/converter"
 import { useTranslate } from "@services/translate"
 import { memo, useEffect, useState } from "react"
 import theme from "@src/theme"
+import { getDisplayPubkey, getUserName } from "@/src/utils"
 
 type UserItemProps = {
     follow: User,
@@ -38,14 +39,12 @@ export const FollowItem = memo(({ follow, handleClickFollow, toFollow = false, i
             <View style={{ width: "80%", minHeight: 75 }}>
                 <View style={{ width: "100%" }}>
                     <Text style={styles.userName}>
-                        {
-                            (follow.display_name ?? follow.name ?? hexToNpub(follow.pubkey ?? "")).substring(0, 17)
-                        }
+                        {getUserName(follow, 24)}
                     </Text>
                 </View>
                 <View style={{ width: "100%" }}>
                     <Text style={styles.userAbout}>
-                        {hexToNpub(follow.pubkey ?? "").substring(0, 38)}..
+                        {getDisplayPubkey(follow.pubkey ?? "", 24)}
                     </Text>
                 </View>
                 {isFriend && toFollow &&

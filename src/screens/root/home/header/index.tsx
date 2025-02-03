@@ -1,19 +1,22 @@
 import { useAuth } from "@src/providers/userProvider"
 import { TouchableOpacity, View, Text, Image, StyleSheet } from "react-native"
 import Ionicons from 'react-native-vector-icons/Ionicons'
-import SearchButton from "@components/form/SearchButton"
-import theme from "@src/theme"
 import { useTranslateService } from "@src/providers/translateProvider"
 import { pushMessage } from "@services/notification"
 import { Wallet } from "@services/memory/types"
-import { StackScreenProps } from "@react-navigation/stack"
+import { StackNavigationProp } from "@react-navigation/stack"
+import theme from "@src/theme"
 
-export const HeaderHome = ({ navigation }: StackScreenProps<any>) => {
+type Props = {
+    navigation: StackNavigationProp<any>
+}
+
+export const HeaderHome = ({ navigation }: Props) => {
 
     const { user, wallets } = useAuth()
     const { useTranslate } = useTranslateService()
 
-    const toDonate = (items: Wallet[]) => {
+    const goToDonate = (items: Wallet[]) => {
         if(!items.length)
             return  pushMessage(useTranslate("message.wallet.alertcreate")) 
 
@@ -38,7 +41,7 @@ export const HeaderHome = ({ navigation }: StackScreenProps<any>) => {
                 </Text>    
             </View>
             <View style={{ width: "12%", alignItems: "center", justifyContent: "center" }}>
-                <TouchableOpacity onPress={() => toDonate(wallets)}>
+                <TouchableOpacity onPress={() => goToDonate(wallets)}>
                     <Ionicons name="heart" color={theme.colors.gray} size={theme.icons.large} />
                 </TouchableOpacity>
             </View>

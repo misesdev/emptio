@@ -7,8 +7,8 @@ import { useEffect, useState } from "react"
 import { pushMessage } from "@services/notification"
 import { walletService } from "@src/core/walletManager"
 import { HeaderHome } from "./header"
-import theme from "@src/theme"
 import { StackScreenProps } from "@react-navigation/stack"
+import theme from "@src/theme"
 
 const HomeScreen = ({ navigation }: StackScreenProps<any>) => {
 

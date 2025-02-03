@@ -3,29 +3,31 @@ import { Dimensions, StyleSheet, View } from "react-native"
 import NoteViewer from "../event/NoteViewer"
 import theme from "@src/theme"
 import { useCallback, useRef, useState } from "react"
+import { NDKEvent } from "@nostr-dev-kit/ndk-mobile"
+import { User } from "@/src/services/memory/types"
 
-type NoteProps = { 
-    note: string, 
+type NoteProps = {
+    user?: User,
+    note: NDKEvent, 
     videoMuted?: boolean, 
     setVideoMuted?: (muted: boolean) => void, 
     videoPaused?: boolean
 }
 
-const NoteItem = ({ note, videoMuted=true, setVideoMuted, videoPaused=true }: NoteProps) => {
+const NoteItem = ({ user, note, videoMuted=true, setVideoMuted, videoPaused=true }: NoteProps) => {
 
-    const scrollRef = useRef(null)
     const { width } = Dimensions.get("window")
     const noteWidth = width * .8
 
     return (
         <View> 
-            <ScrollView ref={scrollRef}
-                contentContainerStyle={{ minHeight: 300 }}
+            <ScrollView 
                 showsVerticalScrollIndicator 
+                contentContainerStyle={{ minHeight: 300 }}
                 style={[styles.scrollNote, { width: noteWidth }]}
             >
                 <View style={{ flex: 1, justifyContent: "center", padding: 24 }}>
-                    <NoteViewer setMutedVideo={setVideoMuted} videoMuted={videoMuted} videoPaused={videoPaused} note={note} />
+                    <NoteViewer user={user} setMutedVideo={setVideoMuted} videoMuted={videoMuted} videoPaused={videoPaused} note={note} />
                 </View>
             </ScrollView>
         </View>
@@ -33,13 +35,14 @@ const NoteItem = ({ note, videoMuted=true, setVideoMuted, videoPaused=true }: No
 }
 
 type NoteListProps = {
-    notes: string [],
+    user?: User,
+    notes: NDKEvent[],
     horizontal?: boolean,
     pagingEnabled?: boolean,
     isVisible: boolean
 }
 
-export const NoteList = ({ notes, isVisible, horizontal=true, pagingEnabled=true }: NoteListProps) => {
+export const NoteList = ({ user, notes, isVisible, horizontal=true, pagingEnabled=true }: NoteListProps) => {
     
     const listRef = useRef(null)
     const [playingIndex, setPlayingIndex] = useState(null)
@@ -50,9 +53,9 @@ export const NoteList = ({ notes, isVisible, horizontal=true, pagingEnabled=true
         setPlayingIndex(playing)
     }, [isVisible])
 
-    const renderItem = useCallback(({ item, index }: { item: string, index: number }) => {
+    const renderItem = useCallback(({ item, index }: { item: NDKEvent, index: number }) => {
         return <NoteItem 
-            note={item} 
+            user={user} note={item} 
             videoMuted={videoMuted}
             setVideoMuted={setVideoMuted}
             videoPaused={index != playingIndex}
@@ -69,9 +72,8 @@ export const NoteList = ({ notes, isVisible, horizontal=true, pagingEnabled=true
             pagingEnabled={pagingEnabled}
             style={styles.scroll}
             renderItem={renderItem}
-            removeClippedSubviews
             showsHorizontalScrollIndicator={false}
-            keyExtractor={(index) => index.toString()}
+            keyExtractor={(item) => item.id.toString()}
             onViewableItemsChanged={onViewableItemsChanged}
             viewabilityConfig={{ itemVisiblePercentThreshold: 70 }}
         />
