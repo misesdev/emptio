@@ -1,5 +1,5 @@
 import theme from "@src/theme";
-import { View, Text, ActivityIndicator, StyleSheet, Image } from "react-native";
+import { Text, ActivityIndicator, StyleSheet, Image, Modal, View } from "react-native";
 
 type Props = {
     message?: string
@@ -7,15 +7,15 @@ type Props = {
 
 const SplashScreen = ({ message }: Props) => {
     return (
-        <View style={styles.container}>
+        <Modal visible backdropColor={theme.colors.black}>
+            <View style={styles.container}>
+                <Image style={styles.logo} source={require("@assets/emptio.png")} />
 
-            <Image style={styles.logo} source={require("@assets/emptio.png")} />
+                <ActivityIndicator style={styles.load} size={50} color={theme.colors.gray}></ActivityIndicator>
 
-            <ActivityIndicator style={styles.load} size={50} color={theme.colors.gray}></ActivityIndicator>
-
-            {message && <Text style={styles.message}>{message}</Text>}
-
-        </View>
+                {message && <Text style={styles.message}>{message}</Text>}
+            </View>
+        </Modal>
     )
 }
 
@@ -29,7 +29,6 @@ const styles = StyleSheet.create({
     logo: {
         maxWidth: "80%",
         height: "25%",
-        marginTop: -100
     },
     load: {
         marginVertical: 80

@@ -16,14 +16,14 @@ import { userService } from '@/src/core/userManager';
 type Props = { 
     user?: User,
     note: NDKEvent, 
-    notUser?: boolean,
+    showUser?: boolean,
     videoMuted?: boolean, 
     setMutedVideo?: (mutted: boolean) => void, 
     videoPaused?: boolean, 
     videoFullScreen?: boolean 
 }
 
-const NoteViewer = ({ user, notUser=true, note, videoMuted=true, videoPaused=true, videoFullScreen=false, setMutedVideo }: Props) => {
+const NoteViewer = ({ user, showUser=true, note, videoMuted=true, videoPaused=true, videoFullScreen=false, setMutedVideo }: Props) => {
    
     const [pictureError, setPictureError] = useState(false)
     const [eventAuthor, setEventAutor] = useState<User>(user ?? {})
@@ -34,7 +34,7 @@ const NoteViewer = ({ user, notUser=true, note, videoMuted=true, videoPaused=tru
     useEffect(() => { loadUserData() }, [])
 
     const loadUserData = async () => {
-        if(!user && !notUser)
+        if(!user && showUser)
         {
             const userData = await userService.getProfile(note.pubkey ?? "")
             if(userData) setEventAutor(userData)
@@ -94,7 +94,7 @@ const NoteViewer = ({ user, notUser=true, note, videoMuted=true, videoPaused=tru
 
     return (
         <View style={styles.webview}>
-            { !notUser &&
+            { showUser &&
                 <View style={styles.header}>
                     <View style={{ width: "15%", justifyContent: "center" }}>
                         <TouchableOpacity>

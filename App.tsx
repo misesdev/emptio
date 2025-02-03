@@ -8,7 +8,7 @@ enableScreens()
 import "./libs/global"
 
 import React from 'react';
-import { StyleSheet, View } from 'react-native'
+import { StatusBar, StyleSheet, View } from 'react-native'
 import { TranslateProvider } from './src/providers/translateProvider';
 import { SettingsProvider } from './src/providers/settingsProvider';
 import { AuthProvider } from './src/providers/userProvider';
@@ -19,6 +19,7 @@ export default function App(): React.JSX.Element {
     
     return (
         <View style={styles.root}>
+            <StatusBar backgroundColor={theme.colors.black} />
             <TranslateProvider>
                 <SettingsProvider>
                     <AuthProvider>

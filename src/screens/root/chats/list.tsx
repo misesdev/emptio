@@ -61,7 +61,7 @@ const ChatList = ({ user, chats, handleOpenChat }: Props) => {
                         }
                         
                         <Text style={styles.message}>
-                            {event.content.substring(0, 30).replace("\n", " ")}..
+                            {event.content.substring(0, 30).replaceAll("\n", " ")}..
                         </Text>
                     </View>                    
                     <View style={{ width: "25%", overflow: "hidden", flexDirection: "row-reverse" }}>

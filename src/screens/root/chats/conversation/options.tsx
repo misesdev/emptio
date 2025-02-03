@@ -32,8 +32,8 @@ const MessageOptionsBox = ({ user, deleteMessage }: Props) => {
 
     showMessageOptionsFunction = ({ event, isUser }) => {
         setEventMessage(event)
-        setVisible(true)
         setIsUser(isUser)
+        setVisible(true)
     }
 
     const handleDeleteMessage = (onlyForMe: boolean) => {
@@ -61,24 +61,22 @@ const MessageOptionsBox = ({ user, deleteMessage }: Props) => {
     }
 
     return (
-        <Modal animationType="fade" 
+        <Modal animationType="fade" transparent visible={visible}
             onRequestClose={() => setVisible(false)} 
-            visible={visible} transparent
         >
-            <View style={{ flex: 1, alignItems: "center", justifyContent: "center", backgroundColor: theme.colors.semitransparent }}>
+            <View style={styles.container}>
                 <View style={styles.box}>
                    <OptionItem icon="copy-outline"
-                        label="Copiar texto" 
-                        onPress={() => handleCopy()}
+                        label={useTranslate("commons.copy-text")} onPress={() => handleCopy()}
                     />
                     { isUser &&
                        <OptionItem icon="trash-outline"
-                            label="Excluir para Todos" 
+                            label={useTranslate("commons.delete-for-all")} 
                             onPress={() => handleDeleteMessage(false)} // onlyForMe=false
                         />
                     }
                    <OptionItem icon="trash-bin-outline"
-                        label="Excluir para min" 
+                        label={useTranslate("commons.delete-for-me")} 
                         onPress={() => handleDeleteMessage(true)} // onlyForMe=true
                     />
                 </View>
@@ -92,10 +90,13 @@ export const showOptiosMessage = (props: ShowFunctionProps) => {
 }
 
 const styles = StyleSheet.create({
+    container: { flex: 1, alignItems: "center", justifyContent: "center",
+        backgroundColor: theme.colors.semitransparent },
     box: { padding: 10, width: "75%", borderRadius: 10, backgroundColor: theme.colors.section },
-    option: { width: "100%", flexDirection: "row", padding: 5, borderRadius: 10, marginVertical: 2, backgroundColor: theme.colors.section },
-    labelOption: { width: "100%", color: theme.colors.white, padding: 10, fontWeight: "400", fontSize: 14 },
-    absolute: { position: "absolute", width: "100%", height: "100%", top: 0, left: 0, bottom: 0, right: 0 }
+    option: { width: "100%", flexDirection: "row", padding: 5, borderRadius: 10,
+        marginVertical: 2, backgroundColor: theme.colors.section },
+    labelOption: { width: "100%", color: theme.colors.white, padding: 10, fontWeight: "400", 
+        fontSize: 14 },
 })
 
 export default MessageOptionsBox

@@ -45,6 +45,9 @@ export default {
     "commons.description": "Description",
     "commons.version": "Version",
     "commons.hello": "Hi",
+    "commons.delete-for-me": "Delete for me",
+    "commons.delete-for-all": "Delete for everyone",
+    "commons.copy-text": "Copy text",
 
     "labels.friends": "Friends",
     "labels.username": "User Name",

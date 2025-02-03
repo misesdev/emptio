@@ -23,14 +23,6 @@ const ConversationChat = ({ navigation, route }: StackScreenProps<any>) => {
     const [messages, setMessages] = useState<NDKEvent[]>([])
 
     useEffect(() => {
-        navigation.setOptions({
-            headerShown: true,
-            headerTransparent: false,
-            header: () => <ConversationHeader follow={follow} />
-        })
-    },[])
-
-    useEffect(() => {
         clearTimeout(timeout.current)
         timeout.current = setTimeout(async() => { 
             await loadMessages() 
@@ -65,7 +57,8 @@ const ConversationChat = ({ navigation, route }: StackScreenProps<any>) => {
 
     return (
         <View style={theme.styles.container}>
-
+            <ConversationHeader follow={follow} />
+            
             <ConversationList user={user} events={messages} onMessageOptions={messageOptions} />
 
             {/* Chat Box */}

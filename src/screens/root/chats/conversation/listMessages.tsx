@@ -31,7 +31,7 @@ const ConversationList = ({ user, events, onMessageOptions }: Props) => {
                         isUser ? styles.messageSended : styles.messageReceived
                     ]}
                 >
-                    <NoteViewer note={event} />
+                    <NoteViewer showUser={false} note={event} />
                     <View style={[styles.messageDetailBox, { flexDirection: isUser ? "row-reverse" : "row" }]}>
                         <Text style={{ fontSize: 11, fontWeight: "500", color: theme.colors.gray }}>
                             {new Date((event.created_at ?? 1) * 1000).toDateString()}

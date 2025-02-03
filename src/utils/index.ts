@@ -30,7 +30,11 @@ export const replaceContentEvent = (content: string) => {
     return content.replaceAll("nostr:", "")
         .replaceAll(" note", " \n\rnote")
         .replaceAll(" nevent", " \n\rnevent")
-        .replaceAll(" https", " \n\rhttps")
+        .replaceAll("\n\r\n\rhttps", "\n\rhttps")
+        .replaceAll("\n\nhttps", "\nhttps")
+        .replaceAll("\n\rhttps", "\n\r\n\rhttps")
+        .replaceAll("\nhttps", "\n\r\n\rhttps")
+        .replaceAll(" https", " \n\r\n\rhttps")
 }
 
 export const getDescriptionTypeWallet = async (type: WalletType) => {

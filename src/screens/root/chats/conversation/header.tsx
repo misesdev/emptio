@@ -27,7 +27,7 @@ const ConversationHeader = ({ follow }: Props) => {
                         {getUserName(follow, 24)}
                     </Text>
                     <Text style={styles.pubkey}>
-                        {getDisplayPubkey(follow.pubkey ?? "")}
+                        {getDisplayPubkey(follow.pubkey ?? "", 25)}
                     </Text>
                 </View>
             </View>
