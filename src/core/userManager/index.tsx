@@ -2,6 +2,7 @@ import { clearStorage } from "@services/memory"
 import { createPairKeys, getHexKeys } from "@services/nostr"
 import { getUserData, pushUserData, pushUserFollows } from "@services/nostr/pool"
 import { getEvent, listenerEvents, publishEvent, NostrEvent } from "@services/nostr/events"
+import { NDKEvent, NDKSubscriptionCacheUsage } from "@nostr-dev-kit/ndk-mobile"
 import { Response, trackException } from "@services/telemetry"
 import { getUser, insertUpdateUser } from "@services/memory/user"
 import { getPairKey, insertPairKey } from "@services/memory/pairkeys"
@@ -10,8 +11,6 @@ import { NostrEventKinds } from "@/src/constants/Events"
 import { PairKey, User } from "@services/memory/types"
 import useNDKStore from "@services/zustand/ndk"
 import { nip19 } from "nostr-tools"
-import env from "@/env"
-import { NDKEvent, NDKSubscriptionCacheUsage } from "@nostr-dev-kit/ndk-mobile"
 
 type SignUpProps = { 
     userName: string, 
@@ -162,13 +161,9 @@ const isLogged = async ({ setUser }: loggedProps) : Promise<Response<User|null>>
 const listFollows = async (user: User, follows?: NostrEvent, iNot: boolean = true): Promise<User[]> => {
 
     var friends: User[] = []
-    //const ndk = useNDKStore.getState().ndk
     try {
         const authors = follows?.tags?.filter(t => t[0] == "p").map(t => t[1])
 
-        // const events = await ndk.fetchEvents({ authors, kinds: [0], limit: authors?.length }, {
-        //     cacheUsage: NDKSubscriptionCacheUsage.CACHE_FIRST
-        // })
         const events = await listenerEvents({ authors, kinds: [0], limit: authors?.length })
 
         friends = Array.from(events).filter((u: NostrEvent) => u.pubkey != user.pubkey).map((event: NostrEvent): User => {
@@ -176,8 +171,7 @@ const listFollows = async (user: User, follows?: NostrEvent, iNot: boolean = tru
             follow.pubkey = event.pubkey
             return follow
         })
-    } catch (fail) {
-        //console.log("error when loading folows", fail)
+    } catch {
         return []
     }
 
@@ -218,7 +212,7 @@ const createFollowEvent = (user: User, friends: [string[]]) : NostrEvent => {
 const searchUsers = async (user: User, searchTerm: string, limit: number = 50): Promise<User[]> => {
     try 
     {
-        const response = await fetch(`${env.nosbook.api}/search`, {
+        const response = await fetch(`${process.env.NOSBOOK_API_URL}/search`, {
             method: "post",
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({

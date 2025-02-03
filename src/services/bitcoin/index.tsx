@@ -1,6 +1,6 @@
 import { getPublicKey } from "@noble/secp256k1"
 import { bytesToHex } from "@noble/hashes/utils"
-import { mnemonicToEntropy, generateMnemonic, mnemonicToSeedSync } from "bip39"
+import { generateMnemonic, mnemonicToSeedSync } from "bip39"
 import { payments, Psbt, networks, address } from "bitcoinjs-lib"
 import { PairKey, Wallet } from "../memory/types"
 import { getRandomKey, signBuffer, verifySign } from "./signature"
