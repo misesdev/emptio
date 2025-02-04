@@ -11,6 +11,7 @@ import { NostrEventKinds } from "@/src/constants/Events"
 import { PairKey, User } from "@services/memory/types"
 import useNDKStore from "@services/zustand/ndk"
 import { nip19 } from "nostr-tools"
+import useChatStore from "@/src/services/zustand/chats"
 
 type SignUpProps = { 
     userName: string, 
@@ -127,8 +128,9 @@ const updateProfile = async ({ user, setUser, upNostr = false }: UpdateProfilePr
 
 const signOut = async (): Promise<Response<any>> => {
     try {
-        await clearStorage()
         await clearEvents()
+        await clearStorage()
+        useChatStore.getState().setChats([])
         return { success: true }
     }
     catch (ex) {

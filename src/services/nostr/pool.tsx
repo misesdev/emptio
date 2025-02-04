@@ -56,7 +56,8 @@ export const getNostrInstance = async ({ user }: NostrInstanceProps): Promise<ND
        
     const ndk = new NDK({ 
         explicitRelayUrls: relays, 
-        cacheAdapter: new NDKCacheAdapterSqlite("nevents") 
+        cacheAdapter: new NDKCacheAdapterSqlite("nevents"),
+        clientName: "emptio_p2p"
     })
 
     if(user) 

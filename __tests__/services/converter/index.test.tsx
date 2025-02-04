@@ -1,6 +1,5 @@
 import { formatSats, toBitcoin, toNumber, toSats } from "@/src/services/converter"
 
-
 describe("Converters functions", () => {
     it("Number to bitcoin amount", () => {
         const bitcoins = toBitcoin(19999)

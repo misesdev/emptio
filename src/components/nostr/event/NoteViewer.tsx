@@ -144,7 +144,7 @@ const styles = StyleSheet.create({
     text: { color: theme.colors.gray },
     link: { color: theme.colors.blue, textDecorationLine: 'underline' },
     webview: { padding: 0, overflow: "hidden" },
-    header: { width: "100%", flexDirection: "row", paddingVertical: 4 },
+    header: { width: "100%", flexDirection: "row", paddingVertical: 4, backgroundColor: theme.colors.blue },
     userProfile: { width: theme.icons.extra, height: theme.icons.extra, borderRadius: 50 },
     profileName: { fontSize: 16, fontWeight: "500", color: theme.colors.white },
 });

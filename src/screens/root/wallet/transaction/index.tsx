@@ -13,7 +13,6 @@ import { ButtonPrimary } from "@components/form/Buttons"
 import { useTranslateService } from "@src/providers/translateProvider"
 import { Network } from "@services/bitcoin/types"
 import theme from "@src/theme"
-import env from "@/env"
 import { StackScreenProps } from "@react-navigation/stack"
 
 const TransactionIcon = ({ type, confirmed }: TransactionInfo) => {
@@ -51,7 +50,7 @@ const TransactionScreen = ({ navigation, route }: StackScreenProps<any>) => {
 
         const directory = wallet.type == "bitcoin" ? "tx/" : "testnet/tx/"
 
-        Linking.openURL(`https://${env.mempool.hostname}/${directory}${txDetails.txid}`)
+        Linking.openURL(`https://${process.env.MEMPOOL_API_URL}/${directory}${txDetails.txid}`)
     }
 
     return (

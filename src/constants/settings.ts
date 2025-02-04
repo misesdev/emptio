@@ -1,2 +1,2 @@
 
-export const defaultProfile: string = "assets/images/defaultProfile.png"
+export const defaultProfile: string = "@assets/images/defaultProfile.png"

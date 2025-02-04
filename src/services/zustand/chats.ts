@@ -40,6 +40,7 @@ const useChatStore = create<ChatStore>((set) => ({
             return {
                 unreadChats: [newer.chat_id, ...state.unreadChats.filter(c => c != newer.chat_id)],
                 chats: [newer, ...state.chats.filter(c => c.chat_id != newer.chat_id)]
+                    .sort((a,b) => (b.lastMessage.created_at??1) - (a.lastMessage.created_at??1))
             }                       
         })
     },
