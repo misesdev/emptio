@@ -1,10 +1,9 @@
 import { TouchableOpacity, View, Image, Text, StyleSheet } from "react-native"
 import { User } from "@services/memory/types"
-import { hexToNpub } from "@services/converter"
 import { useTranslate } from "@services/translate"
 import { memo, useEffect, useState } from "react"
 import theme from "@src/theme"
-import { getDisplayPubkey, getUserName } from "@/src/utils"
+import { copyPubkey, getDisplayPubkey, getUserName } from "@/src/utils"
 
 type UserItemProps = {
     follow: User,
@@ -28,21 +27,19 @@ export const FollowItem = memo(({ follow, handleClickFollow, toFollow = false, i
             style={styles.sectionUser}
             onPress={() => handleClickFollow(follow)}
         >
-            {/* Transaction Type */}
             <View style={styles.profileArea}>
                 <View style={styles.profileView}>
                     {follow.picture && <Image onError={() => setPictureError(true)} source={{ uri: follow.picture }} style={styles.profile} />}
                     {(!follow.picture || pictureError) && <Image source={require("@assets/images/defaultProfile.png")} style={styles.profileView} />}
                 </View>
             </View>
-            {/* Transaction Description and Date */}
             <View style={{ width: "80%", minHeight: 75 }}>
                 <View style={{ width: "100%" }}>
                     <Text style={styles.userName}>
                         {getUserName(follow, 24)}
                     </Text>
                 </View>
-                <View style={{ width: "100%" }}>
+                <View style={{ flexDirection: "row", width: "100%" }}>
                     <Text style={styles.userAbout}>
                         {getDisplayPubkey(follow.pubkey ?? "", 24)}
                     </Text>

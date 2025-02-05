@@ -66,6 +66,7 @@ export default {
     "menu.buy&sell": "comprar & vender",
     "menu.donate": "doar",
     "menu.setting": "configurações",
+    "menu.videos": "cuts",
     "menu.chats": "chats",
     "menu.notifications": "notificações",
 
@@ -103,6 +104,7 @@ export default {
     "message.relay.supported_nips": "Nips suportados pelo relay",
     "message.relay.empty": "Não há nenhum  relay para exibir",
     "message.friend.already": "já está na sua lista de amigos",
+    "message.download.successfully": "Arquivo baixado com sucesso!",
 
     "friends.notes.lasts": "Últimas Notas",
     "friends.notes.empty": "Nenhuma nota encontrada!",

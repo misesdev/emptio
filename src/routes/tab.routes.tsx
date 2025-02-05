@@ -1,11 +1,12 @@
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs'
 import Ionicons from "react-native-vector-icons/Ionicons"
 import HomeScreen from "@screens/root/home"
-import FeedScreen from "@screens/root/orders"
+import FeedOrdersScreen from "@screens/root/orders"
 import ChatsScreen from '@screens/root/chats'
 import { useTranslateService } from '../providers/translateProvider'
 import useChatStore from '../services/zustand/chats'
 import theme from "@src/theme"
+import VideosFeed from '../screens/root/videos'
 
 const Tab = createBottomTabNavigator()
 
@@ -35,11 +36,21 @@ const TabRoutes = () => {
                 }}
             />
             <Tab.Screen
-                name="feed"
-                component={FeedScreen}
+                name="orders"
+                component={FeedOrdersScreen}
                 options={{
                     tabBarLabel: useTranslate("menu.orders"),
                     tabBarIcon: ({ color }) => <Ionicons name="briefcase" color={color} size={theme.icons.large} />,
+                    // tabBarBadge: false
+                }}
+            />
+            <Tab.Screen
+                name="videos-feed"
+                component={VideosFeed}
+                options={{
+                    headerShown: false,
+                    tabBarLabel: useTranslate("menu.videos"),
+                    tabBarIcon: ({ color }) => <Ionicons name="play" color={color} size={theme.icons.large} />,
                     // tabBarBadge: false
                 }}
             />

@@ -2,11 +2,11 @@ import { useState } from "react"
 import { Modal, StyleSheet, Text, TouchableOpacity, View, Image } from "react-native"
 import { useTranslateService } from "@src/providers/translateProvider"
 import { User } from "@services/memory/types"
-import { hexToNpub } from "@services/converter"
 import { userService } from "@src/core/userManager"
 import { NoteList } from "../user/NoteList"
 import { ActivityIndicator } from "react-native-paper"
-import { copyToClipboard, getDisplayPubkey, getUserName } from "@src/utils"
+import Ionicons from "react-native-vector-icons/Ionicons"
+import { copyPubkey, getDisplayPubkey, getUserName } from "@src/utils"
 import { NDKEvent } from "@nostr-dev-kit/ndk-mobile"
 import theme from "@src/theme"
 
@@ -65,31 +65,32 @@ const FollowModal = ({ handleAddFollow }: FollowProps) => {
         setNotes([])
     }
 
-    const handleCopyPubkey = async () => {
-        const npub = hexToNpub(user?.pubkey ?? "")
-        copyToClipboard(npub)
-    }
-
     return (
         <Modal animationType="fade" onRequestClose={handleClose} visible={visible} transparent >
             <View style={{ flex: 1, alignItems: "center", justifyContent: "center", backgroundColor: theme.colors.black }}>
                 <View style={styles.box}>
 
                     <View style={{ flexDirection: "row" }}>
-                        <TouchableOpacity activeOpacity={.3} onPress={handleCopyPubkey}>
+                        <TouchableOpacity activeOpacity={.3} onPress={() => {}}>
                             <View style={styles.image}>
                                 {user?.picture && <Image onError={() => user.picture = ""} source={{ uri: user?.picture }} style={{ flex: 1 }} />}
                                 {!user?.picture && <Image source={require("@assets/images/defaultProfile.png")} style={{ width: 60, height: 60 }} />}
                             </View>
                         </TouchableOpacity>
-                        <TouchableOpacity style={{ paddingHorizontal: 12 }} onPress={handleCopyPubkey}>
+                        <View style={{ paddingHorizontal: 12 }}>
                             <Text style={{ color: theme.colors.white, fontSize: 20, fontWeight: 'bold' }}>
                                 {getUserName(user ?? {})}
                             </Text>
-                            <Text style={{ fontSize: 14, fontWeight: "500", color: theme.colors.gray }}>
-                                {getDisplayPubkey(user?.pubkey ?? "", 20)}
-                            </Text>
-                        </TouchableOpacity>
+                            <TouchableOpacity activeOpacity={.7}
+                                onPress={() => copyPubkey(user?.pubkey ?? "")}
+                                style={{ flexDirection: "row" }}
+                            >
+                                <Text style={{ fontSize: 14, fontWeight: "500", color: theme.colors.gray }}>
+                                    {getDisplayPubkey(user?.pubkey ?? "", 20)}
+                                </Text>
+                                <Ionicons name="copy" size={10} style={{ padding: 5 }} color={theme.colors.gray} />
+                            </TouchableOpacity>
+                        </View>
                     </View>
                                           
                     {user?.friend && <Text style={styles.infolog}>

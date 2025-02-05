@@ -23,8 +23,9 @@ const AddFolowScreen = ({ navigation }: StackScreenProps<any>) => {
         if(searchTerm?.length <= 1) return setUsers([])
             
         setLoading(true)
+        try {
+            const users = await userService.searchUsers(user, searchTerm, 100)
 
-        userService.searchUsers(user, searchTerm, 100).then(users => {
             users.sort((a, b) => (b.similarity ?? 1) - (a.similarity ?? 1))
 
             const friends = follows?.tags?.filter(t => t[0] == "p").map(t => t[1]) ?? []
@@ -33,11 +34,11 @@ const AddFolowScreen = ({ navigation }: StackScreenProps<any>) => {
                 user.friend = friends.includes(user.pubkey ?? "")
             })
 
-            setUsers(users)
-
-            setLoading(false)
-        })
-        .catch(() => setLoading(false))
+            setUsers(users)        
+        } catch(ex) { 
+            console.log(ex) 
+        }
+        setLoading(false)
     }
 
     const AddUserOnFollowList = async (friend: User) => {

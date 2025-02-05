@@ -22,8 +22,12 @@ export const getUserName = (user: User, maxSize: number = 16): string => {
 
 export const getDisplayPubkey = (pubkey: string, maxSize: number = 20) => {
     const npub = hexToNpub(pubkey)
-
     return `${npub.substring(0, maxSize)}...${npub.substring(58)}`
+}
+
+export const copyPubkey = (pubkey: string) => {
+    const npub = hexToNpub(pubkey)
+    copyToClipboard(npub)
 }
 
 export const replaceContentEvent = (content: string) => {
@@ -51,3 +55,10 @@ export const getDescriptionTypeWallet = async (type: WalletType) => {
     }
 }
 
+export const extractVideoUrl = (content: string) => {
+    const videoRegex = /(https?:\/\/[^\s]+?\.(mp4|webm|mov|mkv|avi|flv|ogg))/i;
+
+    const match = content.match(videoRegex);
+
+    return match ? match[0] : null;
+};

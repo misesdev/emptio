@@ -8,20 +8,25 @@ import { getGaleryPermission } from '@/src/services/permissions'
 import { CameraRoll } from "@react-native-camera-roll/camera-roll"
 import theme from '@/src/theme';
 import LinkError from './LinkError';
+import { pushMessage } from '@/src/services/notification';
+import { useTranslateService } from '@/src/providers/translateProvider';
 
 type VideoProps = { 
     url: string,
     paused?: boolean,
     muted?: boolean,
+    redute?: number,
     setMuted?: (mutted: boolean) => void,
-    hideFullscreen: boolean
+    hideFullscreen: boolean,
+    fullScreen?: boolean
 }
 
-const VideoViewer = ({ url, hideFullscreen = false, muted=false, paused=true, setMuted }: VideoProps) => {
+const VideoViewer = ({ url, redute=180, fullScreen=false, hideFullscreen=false, muted=false, paused=true, setMuted }: VideoProps) => {
 
-    const { width } = Dimensions.get("window")
+    const { width, height } = Dimensions.get("window")
     const timeoutRef:any = useRef(null)
     const videoRef = useRef<VideoRef>(null)
+    const { useTranslate } = useTranslateService()
     const [error, setError] = useState<boolean>(false)
     const [videoHeight, setVideoHeight] = useState<number>(300)
     const [duration, setDuration] = useState<number>(0)
@@ -43,9 +48,10 @@ const VideoViewer = ({ url, hideFullscreen = false, muted=false, paused=true, se
 
     const onLoadVideo = (data: any) => {
         if(data?.duration) setDuration(data.duration)
-        if(data?.naturalSize?.height) {
-            const scaleFactory = width / data.naturalSize.height 
-            setVideoHeight(data.naturalSize.height * scaleFactory)
+        if(!fullScreen) {
+            if(data?.naturalSize?.height && data?.naturalSize.width) {
+                setVideoHeight(((width-redute) * data.naturalSize.height) / data.naturalSize.width)
+            }
         }
     }
 
@@ -82,17 +88,22 @@ const VideoViewer = ({ url, hideFullscreen = false, muted=false, paused=true, se
             setDownloading(false)
             setDownloadProgress("0")
             CameraRoll.saveAsset(filePath, { type: "video" })
+            pushMessage(useTranslate("message.download.successfully"))
         }).catch(() => { 
             setDownloading(false)
             setDownloadProgress("0")
         })
     }
 
-    if(error) 
+    if(error && !fullScreen) 
         return <LinkError url={url} /> 
-        
+    if(error && fullScreen)
+        return <></>
+
     return (
-        <View style={[styles.contentVideo, { height: videoHeight }]}>
+        <View style={[styles.contentVideo, { 
+            height: fullScreen ? height-redute : videoHeight, 
+        }]}>
             <Video onError={() => setError(true)} 
                 ref={videoRef} repeat paused={pausedVideo} muted={mutedVideo}
                 playInBackground={false}
@@ -106,9 +117,10 @@ const VideoViewer = ({ url, hideFullscreen = false, muted=false, paused=true, se
                 }}
                 source={{ uri: url }}                
                 style={styles.video}
-                resizeMode="cover"
+                resizeMode={fullScreen?"cover":"contain"}
                 onLoad={onLoadVideo}
                 onProgress={onProgressVideo}
+                disableFocus
             >
             </Video>
             <TouchableOpacity activeOpacity={1} onPress={showUpControls}
@@ -117,22 +129,26 @@ const VideoViewer = ({ url, hideFullscreen = false, muted=false, paused=true, se
                         theme.colors.semitransparent : theme.colors.transparent 
                 }]}
             >
-                <View style={styles.controlsHeader}>
+                <View style={fullScreen ? styles.controlsHeaderFull : styles.controlsHeader}>
                     <TouchableOpacity style={styles.controlsHeaderButton}
                         onPress={handleMute}
                     >
-                        <Ionicons name={mutedVideo ? "volume-mute":"volume-high"} size={18} color={theme.colors.white} />
+                        <Ionicons 
+                            name={mutedVideo ? "volume-mute":"volume-high"} 
+                            size={fullScreen ? 24 : 18} color={theme.colors.white} />
                     </TouchableOpacity>
                     {!downloading &&
                         <TouchableOpacity style={styles.controlsHeaderButton}
                             onPress={handleDownload}
                         >
-                            <Ionicons name={"cloud-download"} size={18} color={theme.colors.white} />
+                            <Ionicons 
+                                name={"cloud-download"} 
+                                size={fullScreen ? 24 : 18} color={theme.colors.white} />
                         </TouchableOpacity>
                     }
                 </View>
 
-                {(showControls || pausedVideo && !downloading) &&
+                {(showControls || pausedVideo) && !downloading &&
                     <TouchableOpacity onPress={() => setPausedVideo(!pausedVideo)}
                         style={{ padding: 10, borderRadius: 10, backgroundColor: theme.colors.blueOpacity }}
                     >
@@ -148,20 +164,21 @@ const VideoViewer = ({ url, hideFullscreen = false, muted=false, paused=true, se
                         </Text>
                     </View>
                 }
-
-                <View style={styles.controlsSliderContainer}>
-                    <Slider
-                        style={styles.controlsSlider}
-                        minimumValue={0}
-                        maximumValue={duration}
-                        value={currentTime}
-                        onSlidingComplete={handleSeek} // Busca no vídeo quando soltar o slider
-                        minimumTrackTintColor={theme.colors.white}
-                        maximumTrackTintColor={theme.colors.white}
-                        thumbTintColor={theme.colors.white}
-                    />
-                </View>
                 
+                {showControls &&
+                    <View style={fullScreen ? styles.controlsSliderContainerFull : styles.controlsSliderContainer}>
+                        <Slider
+                            style={styles.controlsSlider}
+                            minimumValue={0}
+                            maximumValue={duration}
+                            value={currentTime}
+                            onSlidingComplete={handleSeek} // Busca no vídeo quando soltar o slider
+                            minimumTrackTintColor={theme.colors.white}
+                            maximumTrackTintColor={theme.colors.white}
+                            thumbTintColor={theme.colors.white}
+                        />
+                    </View>
+                }
             </TouchableOpacity>
         </View>
     )
@@ -169,19 +186,24 @@ const VideoViewer = ({ url, hideFullscreen = false, muted=false, paused=true, se
 
 const styles = StyleSheet.create({
     contentVideo: {
-        width: "98%",
+        width: "100%",
         borderRadius: 10,
         overflow: "hidden",
         backgroundColor: theme.colors.black
     },
     video: { flex: 1, borderRadius: 10, backgroundColor: theme.colors.blueOpacity },
     controlsContainer: { 
-        position: "absolute", width: "100%", height: "100%", alignItems: "center", justifyContent: "center" },
+        position: "absolute", width: "100%", height: "100%", alignItems: "center", 
+        justifyContent: "center" },
     controlsHeader: { position: "absolute", top: 0, width: "100%", flexDirection: "row-reverse" },
+    controlsHeaderFull: { position: "absolute", top: 0, padding: 10, width: "100%",
+        paddingTop: 30, flexDirection: "row-reverse" },
     controlsHeaderButton: { padding: 4, borderRadius: 10, margin: 4,
         backgroundColor: theme.colors.blueOpacity },
     controlsSliderContainer: { width: "90%", position: "absolute", padding: 1, 
-        borderRadius: 5, bottom: 5, backgroundColor: theme.colors.blueOpacity },
+        borderRadius: 5, bottom: 5 },
+    controlsSliderContainerFull: { width: "90%", position: "absolute", padding: 1, 
+        borderRadius: 5, bottom: 45 },
     controlsSlider: { width: "100%" }
 })
 

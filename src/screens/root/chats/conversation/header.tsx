@@ -1,9 +1,9 @@
-import { hexToNpub } from "@/src/services/converter"
 import { User } from "@/src/services/memory/types"
 import theme from "@/src/theme"
-import { getDisplayPubkey, getUserName } from "@/src/utils"
+import { copyPubkey, getDisplayPubkey, getUserName } from "@/src/utils"
+import { StyleSheet, View, Text, Image, TouchableOpacity } from "react-native"
+import Ionicons from "react-native-vector-icons/Ionicons"
 import { useState } from "react"
-import { StyleSheet, View, Text, Image } from "react-native"
 
 type Props = {
     follow: User
@@ -26,9 +26,16 @@ const ConversationHeader = ({ follow }: Props) => {
                     <Text style={styles.userName}>
                         {getUserName(follow, 24)}
                     </Text>
-                    <Text style={styles.pubkey}>
-                        {getDisplayPubkey(follow.pubkey ?? "", 25)}
-                    </Text>
+                    <TouchableOpacity 
+                        activeOpacity={.7}
+                        onPress={() => copyPubkey(follow.pubkey ?? "")}
+                        style={{ flexDirection: "row" }}
+                    >
+                        <Text style={styles.pubkey}>
+                            {getDisplayPubkey(follow.pubkey ?? "", 20)}
+                        </Text>
+                        <Ionicons name="copy" size={10} style={{ padding: 5 }} color={theme.colors.gray} />
+                    </TouchableOpacity>
                 </View>
             </View>
         </View>

@@ -15,7 +15,7 @@ import { HeaderFeed } from "./header"
 import theme from "@src/theme"
 import { StackScreenProps } from "@react-navigation/stack"
 
-const FeedScreen = ({ navigation }: StackScreenProps<any>) => {
+const FeedOrdersScreen = ({ navigation }: StackScreenProps<any>) => {
 
     const { follows, wallets } = useAuth()
     const { useTranslate } = useTranslateService()
@@ -102,4 +102,4 @@ const styles = StyleSheet.create({
     rightButton: { position: "absolute", bottom: 8, right: 0, width: 90, height: 70, justifyContent: "center", alignItems: "center" }
 })
 
-export default FeedScreen
+export default FeedOrdersScreen

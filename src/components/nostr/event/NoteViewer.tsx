@@ -6,7 +6,8 @@ import VideoViewer from './VideoViewer';
 import ImagePreview from './ImagePreview';
 import EventViewer from './EventViewer';
 import { NDKEvent } from '@nostr-dev-kit/ndk-mobile';
-import { getUserName, replaceContentEvent } from '@/src/utils';
+import Ionicons from "react-native-vector-icons/Ionicons"
+import { copyPubkey, getDisplayPubkey, getUserName, replaceContentEvent } from '@/src/utils';
 import ProfileViewer from './ProfileViewer';
 import HashTagViewer from './HashTagViewer';
 import { User } from '@/src/services/memory/types';
@@ -96,18 +97,27 @@ const NoteViewer = ({ user, showUser=true, note, videoMuted=true, videoPaused=tr
         <View style={styles.webview}>
             { showUser &&
                 <View style={styles.header}>
-                    <View style={{ width: "15%", justifyContent: "center" }}>
+                    <View style={{ width: "10%", justifyContent: "center" }}>
                         <TouchableOpacity>
                             {eventAuthor?.picture && <Image onError={() => setPictureError(true)} source={{ uri: eventAuthor?.picture }} style={styles.userProfile} />}
                             {(!eventAuthor?.picture || pictureError) && <Image source={require("@assets/images/defaultProfile.png")} style={styles.userProfile} />}
                         </TouchableOpacity>
                     </View>
-                    <View style={{ width: "70%", paddingHorizontal: 10 }}>
+                    <View style={{ width: "80%", paddingHorizontal: 15 }}>
                         <Text style={styles.profileName}>
                             {getUserName(eventAuthor)}
                         </Text>
+                        <TouchableOpacity activeOpacity={.7} 
+                            onPress={() => copyPubkey(eventAuthor.pubkey ?? "")}
+                            style={{ flexDirection: "row" }}
+                        >
+                            <Text style={{ color: theme.colors.gray }}>
+                                {getDisplayPubkey(eventAuthor.pubkey ?? "", 15)}
+                            </Text>
+                            <Ionicons name="copy" size={10} style={{ padding: 5 }} color={theme.colors.gray} />
+                        </TouchableOpacity>
                     </View>
-                    <View style={{ width: "15%" }}>
+                    <View style={{ width: "10%" }}>
 
                     </View>
                 </View>
@@ -144,7 +154,7 @@ const styles = StyleSheet.create({
     text: { color: theme.colors.gray },
     link: { color: theme.colors.blue, textDecorationLine: 'underline' },
     webview: { padding: 0, overflow: "hidden" },
-    header: { width: "100%", flexDirection: "row", paddingVertical: 4, backgroundColor: theme.colors.blue },
+    header: { width: "100%", flexDirection: "row", paddingVertical: 4 },
     userProfile: { width: theme.icons.extra, height: theme.icons.extra, borderRadius: 50 },
     profileName: { fontSize: 16, fontWeight: "500", color: theme.colors.white },
 });
