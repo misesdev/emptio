@@ -19,7 +19,7 @@ export default function App(): React.JSX.Element {
     
     return (
         <View style={styles.root}>
-            <StatusBar backgroundColor={theme.colors.black} />
+            {/* <StatusBar hidden /> */}
             <TranslateProvider>
                 <SettingsProvider>
                     <AuthProvider>

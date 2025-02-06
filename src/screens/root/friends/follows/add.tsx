@@ -1,6 +1,5 @@
 import { SearchBox } from "@components/form/SearchBox"
 import { HeaderScreen } from "@components/general/HeaderScreen"
-import { View, Text } from "react-native"
 import { User } from "@services/memory/types"
 import { useAuth } from "@src/providers/userProvider"
 import { useTranslateService } from "@src/providers/translateProvider"
@@ -8,6 +7,7 @@ import { userService } from "@src/core/userManager"
 import { UserList } from "@components/nostr/user/UserList"
 import FollowModal, { showFollowModal } from "@components/nostr/follow/FollowModal"
 import { StackScreenProps } from "@react-navigation/stack"
+import { View } from "react-native"
 import { useState } from "react"
 import theme from "@src/theme"
 
@@ -25,8 +25,6 @@ const AddFolowScreen = ({ navigation }: StackScreenProps<any>) => {
         setLoading(true)
         try {
             const users = await userService.searchUsers(user, searchTerm, 100)
-
-            users.sort((a, b) => (b.similarity ?? 1) - (a.similarity ?? 1))
 
             const friends = follows?.tags?.filter(t => t[0] == "p").map(t => t[1]) ?? []
             

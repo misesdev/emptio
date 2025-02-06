@@ -226,7 +226,9 @@ const searchUsers = async (user: User, searchTerm: string, limit: number = 50): 
 
         const users: any = await response.json()
 
-        return users.filter((u: any) => u.pubkey != user.pubkey).map((user: any) => {
+        return users.filter((u: any) => u.pubkey != user.pubkey)
+            .sort((a:any, b:any) => (b.similarity ?? 1) - (a.similarity ?? 1))
+            .map((user: any) => {
             return {
                 name: user.name,
                 pubkey: user.pubkey,
