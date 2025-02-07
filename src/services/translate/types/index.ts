@@ -52,6 +52,7 @@ export type TranslateWords = "initial.message"
     | "commons.delete-for-me"
     | "commons.delete-for-all"
     | "commons.copy-text"
+    | "commons.follow"
 
     | "labels.username"
     | "labels.about"

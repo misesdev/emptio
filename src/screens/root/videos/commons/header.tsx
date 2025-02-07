@@ -4,18 +4,29 @@ import Ionicons from 'react-native-vector-icons/Ionicons'
 
 type Props = {
     downloading: boolean,
-    handleDownload: () => Promise<void>
+    handleDownload: () => Promise<void>,
+    handleManageFilters: () => void
 }
-const VideoHeader = ({ downloading, handleDownload }: Props) => {
+const VideoHeader = ({ downloading, handleDownload, handleManageFilters }: Props) => {
     return (
         <View style={styles.controlsHeader}>
-            {!downloading &&
+            <View style={{ width: "14%", alignItems: "center" }}>
+                {!downloading &&
+                    <TouchableOpacity style={styles.controlsHeaderButton}
+                        onPress={handleDownload}
+                    >
+                        <Ionicons name={"cloud-download-outline"} size={24} color={theme.colors.white} />
+                    </TouchableOpacity>
+                }
+            </View>
+            <View style={{ width: "72%" }}></View>
+            <View style={{ width: "14%", alignItems: "center" }}>
                 <TouchableOpacity style={styles.controlsHeaderButton}
-                    onPress={handleDownload}
+                    onPress={handleManageFilters}
                 >
-                    <Ionicons name={"cloud-download-outline"} size={24} color={theme.colors.white} />
+                    <Ionicons name={"filter"} size={24} color={theme.colors.white} />
                 </TouchableOpacity>
-            }
+            </View>
         </View>
     )
 }
@@ -23,7 +34,7 @@ const VideoHeader = ({ downloading, handleDownload }: Props) => {
 const styles = StyleSheet.create({
     controlsHeader: { position: "absolute", top: 0, padding: 10, width: "100%",
         paddingTop: 30, flexDirection: "row-reverse" },
-    controlsHeaderButton: { padding: 4, borderRadius: 10, margin: 4,
+    controlsHeaderButton: { padding: 6, borderRadius: 10, margin: 4,
         backgroundColor: theme.colors.blueOpacity },
 })
 

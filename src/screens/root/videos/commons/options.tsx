@@ -2,7 +2,6 @@ import { ButtonPrimary } from "@/src/components/form/Buttons"
 import { useTranslateService } from "@/src/providers/translateProvider"
 import { StyleSheet, Modal, View, ScrollView, TouchableOpacity, Text } from "react-native"
 import { SectionHeader } from "@/src/components/general/section/headers"
-import { useSettings } from "@/src/providers/settingsProvider"
 import { FormControl } from "@/src/components/form/FormControl"
 import Ionicons from 'react-native-vector-icons/Ionicons'
 import theme from "@/src/theme"
@@ -16,20 +15,28 @@ type Props = {
 
 const VideoPostOptions = ({ visible, setVisible }: Props) => {
     
-    const { feedSettings } = useFeedVideosStore()
+    const { feedSettings, setFeedSettings } = useFeedVideosStore()
     const { useTranslate } = useTranslateService()
     const [tagNameText, setTagNameText] = useState<string>()
     const [filterTags, setFilterTags] = useState<string[]>(feedSettings.filterTags)
 
     const handleAddTagfilter = () => {
-        
+        if(!tagNameText) return;
+        feedSettings.filterTags.push(tagNameText ?? "")
+        setFeedSettings({...feedSettings})
+        setTagNameText("")
     }
 
     const handleRemoveTag = (tag: string) => {
-        setFilterTags(prev => prev.filter(t => t != tag))
-        //settings.feedVideo?.filterTags = settings.feedVideo?.filterTags
-        // if (setSettings) 
-        //     setSettings()
+        if(filterTags.length <= 1) return
+
+        const newTags = filterTags.filter(t => t != tag)
+
+        setFilterTags(newTags)
+        
+        feedSettings.filterTags = newTags
+
+        setFeedSettings({...feedSettings})
     }
 
     return (
@@ -44,7 +51,7 @@ const VideoPostOptions = ({ visible, setVisible }: Props) => {
                     <View style={{ width: "85%" }}>
                         <FormControl showLabel={false} 
                             label="add tag filter"
-                            onChangeText={setTagNameText}
+                            onChangeText={(value) => setTagNameText(value.toLowerCase())}
                             value={tagNameText}
                         />
                     </View>
@@ -82,11 +89,11 @@ const styles = StyleSheet.create({
     tagadd: { width: "100%", padding: 10, flexDirection: "row" },
     addbutton: { padding: 10, borderRadius: 50, justifyContent: "center", 
         alignItems: "center", backgroundColor: theme.colors.blue },
-    tagarea: { width: "100%", padding: 10, flexDirection: "row" },
+    tagarea: { width: "100%", padding: 10, alignItems: "center" },
     tagitem: { margin: 4, width: "auto", padding: 10, borderRadius: 10, flexDirection: "row",
         color:  theme.colors.white, backgroundColor: theme.colors.section },
 
-    closebutton: { position: "absolute", width: "100%", bottom: 10 },
+    closebutton: { position: "absolute", width: "100%", paddingHorizontal: 24, bottom: 10 },
 })
 
 export default VideoPostOptions

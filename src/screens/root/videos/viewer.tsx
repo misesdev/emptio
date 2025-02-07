@@ -10,16 +10,17 @@ import theme from '@/src/theme';
 import { pushMessage } from '@/src/services/notification';
 import { useTranslateService } from '@/src/providers/translateProvider';
 import { NDKEvent } from '@nostr-dev-kit/ndk-mobile';
-import { User } from '@/src/services/memory/types';
-import { userService } from '@/src/core/userManager';
-import { copyPubkey, getDisplayPubkey, getUserName } from '@/src/utils';
 import { ActivityIndicator } from 'react-native-paper';
+import VideoFooter from './commons/footer';
+import VideoPostOptions from './commons/options';
+import VideoHeader from './commons/header';
 
 type VideoProps = { 
     url: string,
     event: NDKEvent,
     paused?: boolean,
     muted?: boolean,
+    setPaused?: (paused: boolean) => void,
     setMuted?: (mutted: boolean) => void,
 }
 
@@ -37,12 +38,7 @@ const FeedVideoViewer = ({ event, url, muted=false, paused=false, setMuted }: Vi
     const [showMuted, setShowMuted] = useState<boolean>(false)
     const [downloading, setDownloading] = useState<boolean>(false)
     const [downloadProgress, setDownloadProgress] = useState<number>(0)
-    const [profileError, setProfileError] = useState<boolean>(false)
-    const [profile, setProfile] = useState<User>({})
-
-    useEffect(() => {
-        userService.getProfile(event.pubkey).then(setProfile)
-    }, [event.pubkey])
+    const [optionsVisible, setOptionsVisible] = useState<boolean>(false)
 
     useEffect(() => { 
         if(muted != mutedVideo) setMutedVideo(muted)
@@ -130,24 +126,18 @@ const FeedVideoViewer = ({ event, url, muted=false, paused=false, setMuted }: Vi
             <TouchableOpacity activeOpacity={1} onPress={handleMute}
                 style={styles.controlsContainer}
             >
-                <View style={styles.controlsHeader}>
-                    {!downloading &&
-                        <TouchableOpacity style={styles.controlsHeaderButton}
-                            onPress={handleDownload}
-                        >
-                            <Ionicons 
-                                name={"cloud-download"} 
-                                size={24} color={theme.colors.white} />
-                        </TouchableOpacity>
-                    }
-                </View>
+                <VideoHeader 
+                    downloading={downloading} 
+                    handleDownload={handleDownload}
+                    handleManageFilters={() => setOptionsVisible(true)}
+                /> 
 
                 {loading && 
                     <ActivityIndicator size={28} color={theme.colors.white} />
                 }
                 {error && 
                     <Text style={{ color: theme.colors.white }}>
-                        No content found
+                        {useTranslate("message.default_error")} 
                     </Text>
                 }
                 
@@ -167,56 +157,22 @@ const FeedVideoViewer = ({ event, url, muted=false, paused=false, setMuted }: Vi
                         </Text>
                     </View>
                 }
-               
+
+                <VideoFooter event={event} url={url} /> 
                 <View style={styles.controlsSliderContainer}>
-                    <View style={styles.profilebar}>
-                        <View style={{ width: "15%", paddingHorizontal: 2 }}>
-                            <View style={styles.profile}>
-                                {profile.picture && 
-                                    <Image onError={() => setProfileError(true)} source={{ uri: profile.picture }} style={styles.profile}/>
-                                }
-                                {(!profile.picture || profileError) && 
-                                    <Image source={require("@assets/images/defaultProfile.png")} style={styles.profile}/>
-                                }
-                            </View>
-                        </View>
-                        <View style={{ width: "60%", paddingHorizontal: 6 }}>
-                            <Text style={styles.profileName}>
-                                {getUserName(profile, 24)}
-                            </Text>
-                            <TouchableOpacity activeOpacity={.7} 
-                                onPress={() => copyPubkey(profile.pubkey ?? "")}
-                                style={{ flexDirection: "row" }}
-                            >
-                                <Text style={{ textShadowOffset: { width: 2, height: 2 },
-                                    textShadowRadius: 5,
-                                    textShadowColor: theme.colors.black,
-                                    color: theme.colors.white }}>
-                                    {getDisplayPubkey(profile.pubkey ?? "", 18)}
-                                </Text>
-                                <Ionicons name="copy" size={10} style={{ padding: 5 }} color={theme.colors.white} />
-                            </TouchableOpacity>
-                        </View>
-                        <View style={{ width: "25%", padding: 10, flexDirection: "row-reverse" }}>
-                            <TouchableOpacity>
-                                <Ionicons style={{ padding: 4 }} name="ellipsis-vertical" size={24} color={theme.colors.white} />
-                            </TouchableOpacity>
-                        </View>
-                    </View>
-                    <View style={{ width: "100%" }}>
-                        <Slider
-                            style={styles.controlsSlider}
-                            minimumValue={0}
-                            maximumValue={duration}
-                            value={currentTime}
-                            onSlidingComplete={handleSeek} // Busca no vídeo quando soltar o slider
-                            minimumTrackTintColor={theme.colors.white}
-                            maximumTrackTintColor={theme.colors.white}
-                            thumbTintColor={theme.colors.white}
-                        />
-                    </View>
+                    <Slider
+                        style={styles.controlsSlider}
+                        minimumValue={0}
+                        maximumValue={duration}
+                        value={currentTime}
+                        onSlidingComplete={handleSeek} // Busca no vídeo quando soltar o slider
+                        minimumTrackTintColor={theme.colors.white}
+                        maximumTrackTintColor={theme.colors.white}
+                        thumbTintColor={theme.colors.white}
+                    />
                 </View>
             </TouchableOpacity>
+            <VideoPostOptions visible={optionsVisible} setVisible={setOptionsVisible} />
         </View>
     )
 }
@@ -230,7 +186,7 @@ const styles = StyleSheet.create({
         paddingTop: 30, flexDirection: "row-reverse" },
     controlsHeaderButton: { padding: 4, borderRadius: 10, margin: 4,
         backgroundColor: theme.colors.blueOpacity },
-    controlsSliderContainer: { width: "95%", position: "absolute", padding: 1, 
+    controlsSliderContainer: { width: "100%", position: "absolute", padding: 1, 
         borderRadius: 5, bottom: 20 },
     controlsSlider: { width: "100%" },
 

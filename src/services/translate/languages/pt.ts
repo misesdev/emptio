@@ -48,6 +48,7 @@ export default {
     "commons.delete-for-me": "Excluir para mim",
     "commons.delete-for-all": "Excluir para todos",
     "commons.copy-text": "Copiar texto",
+    "commons.follow": "Seguir",
     
     "labels.friends": "Amigos",
     "labels.username": "Nome de Usuário",

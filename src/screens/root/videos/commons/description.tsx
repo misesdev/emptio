@@ -78,7 +78,7 @@ const VideoDescription = ({ content, url }: Props) => {
     
     return (
         <TouchableOpacity activeOpacity={.7} 
-            style={{ width: "100%" }}
+            style={{ width: "100%", marginBottom: 10 }}
             onPress={handleSetText} 
         >       
             <View style={{ flex: 1 }}>

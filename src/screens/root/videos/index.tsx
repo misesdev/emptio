@@ -2,7 +2,7 @@ import useNDKStore from "@/src/services/zustand/ndk"
 import { NDKEvent, NDKFilter, NDKSubscription, NDKSubscriptionCacheUsage } from "@nostr-dev-kit/ndk-mobile"
 import { StackScreenProps } from "@react-navigation/stack"
 import { useCallback, useEffect, useRef, useState } from "react"
-import { View, StyleSheet, FlatList, SafeAreaView } from "react-native"
+import { View, FlatList, SafeAreaView } from "react-native"
 import { extractVideoUrl } from "@/src/utils"
 import { useFocusEffect } from "@react-navigation/native"
 import { ActivityIndicator } from "react-native-paper"
@@ -25,14 +25,13 @@ const VideosFeed = ({ navigation }: StackScreenProps<any>) => {
     const [lastEventTimestamp, setLastEventTimestamp] = useState<number>();
 
     useEffect(() => { 
-        loadVideosData()
         const unsubscribe = navigation.addListener("blur", () => {
-            setPaused(true)
+            setVideos([])
         })
         return unsubscribe
     }, [feedSettings])
 
-    useFocusEffect(() => setPaused(false))
+    useFocusEffect(() => { loadVideosData() })
 
     const loadVideosData = async () => {
         if(isFetching.current) return
@@ -68,7 +67,6 @@ const VideosFeed = ({ navigation }: StackScreenProps<any>) => {
             }
         })
 
-        console.log("loadData")
         subscriptionRef.current.start()
 
         setTimeout(() => {
@@ -93,6 +91,7 @@ const VideosFeed = ({ navigation }: StackScreenProps<any>) => {
                 event={item}
                 muted={muted}
                 setMuted={setMuted}
+                setPaused={setPaused}
                 paused={index != playingIndex || paused} 
             />
         ) 
@@ -128,9 +127,5 @@ const VideosFeed = ({ navigation }: StackScreenProps<any>) => {
         </SafeAreaView>
     )
 }
-
-const styles = StyleSheet.create({
-    listContainer: { width: "100%", height: "100%", backgroundColor: theme.colors.black }
-})
 
 export default VideosFeed

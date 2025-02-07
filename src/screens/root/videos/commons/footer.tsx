@@ -6,29 +6,64 @@ import { NDKEvent } from "@nostr-dev-kit/ndk-mobile"
 import { useEffect, useState } from "react"
 import { StyleSheet, View, Image, Text, TouchableOpacity } from "react-native"
 import VideoDescription from "./description"
-import { Slider } from "react-native-elements"
 import theme from "@src/theme"
+import { useTranslateService } from "@/src/providers/translateProvider"
+import useNDKStore from "@/src/services/zustand/ndk"
+import { useAuth } from "@/src/providers/userProvider"
 
 type Props = { 
     event: NDKEvent, 
     url: string,
-    duration?: number,
-    currentTime?: number,
-    handleSeek?: (time: number) => void,
-    navigation: any
 }
 
-const VideoFooter = ({ event, url, duration, currentTime, handleSeek, navigation }: Props) => {
+const VideoFooter = ({ event, url }: Props) => {
 
+    const { ndk } = useNDKStore()
+    const { follows } = useAuth()
+    const { useTranslate } = useTranslateService()
     const [profile, setProfile] = useState<User>({})
+    const [isFriend, setIsFriend] = useState<boolean>(true)
     const [profileError, setProfileError] = useState<boolean>(false)
     
     useEffect(() => {
         userService.getProfile(event.pubkey).then(setProfile)
+        const friends = follows?.tags?.filter(t => t[0] == "p").map(t => t[1])
+        setIsFriend(friends?.includes(event.pubkey) ?? false)
     }, [event.pubkey])
+
+    const handleReact = () => {
+
+    }
+
+    const handleOpenChat = () => {
+
+    }
+
+    const handleShare = () => {
+
+    }
+
+    const handleFollow = async () => {
+        setIsFriend(prev => !prev)
+        //event.author.follow() 
+    }
 
     return (
         <View style={styles.controlsSliderContainer}>
+            <View style={styles.reactionControls}>
+                <TouchableOpacity onPress={handleReact}
+                    style={styles.reactionButton}>
+                    <Ionicons name="heart-outline" size={32} color={theme.colors.white} />
+                </TouchableOpacity>
+                <TouchableOpacity onPress={handleOpenChat}
+                    style={styles.reactionButton}>
+                    <Ionicons name="chatbubble-outline" size={32} color={theme.colors.white} />
+                </TouchableOpacity>
+                <TouchableOpacity onPress={handleShare}
+                    style={styles.reactionButton}>
+                    <Ionicons name="paper-plane-outline" size={32} color={theme.colors.white} />
+                </TouchableOpacity>
+            </View>
             <View style={styles.profilebar}>
                 <View style={{ width: "15%", paddingHorizontal: 2 }}>
                     <View style={styles.profile}>
@@ -40,7 +75,7 @@ const VideoFooter = ({ event, url, duration, currentTime, handleSeek, navigation
                         }
                     </View>
                 </View>
-                <View style={{ width: "60%", paddingHorizontal: 6 }}>
+                <View style={{ width: "62%", paddingHorizontal: 6 }}>
                     <Text style={styles.profileName}>
                         {getUserName(profile, 24)}
                     </Text>
@@ -57,25 +92,19 @@ const VideoFooter = ({ event, url, duration, currentTime, handleSeek, navigation
                         <Ionicons name="copy" size={10} style={{ padding: 5 }} color={theme.colors.white} />
                     </TouchableOpacity>
                 </View>
-                <View style={{ width: "25%", padding: 10, flexDirection: "row-reverse" }}>
-                    <TouchableOpacity onPress={() => navigation.navigate("feed-video-options")}>
-                        <Ionicons style={{ padding: 4 }} name="ellipsis-vertical" size={24} color={theme.colors.white} />
-                    </TouchableOpacity>
+                <View style={{ width: "23%", padding: 10, flexDirection: "row" }}>
+                    { !isFriend &&
+                        <TouchableOpacity activeOpacity={.7} onPress={handleFollow} 
+                            style={styles.followbutton} 
+                        >
+                            <Text style={{ color: theme.colors.white }}>
+                                {useTranslate("commons.follow")}
+                            </Text>
+                        </TouchableOpacity>
+                    }
                 </View>
             </View>
             <VideoDescription content={event.content} url={url} />
-            <View style={{ width: "100%" }}>
-                {/* <Slider */}
-                {/*     style={styles.controlsSlider} */}
-                {/*     minimumValue={0} */}
-                {/*     maximumValue={duration} */}
-                {/*     value={currentTime} */}
-                {/*     onSlidingComplete={handleSeek} // Busca no vídeo quando soltar o slider */}
-                {/*     minimumTrackTintColor={theme.colors.white} */}
-                {/*     maximumTrackTintColor={theme.colors.white} */}
-                {/*     thumbTintColor={theme.colors.white} */}
-                {/* /> */}
-            </View>
         </View>
     )
 }
@@ -91,7 +120,13 @@ const styles = StyleSheet.create({
     profileName: { textShadowOffset: { width: 2, height: 2 }, textShadowRadius: 8,
         textShadowColor: theme.colors.black, fontSize: 16, fontWeight: "500", 
         color: theme.colors.white },
+    followbutton: { paddingHorizontal: 14, paddingVertical: 6, borderRadius: 10,
+        backgroundColor: theme.colors.blue },
 
+    reactionControls: { position: "absolute", right: 4, bottom: 200, 
+        padding: 4 },
+    reactionButton: { padding: 6, marginVertical: 4, borderRadius: 10,
+        backgroundColor: theme.colors.semitransparent }
 })
 
 export default VideoFooter

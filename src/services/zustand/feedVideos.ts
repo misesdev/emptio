@@ -4,7 +4,7 @@ import { getFeedVideoSettings } from "../memory/settings"
 
 interface FeedVideoStore {
     feedSettings: FeedVideosSettings,
-    setFeedSettings: (settings: FeedVideosSettings) => void
+    setFeedSettings: (settings: FeedVideosSettings) => void,
     initialize: () => Promise<void>
 }
 
