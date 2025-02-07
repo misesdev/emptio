@@ -15,6 +15,7 @@ import useChatStore from "@services/zustand/chats"
 import useNDKStore from "@services/zustand/ndk"
 import { NostrEventKinds } from "../constants/Events"
 import theme from "@src/theme"
+import { useFeedVideosStore } from "../services/zustand/feedVideos"
 
 const InitializeScreen = ({ navigation }: any) => {
 
@@ -26,6 +27,7 @@ const InitializeScreen = ({ navigation }: any) => {
 
     useEffect(() => { 
         handleVerifyLogon()
+        useFeedVideosStore.getState().initialize()
     }, [])
 
     const handleVerifyLogon = async () => {

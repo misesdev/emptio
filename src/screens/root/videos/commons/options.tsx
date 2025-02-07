@@ -7,6 +7,7 @@ import { FormControl } from "@/src/components/form/FormControl"
 import Ionicons from 'react-native-vector-icons/Ionicons'
 import theme from "@/src/theme"
 import { useState } from "react"
+import { useFeedVideosStore } from "@/src/services/zustand/feedVideos"
 
 type Props = {
     visible: boolean,
@@ -15,10 +16,10 @@ type Props = {
 
 const VideoPostOptions = ({ visible, setVisible }: Props) => {
     
-    const { feedVideos } = useSettings()
+    const { feedSettings } = useFeedVideosStore()
     const { useTranslate } = useTranslateService()
     const [tagNameText, setTagNameText] = useState<string>()
-    const [filterTags, setFilterTags] = useState<string[]>(feedVideos?.filterTags ??[])
+    const [filterTags, setFilterTags] = useState<string[]>(feedSettings.filterTags)
 
     const handleAddTagfilter = () => {
         

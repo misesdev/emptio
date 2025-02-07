@@ -18,13 +18,10 @@ const useNDKStore = create<NDKStore>((set) => ({
     },
     setNdkSigner: async (user: User) => {
         const pairKey = await getPairKey(user.keychanges ?? "")
-
         set((state) => {
             state.ndk.signer = new NDKPrivateKeySigner(pairKey.privateKey)
-
             return state
         })
-
     }
 }))
 
