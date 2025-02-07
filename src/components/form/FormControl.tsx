@@ -11,15 +11,16 @@ type FormControlProps = {
     onBlur?: () => void,
     onFocus?: () => void,
     onChangeText: (value: string) => void,
-    fullScreen?: boolean
+    fullScreen?: boolean,
+    showLabel?: boolean
 }
 
-export const FormControl = ({ label, value, onChangeText, onFocus, onBlur, textCenter, isTextArea, autoComplete = false, type = "none", fullScreen = false }: FormControlProps) => {
+export const FormControl = ({ label, showLabel=true, value, onChangeText, onFocus, onBlur, textCenter, isTextArea, autoComplete = false, type = "none", fullScreen = false }: FormControlProps) => {
 
     return (
         <View style={styles.control}>
             <View style={[styles.container, { width: fullScreen ? "100%" : "94%" }]}>
-                <Text style={styles.label}>{label}</Text>
+                {showLabel && <Text style={styles.label}>{label}</Text>}
                 <TextInput style={[styles.input, { textAlign: textCenter ? "center" : "auto", minHeight: isTextArea ? 100 : 50 }]}
                     placeholder={label}
                     onFocus={onFocus}

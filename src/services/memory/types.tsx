@@ -94,6 +94,12 @@ export type User = {
     friend?: boolean
 }
 
+export type FeedVideosSettings = {
+    VIDEOS_LIMIT: number,
+    FETCH_LIMIT: number,
+    filterTags: string[]
+}
+
 export type Settings = {
     useBiometrics?: boolean
 }

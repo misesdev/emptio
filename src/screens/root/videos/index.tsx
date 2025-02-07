@@ -41,10 +41,17 @@ const VideosFeed = ({ navigation }: StackScreenProps<any>) => {
         isFetching.current = true
 
         const tags: string[] = [
-            "video",
-            "meme",
-            "memes",
-            "memestr",
+            // "video",
+            // "meme",
+            // "memes",
+            // "memestr",
+            "porn",
+            "pornstr",
+            "pornhubstr",
+            "nfsw",
+            "nfswstr",
+            "loli",
+            "loliporn",
         ]
 
         const filter: NDKFilter[] = [
@@ -89,6 +96,7 @@ const VideosFeed = ({ navigation }: StackScreenProps<any>) => {
     }, [])
 
     const renderItem = useCallback(({ item, index }:{ item: NDKEvent, index: number }) => {
+        console.log("renderItem")
         const url = extractVideoUrl(item.content)
         return (
             <FeedVideoViewer

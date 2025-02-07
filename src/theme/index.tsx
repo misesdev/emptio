@@ -17,6 +17,7 @@ const theme = {
         section: "#0c1e21",
         transparent: "transparent",
         semitransparent: "rgba(0,0,0,.6)",
+        semitransparentdark: "rgba(0,0,0,.82)",
         link: "#0940e3",
         disabled: "#26292e"
     },
