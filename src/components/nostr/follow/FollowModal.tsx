@@ -1,4 +1,4 @@
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import { Modal, StyleSheet, Text, TouchableOpacity, View, Image } from "react-native"
 import { useTranslateService } from "@src/providers/translateProvider"
 import { User } from "@services/memory/types"
@@ -40,18 +40,27 @@ type FollowProps = {
 
 const FollowModal = ({ handleAddFollow }: FollowProps) => {
 
-    const [user, setUser] = useState<User>()
+    const [user, setUser] = useState<User>({})
     const [notes, setNotes] = useState<NDKEvent[]>([])
     const [visible, setVisible] = useState(false)
-    const [loading, setloading] = useState(true)
+    const [loading, setloading] = useState(false)
     const { useTranslate } = useTranslateService()
+
+    useEffect(() => {
+        if(visible) {
+            setTimeout(() => {
+                setloading(true)
+                userService.lastNotes(user, 6).then(events => {
+                    setNotes(events)
+                    setloading(false)
+                })
+            }, 20)
+        }
+    }, [visible])
 
     showFollowModalFunction = async ({ user }: followModalProps) => {
         setUser(user)
-        setloading(true)
         setVisible(true)
-        setNotes(await userService.lastNotes(user, 6))
-        setloading(false)
     }
 
     const handleClose = () => {
@@ -66,7 +75,7 @@ const FollowModal = ({ handleAddFollow }: FollowProps) => {
     }
 
     return (
-        <Modal animationType="fade" onRequestClose={handleClose} visible={visible} transparent >
+        <Modal animationType="slide" onRequestClose={handleClose} visible={visible} >
             <View style={{ flex: 1, alignItems: "center", justifyContent: "center", backgroundColor: theme.colors.black }}>
                 <View style={styles.box}>
 
@@ -93,18 +102,20 @@ const FollowModal = ({ handleAddFollow }: FollowProps) => {
                         </View>
                     </View>
                                           
-                    {user?.friend && <Text style={styles.infolog}>
-                        <Text style={{ color: theme.colors.blue, fontWeight: "500" }}>
-                            {getUserName(user)}  
-                        </Text> {' '}
-                        {useTranslate("message.friend.already")}
-                    </Text>}
+                    {user?.friend && 
+                        <Text style={styles.infolog}>
+                            <Text style={{ color: theme.colors.blue, fontWeight: "500" }}>
+                                {getUserName(user)}  
+                            </Text> {' '}
+                            {useTranslate("message.friend.already")}
+                        </Text>
+                    }
 
                     <Text style={{ margin: 10, fontWeight: "500", color: theme.colors.white }}>
                         {useTranslate("friends.notes.lasts")}
                     </Text>
                     
-                    {notes?.length > 0 && <NoteList isVisible={visible} user={user} notes={notes} /> }
+                    <NoteList isVisible={visible} user={user} refreshing={loading} notes={notes} />
                     {notes?.length <= 0 && loading && <ActivityIndicator color={theme.colors.gray} size={34} />}
                     {notes?.length <= 0 && !loading &&
                         <Text style={{ color: theme.colors.gray, textAlign: "center", margin: 15 }}>
@@ -117,7 +128,6 @@ const FollowModal = ({ handleAddFollow }: FollowProps) => {
                         {user?.friend && <ButtonLight label={useTranslate("commons.remove")} onPress={handleAction} />}
                         <ButtonLight label={useTranslate("commons.close")} onPress={handleClose} />
                     </View>
-
                 </View>
             </View>
         </Modal>
@@ -125,7 +135,7 @@ const FollowModal = ({ handleAddFollow }: FollowProps) => {
 }
 
 export const showFollowModal = (props: followModalProps) => {
-     showFollowModalFunction(props) 
+     showFollowModalFunction(props)
 }
 
 const styles = StyleSheet.create({

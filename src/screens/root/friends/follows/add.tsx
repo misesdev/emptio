@@ -13,7 +13,7 @@ import theme from "@src/theme"
 
 const AddFolowScreen = ({ navigation }: StackScreenProps<any>) => {
 
-    const { user, follows, setFollows } = useAuth()
+    const { user, follows, setFollows, followsEvent, setFollowsEvent } = useAuth()
     const { useTranslate } = useTranslateService()
     const [users, setUsers] = useState<User[]>([])
     const [loading, setLoading] = useState(false)
@@ -26,7 +26,7 @@ const AddFolowScreen = ({ navigation }: StackScreenProps<any>) => {
         try {
             const users = await userService.searchUsers(user, searchTerm, 100)
 
-            const friends = follows?.tags?.filter(t => t[0] == "p").map(t => t[1]) ?? []
+            const friends = followsEvent?.tags?.filter(t => t[0] == "p").map(t => t[1]) ?? []
             
             users.forEach(user => {
                 user.friend = friends.includes(user.pubkey ?? "")
@@ -46,14 +46,18 @@ const AddFolowScreen = ({ navigation }: StackScreenProps<any>) => {
             return user
         }))
 
-        if(friend.friend)    
-            follows?.tags?.push(["p", friend.pubkey ?? ""])
-        else
-            follows!.tags = follows?.tags?.filter(t => t[0] == "p" && t[1] != friend.pubkey) ?? []
+        if(friend.friend) {    
+            followsEvent?.tags?.push(["p", friend.pubkey ?? ""])
+            if(setFollows && follows) setFollows([friend,...follows])
+        } else {
+            followsEvent!.tags = followsEvent?.tags?.filter(t => t[0] == "p" && t[1] != friend.pubkey) ?? []
+            if(setFollows && follows) 
+                setFollows([...follows.filter(f => f.pubkey != friend.pubkey)])
+        }
 
-        if(setFollows && follows) setFollows(follows)
+        // if(setFollowsEvent && followsEvent) setFollowsEvent(followsEvent)
 
-        await userService.updateFollows({ user, follows })
+        await userService.updateFollows({ user, follows: followsEvent })
     }
 
     const handleAddFollow = async (follow: User) => {

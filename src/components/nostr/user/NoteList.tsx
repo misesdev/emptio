@@ -1,5 +1,5 @@
 import { FlatList, ScrollView } from "react-native-gesture-handler"
-import { Dimensions, StyleSheet, View } from "react-native"
+import { Dimensions, StyleSheet, View, Text } from "react-native"
 import NoteViewer from "../event/NoteViewer"
 import theme from "@src/theme"
 import { useCallback, useRef, useState } from "react"
@@ -17,20 +17,18 @@ type NoteProps = {
 const NoteItem = ({ user, note, videoMuted=true, setVideoMuted, videoPaused=true }: NoteProps) => {
 
     const { width } = Dimensions.get("window")
-    const noteWidth = width * .8
+    const noteWidth = width * .76
 
     return (
-        <View> 
-            <ScrollView 
-                showsVerticalScrollIndicator 
-                contentContainerStyle={{ minHeight: 300 }}
-                style={[styles.scrollNote, { width: noteWidth }]}
-            >
-                <View style={{ flex: 1, justifyContent: "center", padding: 24 }}>
-                    <NoteViewer user={user} setMutedVideo={setVideoMuted} videoMuted={videoMuted} videoPaused={videoPaused} note={note} />
-                </View>
-            </ScrollView>
-        </View>
+        <ScrollView 
+            showsVerticalScrollIndicator 
+            contentContainerStyle={{ minHeight: 300 }}
+            style={[styles.scrollNote, { width: noteWidth }]}
+        >
+            <View style={{ flex: 1, justifyContent: "center", padding: 24 }}>
+                <NoteViewer user={user} setMutedVideo={setVideoMuted} videoMuted={videoMuted} videoPaused={videoPaused} note={note} />
+            </View>
+        </ScrollView>
     )
 }
 
@@ -39,10 +37,11 @@ type NoteListProps = {
     notes: NDKEvent[],
     horizontal?: boolean,
     pagingEnabled?: boolean,
-    isVisible: boolean
+    isVisible: boolean,
+    refreshing: boolean
 }
 
-export const NoteList = ({ user, notes, isVisible, horizontal=true, pagingEnabled=true }: NoteListProps) => {
+export const NoteList = ({ user, notes, isVisible, horizontal=true, pagingEnabled=true, refreshing }: NoteListProps) => {
     
     const listRef = useRef(null)
     const [playingIndex, setPlayingIndex] = useState(null)
@@ -76,6 +75,9 @@ export const NoteList = ({ user, notes, isVisible, horizontal=true, pagingEnable
             keyExtractor={(item) => item.id.toString()}
             onViewableItemsChanged={onViewableItemsChanged}
             viewabilityConfig={{ itemVisiblePercentThreshold: 70 }}
+            snapToAlignment="center"
+            decelerationRate="fast"
+            refreshing={refreshing}            
         />
     )
 }

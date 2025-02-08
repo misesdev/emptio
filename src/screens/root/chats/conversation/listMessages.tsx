@@ -61,7 +61,7 @@ const ConversationList = ({ user, events, onMessageOptions }: Props) => {
 const styles = StyleSheet.create({
     scrollContainer: { width: "100%", padding: 10, backgroundColor: theme.colors.black },
     messageContainer: { width: "100%", padding: 10 },
-    contentMessage: { width: "82%", padding: 10, borderBottomLeftRadius: 12, borderTopRightRadius: 12 },
+    contentMessage: { width: "90%", padding: 10, borderBottomLeftRadius: 12, borderTopRightRadius: 12 },
     messageReceived: { backgroundColor: theme.colors.section, borderBottomRightRadius: 12 },
     messageSended: { backgroundColor: theme.colors.blueOpacity, borderTopLeftRadius: 12 },
     messageDetailBox: { width: "100%", flexDirection: "row-reverse", marginTop: 12 },

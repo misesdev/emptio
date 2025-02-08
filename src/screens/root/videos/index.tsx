@@ -1,7 +1,7 @@
 import useNDKStore from "@services/zustand/ndk"
 import { NDKEvent, NDKFilter, NDKSubscription, NDKSubscriptionCacheUsage } from "@nostr-dev-kit/ndk-mobile"
 import { StackScreenProps } from "@react-navigation/stack"
-import { useCallback, useEffect, useRef, useState } from "react"
+import { useCallback, useEffect, useMemo, useRef, useState } from "react"
 import { View, FlatList, SafeAreaView } from "react-native"
 import { extractVideoUrl } from "@src/utils"
 import { useFeedVideosStore } from "@services/zustand/feedVideos"
@@ -12,10 +12,10 @@ import theme from "@src/theme"
 
 const VideosFeed = ({ navigation }: StackScreenProps<any>) => {
 
-    const urls:string[] = []
     const { ndk } = useNDKStore()
     const { feedSettings } = useFeedVideosStore()
     const listRef = useRef<FlatList>(null)
+    const videosRef = useRef<NDKEvent[]>([])
     const subscriptionRef = useRef<NDKSubscription>()
     const isFetching:any = useRef<boolean>(null)
     const [playingIndex, setPlayingIndex] = useState<number>(0)
@@ -25,6 +25,7 @@ const VideosFeed = ({ navigation }: StackScreenProps<any>) => {
     const [lastEventTimestamp, setLastEventTimestamp] = useState<number>();
 
     useEffect(() => { 
+        
         const unsubscribe = navigation.addListener("blur", () => {
             isFetching.current = false
             setVideos([])
@@ -39,8 +40,10 @@ const VideosFeed = ({ navigation }: StackScreenProps<any>) => {
        
         isFetching.current = true
 
-        if(subscriptionRef.current)
+        if(subscriptionRef.current) {
             subscriptionRef.current.stop()
+            subscriptionRef.current = undefined
+        }
 
         const filter: NDKFilter = {
             until: lastEventTimestamp, 
@@ -57,31 +60,30 @@ const VideosFeed = ({ navigation }: StackScreenProps<any>) => {
             if(foundEventsCount >= feedSettings.VIDEOS_LIMIT-1) {
                 subscriptionRef.current?.stop()
             }
+            setLastEventTimestamp(event.created_at)
             const url = extractVideoUrl(event.content)
-            if(url && !urls.includes(url)) {
-                setLastEventTimestamp(event.created_at)
-                if(videos.filter(e => e.id == event.id).length == 0) {
-                    setVideos(prev => {
-                        const events = [...prev, event]
-                        if(events.length > feedSettings.VIDEOS_LIMIT) events.slice(0, 1)
-                        return events
-                    })
+            if(url)
+            {
+                if(!videosRef.current.some(e => e.id == event.id)) 
+                {
+                    videosRef.current = [...videosRef.current, event];
+                    if (videosRef.current.length > feedSettings.VIDEOS_LIMIT) {
+                        videosRef.current.splice(0, 1);
+                    }
+
+                    setVideos([...videosRef.current])
                     foundEventsCount++
-                    urls.push(url)
                 }
             }
         })
 
         subscriptionRef.current.on("eose", () => {
             isFetching.current = false
+            subscriptionRef.current = undefined 
         })
 
         subscriptionRef.current.start()
 
-        // setTimeout(() => {
-        //     isFetching.current = false;
-        //     if(subscriptionRef.current) subscriptionRef.current.stop()
-        // }, 1500)
     }
 
     const onViewableItemsChanged = useCallback(({ viewableItems }: any) => {
@@ -90,8 +92,8 @@ const VideosFeed = ({ navigation }: StackScreenProps<any>) => {
         }
     }, [])
 
-    const renderItem = useCallback(({ item, index }:{ item: NDKEvent, index: number }) => {
-        console.log("renderItem")
+    const renderItem = useMemo(() => ({ item, index }:{ item: NDKEvent, index: number }) => {
+        // console.log("renderItem")
         const url = extractVideoUrl(item.content)
         return (
             <FeedVideoViewer
@@ -120,15 +122,15 @@ const VideosFeed = ({ navigation }: StackScreenProps<any>) => {
                 extraData={{ paused, muted }}
                 style={{ flex: 1 }}
                 renderItem={renderItem}
-                keyExtractor={(item: NDKEvent) => item.id}
+                keyExtractor={item => item.id}
                 showsVerticalScrollIndicator={false}
                 viewabilityConfig={{ itemVisiblePercentThreshold: 50 }}
                 onViewableItemsChanged={onViewableItemsChanged}
                 onEndReached={loadVideosData}
-                onEndReachedThreshold={.5}
-                removeClippedSubviews
-                initialNumToRender={5} 
-                windowSize={5} 
+                onEndReachedThreshold={.2}
+                //removeClippedSubviews
+                initialNumToRender={4} 
+                windowSize={4} 
                 snapToAlignment="center"
                 decelerationRate="fast" 
                 ListFooterComponent={<EndLoader/>}

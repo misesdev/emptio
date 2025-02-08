@@ -3,14 +3,14 @@ import { User } from "@services/memory/types"
 import Ionicons from 'react-native-vector-icons/Ionicons'
 import { copyPubkey, getDisplayPubkey, getUserName } from "@/src/utils"
 import { NDKEvent } from "@nostr-dev-kit/ndk-mobile"
-import { useEffect, useState } from "react"
+import { useCallback, useEffect, useState } from "react"
 import { StyleSheet, View, Image, Text, TouchableOpacity } from "react-native"
 import VideoDescription from "./description"
 import theme from "@src/theme"
 import { useTranslateService } from "@/src/providers/translateProvider"
-import useNDKStore from "@/src/services/zustand/ndk"
 import { useAuth } from "@/src/providers/userProvider"
-import { messageService } from "@/src/core/messageManager"
+import VideoChat from "./answers"
+import VideoShareBar from "./share"
 
 type Props = { 
     event: NDKEvent, 
@@ -19,20 +19,24 @@ type Props = {
 
 const VideoFooter = ({ event, url }: Props) => {
 
-    const { user, follows } = useAuth()
+    const { user, follows, followsEvent } = useAuth()
     const { useTranslate } = useTranslateService()
     const [profile, setProfile] = useState<User>({})
     const [isFriend, setIsFriend] = useState<boolean>(true)
     const [liked, setLiked] = useState<boolean>(false)
     const [profileError, setProfileError] = useState<boolean>(false)
-    const [chatEvents, setChatEvents] = useState<NDKEvent[]>([])
+    const [chatVisible, setChatVisible] = useState<boolean>(false)
+    const [shareVisible, setShareVisible] = useState<boolean>(false)
     
     useEffect(() => {
-        const friends = follows?.tags?.filter(t => t[0] == "p").map(t => t[1])
-        setIsFriend(friends?.includes(event.pubkey) ?? false)
-        
-        userService.getProfile(event.pubkey).then(setProfile)
-    }, [event.pubkey])
+        const friend = follows?.find(f => f.pubkey == event.pubkey)
+        setIsFriend(!!friend)
+
+        setTimeout(() => {
+            if(friend) setProfile(friend)
+            else userService.getProfile(event.pubkey).then(setProfile)
+        }, 20)
+    }, [])
 
     const handleReact = async () => {
         if(!liked) 
@@ -43,40 +47,31 @@ const VideoFooter = ({ event, url }: Props) => {
         setLiked(prev => !prev)
     }
 
-    const handleOpenChat = async () => {
-        messageService.listAnswers(event).then(events => {
-            setChatEvents(events)
-            console.log(events)
-        })
-    }
+    const handleOpenChat = () => setChatVisible(true)
 
-    const handleShare = () => {
-
-    }
+    const handleShare = () => setShareVisible(true)
 
     const handleFollow = async () => {
         if(isFriend) 
-            follows!.tags = follows!.tags?.filter(t => t[0] == "p" && t[1] != event.pubkey)
+            followsEvent!.tags = followsEvent!.tags?.filter(t => t[0] == "p" && t[1] != event.pubkey)
         if(!isFriend)
-            follows?.tags?.push(["p", event.pubkey])
+            followsEvent?.tags?.push(["p", event.pubkey])
 
-        userService.updateFollows({ user, follows }) 
+        userService.updateFollows({ user, follows: followsEvent })
+
         setIsFriend(prev => !prev)
     }
 
     return (
         <View style={styles.controlsSliderContainer}>
             <View style={styles.reactionControls}>
-                <TouchableOpacity onPress={handleReact}
-                    style={styles.reactionButton}>
+                <TouchableOpacity onPress={handleReact} style={styles.reactionButton}>
                     <Ionicons name={liked ? "heart" : "heart-outline"} size={32} color={theme.colors.white} />
                 </TouchableOpacity>
-                <TouchableOpacity onPress={handleOpenChat}
-                    style={styles.reactionButton}>
+                <TouchableOpacity onPress={handleOpenChat} style={styles.reactionButton}>
                     <Ionicons name="chatbubble-outline" size={32} color={theme.colors.white} />
                 </TouchableOpacity>
-                <TouchableOpacity onPress={handleShare}
-                    style={styles.reactionButton}>
+                <TouchableOpacity onPress={handleShare} style={styles.reactionButton}>
                     <Ionicons name="paper-plane-outline" size={32} color={theme.colors.white} />
                 </TouchableOpacity>
             </View>
@@ -112,14 +107,28 @@ const VideoFooter = ({ event, url }: Props) => {
                     <TouchableOpacity activeOpacity={.7} onPress={handleFollow} 
                         style={styles.followbutton} 
                     >
-                        <Text style={{ color: theme.colors.white }}>
-                            {isFriend && useTranslate("commons.unfollow")}
-                            {!isFriend && useTranslate("commons.follow")}
-                        </Text>
+                        {isFriend &&
+                            <Text style={{ color: theme.colors.white }}>
+                                {useTranslate("commons.unfollow")}
+                            </Text>
+                        }
+                        {!isFriend && 
+                            <Text style={{ color: theme.colors.white }}>
+                                {useTranslate("commons.follow")}
+                            </Text>
+                        }
                     </TouchableOpacity>
                 </View>
             </View>
             <VideoDescription content={event.content} url={url} />
+            <VideoChat event={event} 
+                visible={chatVisible} 
+                setVisible={setChatVisible} 
+            />
+            <VideoShareBar event={event} 
+                visible={shareVisible} 
+                setVisible={setShareVisible} 
+            />
         </View>
     )
 }

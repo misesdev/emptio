@@ -1,10 +1,12 @@
+import NoteViewer from "@/src/components/nostr/event/NoteViewer"
 import { messageService } from "@/src/core/messageManager"
-import theme from "@/src/theme"
 import { NDKEvent } from "@nostr-dev-kit/ndk-mobile"
-import { useEffect, useState } from "react"
+import { useCallback, useEffect, useState } from "react"
 import { Modal, StyleSheet, View, Text, TouchableOpacity } from "react-native"
 import { FlatList, TextInput } from "react-native-gesture-handler"
+import { ActivityIndicator } from "react-native-paper"
 import Ionicons from 'react-native-vector-icons/Ionicons'
+import theme from "@/src/theme"
 
 type ChatProps = {
     event: NDKEvent,
@@ -13,22 +15,35 @@ type ChatProps = {
 }
 const VideoChat = ({ event, visible, setVisible }: ChatProps) => {
 
-    const [loading, setLoading] = useState<boolean>(false)
     const [message, setMessage] = useState<string>("")
-    const [events, setEvents] = useState<NDKEvent[]>()
+    const [events, setEvents] = useState<NDKEvent[]>([])
+    const [loading, setLoading] = useState<boolean>(false)
 
     useEffect(() => {
-        if(visible) {
-            setLoading(true)
-            messageService.listAnswers(event).then(e => {
-                setLoading(false)
-                setEvents(e)
-            })
-        }
+        if(visible) handleLoadMessages()
     }, [visible])
+
+    const handleLoadMessages = async () => {
+        setLoading(true)
+        setTimeout(async () => {
+            const messages = await messageService.listAnswers(event)
+            setEvents(messages)
+            setLoading(false)
+        }, 20)
+    }
 
     const handlePostMessage = () => {
 
+    }
+
+    const renderItem = useCallback(({ item }: { item: NDKEvent }) => {
+        return <NoteViewer note={item} />
+    }, [])
+
+    const Loader = () => {
+        if(!loading) return <></>
+
+        return <ActivityIndicator size={22} color={theme.colors.white} />
     }
 
     return (
@@ -45,8 +60,10 @@ const VideoChat = ({ event, visible, setVisible }: ChatProps) => {
                     <FlatList 
                         data={events}
                         keyExtractor={event => event.id}
-                        renderItem={() => <></>}
+                        renderItem={renderItem}
                         style={{ flex: 1 }}
+                        initialNumToRender={10}
+                        ListFooterComponent={<Loader/>}
                     />
                     {/* Chat Box */}
                     <View style={styles.chatBoxContainer}>
@@ -71,7 +88,6 @@ const VideoChat = ({ event, visible, setVisible }: ChatProps) => {
                                 </TouchableOpacity>
                             </View>
                         </View>
-                        <View style={{ height: 10 }} ></View>
                     </View>
                 </View>
             </View>
@@ -80,13 +96,13 @@ const VideoChat = ({ event, visible, setVisible }: ChatProps) => {
 }
 
 const styles = StyleSheet.create({
-    overlayer: { flex: 1, justifyContent: "flex-end", backgroundColor: theme.colors.semitransparent },
+    overlayer: { flex: 1, justifyContent: "flex-end", backgroundColor: theme.colors.transparent },
     modalContainer: {
-        height: "70%", // Ocupa 70% da tela
+        height: "70%",
         backgroundColor: theme.colors.semitransparentdark,
         borderTopLeftRadius: 10,
         borderTopRightRadius: 10,
-        padding: 10,
+        padding: 12,
     },
     header: {
         flexDirection: "row",
@@ -94,14 +110,8 @@ const styles = StyleSheet.create({
         alignItems: "center",
         marginBottom: 10,
     },
-    headerText: {
-        fontSize: 18,
-        fontWeight: "bold",
-    },
-    closeButton: {
-        fontSize: 22,
-        color: "#555",
-    },
+    headerText: { fontSize: 18, fontWeight: "bold", color: theme.colors.white },
+    closeButton: { fontSize: 22, color: "#555" },
     inputBox: { position: "absolute", bottom: 10, width: "100%" },
     chatBoxContainer: {  padding: 10, width: "100%", backgroundColor: theme.colors.black },
     chatInputContainer: { width: "82%", borderRadius: 20, paddingHorizontal: 18, 

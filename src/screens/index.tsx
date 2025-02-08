@@ -21,7 +21,7 @@ const InitializeScreen = ({ navigation }: any) => {
 
     const { setNDK, setNdkSigner } = useNDKStore()
     const { setChats, addChat } = useChatStore()
-    const { setUser, setWallets, setFollows } = useAuth()
+    const { setUser, setWallets, setFollowsEvent } = useAuth()
     const [loading, setLoading] = useState(true)
     const { useTranslate } = useTranslateService()
 
@@ -51,7 +51,7 @@ const InitializeScreen = ({ navigation }: any) => {
 
             subscribeUserChat({ user: result.data, addChat })
             
-            if(setFollows) 
+            if(setFollowsEvent) 
             {
                 const eventFollow = await getEvent({ 
                     kinds:[NostrEventKinds.followList], 
@@ -59,7 +59,7 @@ const InitializeScreen = ({ navigation }: any) => {
                     limit: 1
                 })
 
-                if(eventFollow) setFollows(eventFollow)
+                if(eventFollow) setFollowsEvent(eventFollow)
             }                
             
             navigation.reset({ index: 0, routes: [{ name: "authenticate-stack" }] })

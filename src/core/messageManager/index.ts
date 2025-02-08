@@ -2,10 +2,10 @@ import { deleteEventsByCondition, selecMessageChats, selecMessages
 } from "@services/memory/database/events"
 import { getPairKey } from "@services/memory/pairkeys"
 import { User } from "@services/memory/types"
-import { getPubkeyFromTags } from "@services/nostr/events"
+import { getPubkeyFromTags, listenerEvents } from "@services/nostr/events"
 import { ChatUser } from "@services/zustand/chats"
 import useNDKStore from "@services/zustand/ndk"
-import { NDKEvent, NDKSubscriptionCacheUsage } from "@nostr-dev-kit/ndk-mobile"
+import { NDKEvent, NDKFilter, NDKSubscriptionCacheUsage } from "@nostr-dev-kit/ndk-mobile"
 import { nip04 } from "nostr-tools"
 
 const listMessages = async (chat_id: string) : Promise<NDKEvent[]> => {
@@ -117,15 +117,32 @@ const deleteMessage = async ({ user, event, onlyForMe = false }: DeleteEventProp
     }
 }
 
-const listAnswers = async (event: NDKEvent, timeout: number = 500) :Promise<NDKEvent[]> => {
+const listAnswers = async (event: NDKEvent, limit: number=10, timeout: number=500) :Promise<NDKEvent[]> => {
 
     const ndk = useNDKStore.getState().ndk
+   
+    return new Promise((resolve, reject) => {
+        const events: NDKEvent[] = []
+        const filter: NDKFilter = { kinds: [1], "#e": [event.id], limit: 10 }
 
-    const events = await ndk.fetchEvents({ kinds: [1], "#e": [event.id], limit: 10 }, {
-        cacheUsage: NDKSubscriptionCacheUsage.PARALLEL
+        const subscription = ndk.subscribe(filter, 
+            { cacheUsage: NDKSubscriptionCacheUsage.PARALLEL })
+        
+        subscription.on("event", note => {
+            if(events.length >= limit) subscription.stop()
+            events.push(note)
+        })
+
+        subscription.on("eose", () => {
+            subscription.stop()
+            resolve(events)
+        })
+
+        setTimeout(() => {
+            subscription.stop()
+            resolve(events)
+        }, timeout)        
     })
-
-    return Array.from(events)
 }
 
 export const messageService = {

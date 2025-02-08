@@ -47,7 +47,7 @@ const theme = {
             flexGrow: 1,
             alignContent: "center",
             alignItems: "center",
-            backgroundColor: "#000000"
+            backgroundColor: "transparent"
         },
         hidden: {
             opacity: 0,

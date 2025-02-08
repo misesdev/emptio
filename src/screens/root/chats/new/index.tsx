@@ -28,7 +28,7 @@ const NewChatScreen = ({ navigation }: StackScreenProps<any>) => {
 
             <HeaderScreen title={useTranslate("screen.title.newchat")} onClose={() => navigation.goBack()} />
 
-            <SearchBox seachOnLenth={0} delayTime={100} label={`${useTranslate("commons.search")} npub..`} onSearch={(searchTerm) => setSearchTerm(searchTerm)} />
+            <SearchBox seachOnLenth={0} delayTime={100} label={useTranslate("commons.search")} onSearch={(searchTerm) => setSearchTerm(searchTerm)} />
 
             <FollowList searchable searchTimout={200} searchTerm={searchTerm} iNot onPressFollow={handleChatFollow} />
 

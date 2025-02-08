@@ -36,8 +36,10 @@ const ChatList = ({ user, chats, handleOpenChat }: Props) => {
         const [event, setEvent] = useState<NDKEvent>(item.lastMessage)
 
         useEffect(() => {             
-            userService.getProfile(item.lastMessage.pubkey).then(setFollow)
-            messageService.decryptMessage(user, item.lastMessage).then(setEvent)
+            setTimeout(() => {
+                userService.getProfile(item.lastMessage.pubkey).then(setFollow)
+                messageService.decryptMessage(user, item.lastMessage).then(setEvent)
+            }, 20)
         }, [])
 
         return (

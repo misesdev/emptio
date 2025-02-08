@@ -57,7 +57,8 @@ export const getNostrInstance = async ({ user }: NostrInstanceProps): Promise<ND
     const ndk = new NDK({ 
         explicitRelayUrls: relays, 
         cacheAdapter: new NDKCacheAdapterSqlite("nevents"),
-        clientName: "emptio_p2p"
+        clientName: "emptio_p2p",
+        debug: false
     })
 
     if(user) 
@@ -82,7 +83,8 @@ export const subscribeUserChat = ({ user, addChat }: SubscribeProps) => {
     const ndk = useNDKStore.getState().ndk
 
     const subscriptionMessages = ndk.subscribe([
-        { kinds: [4], "#p": [user.pubkey ?? ""] }, { kinds: [4], authors: [user.pubkey ?? ""] }
+        { kinds: [4], "#p": [user.pubkey ?? ""] },
+        { kinds: [4], authors: [user.pubkey ?? ""] }
     ])
 
     const processEventMessage = (event: NDKEvent) => { 
@@ -111,4 +113,6 @@ export const subscribeUserChat = ({ user, addChat }: SubscribeProps) => {
     }
     
     subscriptionMessages.on("event", processEventMessage)
+
+    subscriptionMessages.start()
 }

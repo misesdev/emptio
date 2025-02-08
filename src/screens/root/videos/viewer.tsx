@@ -1,5 +1,5 @@
 import { Video, VideoRef } from 'react-native-video';
-import { useCallback, useEffect, useRef, useState } from "react"
+import { useRef, useState } from "react"
 import { View, StyleSheet, TouchableOpacity, Text, Dimensions } from 'react-native';
 import Ionicons from 'react-native-vector-icons/Ionicons'
 import Slider from '@react-native-community/slider';
@@ -34,15 +34,11 @@ const FeedVideoViewer = ({ event, url, muted=false, paused=false, setMuted }: Vi
     const [loading, setLoading] = useState<boolean>(true)
     const [duration, setDuration] = useState<number>(0)
     const [currentTime, setCurrentTime] = useState<number>(0)
-    const [mutedVideo, setMutedVideo] = useState<boolean>(false)
+    const [mutedVideo, setMutedVideo] = useState<boolean>(muted)
     const [showMuted, setShowMuted] = useState<boolean>(false)
     const [downloading, setDownloading] = useState<boolean>(false)
     const [downloadProgress, setDownloadProgress] = useState<number>(0)
     const [optionsVisible, setOptionsVisible] = useState<boolean>(false)
-
-    useEffect(() => { 
-        if(muted != mutedVideo) setMutedVideo(muted)
-    }, [muted])
 
     const onLoadVideo = (data: any) => {
         setLoading(false)
@@ -53,7 +49,7 @@ const FeedVideoViewer = ({ event, url, muted=false, paused=false, setMuted }: Vi
         if(data?.currentTime) setCurrentTime(data.currentTime)
     }
 
-    const handleMute = useCallback(() => {
+    const handleMute = () => {
         setShowMuted(true)
         setMutedVideo(prev => !prev)
         if(setMuted) setMuted(!muted)
@@ -62,14 +58,14 @@ const FeedVideoViewer = ({ event, url, muted=false, paused=false, setMuted }: Vi
         timeout.current = setTimeout(() => {
             setShowMuted(false)
         }, 1000)
-    },[])
+    }
 
-    const handleSeek = useCallback((time: number) => {
+    const handleSeek = (time: number) => {
         if(videoRef.current) {
             videoRef.current.seek(time)
             setCurrentTime(time)
         }
-    }, [])
+    }
 
     const handleDownload = async() => {
 
@@ -120,9 +116,7 @@ const FeedVideoViewer = ({ event, url, muted=false, paused=false, setMuted }: Vi
                 resizeMode="contain"
                 onLoad={onLoadVideo}
                 onProgress={onProgressVideo}
-                disableFocus
-            >
-            </Video>
+            />
             <TouchableOpacity activeOpacity={1} onPress={handleMute}
                 style={styles.controlsContainer}
             >
@@ -153,7 +147,7 @@ const FeedVideoViewer = ({ event, url, muted=false, paused=false, setMuted }: Vi
                     <View style={{ alignItems: "center", minWidth: 100, padding: 5, borderRadius: 10, backgroundColor: theme.colors.blueOpacity }}>
                         <Ionicons name={"cloud-download"} size={18} color={theme.colors.white} />
                         <Text style={{ fontSize: 16, color: theme.colors.white }}>
-                            {downloadProgress}%
+                            {downloadProgress.toFixed(0)}%
                         </Text>
                     </View>
                 }
