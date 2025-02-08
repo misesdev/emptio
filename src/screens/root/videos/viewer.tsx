@@ -1,6 +1,6 @@
 import { Video, VideoRef } from 'react-native-video';
 import { useCallback, useEffect, useRef, useState } from "react"
-import { View, Image, StyleSheet, TouchableOpacity, Text, Dimensions } from 'react-native';
+import { View, StyleSheet, TouchableOpacity, Text, Dimensions } from 'react-native';
 import Ionicons from 'react-native-vector-icons/Ionicons'
 import Slider from '@react-native-community/slider';
 import { downloadFile, ExternalDirectoryPath } from 'react-native-fs'

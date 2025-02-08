@@ -54,7 +54,7 @@ export const listenerEvents = async (filters: Filter) : Promise<NostrEvent[]> =>
     const ndk = useNDKStore.getState().ndk
 
     const events = await ndk.fetchEvents(filters, {
-        cacheUsage: NDKSubscriptionCacheUsage.CACHE_FIRST
+        cacheUsage: NDKSubscriptionCacheUsage.PARALLEL
     })
 
     const eventsResut: NostrEvent[] = []
@@ -83,7 +83,7 @@ export const getEvent = async (filters: Filter) : Promise<NostrEvent> => {
     const ndk = useNDKStore.getState().ndk
 
     const event = await ndk.fetchEvent(filters, {
-        cacheUsage: NDKSubscriptionCacheUsage.CACHE_FIRST
+        cacheUsage: NDKSubscriptionCacheUsage.PARALLEL
     })
 
     if (event) {

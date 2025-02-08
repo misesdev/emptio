@@ -3,7 +3,7 @@ import LinkPreview from "@/src/components/nostr/event/LinkPreview"
 import ProfileViewer from "@/src/components/nostr/event/ProfileViewer"
 import theme from "@/src/theme"
 import { replaceContentEvent } from "@/src/utils"
-import { useEffect, useState } from "react"
+import { useCallback, useEffect, useState } from "react"
 import { StyleSheet, ScrollView, View, TouchableOpacity } from "react-native"
 import ParsedText from "react-native-parsed-text"
 
@@ -20,14 +20,13 @@ const VideoDescription = ({ content, url }: Props) => {
 
     useEffect(() => {
         const text = content.replace(url,"").trim()
+        setContentText(`${text.substring(0, 30).replaceAll("\n"," ")}...`)
         setContentFullText(text)
-        setContentText(`${text.substring(0, 30).replace("\n","")}...`)
     },[])
 
-    const handleSetText = () => {
-        console.log("handle Set text")
+    const handleSetText = useCallback(() => {
         setFullcontent(prev => !prev)
-    }
+    },[])
 
     const isImageUrl = (url: string): boolean => {
         return /\.(jpeg|jpg|gif|png|webp|svg)(\?.*)?$/.test(url.toLowerCase());
@@ -59,7 +58,7 @@ const VideoDescription = ({ content, url }: Props) => {
 
     const TextRenderComponent = ({ text }: { text: string}) => {
         return (
-            <ParsedText
+            <ParsedText 
                 style={styles.text}
                 parse={[{
                     style: styles.link,
@@ -77,26 +76,23 @@ const VideoDescription = ({ content, url }: Props) => {
     }
     
     return (
-        <TouchableOpacity activeOpacity={.7} 
-            style={{ width: "100%", marginBottom: 10 }}
-            onPress={handleSetText} 
-        >       
-            <View style={{ flex: 1 }}>
-                <ScrollView pointerEvents="box-none" 
-                    style={styles.contentContainer}>
-                    {fullcontent && <TextRenderComponent text={contentFullText} />}
-                    {!fullcontent && <TextRenderComponent text={contentText} />}
-                </ScrollView>
-            </View>
-        </TouchableOpacity>
+        <ScrollView style={styles.contentContainer}>
+            <TouchableOpacity activeOpacity={.7}
+                onPress={handleSetText} style={{ paddingVertical: 10 }}
+            >
+                <TextRenderComponent text={fullcontent ? contentFullText:contentText} />
+            </TouchableOpacity>
+        </ScrollView>
     )
 }
 
 const styles = StyleSheet.create({
-    contentContainer: { flex: 1, borderRadius: 10, marginBottom: 4, maxHeight: 400, 
-        padding: 10, backgroundColor: theme.colors.semitransparent },
+    contentContainer: { width: "100%", marginBottom: 20, borderRadius: 10, maxHeight: 400, 
+        paddingHorizontal: 10, backgroundColor: theme.colors.semitransparent, 
+        overflow: "scroll" },
     text: { color: theme.colors.white },
-    link: { color: theme.colors.blue, textDecorationLine: 'underline' },
+    link: { color: theme.colors.blue, 
+        textDecorationLine: 'underline' },
 })
 
 export default VideoDescription

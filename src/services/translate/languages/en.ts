@@ -48,7 +48,8 @@ export default {
     "commons.delete-for-me": "Delete for me",
     "commons.delete-for-all": "Delete for everyone",
     "commons.copy-text": "Copy text",
-    "commons.follow": "follow",
+    "commons.follow": "Follow",
+    "commons.unfollow": "Unfollow",
 
     "labels.friends": "Friends",
     "labels.username": "User Name",

@@ -7,6 +7,7 @@ import Ionicons from 'react-native-vector-icons/Ionicons'
 import theme from "@/src/theme"
 import { useState } from "react"
 import { useFeedVideosStore } from "@/src/services/zustand/feedVideos"
+import { saveFeedVideoSettings } from "@/src/services/memory/settings"
 
 type Props = {
     visible: boolean,
@@ -22,8 +23,10 @@ const VideoPostOptions = ({ visible, setVisible }: Props) => {
 
     const handleAddTagfilter = () => {
         if(!tagNameText) return;
-        feedSettings.filterTags.push(tagNameText ?? "")
+        const tag = tagNameText.replaceAll("#", "")
+        feedSettings.filterTags.push(tag)
         setFeedSettings({...feedSettings})
+        saveFeedVideoSettings({...feedSettings})
         setTagNameText("")
     }
 
@@ -36,11 +39,12 @@ const VideoPostOptions = ({ visible, setVisible }: Props) => {
         
         feedSettings.filterTags = newTags
 
-        setFeedSettings({...feedSettings})
+        setFeedSettings(feedSettings)
+        saveFeedVideoSettings(feedSettings)
     }
 
     return (
-        <Modal transparent visible={visible}
+        <Modal transparent visible={visible} animationType="slide"
             onRequestClose={() => setVisible(false)}
         >
             <ScrollView style={styles.container}>
@@ -65,7 +69,7 @@ const VideoPostOptions = ({ visible, setVisible }: Props) => {
                     {filterTags.length &&
                         filterTags.map((tag: string, key: number) => {
                             return (
-                                <Text key={key} style={styles.tagitem}
+                                <Text key={key} style={styles.tagitem} 
                                     onPress={() => handleRemoveTag(tag)}
                                 >
                                     #{tag}

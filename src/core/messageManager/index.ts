@@ -5,7 +5,7 @@ import { User } from "@services/memory/types"
 import { getPubkeyFromTags } from "@services/nostr/events"
 import { ChatUser } from "@services/zustand/chats"
 import useNDKStore from "@services/zustand/ndk"
-import { NDKEvent } from "@nostr-dev-kit/ndk-mobile"
+import { NDKEvent, NDKSubscriptionCacheUsage } from "@nostr-dev-kit/ndk-mobile"
 import { nip04 } from "nostr-tools"
 
 const listMessages = async (chat_id: string) : Promise<NDKEvent[]> => {
@@ -117,6 +117,17 @@ const deleteMessage = async ({ user, event, onlyForMe = false }: DeleteEventProp
     }
 }
 
+const listAnswers = async (event: NDKEvent, timeout: number = 500) :Promise<NDKEvent[]> => {
+
+    const ndk = useNDKStore.getState().ndk
+
+    const events = await ndk.fetchEvents({ kinds: [1], "#e": [event.id], limit: 10 }, {
+        cacheUsage: NDKSubscriptionCacheUsage.PARALLEL
+    })
+
+    return Array.from(events)
+}
+
 export const messageService = {
     listChats,
     listMessages,
@@ -124,7 +135,8 @@ export const messageService = {
     decryptMessage,
     encryptMessage,
     sendMessage,
-    deleteMessage
+    deleteMessage,
+    listAnswers
 }
 
 

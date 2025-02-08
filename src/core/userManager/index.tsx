@@ -273,7 +273,7 @@ const listUsers = async (pubkeys: string[]): Promise<User[]> => {
 }
 
 const getProfile = async (pubkey: string) => {
-    
+   
     const event = await getEvent({ authors: [pubkey], kinds:[0], limit: 1 })
 
     const user = event.content as User

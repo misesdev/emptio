@@ -10,12 +10,13 @@ import { useAuth } from "@src/providers/userProvider"
 import ChatList from "./list"
 import useChatStore, { ChatUser } from "@services/zustand/chats"
 import { User } from "@services/memory/types"
-import { StackNavigationProp, StackScreenProps } from "@react-navigation/stack"
+import { StackScreenProps } from "@react-navigation/stack"
 
 const ChatsScreen = ({ navigation }: StackScreenProps<any>) => {
    
     const { user } = useAuth()
     const { chats } = useChatStore()
+    const { useTranslate } = useTranslateService()
     const [searchTerm, setSearchTerm] = useState("")
 
     useEffect(() => {
@@ -42,7 +43,9 @@ const ChatsScreen = ({ navigation }: StackScreenProps<any>) => {
     return (
         <View style={theme.styles.container}>
 
-            {/* <SearchBox delayTime={0} seachOnLenth={0} label={useTranslate("commons.search")} onSearch={handleSearch} /> */}
+            <SearchBox delayTime={0} seachOnLenth={0} 
+                label={useTranslate("commons.search")} onSearch={handleSearch} 
+            /> 
 
             {/* <ChatFilters onFilter={filterEvents} activeSection={activeSection} /> */}
 
