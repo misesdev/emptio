@@ -48,8 +48,9 @@ export default {
     "commons.delete-for-me": "Delete for me",
     "commons.delete-for-all": "Delete for everyone",
     "commons.copy-text": "Copy text",
-    "commons.follow": "Follow",
-    "commons.unfollow": "Unfollow",
+    "commons.follow": "follow",
+    "commons.unfollow": "unfollow",
+    "commons.filters": "Filters",
 
     "labels.friends": "Friends",
     "labels.username": "User Name",
@@ -167,8 +168,14 @@ export default {
 
     "chats.title": "Conversations",
     "chat.empty": "You don't have any messages",
+    "chat.labels.message": "Message",
+    
     "feed.empty": "No orders found, try adding seller friends",
-
+    "feed.videos.comments": "Comments",
+    "feed.videos.addtag": "Add filter tag",
+    "feed.videos.share": "Share",
+    "feed.videos.shared-for": "Sent to ",
+    "feed.videos.comment": "Comment",
 
     "order.new.title": "New Sales Order",
     "order.new.amount-title": "How many Sats do you want to sell?",

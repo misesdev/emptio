@@ -12,11 +12,13 @@ import Ionicons from 'react-native-vector-icons/Ionicons'
 import theme from "@/src/theme"
 import { StackScreenProps } from "@react-navigation/stack"
 import ConversationHeader from "./header"
+import { useTranslateService } from "@/src/providers/translateProvider"
 
 const ConversationChat = ({ navigation, route }: StackScreenProps<any>) => {
     
     const { user }= useAuth()
     const timeout:any = useRef(null)
+    const { useTranslate } = useTranslateService()
     const { markReadChat, unreadChats } = useChatStore()
     const { follow, chat_id } = route.params as { chat_id: string, follow: User }
     const [message, setMessage] = useState<string>("")
@@ -71,7 +73,7 @@ const ConversationChat = ({ navigation, route }: StackScreenProps<any>) => {
                             multiline
                             numberOfLines={5}
                             textContentType="none"
-                            placeholder="Mensagem"//{useTranslate("labels.message")}
+                            placeholder={useTranslate("chat.labels.message")}
                             placeholderTextColor={theme.input.placeholderColor}
                             underlineColorAndroid={theme.colors.transparent}
                         />

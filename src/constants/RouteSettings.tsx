@@ -1,6 +1,5 @@
 import { StackNavigationOptions } from "@react-navigation/stack"
-import { ViewStyle } from "react-native"
-import { TouchableOpacity } from "react-native-gesture-handler"
+import { ViewStyle, TouchableOpacity } from "react-native"
 import Ionicons from "react-native-vector-icons/Ionicons"
 import theme from "../theme"
 
@@ -27,7 +26,7 @@ export const stackOptions: StackNavigationOptions = {
             </TouchableOpacity>
         )
     },
-    cardStyle: { backgroundColor: theme.colors.transparent },
+    cardStyle: { backgroundColor: theme.colors.black },
     headerShadowVisible: false,
 }
 

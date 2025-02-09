@@ -19,7 +19,9 @@ const ConversationList = ({ user, events, onMessageOptions }: Props) => {
         const [event, setEvent] = useState<NDKEvent>(item)
 
         useEffect(() => {
-            messageService.decryptMessage(user, item).then(setEvent)
+            setTimeout(() => {
+                messageService.decryptMessage(user, item).then(setEvent)
+            },20)
         }, [])
 
         return (

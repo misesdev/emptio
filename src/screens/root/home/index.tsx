@@ -9,6 +9,7 @@ import { walletService } from "@src/core/walletManager"
 import { HeaderHome } from "./header"
 import { StackScreenProps } from "@react-navigation/stack"
 import theme from "@src/theme"
+import { messageService } from "@/src/core/messageManager"
 
 const HomeScreen = ({ navigation }: StackScreenProps<any>) => {
 
@@ -19,7 +20,7 @@ const HomeScreen = ({ navigation }: StackScreenProps<any>) => {
 
     useEffect(() => { 
         navigation.setOptions({ header: () => <HeaderHome navigation={navigation} /> })
-        handleData() 
+        setTimeout(async () => handleData(), 50) 
     }, [])
 
     const handleData = async () => {

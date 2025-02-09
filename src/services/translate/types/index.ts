@@ -54,6 +54,7 @@ export type TranslateWords = "initial.message"
     | "commons.copy-text"
     | "commons.follow"
     | "commons.unfollow"
+    | "commons.filters"
 
     | "labels.username"
     | "labels.about"
@@ -167,9 +168,15 @@ export type TranslateWords = "initial.message"
     | "wallet.transaction.view-web"
 
     | "chats.title"
+    | "chat.labels.message"
     | "chat.empty"
 
     | "feed.empty"
+    | "feed.videos.comments"
+    | "feed.videos.comment"
+    | "feed.videos.addtag"
+    | "feed.videos.share"
+    | "feed.videos.shared-for"
 
     | "screen.title.addwallet"
     | "screen.title.importwallet"

@@ -1,6 +1,5 @@
 import theme from "@src/theme"
-import { StyleSheet, View } from "react-native"
-import { TouchableOpacity } from "react-native-gesture-handler"
+import { StyleSheet, View, TouchableOpacity } from "react-native"
 import Ionicons from 'react-native-vector-icons/Ionicons'
 import { useEffect, useState } from "react"
 import { HeaderChats } from "./header"

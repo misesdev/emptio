@@ -6,7 +6,7 @@ import { userService } from "../core/userManager";
 type AuthContextType = {
     user: User,
     wallets: Wallet[],
-    follows?: User[],
+    follows: User[],
     followsEvent?: NostrEvent,
     setUser?: (user: User) => void,
     setWallets?: (wallet: Wallet[]) => void,
@@ -17,6 +17,7 @@ type AuthContextType = {
 const AuthContext = createContext<AuthContextType>({ 
     user: {},
     wallets: [], 
+    follows: []
 })
 
 const useAuth = (): AuthContextType => useContext(AuthContext)
@@ -29,14 +30,12 @@ const AuthProvider = ({ children }: { children: ReactNode }): ReactElement => {
     const [followsEvent, setFollowsEvent] = useState<NostrEvent>()
 
     useEffect(() => {
-        setTimeout(() => {
-            if(user.pubkey) {
-                userService.listFollows(user, followsEvent as NostrEvent,true)
-                    .then(followList => {
-                    setFollows(followList)
-                })
-            }
-        }, 50)
+        if(user.pubkey) {
+            userService.listFollows(user, followsEvent as NostrEvent,true)
+                .then(followList => {
+                setFollows(followList)
+            })
+        }
     }, [followsEvent])
 
     return (

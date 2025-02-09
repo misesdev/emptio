@@ -9,8 +9,9 @@ import { getSettings, saveSettings } from "@services/memory/settings"
 import { useTranslateService } from "@src/providers/translateProvider"
 import { useSettings } from "@src/providers/settingsProvider"
 import theme from "@src/theme"
+import { StackScreenProps } from "@react-navigation/stack"
 
-const ManageSecurityScreen = ({ navigation }: any) => {
+const ManageSecurityScreen = ({ navigation }: StackScreenProps<any>) => {
 
     const { settings, setSettings } = useSettings()
     const { useTranslate } = useTranslateService()
@@ -21,7 +22,7 @@ const ManageSecurityScreen = ({ navigation }: any) => {
         if (value) {
             const access = await authService.checkBiometric()
             if (!access)
-                return pushMessage("Erro ao authenticar com biometria.")
+                return pushMessage(useTranslate("message.default_error"))
         }
 
         setUseBiometrics(value)
@@ -32,7 +33,7 @@ const ManageSecurityScreen = ({ navigation }: any) => {
 
     return (
         <View style={{ flex: 1 }}>
-            <HeaderScreen title="Security" onClose={() => navigation.navigate("user-menu-stack")} />
+            <HeaderScreen title="Security" onClose={() => navigation.goBack()} />
             <ScrollView contentContainerStyle={theme.styles.scroll_container} >
 
                 <FormControlSwitch label="Use Biometrics" value={useBiometrics} onChangeValue={onHandleSetAuthenticate} />

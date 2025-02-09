@@ -30,14 +30,10 @@ const NewChatScreen = ({ navigation }: StackScreenProps<any>) => {
 
             <SearchBox seachOnLenth={0} delayTime={100} label={useTranslate("commons.search")} onSearch={(searchTerm) => setSearchTerm(searchTerm)} />
 
-            <FollowList searchable searchTimout={200} searchTerm={searchTerm} iNot onPressFollow={handleChatFollow} />
+            <FollowList searchable searchTimout={100} searchTerm={searchTerm} onPressFollow={handleChatFollow} />
 
         </View>
     )
 }
-
-const styles = StyleSheet.create({
-
-})
 
 export default NewChatScreen

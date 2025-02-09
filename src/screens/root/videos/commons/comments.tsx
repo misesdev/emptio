@@ -6,6 +6,7 @@ import { Modal, StyleSheet, View, Text, TouchableOpacity } from "react-native"
 import { FlatList, TextInput } from "react-native-gesture-handler"
 import { ActivityIndicator } from "react-native-paper"
 import Ionicons from 'react-native-vector-icons/Ionicons'
+import { useTranslateService } from "@/src/providers/translateProvider"
 import theme from "@/src/theme"
 
 type ChatProps = {
@@ -13,26 +14,25 @@ type ChatProps = {
     visible: boolean,
     setVisible: (state: boolean) => void
 }
-const VideoChat = ({ event, visible, setVisible }: ChatProps) => {
+const VideoComments = ({ event, visible, setVisible }: ChatProps) => {
 
+    const { useTranslate } = useTranslateService()
     const [message, setMessage] = useState<string>("")
-    const [events, setEvents] = useState<NDKEvent[]>([])
+    const [comments, setComments] = useState<NDKEvent[]>([])
     const [loading, setLoading] = useState<boolean>(false)
 
     useEffect(() => {
-        if(visible) handleLoadMessages()
+        if(visible) setTimeout(() => handleLoadMessages(), 50)
     }, [visible])
 
     const handleLoadMessages = async () => {
         setLoading(true)
-        setTimeout(async () => {
-            const messages = await messageService.listAnswers(event)
-            setEvents(messages)
-            setLoading(false)
-        }, 20)
+        const comments = await messageService.listAnswers(event.id, 300)
+        setComments(comments)
+        setLoading(false)
     }
 
-    const handlePostMessage = () => {
+    const handlePostComment = () => {
 
     }
 
@@ -52,13 +52,15 @@ const VideoChat = ({ event, visible, setVisible }: ChatProps) => {
             <View style={styles.overlayer}>
                 <View style={styles.modalContainer}>
                     <View style={styles.header}>
-                        <Text style={styles.headerText}>Comentários</Text>
+                        <Text style={styles.headerText}>
+                            {useTranslate("feed.videos.comments")}
+                        </Text>
                         <TouchableOpacity onPress={() => setVisible(false)}>
                             <Text style={styles.closeButton}>✕</Text>
                         </TouchableOpacity>
                     </View>
                     <FlatList 
-                        data={events}
+                        data={comments}
                         keyExtractor={event => event.id}
                         renderItem={renderItem}
                         style={{ flex: 1 }}
@@ -75,13 +77,13 @@ const VideoChat = ({ event, visible, setVisible }: ChatProps) => {
                                     multiline
                                     numberOfLines={5}
                                     textContentType="none"
-                                    placeholder="Mensagem"//{useTranslate("labels.message")}
+                                    placeholder={useTranslate("feed.videos.comment")}
                                     placeholderTextColor={theme.input.placeholderColor}
                                     underlineColorAndroid={theme.colors.transparent}
                                 />
                             </View> 
                             <View style={{ width: "18%", alignItems: "center", justifyContent: "center" }}>
-                                <TouchableOpacity style={styles.sendButton} onPress={handlePostMessage} >
+                                <TouchableOpacity style={styles.sendButton} onPress={handlePostComment} >
                                     <Ionicons name="paper-plane" 
                                         size={24} color={theme.colors.white}
                                     />
@@ -122,4 +124,4 @@ const styles = StyleSheet.create({
     },
 })
 
-export default VideoChat
+export default VideoComments

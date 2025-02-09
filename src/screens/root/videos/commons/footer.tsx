@@ -3,13 +3,13 @@ import { User } from "@services/memory/types"
 import Ionicons from 'react-native-vector-icons/Ionicons'
 import { copyPubkey, getDisplayPubkey, getUserName } from "@/src/utils"
 import { NDKEvent } from "@nostr-dev-kit/ndk-mobile"
-import { useCallback, useEffect, useState } from "react"
+import { useEffect, useState } from "react"
 import { StyleSheet, View, Image, Text, TouchableOpacity } from "react-native"
 import VideoDescription from "./description"
 import theme from "@src/theme"
 import { useTranslateService } from "@/src/providers/translateProvider"
 import { useAuth } from "@/src/providers/userProvider"
-import VideoChat from "./answers"
+import VideoComments from "./comments"
 import VideoShareBar from "./share"
 
 type Props = { 
@@ -121,7 +121,7 @@ const VideoFooter = ({ event, url }: Props) => {
                 </View>
             </View>
             <VideoDescription content={event.content} url={url} />
-            <VideoChat event={event} 
+            <VideoComments event={event} 
                 visible={chatVisible} 
                 setVisible={setChatVisible} 
             />

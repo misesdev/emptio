@@ -117,19 +117,17 @@ const deleteMessage = async ({ user, event, onlyForMe = false }: DeleteEventProp
     }
 }
 
-const listAnswers = async (event: NDKEvent, limit: number=10, timeout: number=500) :Promise<NDKEvent[]> => {
+const listAnswers = async (eventId: string, timeout: number=500) :Promise<NDKEvent[]> => {
 
     const ndk = useNDKStore.getState().ndk
    
-    return new Promise((resolve, reject) => {
+    return new Promise((resolve) => {
         const events: NDKEvent[] = []
-        const filter: NDKFilter = { kinds: [1], "#e": [event.id], limit: 10 }
-
+        const filter: NDKFilter = { kinds: [1], "#e": [eventId] }
         const subscription = ndk.subscribe(filter, 
             { cacheUsage: NDKSubscriptionCacheUsage.PARALLEL })
         
         subscription.on("event", note => {
-            if(events.length >= limit) subscription.stop()
             events.push(note)
         })
 
@@ -141,7 +139,7 @@ const listAnswers = async (event: NDKEvent, limit: number=10, timeout: number=50
         setTimeout(() => {
             subscription.stop()
             resolve(events)
-        }, timeout)        
+        }, timeout) 
     })
 }
 

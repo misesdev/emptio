@@ -11,16 +11,18 @@ import { useTranslateService } from "@src/providers/translateProvider";
 import { pushMessage } from "@services/notification";
 import useNDKStore from "@services/zustand/ndk";
 import useChatStore from "@services/zustand/chats";
-import { subscribeUserChat } from "@services/nostr/pool";
+import { subscribeUser } from "@services/nostr/pool";
 import Clipboard from "@react-native-clipboard/clipboard";
 import { AppState } from "react-native";
 import theme from "@src/theme";
+import { getEvent } from "@/src/services/nostr/events";
+import { NostrEventKinds } from "@/src/constants/Events";
 
 const LoginScreen = ({ navigation }: any) => {
 
     const { setNdkSigner } = useNDKStore()
     const { addChat } = useChatStore()
-    const { setUser, setFollows } = useAuth()
+    const { setUser, setFollowsEvent } = useAuth()
     const { useTranslate } = useTranslateService()
     const [loading, setLoading] = useState(false)
     const [secretKey, setSecretKey] = useState("")
@@ -65,12 +67,23 @@ const LoginScreen = ({ navigation }: any) => {
             {
                 try 
                 {
-                    const result = await userService.signIn({ secretKey, setUser, setFollows })
+                    const result = await userService.signIn({ secretKey, setUser })
 
                     if (result.success && result.data) {
                         setNdkSigner(result.data)
 
-                        subscribeUserChat({ user: result.data, addChat })
+                        subscribeUser({ user: result.data ?? {}, addChat })
+
+                        if(setFollowsEvent) 
+                        {
+                            const eventFollow = await getEvent({ 
+                                kinds:[NostrEventKinds.followList], 
+                                authors: [result.data?.pubkey ?? ""], 
+                                limit: 1
+                            })
+
+                            if(eventFollow) setFollowsEvent(eventFollow)
+                        } 
 
                         navigation.reset({ index: 0, routes: [{ name: "core-stack" }] })                  
                     }
@@ -81,7 +94,7 @@ const LoginScreen = ({ navigation }: any) => {
                 showMessage({ message: useTranslate("message.invalidkey"), infolog: secretKey })
 
             setLoading(false)
-        }, 100)
+        }, 50)
     }
 
     if (loading)

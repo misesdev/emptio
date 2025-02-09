@@ -53,20 +53,14 @@ const signUp = async ({ userName, setUser, setFollows }: SignUpProps): Promise<R
 type SignProps = { 
     secretKey: string, 
     setUser?: (user: User) => void,
-    setFollows?: (event: NostrEvent) => void
 }
 
-const signIn = async ({ secretKey, setUser, setFollows }: SignProps) : Promise<Response<User|null>>=> {
+const signIn = async ({ secretKey, setUser }: SignProps) : Promise<Response<User|null>>=> {
     try {
         const pairKey: PairKey = getHexKeys(secretKey)
 
         const userData = await getUserData(pairKey.publicKey)
 
-        const follows = await getEvent({ 
-            kinds: [NostrEventKinds.followList],
-            authors: [pairKey.publicKey],
-            limit: 1
-        })
 
         userData.keychanges = pairKey.key
 
@@ -75,8 +69,7 @@ const signIn = async ({ secretKey, setUser, setFollows }: SignProps) : Promise<R
         await insertPairKey(pairKey)
 
         if (setUser) setUser(userData)
-        if (setFollows) setFollows(follows)
-
+        
         return { success: true, data: userData }
     }
     catch (ex) {

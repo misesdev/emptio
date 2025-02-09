@@ -8,20 +8,24 @@ import { deleteRelay, getRelays, insertRelay } from "@services/memory/relays"
 import { pushMessage } from "@services/notification"
 import { useTranslateService } from "@src/providers/translateProvider"
 import useNDKStore from "@/src/services/zustand/ndk"
-import { useEffect, useState } from "react"
+import { useCallback, useEffect, useState } from "react"
 import theme from "@src/theme"
 import AddRelay from "./add"
 import axios from "axios"
+import { StackScreenProps } from "@react-navigation/stack"
 
-const ManageRelaysScreen = ({ navigation }: any) => {
+const ManageRelaysScreen = ({ navigation }: StackScreenProps<any>) => {
 
     const { ndk } = useNDKStore()
     const { useTranslate } = useTranslateService()
     const [visible, setVisible] = useState(false)
     const [relays, setRelays] = useState<string[]>([])
 
-
-    useEffect(() => { loadDataRelays() }, [])
+    useEffect(() => { 
+        setTimeout(async () => { 
+            await loadDataRelays() 
+        }, 20)
+    }, [])
 
     const loadDataRelays = async () => { 
 
@@ -76,9 +80,11 @@ const ManageRelaysScreen = ({ navigation }: any) => {
         })
     }
 
+    const goBack = useCallback(() => navigation.goBack(), [])
+
     return (
         <View style={{ flex: 1 }}>
-            <HeaderScreen title={useTranslate("settings.relays")} onClose={() => navigation.navigate("user-menu-stack")} />
+            <HeaderScreen title={useTranslate("settings.relays")} onClose={goBack} />
             <ScrollView contentContainerStyle={theme.styles.scroll_container} >
 
                 {!relays.length && 

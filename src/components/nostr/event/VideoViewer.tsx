@@ -71,7 +71,7 @@ const VideoViewer = ({ url, redute=180, fullScreen=false, hideFullscreen=false, 
 
     const handleDownload = async() => {
 
-        if(await getGaleryPermission()) return
+        if(!(await getGaleryPermission())) return
 
         setDownloading(true)
         setDownloadProgress("0")

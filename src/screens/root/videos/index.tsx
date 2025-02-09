@@ -1,7 +1,7 @@
 import useNDKStore from "@services/zustand/ndk"
 import { NDKEvent, NDKFilter, NDKSubscription, NDKSubscriptionCacheUsage } from "@nostr-dev-kit/ndk-mobile"
 import { StackScreenProps } from "@react-navigation/stack"
-import { useCallback, useEffect, useMemo, useRef, useState } from "react"
+import { useCallback, useEffect, useRef, useState } from "react"
 import { View, FlatList, SafeAreaView } from "react-native"
 import { extractVideoUrl } from "@src/utils"
 import { useFeedVideosStore } from "@services/zustand/feedVideos"
@@ -15,29 +15,28 @@ const VideosFeed = ({ navigation }: StackScreenProps<any>) => {
     const { ndk } = useNDKStore()
     const { feedSettings } = useFeedVideosStore()
     const listRef = useRef<FlatList>(null)
-    const videosRef = useRef<NDKEvent[]>([])
     const subscriptionRef = useRef<NDKSubscription>()
     const isFetching:any = useRef<boolean>(null)
     const [playingIndex, setPlayingIndex] = useState<number>(0)
-    const [muted, setMuted] = useState<boolean>(false)
     const [paused, setPaused] = useState<boolean>(false)
     const [videos, setVideos] = useState<NDKEvent[]>([])
     const [lastEventTimestamp, setLastEventTimestamp] = useState<number>();
 
-    useEffect(() => { 
-        
+    useEffect(() => {
+        setTimeout(() => loadVideosData(), 50)
         const unsubscribe = navigation.addListener("blur", () => {
             isFetching.current = false
-            setVideos([])
+            setPaused(true)
         })
         return unsubscribe
     }, [feedSettings])
 
-    useFocusEffect(() => { loadVideosData() })
+    useFocusEffect(() => { setPaused(false) })
 
     const loadVideosData = async () => {
         if(isFetching.current) return
-       
+      
+        console.log("fetching events")
         isFetching.current = true
 
         if(subscriptionRef.current) {
@@ -48,7 +47,7 @@ const VideosFeed = ({ navigation }: StackScreenProps<any>) => {
         const filter: NDKFilter = {
             until: lastEventTimestamp, 
             kinds: [1, 1063], "#t": feedSettings.filterTags, 
-            limit: feedSettings.FETCH_LIMIT
+            //limit: feedSettings.FETCH_LIMIT
         }
 
         subscriptionRef.current = ndk.subscribe(filter, { 
@@ -57,33 +56,37 @@ const VideosFeed = ({ navigation }: StackScreenProps<any>) => {
 
         var foundEventsCount = 0
         subscriptionRef.current.on("event", event => {
-            if(foundEventsCount >= feedSettings.VIDEOS_LIMIT-1) {
+            if(foundEventsCount >= feedSettings.VIDEOS_LIMIT) {
                 subscriptionRef.current?.stop()
             }
             setLastEventTimestamp(event.created_at)
             const url = extractVideoUrl(event.content)
             if(url)
             {
-                if(!videosRef.current.some(e => e.id == event.id)) 
+                if(!videos.some(e => e.id == event.id)) 
                 {
-                    videosRef.current = [...videosRef.current, event];
-                    if (videosRef.current.length > feedSettings.VIDEOS_LIMIT) {
-                        videosRef.current.splice(0, 1);
-                    }
-
-                    setVideos([...videosRef.current])
+                    setVideos(prev => {
+                        const events = [...prev, event]
+                        // if(events.length >= feedSettings.VIDEOS_LIMIT)
+                        //     events.splice(0,1)
+                        return events
+                    })
                     foundEventsCount++
                 }
             }
         })
 
-        subscriptionRef.current.on("eose", () => {
-            isFetching.current = false
-            subscriptionRef.current = undefined 
-        })
+        // subscriptionRef.current.on("eose", () => {
+        //     subscriptionRef.current = undefined
+        //     isFetching.current = false
+        // })
 
         subscriptionRef.current.start()
 
+        setTimeout(() => {
+            isFetching.current = false
+            console.log("end fetching")
+        }, 5000)
     }
 
     const onViewableItemsChanged = useCallback(({ viewableItems }: any) => {
@@ -92,21 +95,17 @@ const VideosFeed = ({ navigation }: StackScreenProps<any>) => {
         }
     }, [])
 
-    const renderItem = useMemo(() => ({ item, index }:{ item: NDKEvent, index: number }) => {
-        // console.log("renderItem")
+    const renderItem = useCallback(({ item, index }:{ item: NDKEvent, index: number }) => {
+        console.log("renderItem")
         const url = extractVideoUrl(item.content)
         return (
             <FeedVideoViewer
-                key={item.id}
                 url={url??""}
                 event={item}
-                muted={muted}
-                setMuted={setMuted}
-                setPaused={setPaused}
                 paused={index != playingIndex || paused} 
             />
         ) 
-    }, [playingIndex, paused, muted])
+    }, [playingIndex, paused])
     
     const EndLoader = () => (
         <View style={{ paddingVertical: 20 }}>
@@ -119,7 +118,7 @@ const VideosFeed = ({ navigation }: StackScreenProps<any>) => {
             <FlatList ref={listRef} 
                 pagingEnabled
                 data={videos}
-                extraData={{ paused, muted }}
+                extraData={{ playingIndex, paused }}
                 style={{ flex: 1 }}
                 renderItem={renderItem}
                 keyExtractor={item => item.id}
@@ -128,9 +127,9 @@ const VideosFeed = ({ navigation }: StackScreenProps<any>) => {
                 onViewableItemsChanged={onViewableItemsChanged}
                 onEndReached={loadVideosData}
                 onEndReachedThreshold={.2}
-                //removeClippedSubviews
-                initialNumToRender={4} 
-                windowSize={4} 
+                removeClippedSubviews
+                initialNumToRender={5} 
+                windowSize={5} 
                 snapToAlignment="center"
                 decelerationRate="fast" 
                 ListFooterComponent={<EndLoader/>}

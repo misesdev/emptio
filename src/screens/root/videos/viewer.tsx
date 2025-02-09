@@ -18,13 +18,10 @@ import VideoHeader from './commons/header';
 type VideoProps = { 
     url: string,
     event: NDKEvent,
-    paused?: boolean,
-    muted?: boolean,
-    setPaused?: (paused: boolean) => void,
-    setMuted?: (mutted: boolean) => void,
+    paused: boolean,
 }
 
-const FeedVideoViewer = ({ event, url, muted=false, paused=false, setMuted }: VideoProps) => {
+const FeedVideoViewer = ({ event, url, paused }: VideoProps) => {
 
     const timeout: any = useRef(null)
     const { width, height } = Dimensions.get("window")
@@ -34,7 +31,7 @@ const FeedVideoViewer = ({ event, url, muted=false, paused=false, setMuted }: Vi
     const [loading, setLoading] = useState<boolean>(true)
     const [duration, setDuration] = useState<number>(0)
     const [currentTime, setCurrentTime] = useState<number>(0)
-    const [mutedVideo, setMutedVideo] = useState<boolean>(muted)
+    const [mutedVideo, setMutedVideo] = useState<boolean>(false)
     const [showMuted, setShowMuted] = useState<boolean>(false)
     const [downloading, setDownloading] = useState<boolean>(false)
     const [downloadProgress, setDownloadProgress] = useState<number>(0)
@@ -52,7 +49,6 @@ const FeedVideoViewer = ({ event, url, muted=false, paused=false, setMuted }: Vi
     const handleMute = () => {
         setShowMuted(true)
         setMutedVideo(prev => !prev)
-        if(setMuted) setMuted(!muted)
         
         if(timeout.current) clearTimeout(timeout.current)
         timeout.current = setTimeout(() => {
@@ -152,7 +148,7 @@ const FeedVideoViewer = ({ event, url, muted=false, paused=false, setMuted }: Vi
                     </View>
                 }
 
-                <VideoFooter event={event} url={url} /> 
+                {/* <VideoFooter event={event} url={url} /> */} 
                 <View style={styles.controlsSliderContainer}>
                     <Slider
                         style={styles.controlsSlider}
@@ -180,8 +176,8 @@ const styles = StyleSheet.create({
         paddingTop: 30, flexDirection: "row-reverse" },
     controlsHeaderButton: { padding: 4, borderRadius: 10, margin: 4,
         backgroundColor: theme.colors.blueOpacity },
-    controlsSliderContainer: { width: "100%", position: "absolute", padding: 1, 
-        borderRadius: 5, bottom: 20 },
+    controlsSliderContainer: { width: "100%", position: "absolute", paddingVertical: 2, 
+        borderRadius: 5, bottom: 22 },
     controlsSlider: { width: "100%" },
 
     profilebar: { width: "100%", paddingVertical: 6, flexDirection: "row" },

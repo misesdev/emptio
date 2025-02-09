@@ -23,17 +23,10 @@ const UserMenuScreen = ({ navigation }: StackScreenProps<any>) => {
 
     const opacity = .7 
     const appVersion = DeviceInfo.getVersion()
-    const { user, setUser, setWallets, setFollows } = useAuth()
+    const { user, setUser, setWallets, setFollows, setFollowsEvent } = useAuth()
     const { useTranslate } = useTranslateService()
     const [forceUpdate, setForceUpdate] = useState()
     const [loading, setLoading] = useState(false)
-
-    useEffect(() => {
-        // navigation.setOptions({ 
-        //     //headerTransparent: false,
-        //     headerStyle: { backgroundColor: theme.colors.transparent }            
-        // })
-    }, [])
 
     const handleCopySecretKey = async () => {
         const biometrics = await authService.checkBiometric()
@@ -67,7 +60,8 @@ const UserMenuScreen = ({ navigation }: StackScreenProps<any>) => {
                     {
                         if(setUser) setUser({})
                         if(setWallets) setWallets([])
-                        if(setFollows) setFollows({} as NostrEvent)
+                        if(setFollows) setFollows([])
+                        if(setFollowsEvent) setFollowsEvent({} as NostrEvent)
                         navigation.reset({ index: 0, routes: [{ name: "initial-stack" }] })
                     }
                     else if(result.message) 

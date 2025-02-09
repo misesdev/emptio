@@ -4,8 +4,9 @@ import { HeaderScreen } from "@components/general/HeaderScreen"
 import Ionicons from 'react-native-vector-icons/Ionicons'
 import { useTranslateService } from "@src/providers/translateProvider"
 import theme from "@src/theme"
+import { StackScreenProps } from "@react-navigation/stack"
 
-const AboutScreen = ({ navigation }: any) => {
+const AboutScreen = ({ navigation }: StackScreenProps<any>) => {
 
     const { useTranslate } = useTranslateService()
 
@@ -15,7 +16,7 @@ const AboutScreen = ({ navigation }: any) => {
 
     return (
         <View style={{ flex: 1 }}>
-            <HeaderScreen title={useTranslate("settings.about")} onClose={() => navigation.navigate("user-menu-stack")} />
+            <HeaderScreen title={useTranslate("settings.about")} onClose={() => navigation.goBack()} />
             <ScrollView contentContainerStyle={theme.styles.scroll_container} >
 
                 <Image source={require("@assets/emptio.png")} style={styles.logo} />

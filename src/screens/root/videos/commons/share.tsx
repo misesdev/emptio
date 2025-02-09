@@ -31,7 +31,7 @@ const VideoShareBar = ({ event, visible, setVisible }: ChatProps) => {
             messageService.sendMessage({ user, follow, message })
         }, 50)
         
-        pushMessage(`enviado para ${getUserName(follow, 20)}`)
+        pushMessage(`${useTranslate("feed.videos.shared-for")} ${getUserName(follow, 20)}`)
     }
 
     return (
@@ -40,7 +40,9 @@ const VideoShareBar = ({ event, visible, setVisible }: ChatProps) => {
             <View style={styles.overlayer}>
                 <View style={styles.modalContainer}>
                     <View style={styles.header}>
-                        <Text style={styles.headerText}>Share</Text>
+                        <Text style={styles.headerText}>
+                            {useTranslate("feed.videos.share")}
+                        </Text>
                         <TouchableOpacity onPress={() => setVisible(false)}>
                             <Text style={styles.closeButton}>✕</Text>
                         </TouchableOpacity>

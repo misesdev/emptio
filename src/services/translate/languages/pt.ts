@@ -48,8 +48,9 @@ export default {
     "commons.delete-for-me": "Excluir para mim",
     "commons.delete-for-all": "Excluir para todos",
     "commons.copy-text": "Copiar texto",
-    "commons.follow": "Seguir",
-    "commons.unfollow": "Desseguir",
+    "commons.follow": "seguir",
+    "commons.unfollow": "desseguir",
+    "commons.filters": "Filtros",
     
     "labels.friends": "Amigos",
     "labels.username": "Nome de Usuário",
@@ -170,8 +171,14 @@ export default {
 
     "chats.title": "Conversas",
     "chat.empty": "Você não possui nenhuma mensagem",
+    "chat.labels.message": "Message",
 
     "feed.empty": "Nenhuma ordem encontrada, tente adicionar amigos vendedores",
+    "feed.videos.comments": "Comentários",
+    "feed.videos.addtag": "Adicionar tag de filtro",
+    "feed.videos.share": "Compartilhar",
+    "feed.videos.shared-for": "Enviado para ",
+    "feed.videos.comment": "Comentário",
 
     "settings.about": "Sobre",
     "settings.about.content": `Emptio P2P é uma aplicação de código aberto que tem o objetivo de permitir inicialmente a compra e venda de bitcoin de pessoa para pessoa de forma descentralizada utilizando o protocolo Nostr.

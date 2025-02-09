@@ -57,8 +57,7 @@ export const getNostrInstance = async ({ user }: NostrInstanceProps): Promise<ND
     const ndk = new NDK({ 
         explicitRelayUrls: relays, 
         cacheAdapter: new NDKCacheAdapterSqlite("nevents"),
-        clientName: "emptio_p2p",
-        debug: false
+        clientName: "emptio_p2p",        
     })
 
     if(user) 
@@ -78,41 +77,54 @@ type SubscribeProps = {
     addChat: (chat: ChatUser) => void
 }
 
-export const subscribeUserChat = ({ user, addChat }: SubscribeProps) => {
+export const subscribeUser = ({ user, addChat }: SubscribeProps) => {
     
     const ndk = useNDKStore.getState().ndk
+    const promises: Promise<void>[] = []
 
     const subscriptionMessages = ndk.subscribe([
         { kinds: [4], "#p": [user.pubkey ?? ""] },
         { kinds: [4], authors: [user.pubkey ?? ""] }
     ])
 
-    const processEventMessage = (event: NDKEvent) => { 
-        return new Promise(async (resolve) => { 
-            const chat_id = messageService.generateChatId(event)
-
-            if(await insertEvent({ event, category: "message", chat_id })) 
-            {
-                if(event.pubkey == user.pubkey)
-                    event.pubkey = getPubkeyFromTags(event)
-
-                addChat({ chat_id, lastMessage: event })
-
-                // if(["inactive", "background"].includes(AppState.currentState))
-                // {
-                //     await event.decrypt() 
-                //     const profile = await event.author.fetchProfile()
-                //     await pushNotification({ 
-                //         title: profile?.displayName ?? profile?.name ?? "",
-                //         message: event.content.length <= 30 ? event.content : `${event.content.substring(0,30)}..`
-                //     })
-                // }
-            }
-            resolve(null)
-        })
-    }
-    
-    subscriptionMessages.on("event", processEventMessage)
+    subscriptionMessages.on("event", event => {
+        if(event.kind == 4)
+            promises.push(processEventMessage({ user, event, addChat }))
+    })
 
     subscriptionMessages.start()
+    
+    setTimeout(async () => {
+        await Promise.all(promises)
+    }, 500)
+}
+
+type addChatProps = { 
+    user: User,
+    event: NDKEvent,
+    addChat: (chat: ChatUser) => void
+}
+
+const processEventMessage = async ({ user, event, addChat }: addChatProps) => { 
+    try {
+        const chat_id = messageService.generateChatId(event)
+
+        if(await insertEvent({ event, category: "message", chat_id })) 
+        {
+            if(event.pubkey == user.pubkey)
+                event.pubkey = getPubkeyFromTags(event)
+
+            addChat({ chat_id, lastMessage: event })
+
+            // if(["inactive", "background"].includes(AppState.currentState))
+            // {
+            //     await event.decrypt() 
+            //     const profile = await event.author.fetchProfile()
+            //     await pushNotification({ 
+            //         title: profile?.displayName ?? profile?.name ?? "",
+            //         message: event.content.length <= 30 ? event.content : `${event.content.substring(0,30)}..`
+            //     })
+            // }
+        }
+    } catch { }
 }

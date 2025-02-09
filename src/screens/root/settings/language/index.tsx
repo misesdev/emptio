@@ -1,8 +1,9 @@
 
 import { StyleSheet, View, Text } from "react-native"
 import theme from "@src/theme"
+import { StackScreenProps } from "@react-navigation/stack"
 
-const ChangeLanguage = ({ navigation }: any) => {
+const ChangeLanguage = ({ navigation }: StackScreenProps<any>) => {
     return (
         <View style={theme.styles.container} >
             <Text style={styles.title}>Change Language</Text>

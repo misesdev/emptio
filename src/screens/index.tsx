@@ -7,7 +7,7 @@ import { useEffect, useState } from "react"
 import { useAuth } from "../providers/userProvider"
 import { useTranslateService } from "../providers/translateProvider"
 import { walletService } from "../core/walletManager"
-import { getNostrInstance, subscribeUserChat } from "@services/nostr/pool"
+import { getNostrInstance, subscribeUser } from "@services/nostr/pool"
 import { getNotificationPermission } from "@services/permissions"
 import { initDatabase } from "@services/memory/database/events"
 import { messageService } from "../core/messageManager"
@@ -49,7 +49,7 @@ const InitializeScreen = ({ navigation }: any) => {
 
             setChats(await messageService.listChats(result.data))
 
-            subscribeUserChat({ user: result.data, addChat })
+            subscribeUser({ user: result.data ?? {}, addChat })
             
             if(setFollowsEvent) 
             {

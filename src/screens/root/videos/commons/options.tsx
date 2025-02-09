@@ -23,10 +23,11 @@ const VideoPostOptions = ({ visible, setVisible }: Props) => {
 
     const handleAddTagfilter = () => {
         if(!tagNameText) return;
-        const tag = tagNameText.replaceAll("#", "")
-        feedSettings.filterTags.push(tag)
-        setFeedSettings({...feedSettings})
-        saveFeedVideoSettings({...feedSettings})
+        const hashtag = tagNameText.replaceAll("#", "").trim()
+        setFilterTags(prev => [...prev, hashtag])
+        // feedSettings.filterTags.push(tag)
+        // setFeedSettings({...feedSettings})
+        // saveFeedVideoSettings({...feedSettings})
         setTagNameText("")
     }
 
@@ -35,12 +36,19 @@ const VideoPostOptions = ({ visible, setVisible }: Props) => {
 
         const newTags = filterTags.filter(t => t != tag)
 
-        setFilterTags(newTags)
+        setFilterTags(prev => prev.filter(t => t != tag))
         
-        feedSettings.filterTags = newTags
+        // feedSettings.filterTags = newTags
 
+        // setFeedSettings(feedSettings)
+        // saveFeedVideoSettings(feedSettings)
+    }
+
+    const handleSave = () => {
+        feedSettings.filterTags = filterTags
         setFeedSettings(feedSettings)
         saveFeedVideoSettings(feedSettings)
+        setVisible(false)
     }
 
     return (
@@ -49,12 +57,12 @@ const VideoPostOptions = ({ visible, setVisible }: Props) => {
         >
             <ScrollView style={styles.container}>
 
-                <SectionHeader label="filters" icon="filter" />
+                <SectionHeader label={useTranslate("commons.filters")} icon="filter" />
 
                 <View style={styles.tagadd}>
                     <View style={{ width: "85%" }}>
                         <FormControl showLabel={false} 
-                            label="add tag filter"
+                            label={useTranslate("feed.videos.addtag")}
                             onChangeText={(value) => setTagNameText(value.toLowerCase())}
                             value={tagNameText}
                         />
@@ -82,7 +90,7 @@ const VideoPostOptions = ({ visible, setVisible }: Props) => {
 
             </ScrollView>
             <View style={styles.closebutton}>
-                <ButtonPrimary label={useTranslate("commons.close")} onPress={() => setVisible(false)} />
+                <ButtonPrimary label={useTranslate("commons.save")} onPress={handleSave} />
             </View>
         </Modal>
     )

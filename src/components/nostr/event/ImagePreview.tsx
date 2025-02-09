@@ -28,7 +28,7 @@ const ImagePreview = ({ url, redute=180 }: ScreenProps) => {
 
     const handleDownload = async() => {
 
-        if(await getGaleryPermission()) return
+        if(!(await getGaleryPermission())) return
 
         setDownloading(true)
         const filePath = `${ExternalDirectoryPath}${url.substring(url.lastIndexOf("/"))}`

@@ -10,6 +10,7 @@ import { userService } from "@src/core/userManager"
 import { memo } from "react"
 import { messageService } from "@src/core/messageManager"
 import { getUserName } from "@/src/utils"
+import { useAuth } from "@/src/providers/userProvider"
 
 type Props = {
     user: User, 
@@ -19,6 +20,7 @@ type Props = {
 
 const ChatList = ({ user, chats, handleOpenChat }: Props) => {
   
+    const { follows } = useAuth()
     const { useTranslate } = useTranslateService()
 
     const EmptyComponent = () => {
@@ -37,7 +39,12 @@ const ChatList = ({ user, chats, handleOpenChat }: Props) => {
 
         useEffect(() => {             
             setTimeout(() => {
-                userService.getProfile(item.lastMessage.pubkey).then(setFollow)
+                const profile = follows?.find(f => f.pubkey == item.lastMessage.pubkey)
+                if(!profile) {
+                    userService.getProfile(item.lastMessage.pubkey).then(setFollow)
+                } else {
+                    setFollow(profile)
+                }
                 messageService.decryptMessage(user, item.lastMessage).then(setEvent)
             }, 20)
         }, [])
