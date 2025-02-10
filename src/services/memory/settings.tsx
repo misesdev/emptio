@@ -25,7 +25,7 @@ export const getFeedVideoSettings = async () : Promise<FeedVideosSettings> => {
 
     var settings: FeedVideosSettings = { 
         FETCH_LIMIT: 100,
-        VIDEOS_LIMIT: 30,
+        VIDEOS_LIMIT: 20,
         filterTags: [
             "video", "meme", "memes", "memestr", "nostr"
         ]

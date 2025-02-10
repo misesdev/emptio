@@ -24,79 +24,85 @@ const VideoPostOptions = ({ visible, setVisible }: Props) => {
     const handleAddTagfilter = () => {
         if(!tagNameText) return;
         const hashtag = tagNameText.replaceAll("#", "").trim()
+        if(filterTags.find(t => t == hashtag)) return
         setFilterTags(prev => [...prev, hashtag])
-        // feedSettings.filterTags.push(tag)
-        // setFeedSettings({...feedSettings})
-        // saveFeedVideoSettings({...feedSettings})
         setTagNameText("")
     }
 
     const handleRemoveTag = (tag: string) => {
         if(filterTags.length <= 1) return
 
-        const newTags = filterTags.filter(t => t != tag)
-
         setFilterTags(prev => prev.filter(t => t != tag))
-        
-        // feedSettings.filterTags = newTags
-
-        // setFeedSettings(feedSettings)
-        // saveFeedVideoSettings(feedSettings)
     }
 
     const handleSave = () => {
-        feedSettings.filterTags = filterTags
-        setFeedSettings(feedSettings)
-        saveFeedVideoSettings(feedSettings)
-        setVisible(false)
+        setTimeout(() => { 
+            feedSettings.filterTags = filterTags
+            setFeedSettings(feedSettings)
+            saveFeedVideoSettings(feedSettings)
+            setVisible(false)
+        }, 20)
     }
 
     return (
         <Modal transparent visible={visible} animationType="slide"
             onRequestClose={() => setVisible(false)}
         >
-            <ScrollView style={styles.container}>
+           <View style={styles.overlayer}> 
+                <View style={styles.modalContainer}>
+                    <SectionHeader label={useTranslate("commons.filters")} icon="filter" />
 
-                <SectionHeader label={useTranslate("commons.filters")} icon="filter" />
-
-                <View style={styles.tagadd}>
-                    <View style={{ width: "85%" }}>
-                        <FormControl showLabel={false} 
-                            label={useTranslate("feed.videos.addtag")}
-                            onChangeText={(value) => setTagNameText(value.toLowerCase())}
-                            value={tagNameText}
-                        />
+                    <View style={styles.tagadd}>
+                        <View style={{ width: "85%" }}>
+                            <FormControl showLabel={false} 
+                                label={useTranslate("feed.videos.addtag")}
+                                onChangeText={(value) => setTagNameText(value.toLowerCase())}
+                                value={tagNameText}
+                            />
+                        </View>
+                        <View style={{ width: "15%", paddingVertical: 12 }}>
+                            <TouchableOpacity onPress={handleAddTagfilter} style={styles.addbutton}>
+                                <Ionicons name="add" size={24} color={theme.colors.white} />
+                            </TouchableOpacity>
+                        </View>
                     </View>
-                    <View style={{ width: "15%", paddingVertical: 12 }}>
-                        <TouchableOpacity onPress={handleAddTagfilter} style={styles.addbutton}>
-                            <Ionicons name="add" size={24} color={theme.colors.white} />
-                        </TouchableOpacity>
+
+                    <ScrollView style={{ flex: 1 }}>
+                        <View style={styles.tagarea}>
+                            {filterTags.length &&
+                                filterTags.map((tag: string, key: number) => {
+                                    return (
+                                        <Text key={key} style={styles.tagitem} 
+                                            onPress={() => handleRemoveTag(tag)}
+                                        >
+                                            #{tag}
+                                            <Ionicons name="close" size={15} color={theme.colors.white} />
+                                        </Text>
+                                    )
+                                })
+                            }
+                            <View style={{ height: 75 }}></View>
+                        </View>
+
+                    </ScrollView>
+                    <View style={styles.closebutton}>
+                        <ButtonPrimary label={useTranslate("commons.save")} onPress={handleSave} />
                     </View>
                 </View>
-                <View style={styles.tagarea}>
-                    {filterTags.length &&
-                        filterTags.map((tag: string, key: number) => {
-                            return (
-                                <Text key={key} style={styles.tagitem} 
-                                    onPress={() => handleRemoveTag(tag)}
-                                >
-                                    #{tag}
-                                    <Ionicons name="close" size={15} color={theme.colors.white} />
-                                </Text>
-                            )
-                        })
-                    }
-                </View>
-
-            </ScrollView>
-            <View style={styles.closebutton}>
-                <ButtonPrimary label={useTranslate("commons.save")} onPress={handleSave} />
             </View>
         </Modal>
     )
 }
 
 const styles = StyleSheet.create({
+    overlayer: { flex: 1, justifyContent: "flex-end", backgroundColor: theme.colors.transparent },
+    modalContainer: {
+        height: "80%",
+        backgroundColor: theme.colors.semitransparentdark,
+        borderTopLeftRadius: 10,
+        borderTopRightRadius: 10,
+        padding: 0,
+    },
     container: { flex: 1, backgroundColor: theme.colors.semitransparentdark },
     tagadd: { width: "100%", padding: 10, flexDirection: "row" },
     addbutton: { padding: 10, borderRadius: 50, justifyContent: "center", 

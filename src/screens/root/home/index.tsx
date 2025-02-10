@@ -20,7 +20,7 @@ const HomeScreen = ({ navigation }: StackScreenProps<any>) => {
 
     useEffect(() => { 
         navigation.setOptions({ header: () => <HeaderHome navigation={navigation} /> })
-        setTimeout(async () => handleData(), 50) 
+        setTimeout(async () => handleData(), 20) 
     }, [])
 
     const handleData = async () => {

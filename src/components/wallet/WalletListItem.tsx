@@ -1,10 +1,11 @@
 import { walletService } from "@src/core/walletManager"
 import { formatSats, toBitcoin } from "@services/converter"
-import { Wallet, WalletType } from "@services/memory/types"
+import { Wallet } from "@services/memory/types"
 import { useTranslate } from "@services/translate"
 import { Network } from "@services/bitcoin/types"
 import { useEffect, useState } from "react"
-import { TouchableOpacity, View, Text, StyleSheet, Image, Dimensions, ViewStyle } from "react-native"
+import { TouchableOpacity, View, Text, StyleSheet, 
+    Image, Dimensions, ViewStyle } from "react-native"
 import { ActivityIndicator } from "react-native-paper"
 import { getDescriptionTypeWallet } from "@src/utils"
 import theme from "@src/theme"
@@ -18,36 +19,32 @@ type Props = {
 
 const WalletListItem = ({ wallet, reload, handleOpen, style }: Props) => {
     
-    const { width } = Dimensions.get("window")
-    const walletWidth = width * .8
     const [loading, setLoading] = useState<boolean>()
     const [labelOpen, setLabelOpen] = useState<string>("")
     const [typeWallet, setTypeWallet] = useState<string>("")
 
     useEffect(() => { 
-        loadData() 
-        useTranslate("commons.open").then(setLabelOpen)
-        getDescriptionTypeWallet(wallet.type ?? "bitcoin").then(setTypeWallet)
+        setTimeout(() => {
+            loadData() 
+            useTranslate("commons.open").then(setLabelOpen)
+            getDescriptionTypeWallet(wallet.type ?? "bitcoin").then(setTypeWallet)
+        }, 20)
     }, [reload])
 
     const loadData = async () => {
 
         setLoading(true)
-
         const network: Network = wallet.type == "bitcoin" ? "mainnet" : "testnet"
-        walletService.listTransactions(wallet.address ?? "", network).then(walletInfo => {
-            if(wallet.lastBalance != walletInfo.balance)
-            {
-                wallet.lastBalance = walletInfo.balance
-                wallet.lastSended = walletInfo.sended
-                wallet.lastReceived = walletInfo.received
+        const walletInfo = await walletService.listTransactions(wallet.address ?? "", network)
 
-                // await walletService.update(wallet)
-                walletService.update(wallet)
-            }
-            setLoading(false)
-        }).catch(() => setLoading(false))
+        if(wallet.lastBalance != walletInfo.balance)
+        {
+            wallet.lastBalance = walletInfo.balance
+            wallet.lastSended = walletInfo.sended
+            wallet.lastReceived = walletInfo.received
 
+            await walletService.update(wallet)
+        }
     }
 
     let balanceBTC = toBitcoin(wallet.lastBalance)

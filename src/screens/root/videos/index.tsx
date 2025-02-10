@@ -14,7 +14,6 @@ const VideosFeed = ({ navigation }: StackScreenProps<any>) => {
 
     const { ndk } = useNDKStore()
     const { feedSettings } = useFeedVideosStore()
-    const listRef = useRef<FlatList>(null)
     const subscriptionRef = useRef<NDKSubscription>()
     const isFetching:any = useRef<boolean>(null)
     const [playingIndex, setPlayingIndex] = useState<number>(0)
@@ -54,10 +53,10 @@ const VideosFeed = ({ navigation }: StackScreenProps<any>) => {
             cacheUsage: NDKSubscriptionCacheUsage.CACHE_FIRST
         })
 
-        var foundEventsCount = 0
+        const foundEvents: NDKEvent[] = []
         subscriptionRef.current.on("event", event => {
-            if(foundEventsCount >= feedSettings.VIDEOS_LIMIT) {
-                subscriptionRef.current?.stop()
+            if(foundEvents.length >= feedSettings.VIDEOS_LIMIT) {
+                return subscriptionRef.current?.stop()
             }
             setLastEventTimestamp(event.created_at)
             const url = extractVideoUrl(event.content)
@@ -65,28 +64,23 @@ const VideosFeed = ({ navigation }: StackScreenProps<any>) => {
             {
                 if(!videos.some(e => e.id == event.id)) 
                 {
-                    setVideos(prev => {
-                        const events = [...prev, event]
-                        // if(events.length >= feedSettings.VIDEOS_LIMIT)
-                        //     events.splice(0,1)
-                        return events
-                    })
-                    foundEventsCount++
+                    foundEvents.push(event)
                 }
             }
         })
 
-        // subscriptionRef.current.on("eose", () => {
-        //     subscriptionRef.current = undefined
-        //     isFetching.current = false
-        // })
+        const finish = () => {
+            setTimeout(() => {
+                setVideos(prev => [...prev, ...foundEvents])
+                subscriptionRef.current = undefined
+                isFetching.current = false
+                console.log("close")
+            },50)
+        }
+        subscriptionRef.current.on("close", finish)
+        subscriptionRef.current.on("eose", finish)
 
-        subscriptionRef.current.start()
-
-        setTimeout(() => {
-            isFetching.current = false
-            console.log("end fetching")
-        }, 5000)
+        await subscriptionRef.current.start()    
     }
 
     const onViewableItemsChanged = useCallback(({ viewableItems }: any) => {
@@ -115,15 +109,14 @@ const VideosFeed = ({ navigation }: StackScreenProps<any>) => {
 
     return (
         <SafeAreaView style={theme.styles.container}>
-            <FlatList ref={listRef} 
-                pagingEnabled
+            <FlatList pagingEnabled
                 data={videos}
                 extraData={{ playingIndex, paused }}
                 style={{ flex: 1 }}
                 renderItem={renderItem}
                 keyExtractor={item => item.id}
                 showsVerticalScrollIndicator={false}
-                viewabilityConfig={{ itemVisiblePercentThreshold: 50 }}
+                viewabilityConfig={{ itemVisiblePercentThreshold: 70 }}
                 onViewableItemsChanged={onViewableItemsChanged}
                 onEndReached={loadVideosData}
                 onEndReachedThreshold={.2}

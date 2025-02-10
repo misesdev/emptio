@@ -11,7 +11,7 @@ interface FeedVideoStore {
 export const useFeedVideosStore = create<FeedVideoStore>((set) => ({
     feedSettings: { 
         FETCH_LIMIT: 100,
-        VIDEOS_LIMIT: 30,
+        VIDEOS_LIMIT: 20,
         filterTags: ["video", "meme", "memes", "memestr", "nostr"]
     },
     setFeedSettings: (settings: FeedVideosSettings) => {

@@ -8,6 +8,7 @@ import { ActivityIndicator } from "react-native-paper"
 import Ionicons from 'react-native-vector-icons/Ionicons'
 import { useTranslateService } from "@/src/providers/translateProvider"
 import theme from "@/src/theme"
+import { noteService } from "@/src/services/nostr/noteService"
 
 type ChatProps = {
     event: NDKEvent,
@@ -27,7 +28,7 @@ const VideoComments = ({ event, visible, setVisible }: ChatProps) => {
 
     const handleLoadMessages = async () => {
         setLoading(true)
-        const comments = await messageService.listAnswers(event.id, 300)
+        const comments = await noteService.listComments(event, 300)
         setComments(comments)
         setLoading(false)
     }

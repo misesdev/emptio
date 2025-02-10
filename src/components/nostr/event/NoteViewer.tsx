@@ -108,11 +108,11 @@ const NoteViewer = ({ user, showUser=true, note, videoMuted=true, videoPaused=tr
                             {getUserName(eventAuthor)}
                         </Text>
                         <TouchableOpacity activeOpacity={.7} 
-                            onPress={() => copyPubkey(eventAuthor.pubkey ?? "")}
+                            onPress={() => copyPubkey(note.pubkey)}
                             style={{ flexDirection: "row" }}
                         >
                             <Text style={{ color: theme.colors.gray }}>
-                                {getDisplayPubkey(eventAuthor.pubkey ?? "", 15)}
+                                {getDisplayPubkey(note.pubkey, 15)}
                             </Text>
                             <Ionicons name="copy" size={10} style={{ padding: 5 }} color={theme.colors.gray} />
                         </TouchableOpacity>

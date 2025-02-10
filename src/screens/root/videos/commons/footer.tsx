@@ -2,7 +2,7 @@ import { userService } from "@src/core/userManager"
 import { User } from "@services/memory/types"
 import Ionicons from 'react-native-vector-icons/Ionicons'
 import { copyPubkey, getDisplayPubkey, getUserName } from "@/src/utils"
-import { NDKEvent } from "@nostr-dev-kit/ndk-mobile"
+import { NDKEvent, NDKFilter, NDKSubscriptionCacheUsage } from "@nostr-dev-kit/ndk-mobile"
 import { useEffect, useState } from "react"
 import { StyleSheet, View, Image, Text, TouchableOpacity } from "react-native"
 import VideoDescription from "./description"
@@ -11,6 +11,8 @@ import { useTranslateService } from "@/src/providers/translateProvider"
 import { useAuth } from "@/src/providers/userProvider"
 import VideoComments from "./comments"
 import VideoShareBar from "./share"
+import { noteService } from "@/src/services/nostr/noteService"
+import useNDKStore from "@/src/services/zustand/ndk"
 
 type Props = { 
     event: NDKEvent, 
@@ -19,32 +21,52 @@ type Props = {
 
 const VideoFooter = ({ event, url }: Props) => {
 
+    const { ndk } = useNDKStore()
     const { user, follows, followsEvent } = useAuth()
     const { useTranslate } = useTranslateService()
     const [profile, setProfile] = useState<User>({})
-    const [isFriend, setIsFriend] = useState<boolean>(true)
-    const [liked, setLiked] = useState<boolean>(false)
+    const [isFriend, setIsFriend] = useState<boolean>(false)
     const [profileError, setProfileError] = useState<boolean>(false)
     const [chatVisible, setChatVisible] = useState<boolean>(false)
     const [shareVisible, setShareVisible] = useState<boolean>(false)
+    const [reactions, setReactions] = useState<NDKEvent[]>([])
+    const [messages, setMessages] = useState<NDKEvent[]>([])
     
-    useEffect(() => {
-        const friend = follows?.find(f => f.pubkey == event.pubkey)
-        setIsFriend(!!friend)
+    useEffect(() => { handleLoadData() }, [])
 
-        setTimeout(() => {
-            if(friend) setProfile(friend)
-            else userService.getProfile(event.pubkey).then(setProfile)
-        }, 20)
-    }, [])
+    const handleLoadData = () => {
+        setTimeout(async () => {
+            setIsFriend(!!follows?.find(f => f.pubkey == event.pubkey))
+
+            const filters: NDKFilter[] = [
+                { kinds: [0], authors:[event.pubkey], limit: 1 }, // profile
+                { kinds: [7], authors:[user.pubkey??""], "#e": [event.id], limit: 1 }, // reaction
+            ]
+                       
+            const events = await ndk.fetchEvents(filters, {
+                cacheUsage: NDKSubscriptionCacheUsage.PARALLEL
+            })
+
+            events.forEach(note => {
+                if(note.kind == 0) setProfile(JSON.parse(note.content) as User)
+                if(note.kind == 7) setReactions(prev => [...prev,note])
+            })
+        }, 50)
+    }
 
     const handleReact = async () => {
-        if(!liked) 
-            setTimeout(() => { event.react("❣️") }, 50)
-        else
-            setTimeout(() => { event.react("❣️", false)}, 50)
-
-        setLiked(prev => !prev)
+        if(!reactions.length) {
+            setReactions(prev => [...prev, new NDKEvent()])
+            setTimeout(() => { 
+                noteService.reactNote({ note: event, reaction:"❣️" })
+            }, 20)
+        }
+        else {
+            setReactions([])
+            setTimeout(() => { 
+                noteService.deleteReact(reactions[0])  
+            }, 20)
+        }
     }
 
     const handleOpenChat = () => setChatVisible(true)
@@ -52,21 +74,26 @@ const VideoFooter = ({ event, url }: Props) => {
     const handleShare = () => setShareVisible(true)
 
     const handleFollow = async () => {
-        if(isFriend) 
-            followsEvent!.tags = followsEvent!.tags?.filter(t => t[0] == "p" && t[1] != event.pubkey)
-        if(!isFriend)
-            followsEvent?.tags?.push(["p", event.pubkey])
-
-        userService.updateFollows({ user, follows: followsEvent })
-
         setIsFriend(prev => !prev)
+
+        setTimeout(async () => {
+            if(isFriend) 
+                followsEvent!.tags = followsEvent!.tags?.filter(t => t[0] == "p" && t[1] != event.pubkey)
+            if(!isFriend)
+                followsEvent?.tags?.push(["p", event.pubkey])
+
+            await userService.updateFollows({ user, follows: followsEvent })
+        }, 20)
     }
 
     return (
         <View style={styles.controlsSliderContainer}>
             <View style={styles.reactionControls}>
                 <TouchableOpacity onPress={handleReact} style={styles.reactionButton}>
-                    <Ionicons name={liked ? "heart" : "heart-outline"} size={32} color={theme.colors.white} />
+                    <Ionicons 
+                        name={reactions?.length ? "heart" : "heart-outline"} 
+                        size={32} color={theme.colors.white} 
+                    />
                 </TouchableOpacity>
                 <TouchableOpacity onPress={handleOpenChat} style={styles.reactionButton}>
                     <Ionicons name="chatbubble-outline" size={32} color={theme.colors.white} />
@@ -91,14 +118,14 @@ const VideoFooter = ({ event, url }: Props) => {
                         {getUserName(profile, 24)}
                     </Text>
                     <TouchableOpacity activeOpacity={.7} 
-                        onPress={() => copyPubkey(profile.pubkey ?? "")}
+                        onPress={() => copyPubkey(event.pubkey)}
                         style={{ flexDirection: "row" }}
                     >
                         <Text style={{ textShadowOffset: { width: 2, height: 2 },
                             textShadowRadius: 5,
                             textShadowColor: theme.colors.black,
                             color: theme.colors.white }}>
-                            {getDisplayPubkey(profile.pubkey ?? "", 18)}
+                            {getDisplayPubkey(event.pubkey ?? "", 18)}
                         </Text>
                         <Ionicons name="copy" size={10} style={{ padding: 5 }} color={theme.colors.white} />
                     </TouchableOpacity>

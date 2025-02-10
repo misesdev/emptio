@@ -148,7 +148,7 @@ const FeedVideoViewer = ({ event, url, paused }: VideoProps) => {
                     </View>
                 }
 
-                {/* <VideoFooter event={event} url={url} /> */} 
+                <VideoFooter event={event} url={url} /> 
                 <View style={styles.controlsSliderContainer}>
                     <Slider
                         style={styles.controlsSlider}

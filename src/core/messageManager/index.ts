@@ -117,32 +117,6 @@ const deleteMessage = async ({ user, event, onlyForMe = false }: DeleteEventProp
     }
 }
 
-const listAnswers = async (eventId: string, timeout: number=500) :Promise<NDKEvent[]> => {
-
-    const ndk = useNDKStore.getState().ndk
-   
-    return new Promise((resolve) => {
-        const events: NDKEvent[] = []
-        const filter: NDKFilter = { kinds: [1], "#e": [eventId] }
-        const subscription = ndk.subscribe(filter, 
-            { cacheUsage: NDKSubscriptionCacheUsage.PARALLEL })
-        
-        subscription.on("event", note => {
-            events.push(note)
-        })
-
-        subscription.on("eose", () => {
-            subscription.stop()
-            resolve(events)
-        })
-
-        setTimeout(() => {
-            subscription.stop()
-            resolve(events)
-        }, timeout) 
-    })
-}
-
 export const messageService = {
     listChats,
     listMessages,
@@ -150,8 +124,7 @@ export const messageService = {
     decryptMessage,
     encryptMessage,
     sendMessage,
-    deleteMessage,
-    listAnswers
+    deleteMessage
 }
 
 
