@@ -1,9 +1,7 @@
 
 import { NDKEvent } from "@nostr-dev-kit/ndk-mobile"
-import { useState } from "react"
 import { Modal, StyleSheet, View, Text, TouchableOpacity } from "react-native"
 import { FollowList } from "@/src/components/nostr/follow/FollowList"
-import theme from "@/src/theme"
 import { User } from "@/src/services/memory/types"
 import { SearchBox } from "@/src/components/form/SearchBox"
 import { useTranslateService } from "@/src/providers/translateProvider"
@@ -11,6 +9,8 @@ import { messageService } from "@/src/core/messageManager"
 import { useAuth } from "@/src/providers/userProvider"
 import { pushMessage } from "@/src/services/notification"
 import { getUserName } from "@/src/utils"
+import { useState } from "react"
+import theme from "@/src/theme"
 
 type ChatProps = {
     event: NDKEvent,

@@ -50,7 +50,7 @@ const TabRoutes = () => {
                 options={{
                     headerShown: false,
                     tabBarLabel: useTranslate("menu.videos"),
-                    tabBarIcon: ({ color }) => <Ionicons name="play" color={color} size={theme.icons.large} />,
+                    tabBarIcon: ({ color }) => <Ionicons name="film" color={color} size={theme.icons.large} />,
                     // tabBarBadge: false
                 }}
             />

@@ -12,7 +12,7 @@ export const copyToClipboard = (text: string) => {
 }
 
 export const getUserName = (user: User, maxSize: number = 16): string => {
-    const userName = user.display_name ?? user.name ?? user.pubkey ?? ""
+    const userName = user.display_name ?? user.displayName ?? user.name ?? user.pubkey ?? ""
 
     if(userName.length > maxSize)
         return `${userName?.substring(0,maxSize)}..` 

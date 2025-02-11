@@ -6,13 +6,13 @@ import { NDKEvent, NDKFilter, NDKSubscriptionCacheUsage } from "@nostr-dev-kit/n
 import { useEffect, useState } from "react"
 import { StyleSheet, View, Image, Text, TouchableOpacity } from "react-native"
 import VideoDescription from "./description"
-import theme from "@src/theme"
 import { useTranslateService } from "@/src/providers/translateProvider"
 import { useAuth } from "@/src/providers/userProvider"
 import VideoComments from "./comments"
 import VideoShareBar from "./share"
 import { noteService } from "@/src/services/nostr/noteService"
 import useNDKStore from "@/src/services/zustand/ndk"
+import theme from "@src/theme"
 
 type Props = { 
     event: NDKEvent, 
@@ -30,7 +30,6 @@ const VideoFooter = ({ event, url }: Props) => {
     const [chatVisible, setChatVisible] = useState<boolean>(false)
     const [shareVisible, setShareVisible] = useState<boolean>(false)
     const [reactions, setReactions] = useState<NDKEvent[]>([])
-    const [messages, setMessages] = useState<NDKEvent[]>([])
     
     useEffect(() => { handleLoadData() }, [])
 
@@ -48,10 +47,12 @@ const VideoFooter = ({ event, url }: Props) => {
             })
 
             events.forEach(note => {
-                if(note.kind == 0) setProfile(JSON.parse(note.content) as User)
+                if(note.kind == 0) { console.log(note.content)
+                    setProfile(JSON.parse(note.content) as User)
+                }
                 if(note.kind == 7) setReactions(prev => [...prev,note])
             })
-        }, 50)
+        }, 10)
     }
 
     const handleReact = async () => {

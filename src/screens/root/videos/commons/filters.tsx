@@ -14,7 +14,7 @@ type Props = {
     setVisible: (state: boolean) => void 
 }
 
-const VideoPostOptions = ({ visible, setVisible }: Props) => {
+const VideosFilters = ({ visible, setVisible }: Props) => {
     
     const { feedSettings, setFeedSettings } = useFeedVideosStore()
     const { useTranslate } = useTranslateService()
@@ -25,7 +25,7 @@ const VideoPostOptions = ({ visible, setVisible }: Props) => {
         if(!tagNameText) return;
         const hashtag = tagNameText.replaceAll("#", "").trim()
         if(filterTags.find(t => t == hashtag)) return
-        setFilterTags(prev => [...prev, hashtag])
+        setFilterTags(prev => [hashtag, ...prev])
         setTagNameText("")
     }
 
@@ -54,7 +54,9 @@ const VideoPostOptions = ({ visible, setVisible }: Props) => {
 
                     <View style={styles.tagadd}>
                         <View style={{ width: "85%" }}>
-                            <FormControl showLabel={false} 
+                            <FormControl showLabel={false}
+                                returnKeyTipe="go"
+                                onSubmitEditing={handleAddTagfilter}
                                 label={useTranslate("feed.videos.addtag")}
                                 onChangeText={(value) => setTagNameText(value.toLowerCase())}
                                 value={tagNameText}
@@ -114,4 +116,4 @@ const styles = StyleSheet.create({
     closebutton: { position: "absolute", width: "100%", paddingHorizontal: 24, bottom: 10 },
 })
 
-export default VideoPostOptions
+export default VideosFilters

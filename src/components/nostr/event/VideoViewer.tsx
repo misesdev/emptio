@@ -1,15 +1,12 @@
 import { Video, VideoRef } from 'react-native-video';
 import { useEffect, useRef, useState } from "react"
 import { View, StyleSheet, TouchableOpacity, Text, Dimensions } from 'react-native';
+import { useTranslateService } from '@/src/providers/translateProvider';
 import Ionicons from 'react-native-vector-icons/Ionicons'
 import Slider from '@react-native-community/slider';
-import { downloadFile, ExternalDirectoryPath } from 'react-native-fs'
-import { getGaleryPermission } from '@/src/services/permissions'
-import { CameraRoll } from "@react-native-camera-roll/camera-roll"
+import { blobService } from '@/src/services/blob';
 import theme from '@/src/theme';
 import LinkError from './LinkError';
-import { pushMessage } from '@/src/services/notification';
-import { useTranslateService } from '@/src/providers/translateProvider';
 
 type VideoProps = { 
     url: string,
@@ -26,7 +23,6 @@ const VideoViewer = ({ url, redute=180, fullScreen=false, hideFullscreen=false, 
     const { width, height } = Dimensions.get("window")
     const timeoutRef:any = useRef(null)
     const videoRef = useRef<VideoRef>(null)
-    const { useTranslate } = useTranslateService()
     const [error, setError] = useState<boolean>(false)
     const [videoHeight, setVideoHeight] = useState<number>(300)
     const [duration, setDuration] = useState<number>(0)
@@ -35,7 +31,7 @@ const VideoViewer = ({ url, redute=180, fullScreen=false, hideFullscreen=false, 
     const [pausedVideo, setPausedVideo] = useState<boolean>(paused)
     const [showControls, setShowControls] = useState<boolean>(false)
     const [downloading, setDownloading] = useState<boolean>(false)
-    const [downloadProgress, setDownloadProgress] = useState<string>("0")
+    const [downloadProgress, setDownloadProgress] = useState<number>(0)
 
     useEffect(() => setMutedVideo(muted), [muted])
     useEffect(() => setPausedVideo(paused), [paused])
@@ -69,30 +65,14 @@ const VideoViewer = ({ url, redute=180, fullScreen=false, hideFullscreen=false, 
         setCurrentTime(time)
     }
 
-    const handleDownload = async() => {
-
-        if(!(await getGaleryPermission())) return
-
-        setDownloading(true)
-        setDownloadProgress("0")
-
-        const filePath = `${ExternalDirectoryPath}${url.substring(url.lastIndexOf("/"))}`
-        await downloadFile({
-            fromUrl: url,
-            toFile: filePath,
-            progress: (res) => {
-                let percentage = (res.bytesWritten / res.contentLength) * 100
-                setDownloadProgress(percentage.toFixed(0))
-            }
-        }).promise.then(() => {
-            setDownloading(false)
-            setDownloadProgress("0")
-            CameraRoll.saveAsset(filePath, { type: "video" })
-            pushMessage(useTranslate("message.download.successfully"))
-        }).catch(() => { 
-            setDownloading(false)
-            setDownloadProgress("0")
-        })
+    const handleDownload = async () => {
+        if(url) {
+            blobService.downloadVideo({ 
+                url, 
+                setDownloading, 
+                setDownloadProgress 
+            })
+        }
     }
 
     if(error && !fullScreen) 
@@ -160,7 +140,7 @@ const VideoViewer = ({ url, redute=180, fullScreen=false, hideFullscreen=false, 
                     <View style={{ alignItems: "center", minWidth: 100, padding: 5, borderRadius: 10, backgroundColor: theme.colors.blueOpacity }}>
                         <Ionicons name={"cloud-download"} size={18} color={theme.colors.white} />
                         <Text style={{ fontSize: 16, color: theme.colors.white }}>
-                            {downloadProgress}%
+                            {downloadProgress.toFixed(0)}%
                         </Text>
                     </View>
                 }

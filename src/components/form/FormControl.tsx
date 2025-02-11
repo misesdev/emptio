@@ -1,4 +1,4 @@
-import { View, Text, StyleSheet, TextInput, Switch } from "react-native"
+import { View, Text, StyleSheet, TextInput, Switch, ReturnKeyTypeOptions } from "react-native"
 import theme from "@src/theme"
 
 type FormControlProps = {
@@ -12,10 +12,14 @@ type FormControlProps = {
     onFocus?: () => void,
     onChangeText: (value: string) => void,
     fullScreen?: boolean,
-    showLabel?: boolean
+    showLabel?: boolean,
+    returnKeyTipe?: ReturnKeyTypeOptions, //"default" | "go" | "done"
+    onSubmitEditing?: () => void
 }
 
-export const FormControl = ({ label, showLabel=true, value, onChangeText, onFocus, onBlur, textCenter, isTextArea, autoComplete = false, type = "none", fullScreen = false }: FormControlProps) => {
+export const FormControl = ({ label, showLabel=true, value, onChangeText, onFocus, onBlur, 
+    textCenter, isTextArea, autoComplete=false, type="none", fullScreen=false,
+    returnKeyTipe="default", onSubmitEditing }: FormControlProps) => {
 
     return (
         <View style={styles.control}>
@@ -31,6 +35,9 @@ export const FormControl = ({ label, showLabel=true, value, onChangeText, onFocu
                     numberOfLines={isTextArea ? 5 : 1}
                     multiline={isTextArea}
                     value={value}
+                    returnKeyType={returnKeyTipe}
+                    onSubmitEditing={onSubmitEditing}
+                    blurOnSubmit={returnKeyTipe == "default"}
                     textContentType={type}
                     autoComplete={autoComplete ? undefined : "off" }
                 />

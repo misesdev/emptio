@@ -7,7 +7,7 @@ type Props = {
     handleDownload: () => Promise<void>,
     handleManageFilters: () => void
 }
-const VideoHeader = ({ downloading, handleDownload, handleManageFilters }: Props) => {
+const VideosHeader = ({ downloading, handleDownload, handleManageFilters }: Props) => {
     return (
         <View style={styles.controlsHeader}>
             <View style={{ width: "14%", alignItems: "center" }}>
@@ -38,4 +38,4 @@ const styles = StyleSheet.create({
         backgroundColor: theme.colors.blueOpacity },
 })
 
-export default VideoHeader
+export default VideosHeader

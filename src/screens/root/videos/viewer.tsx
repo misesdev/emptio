@@ -1,27 +1,23 @@
-import { Video, VideoRef } from 'react-native-video';
+import { Video, VideoRef } from 'react-native-video'
 import { useRef, useState } from "react"
-import { View, StyleSheet, TouchableOpacity, Text, Dimensions } from 'react-native';
+import { View, StyleSheet, TouchableOpacity, Text, Dimensions } from 'react-native'
 import Ionicons from 'react-native-vector-icons/Ionicons'
-import Slider from '@react-native-community/slider';
-import { downloadFile, ExternalDirectoryPath } from 'react-native-fs'
-import { getGaleryPermission } from '@/src/services/permissions'
-import { CameraRoll } from "@react-native-camera-roll/camera-roll"
-import theme from '@/src/theme';
-import { pushMessage } from '@/src/services/notification';
-import { useTranslateService } from '@/src/providers/translateProvider';
-import { NDKEvent } from '@nostr-dev-kit/ndk-mobile';
-import { ActivityIndicator } from 'react-native-paper';
-import VideoFooter from './commons/footer';
-import VideoPostOptions from './commons/options';
-import VideoHeader from './commons/header';
+import Slider from '@react-native-community/slider'
+import { useTranslateService } from '@/src/providers/translateProvider'
+import { NDKEvent } from '@nostr-dev-kit/ndk-mobile'
+import { ActivityIndicator } from 'react-native-paper'
+import VideoFooter from './commons/footer'
+import theme from '@/src/theme'
 
 type VideoProps = { 
     url: string,
     event: NDKEvent,
     paused: boolean,
+    muted: boolean,
+    setMuted: (state: boolean) => void
 }
 
-const FeedVideoViewer = ({ event, url, paused }: VideoProps) => {
+const FeedVideoViewer = ({ event, url, paused, muted, setMuted }: VideoProps) => {
 
     const timeout: any = useRef(null)
     const { width, height } = Dimensions.get("window")
@@ -31,11 +27,8 @@ const FeedVideoViewer = ({ event, url, paused }: VideoProps) => {
     const [loading, setLoading] = useState<boolean>(true)
     const [duration, setDuration] = useState<number>(0)
     const [currentTime, setCurrentTime] = useState<number>(0)
-    const [mutedVideo, setMutedVideo] = useState<boolean>(false)
+    const [mutedVideo, setMutedVideo] = useState<boolean>(muted)
     const [showMuted, setShowMuted] = useState<boolean>(false)
-    const [downloading, setDownloading] = useState<boolean>(false)
-    const [downloadProgress, setDownloadProgress] = useState<number>(0)
-    const [optionsVisible, setOptionsVisible] = useState<boolean>(false)
 
     const onLoadVideo = (data: any) => {
         setLoading(false)
@@ -49,7 +42,7 @@ const FeedVideoViewer = ({ event, url, paused }: VideoProps) => {
     const handleMute = () => {
         setShowMuted(true)
         setMutedVideo(prev => !prev)
-        
+        setMuted(!muted)
         if(timeout.current) clearTimeout(timeout.current)
         timeout.current = setTimeout(() => {
             setShowMuted(false)
@@ -61,32 +54,6 @@ const FeedVideoViewer = ({ event, url, paused }: VideoProps) => {
             videoRef.current.seek(time)
             setCurrentTime(time)
         }
-    }
-
-    const handleDownload = async() => {
-
-        if(!(await getGaleryPermission())) return
-
-        setDownloading(true)
-        setDownloadProgress(0)
-
-        const filePath = `${ExternalDirectoryPath}${url.substring(url.lastIndexOf("/"))}`
-        await downloadFile({
-            fromUrl: url,
-            toFile: filePath,
-            progress: (res) => {
-                let percentage = (res.bytesWritten / res.contentLength) * 100
-                setDownloadProgress(percentage)
-            }
-        }).promise.then(() => {
-            setDownloading(false)
-            setDownloadProgress(0)
-            CameraRoll.saveAsset(filePath, { type: "video" })
-            pushMessage(useTranslate("message.download.successfully"))
-        }).catch(() => { 
-            setDownloading(false)
-            setDownloadProgress(0)
-        })
     }
 
     const handleError = () => {
@@ -116,12 +83,6 @@ const FeedVideoViewer = ({ event, url, paused }: VideoProps) => {
             <TouchableOpacity activeOpacity={1} onPress={handleMute}
                 style={styles.controlsContainer}
             >
-                <VideoHeader 
-                    downloading={downloading} 
-                    handleDownload={handleDownload}
-                    handleManageFilters={() => setOptionsVisible(true)}
-                /> 
-
                 {loading && 
                     <ActivityIndicator size={28} color={theme.colors.white} />
                 }
@@ -139,15 +100,6 @@ const FeedVideoViewer = ({ event, url, paused }: VideoProps) => {
                     </TouchableOpacity>
                 }
 
-                {downloading &&
-                    <View style={{ alignItems: "center", minWidth: 100, padding: 5, borderRadius: 10, backgroundColor: theme.colors.blueOpacity }}>
-                        <Ionicons name={"cloud-download"} size={18} color={theme.colors.white} />
-                        <Text style={{ fontSize: 16, color: theme.colors.white }}>
-                            {downloadProgress.toFixed(0)}%
-                        </Text>
-                    </View>
-                }
-
                 <VideoFooter event={event} url={url} /> 
                 <View style={styles.controlsSliderContainer}>
                     <Slider
@@ -162,7 +114,6 @@ const FeedVideoViewer = ({ event, url, paused }: VideoProps) => {
                     />
                 </View>
             </TouchableOpacity>
-            <VideoPostOptions visible={optionsVisible} setVisible={setOptionsVisible} />
         </View>
     )
 }

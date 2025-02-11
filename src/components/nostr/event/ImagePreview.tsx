@@ -1,18 +1,13 @@
 import { useEffect, useRef, useState } from "react"
-import { View, Text, Image, StyleSheet, Dimensions, TouchableOpacity } from "react-native"
+import { View, Image, StyleSheet, Dimensions, TouchableOpacity } from "react-native"
 import Ionicons from 'react-native-vector-icons/Ionicons'
 import LinkError from "./LinkError"
 import theme from "@/src/theme"
-import { getGaleryPermission } from "@/src/services/permissions"
-import { ExternalDirectoryPath, downloadFile } from "react-native-fs"
-import { CameraRoll } from "@react-native-camera-roll/camera-roll"
-import { pushMessage } from "@/src/services/notification"
-import { useTranslateService } from "@/src/providers/translateProvider"
+import { blobService } from "@/src/services/blob"
 
 type ScreenProps = { url: string, redute?: number }
 const ImagePreview = ({ url, redute=180 }: ScreenProps) => {
   
-    const { useTranslate } = useTranslateService()
     const { width } = Dimensions.get("window")
     const [error, setError] = useState<boolean>(false)
     const [imageHeight, setImageHeight] = useState<number>(200)
@@ -27,20 +22,9 @@ const ImagePreview = ({ url, redute=180 }: ScreenProps) => {
     }, [])
 
     const handleDownload = async() => {
-
-        if(!(await getGaleryPermission())) return
-
-        setDownloading(true)
-        const filePath = `${ExternalDirectoryPath}${url.substring(url.lastIndexOf("/"))}`
-        await downloadFile({
-            fromUrl: url,
-            toFile: filePath,
-        }).promise.then(() => {
-            setDownloading(false)
-            CameraRoll.saveAsset(filePath, { type: "photo" })
-            pushMessage(useTranslate("message.download.successfully"))
-        }).catch(() => { 
-            setDownloading(false)
+        blobService.downloadImage({
+            url,
+            setDownloading
         })
     }
 
