@@ -109,10 +109,8 @@ const subscriptionVideos = async ({ videos }: SubscriptionVideosProps) : Promise
         })
 
         const finish = () => {
-            setTimeout(() => { 
-                videoControlls.isFetching = false
-                resolve([...videos, ...newerEvents])
-            }, 20)
+            videoControlls.isFetching = false
+            resolve([...videos, ...newerEvents])
             console.log("close")
         }
         
@@ -123,7 +121,7 @@ const subscriptionVideos = async ({ videos }: SubscriptionVideosProps) : Promise
         
         setTimeout(() => {
             subscription.stop()
-        }, 3000)
+        }, 5000)
     })
 }
 

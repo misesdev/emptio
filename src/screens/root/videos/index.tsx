@@ -27,14 +27,16 @@ const VideosFeed = ({ navigation }: StackScreenProps<any>) => {
 
     useEffect(() => {
         const unsubscribe = navigation.addListener("blur", () => {
+            setVideos(prev => [...prev.splice(0, prev.length-2)])
             setPaused(true)
         })
         return unsubscribe
     }, [])
 
     useEffect(() => {
+        setVideos([])
         setTimeout(async () => await loadVideosData(), 20)
-    }, [feedSettings.filterTags])
+    }, [feedSettings])
 
     useFocusEffect(() => { setPaused(false) })
 
@@ -69,11 +71,11 @@ const VideosFeed = ({ navigation }: StackScreenProps<any>) => {
     )
 
     const handleDownload = async () => {
-        if(videos.length) return
+        if(videos.length <= 0) return
         const event = videos[playingIndex]
         const url = extractVideoUrl(event.content)
         if(url) {
-            blobService.downloadVideo({ 
+            await blobService.downloadVideo({ 
                 url, 
                 setDownloading, 
                 setDownloadProgress 
@@ -90,7 +92,7 @@ const VideosFeed = ({ navigation }: StackScreenProps<any>) => {
                 renderItem={renderItem}
                 keyExtractor={(item: NDKEvent) => item.id}
                 showsVerticalScrollIndicator={false}
-                viewabilityConfig={{ itemVisiblePercentThreshold: 70 }}
+                viewabilityConfig={{ itemVisiblePercentThreshold: 50 }}
                 onViewableItemsChanged={onViewableItemsChanged}
                 onEndReached={loadVideosData}
                 onEndReachedThreshold={.2}
@@ -124,8 +126,7 @@ const VideosFeed = ({ navigation }: StackScreenProps<any>) => {
 
 const styles = StyleSheet.create({
     downloadProgressContent: { position: "absolute", top: 300, alignItems: "center", 
-        minWidth: 100, padding: 5, borderRadius: 10, 
-        backgroundColor: theme.colors.blueOpacity },
+        minWidth: 100, padding: 5, borderRadius: 10, backgroundColor: theme.colors.blueOpacity },
 
 })
 

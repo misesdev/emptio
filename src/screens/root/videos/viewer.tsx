@@ -1,5 +1,5 @@
 import { Video, VideoRef } from 'react-native-video'
-import { useRef, useState } from "react"
+import { useEffect, useRef, useState } from "react"
 import { View, StyleSheet, TouchableOpacity, Text, Dimensions } from 'react-native'
 import Ionicons from 'react-native-vector-icons/Ionicons'
 import Slider from '@react-native-community/slider'
@@ -27,8 +27,12 @@ const FeedVideoViewer = ({ event, url, paused, muted, setMuted }: VideoProps) =>
     const [loading, setLoading] = useState<boolean>(true)
     const [duration, setDuration] = useState<number>(0)
     const [currentTime, setCurrentTime] = useState<number>(0)
+    const [pausedVideo, setPausedVideo] = useState<boolean>(paused)
     const [mutedVideo, setMutedVideo] = useState<boolean>(muted)
     const [showMuted, setShowMuted] = useState<boolean>(false)
+
+    useEffect(() => { setPausedVideo(paused) }, [paused])
+    useEffect(() => { setMutedVideo(muted) }, [muted])
 
     const onLoadVideo = (data: any) => {
         setLoading(false)
@@ -56,6 +60,10 @@ const FeedVideoViewer = ({ event, url, paused, muted, setMuted }: VideoProps) =>
         }
     }
 
+    const handleScreenShot = (state: boolean) => {
+        setPausedVideo(state)
+    }
+
     const handleError = () => {
         setError(true)
         setLoading(false)
@@ -64,7 +72,7 @@ const FeedVideoViewer = ({ event, url, paused, muted, setMuted }: VideoProps) =>
     return (
         <View style={[styles.contentVideo, { width: width, height: height }]}>
             <Video onError={handleError} 
-                ref={videoRef} repeat paused={paused} muted={mutedVideo}
+                ref={videoRef} repeat paused={pausedVideo} muted={mutedVideo}
                 playInBackground={false}
                 fullscreenOrientation='portrait'
                 controlsStyles={{ 
@@ -80,7 +88,10 @@ const FeedVideoViewer = ({ event, url, paused, muted, setMuted }: VideoProps) =>
                 onLoad={onLoadVideo}
                 onProgress={onProgressVideo}
             />
-            <TouchableOpacity activeOpacity={1} onPress={handleMute}
+            <TouchableOpacity activeOpacity={1} 
+                onLongPress={() => handleScreenShot(true)} 
+                onPressOut={() => handleScreenShot(false)}
+                onPress={handleMute}
                 style={styles.controlsContainer}
             >
                 {loading && 

@@ -74,12 +74,19 @@ const VideosFilters = ({ visible, setVisible }: Props) => {
                             {filterTags.length &&
                                 filterTags.map((tag: string, key: number) => {
                                     return (
-                                        <Text key={key} style={styles.tagitem} 
+                                        <TouchableOpacity key={key}
+                                            activeOpacity={.7}
+                                            style={styles.tagbutton} 
                                             onPress={() => handleRemoveTag(tag)}
                                         >
-                                            #{tag}
-                                            <Ionicons name="close" size={15} color={theme.colors.white} />
-                                        </Text>
+                                            <Text style={styles.tagitem}>
+                                                #{tag}
+                                            </Text>
+                                            <Ionicons name="close" size={15}
+                                                style={styles.tagicon} 
+                                                color={theme.colors.white} 
+                                            />
+                                        </TouchableOpacity>
                                     )
                                 })
                             }
@@ -109,9 +116,12 @@ const styles = StyleSheet.create({
     tagadd: { width: "100%", padding: 10, flexDirection: "row" },
     addbutton: { padding: 10, borderRadius: 50, justifyContent: "center", 
         alignItems: "center", backgroundColor: theme.colors.blue },
-    tagarea: { width: "100%", padding: 10, alignItems: "center" },
-    tagitem: { margin: 4, width: "auto", padding: 10, borderRadius: 10, flexDirection: "row",
-        color:  theme.colors.white, backgroundColor: theme.colors.section },
+    tagarea: { width: "100%", padding: 10, alignItems: "center", flexDirection: "row",
+        flexWrap: "wrap" },
+    tagbutton: { margin: 4, padding: 10, borderRadius: 10, color:  theme.colors.white, 
+        flexDirection: 'row', backgroundColor: theme.colors.section },
+    tagitem: { color:  theme.colors.white },
+    tagicon: { margin: 4 },
 
     closebutton: { position: "absolute", width: "100%", paddingHorizontal: 24, bottom: 10 },
 })
