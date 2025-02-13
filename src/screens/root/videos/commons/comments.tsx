@@ -1,5 +1,4 @@
 import NoteViewer from "@/src/components/nostr/event/NoteViewer"
-import { messageService } from "@/src/core/messageManager"
 import { NDKEvent } from "@nostr-dev-kit/ndk-mobile"
 import { useCallback, useEffect, useState } from "react"
 import { Modal, StyleSheet, View, Text, TouchableOpacity } from "react-native"
@@ -23,14 +22,15 @@ const VideoComments = ({ event, visible, setVisible }: ChatProps) => {
     const [loading, setLoading] = useState<boolean>(false)
 
     useEffect(() => {
-        if(visible) setTimeout(() => handleLoadMessages(), 50)
+        if(visible) setTimeout(handleLoadMessages, 20)
     }, [visible])
 
     const handleLoadMessages = async () => {
         setLoading(true)
-        const comments = await noteService.listComments(event, 300)
-        setComments(comments)
-        setLoading(false)
+        noteService.listComments(event, 300).then(comments => { 
+            setComments(comments)
+            setLoading(false)
+        })
     }
 
     const handlePostComment = () => {

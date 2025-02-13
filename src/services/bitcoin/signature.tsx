@@ -1,4 +1,6 @@
 import { secp256k1 } from "@noble/curves/secp256k1"
+import { Network, Signer } from "bitcoinjs-lib"
+import { PairKey } from "../memory/types"
 
 export const signHex = (txHex: string, privKeyHex: string): string => {
 
@@ -23,6 +25,17 @@ export const signOutPut = (signHash: Buffer, privateKey: string) => {
     return Buffer.from(signature.toCompactHex(), "hex")
 }
 
+interface SignerProps { network: Network, pairkey: PairKey }
+
+export const getSigner = ({ network, pairkey }: SignerProps): Signer => {
+    return {
+        network,
+        publicKey: Buffer.from(pairkey.publicKey, 'hex'),
+        sign: (hash: Buffer, lowR?: boolean): Buffer => signBuffer(hash, pairkey.privateKey, lowR),
+        getPublicKey: () => Buffer.from(pairkey.publicKey, 'hex')
+    }
+}
+
 export const getRandomKey = (length: number): string => {
 
     var hash = ""
@@ -44,3 +57,6 @@ export const getRandomKey = (length: number): string => {
 
     return hash
 }
+
+
+

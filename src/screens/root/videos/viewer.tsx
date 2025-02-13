@@ -5,48 +5,41 @@ import Ionicons from 'react-native-vector-icons/Ionicons'
 import Slider from '@react-native-community/slider'
 import { useTranslateService } from '@/src/providers/translateProvider'
 import { NDKEvent } from '@nostr-dev-kit/ndk-mobile'
-import { ActivityIndicator } from 'react-native-paper'
 import VideoFooter from './commons/footer'
 import theme from '@/src/theme'
 
 type VideoProps = { 
     url: string,
     event: NDKEvent,
-    paused: boolean,
-    muted: boolean,
-    setMuted: (state: boolean) => void
+    paused: boolean
 }
 
-const FeedVideoViewer = ({ event, url, paused, muted, setMuted }: VideoProps) => {
+const FeedVideoViewer = ({ event, url, paused }: VideoProps) => {
 
     const timeout: any = useRef(null)
+    const pausedVideo = useRef<boolean>(paused)
     const { width, height } = Dimensions.get("window")
     const videoRef = useRef<VideoRef>(null)
+    const duration = useRef<number>(0)
+    const currentTime = useRef<number>(0)
     const { useTranslate } = useTranslateService()
     const [error, setError] = useState<boolean>(false)
-    const [loading, setLoading] = useState<boolean>(true)
-    const [duration, setDuration] = useState<number>(0)
-    const [currentTime, setCurrentTime] = useState<number>(0)
-    const [pausedVideo, setPausedVideo] = useState<boolean>(paused)
-    const [mutedVideo, setMutedVideo] = useState<boolean>(muted)
+    const [mutedVideo, setMutedVideo] = useState<boolean>(false)
     const [showMuted, setShowMuted] = useState<boolean>(false)
 
-    useEffect(() => { setPausedVideo(paused) }, [paused])
-    useEffect(() => { setMutedVideo(muted) }, [muted])
+    useEffect(() => { pausedVideo.current = paused }, [paused])
 
     const onLoadVideo = (data: any) => {
-        setLoading(false)
-        if(data?.duration) setDuration(data.duration)
+        if(data?.duration) duration.current = data.duration
     }
 
     const onProgressVideo = (data: any) => {
-        if(data?.currentTime) setCurrentTime(data.currentTime)
+        if(data?.currentTime) currentTime.current = data.currentTime
     }
 
     const handleMute = () => {
         setShowMuted(true)
         setMutedVideo(prev => !prev)
-        setMuted(!muted)
         if(timeout.current) clearTimeout(timeout.current)
         timeout.current = setTimeout(() => {
             setShowMuted(false)
@@ -56,24 +49,19 @@ const FeedVideoViewer = ({ event, url, paused, muted, setMuted }: VideoProps) =>
     const handleSeek = (time: number) => {
         if(videoRef.current) {
             videoRef.current.seek(time)
-            setCurrentTime(time)
+            currentTime.current = time
         }
     }
 
     const handleScreenShot = (state: boolean) => {
-        setPausedVideo(state)
-    }
-
-    const handleError = () => {
-        setError(true)
-        setLoading(false)
+        pausedVideo.current = state
     }
 
     return (
         <View style={[styles.contentVideo, { width: width, height: height }]}>
-            <Video onError={handleError} 
-                ref={videoRef} repeat paused={pausedVideo} muted={mutedVideo}
-                playInBackground={false}
+            <Video onError={() => setError(true)} 
+                ref={videoRef} repeat paused={pausedVideo.current} muted={mutedVideo}
+                //playInBackground={false}
                 fullscreenOrientation='portrait'
                 controlsStyles={{ 
                     hideNext: true, 
@@ -88,22 +76,18 @@ const FeedVideoViewer = ({ event, url, paused, muted, setMuted }: VideoProps) =>
                 onLoad={onLoadVideo}
                 onProgress={onProgressVideo}
             />
-            <TouchableOpacity activeOpacity={1} 
+            <TouchableOpacity activeOpacity={1} onPress={handleMute}
                 onLongPress={() => handleScreenShot(true)} 
                 onPressOut={() => handleScreenShot(false)}
-                onPress={handleMute}
                 style={styles.controlsContainer}
             >
-                {loading && 
-                    <ActivityIndicator size={28} color={theme.colors.white} />
-                }
                 {error && 
                     <Text style={{ color: theme.colors.white }}>
                         {useTranslate("message.default_error")} 
                     </Text>
                 }
                 
-                {showMuted && !loading &&
+                {showMuted && 
                     <TouchableOpacity onPress={handleMute}
                         style={{ padding: 10, borderRadius: 10, backgroundColor: theme.colors.blueOpacity }}
                     >
@@ -116,8 +100,8 @@ const FeedVideoViewer = ({ event, url, paused, muted, setMuted }: VideoProps) =>
                     <Slider
                         style={styles.controlsSlider}
                         minimumValue={0}
-                        maximumValue={duration}
-                        value={currentTime}
+                        maximumValue={duration.current}
+                        value={currentTime.current}
                         onSlidingComplete={handleSeek} // Busca no vídeo quando soltar o slider
                         minimumTrackTintColor={theme.colors.white}
                         maximumTrackTintColor={theme.colors.white}

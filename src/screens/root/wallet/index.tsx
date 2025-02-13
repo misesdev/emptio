@@ -3,23 +3,25 @@ import { SectionHeader } from "@components/general/section/headers"
 import { Transaction, TransactionInfo, Wallet } from "@services/memory/types"
 import { View, ScrollView, RefreshControl, TouchableOpacity } from "react-native"
 import Ionicons from 'react-native-vector-icons/Ionicons'
-import SplashScreen from "@components/general/SplashScreen"
 import { walletService } from "@src/core/walletManager"
 import { useTranslateService } from "@src/providers/translateProvider"
 import { Network } from "@services/bitcoin/types"
 import { useEffect, useState } from "react"
 import theme from "@src/theme"
+import { StackScreenProps } from "@react-navigation/stack"
 
-const WalletManagerScreen = ({ navigation, route }: any) => {
+type ScreenParams = {
+    params: { wallet: Wallet }
+}
 
-    const wallet = route.params.wallet as Wallet
+const WalletManagerScreen = ({ navigation, route }: StackScreenProps<any>) => {
+
+    const wallet = route?.params?.wallet as Wallet
     const { useTranslate } = useTranslateService()
-    const [loading, setLoading] = useState(true)
     const [refreshing, setRefreshing] = useState(false)
     const [transactions, setTransactions] = useState<Transaction[]>([])
 
     useEffect(() => {
-
         // add to header menu wallet options 
         navigation.setOptions({
             headerRight: () => (
@@ -28,11 +30,9 @@ const WalletManagerScreen = ({ navigation, route }: any) => {
                 </TouchableOpacity>
             )
         })
-
-        handleLoadTransactions()
-
-        setLoading(false)
-
+        setTimeout(async () => {
+            await handleLoadTransactions()
+        }, 20)
     }, [])
 
     const handleLoadTransactions = async () => {
@@ -41,17 +41,18 @@ const WalletManagerScreen = ({ navigation, route }: any) => {
         const address = wallet.address ?? ""
         const network: Network = wallet.type == "bitcoin" ? "mainnet" : "testnet"
         // search transactions and update wallet lastBalance
-        const walletInfo = await walletService.listTransactions(address, network)
-
-        setTransactions(walletInfo.transactions)
-
-        wallet.lastBalance = walletInfo.balance
-        wallet.lastReceived = walletInfo.received
-        wallet.lastSended = walletInfo.sended
+        walletService.listTransactions(address, network).then(walletInfo => {
+            setTransactions(walletInfo.transactions)
+            wallet.lastBalance = walletInfo.balance
+            wallet.lastReceived = walletInfo.received
+            wallet.lastSended = walletInfo.sended
+            setRefreshing(false)
+        }).catch(fail => {
+            console.log(fail)
+            setRefreshing(false)
+        })
 
         await walletService.update(wallet)
-
-        setRefreshing(false)
     }
 
     const openTransaction = (transaction: TransactionInfo) => {
@@ -61,9 +62,6 @@ const WalletManagerScreen = ({ navigation, route }: any) => {
     const showOptions = (wallet: Wallet) => {
         navigation.navigate("wallet-settings-stack", { wallet })
     }
-
-    if (loading)
-        return <SplashScreen />
 
     return (
         <View style={{ flex: 1 }}>
@@ -82,7 +80,7 @@ const WalletManagerScreen = ({ navigation, route }: any) => {
 
                 <WalletTransactions transactions={transactions} onPressTransaction={openTransaction} />
 
-                <View style={{ width: "100%", height: 62 }}></View>
+                <View style={{ width: "100%", height: 50 }}></View>
 
             </ScrollView>
 

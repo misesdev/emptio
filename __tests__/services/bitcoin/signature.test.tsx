@@ -1,4 +1,4 @@
-import { signHex, signBuffer } from "@/src/services/bitcoin/signature"
+import { signHex, signBuffer } from "@services/bitcoin/signature"
 
 describe("signature test", () => {
     it("signBuffer deve gerar a assinatura esperada", () => {

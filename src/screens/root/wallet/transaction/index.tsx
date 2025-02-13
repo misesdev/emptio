@@ -133,7 +133,7 @@ const TransactionScreen = ({ navigation, route }: StackScreenProps<any>) => {
                             }
                         </SectionContainer>
 
-                        <SectionContainer style={{ padding: 14 }}>
+                        <SectionContainer style={{ width: "94%", padding: 14 }}>
                             <Text style={styles.title}>
                                 {useTranslate("wallet.transaction.outputs")} ({txDetails.outputs?.length})
                             </Text>

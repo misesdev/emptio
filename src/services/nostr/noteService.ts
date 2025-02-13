@@ -3,13 +3,12 @@ import { User } from "../memory/types"
 import useNDKStore from "../zustand/ndk"
 import { useFeedVideosStore } from "../zustand/feedVideos"
 import { extractVideoUrl } from "@/src/utils"
+import { pushMessage } from "../notification"
 
 const ndk = useNDKStore.getState().ndk
 
-type ListReactionProps = {
-    user: User,
-    note: NDKEvent
-}
+type ListReactionProps = { user: User, note: NDKEvent }
+
 const listReactions = async ({ user, note }: ListReactionProps): Promise<NDKEvent[]> => {
 
     const filter: NDKFilter = { authors:[user.pubkey??""], kinds:[7], "#e": [note.id] }
@@ -21,45 +20,49 @@ const listReactions = async ({ user, note }: ListReactionProps): Promise<NDKEven
     return Array.from(events)
 }
 
-type ReactionProps = {
-    note: NDKEvent,
-    reaction: string
-}
-const reactNote = async ({ note, reaction }: ReactionProps): Promise<void>=> {
+type ReactionProps = { note: NDKEvent, reaction: string }
+
+const reactNote = async ({ note, reaction }: ReactionProps): Promise<NDKEvent>=> {
     note.ndk = ndk
-    await note.react(reaction)
+    return await note.react(reaction)
 }
 
-const deleteReact = async (note: NDKEvent): Promise<void> => {
+const deleteReact = async (note: NDKEvent): Promise<NDKEvent> => {
     note.ndk = ndk
-    await note.delete()
+    return await note.delete()
 }
 
 const listComments = async (event: NDKEvent, timeout: number=500) :Promise<NDKEvent[]> => {
 
     return new Promise((resolve) => {
-        const events: NDKEvent[] = []
+        try {
+            const events: NDKEvent[] = []
         
-        const filter: NDKFilter = { 
-            kinds: [1], "#e": [event.id], since: event.created_at, limit: 10
+            const filter: NDKFilter = { 
+                kinds: [1], "#p": [event.pubkey], "#e": [event.id], since: event.created_at 
+            }
+            
+            const subscription = ndk.subscribe(filter, { 
+                cacheUsage: NDKSubscriptionCacheUsage.PARALLEL 
+            })
+            
+            subscription.on("event", note => {
+                events.push(note)
+            })
+
+            const finish = () => resolve(events)
+
+            subscription.on("eose", finish)
+            subscription.on("close", finish) 
+
+            setTimeout(() => {
+                subscription.stop()
+            }, timeout)
         }
-        
-        const subscription = ndk.subscribe(filter, { 
-            cacheUsage: NDKSubscriptionCacheUsage.PARALLEL 
-        })
-        
-        subscription.on("event", note => {
-            events.push(note)
-        })
-
-        const finish = () => resolve(events)
-
-        subscription.on("eose", finish)
-        subscription.on("close", finish) 
-
-        setTimeout(() => {
-            subscription.stop()
-        }, timeout)
+        catch(ex) {
+            console.log(ex)
+            resolve([]) 
+        }
     })
 }
 
@@ -69,11 +72,11 @@ interface SubscriptionVideosProps {
 }
 
 interface VideoControlsProps {
-    isFetching: boolean, lastTimestamp?: number
+    lastTimestamp?: number
 }
 
 const videoControlls : VideoControlsProps = {
-    isFetching: false, lastTimestamp: undefined
+    lastTimestamp: undefined
 }
 
 const subscriptionVideos = async ({ videos }: SubscriptionVideosProps) : Promise<NDKEvent[]> => {
@@ -81,19 +84,19 @@ const subscriptionVideos = async ({ videos }: SubscriptionVideosProps) : Promise
     const feedSettings = useFeedVideosStore.getState().feedSettings
 
     return new Promise((resolve) => {
-        if(videoControlls.isFetching) return
-      
-        videoControlls.isFetching = true
-        console.log("fetching events")
+        console.log("fetching events", feedSettings.VIDEOS_LIMIT)
+
+        var timeout: any = null
 
         const filter: NDKFilter = {
             until: videoControlls.lastTimestamp, 
             kinds: [1, 1063], "#t": feedSettings.filterTags, 
-            //limit: feedSettings.FETCH_LIMIT
         }
 
         const subscription = ndk.subscribe(filter, { 
-            cacheUsage: NDKSubscriptionCacheUsage.CACHE_FIRST
+            cacheUsage: NDKSubscriptionCacheUsage.CACHE_FIRST,
+            closeOnEose: true,
+            groupable: false
         })
 
         const newerEvents: NDKEvent[] = []
@@ -103,15 +106,18 @@ const subscriptionVideos = async ({ videos }: SubscriptionVideosProps) : Promise
             }
             videoControlls.lastTimestamp = event.created_at
             const url = extractVideoUrl(event.content)
-            if(url && !videos.find(e => e.id == event.id)) {
-                newerEvents.push(event)
+            if(url && !videos.find(e => e.id == event.id)) 
+            {
+                if(!newerEvents.find(e => e.id == event.id))
+                    newerEvents.push(event)
             }
         })
 
         const finish = () => {
-            videoControlls.isFetching = false
-            resolve([...videos, ...newerEvents])
-            console.log("close")
+            if(newerEvents.length <= 0) pushMessage("nenhum vídeo novo encotrado")
+            if(timeout) clearTimeout(timeout)
+            console.log("finish")
+            resolve(newerEvents)
         }
         
         subscription.on("close", finish)
@@ -119,7 +125,7 @@ const subscriptionVideos = async ({ videos }: SubscriptionVideosProps) : Promise
 
         subscription.start()    
         
-        setTimeout(() => {
+        timeout = setTimeout(() => {
             subscription.stop()
         }, 5000)
     })

@@ -92,20 +92,6 @@ const require = async ({ name, type = "bitcoin", mnemonic, password }: ImportPro
     }
 }
 
-const seedphrase = async (pairkey: string): Promise<Response<string>> => {
-
-    try 
-    {
-        const pairKey = await getPairKey(pairkey)
-
-        const seedphrase = ""// getSeedPhrase(pairKey.privateKey)
-
-        return { success: true, message: "", data: seedphrase }
-    } catch (ex) {
-        return trackException(ex)
-    }
-}
-
 const exclude = async (wallet: Wallet): Promise<Response<any>> => {
 
     try {
@@ -228,7 +214,6 @@ export const walletService = {
     import: require,
     delete: exclude,
     clearDefaults,
-    seed: seedphrase,
     listTransactions,
     list,
     address,

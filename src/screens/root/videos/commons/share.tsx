@@ -29,7 +29,7 @@ const VideoShareBar = ({ event, visible, setVisible }: ChatProps) => {
 
         setTimeout(() => { 
             messageService.sendMessage({ user, follow, message })
-        }, 50)
+        }, 20)
         
         pushMessage(`${useTranslate("feed.videos.shared-for")} ${getUserName(follow, 20)}`)
     }
@@ -48,14 +48,14 @@ const VideoShareBar = ({ event, visible, setVisible }: ChatProps) => {
                         </TouchableOpacity>
                     </View>
 
-                    <SearchBox seachOnLenth={1} 
-                        delayTime={100} 
+                    <SearchBox seachOnLenth={0} 
+                        delayTime={50} 
                         label={useTranslate("commons.search")} 
                         onSearch={(searchTerm) => setSearchTerm(searchTerm)} 
                     />
                     {visible && 
                         <FollowList searchable 
-                            searchTimout={100}
+                            searchTimout={50}
                             searchTerm={searchTerm} 
                             onPressFollow={handleSend} 
                         />

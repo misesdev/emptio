@@ -1,4 +1,4 @@
-import { SafeAreaView, ScrollView, TouchableOpacity, View, Text, StyleSheet, Dimensions } from "react-native"
+import { SafeAreaView, TouchableOpacity, View, Text, StyleSheet, Dimensions } from "react-native"
 import { useTranslateService } from "@src/providers/translateProvider"
 import { Wallet } from "@services/memory/types"
 import WalletListItem from "./WalletListItem"
@@ -64,31 +64,6 @@ const WalletList = ({ wallets, navigation, reload }: Props) => {
         </SafeAreaView>
     )
 }
-        {/* <SafeAreaView style={{ width: "100%", height: 220 }}> */}
-        {/*     <ScrollView */}
-        {/*         pagingEnabled */}
-        {/*         //snapToInterval={20} */}
-        {/*         contentContainerStyle={{  */}
-        {/*             //paddingHorizontal: (width - walletWidth) / 2, */}
-        {/*             //marginRight: -(width * .2), */}
-        {/*              */}
-        {/*             backgroundColor: theme.colors.red  */}
-        {/*         }} */}
-        {/*         horizontal showsHorizontalScrollIndicator={false}> */}
-        {/*         {wallets && */}
-        {/*             wallets.map((wallet) => <WalletListItem reload={reload} key={wallet.key} wallet={wallet} handleOpen={handleOpenWallet} />) */}
-        {/*         } */}
-        {/*         <View style={[styles.wallet, { width: walletWidth, backgroundColor: theme.colors.section, padding: 5 }]}> */}
-        {/*             <Text style={styles.title}>{useTranslate("labels.wallet.add")}</Text> */}
-        {/*             <Text style={[styles.description, { color: theme.colors.gray }]}>{useTranslate("message.wallet.create")}</Text> */}
-        {/*             <TouchableOpacity style={[styles.button, { backgroundColor: theme.colors.blue }]} activeOpacity={.7} onPress={() => navigation.navigate("add-wallet-stack")}> */}
-        {/*                 <Text style={styles.buttonText}> {useTranslate("commons.add")} </Text> */}
-        {/*             </TouchableOpacity> */}
-        {/*         </View> */}
-        {/*     </ScrollView> */}
-        {/* </SafeAreaView> */}
-//     )
-// }
 
 const styles = StyleSheet.create({
     scroll: { },

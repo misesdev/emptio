@@ -1,6 +1,6 @@
 import { NDKEvent } from "@nostr-dev-kit/ndk-mobile"
 import { StackScreenProps } from "@react-navigation/stack"
-import { useCallback, useEffect, useState } from "react"
+import { useCallback, useEffect, useRef, useState } from "react"
 import { View, FlatList, SafeAreaView, Text, StyleSheet } from "react-native"
 import { extractVideoUrl } from "@src/utils"
 import Ionicons from 'react-native-vector-icons/Ionicons'
@@ -9,60 +9,67 @@ import { useFocusEffect } from "@react-navigation/native"
 import { ActivityIndicator } from "react-native-paper"
 import VideosHeader from "./commons/header"
 import VideosFilters from "./commons/filters"
-import { blobService } from "@/src/services/blob"
-import { noteService } from "@/src/services/nostr/noteService"
+import { blobService } from "@services/blob"
+import { noteService } from "@services/nostr/noteService"
+import { pushMessage } from "@services/notification"
+import { useTranslateService } from "@src/providers/translateProvider"
 import FeedVideoViewer from "./viewer"
 import theme from "@src/theme"
 
 const VideosFeed = ({ navigation }: StackScreenProps<any>) => {
 
+    const isFetching = useRef<boolean>(false) 
     const { feedSettings } = useFeedVideosStore()
-    const [muted, setMuted] = useState<boolean>(false)
-    const [paused, setPaused] = useState<boolean>(false)
-    const [videos, setVideos] = useState<NDKEvent[]>([])
-    const [playingIndex, setPlayingIndex] = useState<number>(0)
+    const { useTranslate } = useTranslateService()
+    const videos = useRef<NDKEvent[]>([])
+    const paused = useRef<boolean>(false)
+    const playingIndex = useRef<number>(0) 
     const [downloading, setDownloading] = useState<boolean>(false)
     const [downloadProgress, setDownloadProgress] = useState<number>(0)
     const [filtersVisible, setFiltersVisible] = useState<boolean>(false)
 
     useEffect(() => {
         const unsubscribe = navigation.addListener("blur", () => {
-            setVideos(prev => [...prev.splice(0, prev.length-2)])
-            setPaused(true)
+            isFetching.current = false
+            paused.current = true
         })
         return unsubscribe
     }, [])
 
     useEffect(() => {
-        setVideos([])
-        setTimeout(async () => await loadVideosData(), 20)
+        videos.current = []
+        loadVideosData()
     }, [feedSettings])
 
-    useFocusEffect(() => { setPaused(false) })
+    useFocusEffect(() => { paused.current = false })
 
-    const loadVideosData = async () => {
-        const notes = await noteService.subscriptionVideos({ videos })
-        setVideos(notes)
+    const loadVideosData = () => {
+        if(isFetching.current) return
+        isFetching.current = true
+        noteService.subscriptionVideos({ videos: videos.current }).then(events => {
+            setTimeout(() => isFetching.current = false, 20)
+            videos.current = videos.current.concat(events)
+        }).catch(() => {
+            pushMessage(useTranslate("message.default_error"))
+            setTimeout(() => isFetching.current = false, 20)
+        })
     }
 
     const onViewableItemsChanged = useCallback(({ viewableItems }: any) => {
-        if(viewableItems.length > 0) {
-            setPlayingIndex(viewableItems[0].index)
+        if(viewableItems.length > 0) { 
+            playingIndex.current = viewableItems[0].index
         }
     }, [])
 
     const renderItem = useCallback(({ item, index }:{ item: NDKEvent, index: number }) => {
+        console.log("renderItem")
         const url = extractVideoUrl(item.content)
         return (
-            <FeedVideoViewer
-                url={url??""}
-                event={item}
-                muted={muted}
-                setMuted={setMuted}
-                paused={index != playingIndex || paused} 
+            <FeedVideoViewer url={url??""} event={item}
+                paused={index != playingIndex.current || paused.current} 
             />
         ) 
-    }, [playingIndex, muted, paused])
+    }, [playingIndex, paused])
 
     const EndLoader = () => (
         <View style={{ paddingVertical: 20 }}>
@@ -71,8 +78,8 @@ const VideosFeed = ({ navigation }: StackScreenProps<any>) => {
     )
 
     const handleDownload = async () => {
-        if(videos.length <= 0) return
-        const event = videos[playingIndex]
+        if(videos.current.length <= 0) return
+        const event = videos.current[playingIndex.current]
         const url = extractVideoUrl(event.content)
         if(url) {
             await blobService.downloadVideo({ 
@@ -86,40 +93,40 @@ const VideosFeed = ({ navigation }: StackScreenProps<any>) => {
     return (
         <SafeAreaView style={theme.styles.container}>
             <FlatList pagingEnabled
-                data={videos}
+                data={videos.current}
+                extraData={{ playingIndex, paused }}
                 style={{ flex: 1 }}
-                extraData={{ playingIndex, muted, paused }}
                 renderItem={renderItem}
                 keyExtractor={(item: NDKEvent) => item.id}
                 showsVerticalScrollIndicator={false}
-                viewabilityConfig={{ itemVisiblePercentThreshold: 50 }}
+                viewabilityConfig={{ itemVisiblePercentThreshold: 20 }}
                 onViewableItemsChanged={onViewableItemsChanged}
                 onEndReached={loadVideosData}
                 onEndReachedThreshold={.2}
                 removeClippedSubviews
-                maxToRenderPerBatch={3}
-                initialNumToRender={3} 
-                windowSize={3}
+                maxToRenderPerBatch={5}
+                initialNumToRender={5} 
+                windowSize={5}
                 snapToAlignment="center"
                 decelerationRate="fast" 
                 ListFooterComponent={<EndLoader/>}
             />
 
-            <VideosHeader 
-                downloading={downloading} 
-                handleDownload={handleDownload}
-                handleManageFilters={() => setFiltersVisible(true)}
-            />
+            {/* <VideosHeader  */}
+            {/*     downloading={downloading}  */}
+            {/*     handleDownload={handleDownload} */}
+            {/*     handleManageFilters={() => setFiltersVisible(true)} */}
+            {/* /> */}
 
-            {downloading &&
-                <View style={styles.downloadProgressContent}>
-                    <Ionicons name={"cloud-download"} size={18} color={theme.colors.white} />
-                    <Text style={{ fontSize: 16, color: theme.colors.white }}>
-                        {downloadProgress.toFixed(0)}%
-                    </Text>
-                </View>
-            }
-            <VideosFilters visible={filtersVisible} setVisible={setFiltersVisible} />
+            {/* {downloading && */}
+            {/*     <View style={styles.downloadProgressContent}> */}
+            {/*         <Ionicons name={"cloud-download"} size={18} color={theme.colors.white} /> */}
+            {/*         <Text style={{ fontSize: 16, color: theme.colors.white }}> */}
+            {/*             {downloadProgress.toFixed(0)}% */}
+            {/*         </Text> */}
+            {/*     </View> */}
+            {/* } */}
+            {/* <VideosFilters visible={filtersVisible} setVisible={setFiltersVisible} /> */}
         </SafeAreaView>
     )
 }

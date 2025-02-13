@@ -3,15 +3,15 @@ import { User } from "@services/memory/types"
 import Ionicons from 'react-native-vector-icons/Ionicons'
 import { copyPubkey, getDisplayPubkey, getUserName } from "@/src/utils"
 import { NDKEvent, NDKFilter, NDKSubscriptionCacheUsage } from "@nostr-dev-kit/ndk-mobile"
-import { useEffect, useState } from "react"
+import { useEffect, useState, useRef } from "react"
 import { StyleSheet, View, Image, Text, TouchableOpacity } from "react-native"
 import VideoDescription from "./description"
-import { useTranslateService } from "@/src/providers/translateProvider"
-import { useAuth } from "@/src/providers/userProvider"
+import { useTranslateService } from "@src/providers/translateProvider"
+import { useAuth } from "@src/providers/userProvider"
 import VideoComments from "./comments"
 import VideoShareBar from "./share"
-import { noteService } from "@/src/services/nostr/noteService"
-import useNDKStore from "@/src/services/zustand/ndk"
+import { noteService } from "@services/nostr/noteService"
+import useNDKStore from "@services/zustand/ndk"
 import theme from "@src/theme"
 
 type Props = { 
@@ -24,63 +24,58 @@ const VideoFooter = ({ event, url }: Props) => {
     const { ndk } = useNDKStore()
     const { user, follows, followsEvent } = useAuth()
     const { useTranslate } = useTranslateService()
-    const [profile, setProfile] = useState<User>({})
-    const [isFriend, setIsFriend] = useState<boolean>(false)
+    const profile = useRef<User>({})
+    const isFriend = useRef<boolean>(false)
     const [profileError, setProfileError] = useState<boolean>(false)
-    const [chatVisible, setChatVisible] = useState<boolean>(false)
+    const [commentsVisible, setCommentsVisible] = useState<boolean>(false)
     const [shareVisible, setShareVisible] = useState<boolean>(false)
-    const [reactions, setReactions] = useState<NDKEvent[]>([])
+    const reactions = useRef<NDKEvent[]>([])
     
-    useEffect(() => { handleLoadData() }, [])
+    useEffect(() => { setTimeout(handleLoadData, 20) }, [])
 
-    const handleLoadData = () => {
-        setTimeout(async () => {
-            setIsFriend(!!follows?.find(f => f.pubkey == event.pubkey))
+    const handleLoadData = async () => {
+        console.log("load data footer")
+        isFriend.current = !!follows?.find(f => f.pubkey == event.pubkey)
 
-            const filters: NDKFilter[] = [
-                { kinds: [0], authors:[event.pubkey], limit: 1 }, // profile
-                { kinds: [7], authors:[user.pubkey??""], "#e": [event.id], limit: 1 }, // reaction
-            ]
-                       
-            const events = await ndk.fetchEvents(filters, {
-                cacheUsage: NDKSubscriptionCacheUsage.PARALLEL
-            })
+        const filters: NDKFilter[] = [
+            { kinds: [0], authors:[event.pubkey], limit: 1 }, // profile
+            { kinds: [7], authors:[user.pubkey??""], "#e": [event.id], limit: 1 }, // reaction
+        ]
+                   
+        const events = await ndk.fetchEvents(filters, {
+            cacheUsage: NDKSubscriptionCacheUsage.PARALLEL
+        })
 
-            events.forEach(note => {
-                if(note.kind == 0) { console.log(note.content)
-                    setProfile(JSON.parse(note.content) as User)
-                }
-                if(note.kind == 7) setReactions(prev => [...prev,note])
-            })
-        }, 10)
+        events.forEach(note => {
+            if(note.kind == 0) profile.current = JSON.parse(note.content) as User
+            if(note.kind == 7) reactions.current = [...reactions.current, note]
+        })
     }
 
     const handleReact = async () => {
-        if(!reactions.length) {
-            setReactions(prev => [...prev, new NDKEvent()])
-            setTimeout(() => { 
-                noteService.reactNote({ note: event, reaction:"❣️" })
-            }, 20)
+        if(!reactions.current.length) {
+            noteService.reactNote({ note: event, reaction:"❣️" }).then(reaction => {
+                reactions.current = [...reactions.current, reaction]
+            })
         }
         else {
-            setReactions([])
-            setTimeout(() => { 
-                noteService.deleteReact(reactions[0])  
-            }, 20)
+            noteService.deleteReact(reactions.current[0]).then(reaction => {
+                reactions.current = reactions.current.filter(r => r.id != reaction.id)
+            })  
         }
     }
 
-    const handleOpenChat = () => setChatVisible(true)
+    const handleOpenChat = () => setCommentsVisible(true)
 
     const handleShare = () => setShareVisible(true)
 
     const handleFollow = async () => {
-        setIsFriend(prev => !prev)
+        isFriend.current = !isFriend.current 
 
         setTimeout(async () => {
-            if(isFriend) 
+            if(isFriend.current) 
                 followsEvent!.tags = followsEvent!.tags?.filter(t => t[0] == "p" && t[1] != event.pubkey)
-            if(!isFriend)
+            if(!isFriend.current)
                 followsEvent?.tags?.push(["p", event.pubkey])
 
             await userService.updateFollows({ user, follows: followsEvent })
@@ -92,7 +87,7 @@ const VideoFooter = ({ event, url }: Props) => {
             <View style={styles.reactionControls}>
                 <TouchableOpacity onPress={handleReact} style={styles.reactionButton}>
                     <Ionicons 
-                        name={reactions?.length ? "heart" : "heart-outline"} 
+                        name={reactions.current.length ? "heart" : "heart-outline"} 
                         size={32} color={theme.colors.white} 
                     />
                 </TouchableOpacity>
@@ -106,17 +101,17 @@ const VideoFooter = ({ event, url }: Props) => {
             <View style={styles.profilebar}>
                 <View style={{ width: "15%", paddingHorizontal: 2 }}>
                     <View style={styles.profile}>
-                        {profile.picture && 
-                            <Image onError={() => setProfileError(true)} source={{ uri: profile.picture }} style={styles.profile}/>
+                        {profile.current.picture && 
+                            <Image onError={() => setProfileError(true)} source={{ uri: profile.current.picture }} style={styles.profile}/>
                         }
-                        {(!profile.picture || profileError) && 
+                        {(!profile.current.picture || profileError) && 
                             <Image source={require("@assets/images/defaultProfile.png")} style={styles.profile}/>
                         }
                     </View>
                 </View>
                 <View style={{ width: "60%", paddingHorizontal: 6 }}>
                     <Text style={styles.profileName}>
-                        {getUserName(profile, 24)}
+                        {getUserName(profile.current, 24)}
                     </Text>
                     <TouchableOpacity activeOpacity={.7} 
                         onPress={() => copyPubkey(event.pubkey)}
@@ -135,12 +130,12 @@ const VideoFooter = ({ event, url }: Props) => {
                     <TouchableOpacity activeOpacity={.7} onPress={handleFollow} 
                         style={styles.followbutton} 
                     >
-                        {isFriend &&
+                        {isFriend.current &&
                             <Text style={{ color: theme.colors.white }}>
                                 {useTranslate("commons.unfollow")}
                             </Text>
                         }
-                        {!isFriend && 
+                        {!isFriend.current && 
                             <Text style={{ color: theme.colors.white }}>
                                 {useTranslate("commons.follow")}
                             </Text>
@@ -150,8 +145,8 @@ const VideoFooter = ({ event, url }: Props) => {
             </View>
             <VideoDescription content={event.content} url={url} />
             <VideoComments event={event} 
-                visible={chatVisible} 
-                setVisible={setChatVisible} 
+                visible={commentsVisible} 
+                setVisible={setCommentsVisible} 
             />
             <VideoShareBar event={event} 
                 visible={shareVisible} 

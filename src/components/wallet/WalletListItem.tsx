@@ -5,7 +5,7 @@ import { useTranslate } from "@services/translate"
 import { Network } from "@services/bitcoin/types"
 import { useEffect, useState } from "react"
 import { TouchableOpacity, View, Text, StyleSheet, 
-    Image, Dimensions, ViewStyle } from "react-native"
+    Image, ViewStyle } from "react-native"
 import { ActivityIndicator } from "react-native-paper"
 import { getDescriptionTypeWallet } from "@src/utils"
 import theme from "@src/theme"
@@ -18,33 +18,35 @@ type Props = {
 }
 
 const WalletListItem = ({ wallet, reload, handleOpen, style }: Props) => {
-    
+  
     const [loading, setLoading] = useState<boolean>()
     const [labelOpen, setLabelOpen] = useState<string>("")
     const [typeWallet, setTypeWallet] = useState<string>("")
 
     useEffect(() => { 
-        setTimeout(() => {
-            loadData() 
+        setTimeout(async () => {
             useTranslate("commons.open").then(setLabelOpen)
             getDescriptionTypeWallet(wallet.type ?? "bitcoin").then(setTypeWallet)
+            await loadData() 
         }, 20)
     }, [reload])
 
     const loadData = async () => {
-
         setLoading(true)
+        const address = wallet.address ?? ""
         const network: Network = wallet.type == "bitcoin" ? "mainnet" : "testnet"
-        const walletInfo = await walletService.listTransactions(wallet.address ?? "", network)
-
-        if(wallet.lastBalance != walletInfo.balance)
-        {
-            wallet.lastBalance = walletInfo.balance
-            wallet.lastSended = walletInfo.sended
-            wallet.lastReceived = walletInfo.received
-
-            await walletService.update(wallet)
-        }
+        walletService.listTransactions(address, network).then(async (walletInfo) => {
+            if(wallet.lastBalance != walletInfo.balance)
+            {
+                wallet.lastBalance = walletInfo.balance
+                wallet.lastSended = walletInfo.sended
+                wallet.lastReceived = walletInfo.received
+                await walletService.update(wallet)
+            }
+            setLoading(false)
+        }).catch(() => {
+            setLoading(false)
+        })
     }
 
     let balanceBTC = toBitcoin(wallet.lastBalance)
@@ -63,7 +65,7 @@ const WalletListItem = ({ wallet, reload, handleOpen, style }: Props) => {
             <Text style={styles.title}>{formatName}</Text>
             <View style={{ flexDirection: "row", width: "100%" }}>
                 <Text style={{ marginHorizontal: 10, marginVertical: 6, color: theme.colors.white, fontSize: 18, fontWeight: "bold" }}>
-                    {balanceSats} Sats
+                    {toBitcoin(wallet.lastBalance)} Sats
                 </Text>
                 { loading &&
                     <ActivityIndicator size={18} color={theme.colors.white} />    
@@ -71,7 +73,7 @@ const WalletListItem = ({ wallet, reload, handleOpen, style }: Props) => {
             </View>
             <View style={{ flexDirection: "row", width: "100%" }}>
                 <Text style={[styles.description, { color: theme.colors.white }]}>
-                        {balanceBTC} BTC
+                        {toBitcoin(wallet.lastBalance)} BTC
                 </Text>
             </View> 
             <TouchableOpacity activeOpacity={.7} 

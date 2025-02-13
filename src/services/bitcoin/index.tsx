@@ -3,7 +3,7 @@ import { bytesToHex } from "@noble/hashes/utils"
 import { generateMnemonic, mnemonicToSeedSync } from "bip39"
 import { payments, Psbt, networks, address } from "bitcoinjs-lib"
 import { PairKey, Wallet } from "../memory/types"
-import { getRandomKey, signBuffer, verifySign } from "./signature"
+import { getRandomKey, getSigner, signBuffer, verifySign } from "./signature"
 import { getTxsUtxos, getUtxo, sendUtxo } from "./mempool"
 import { Response, trackException } from "../telemetry"
 import { Network } from "./types"
@@ -95,6 +95,7 @@ export const createTransaction = async ({ amount, destination, wallet, pairkey }
         const network = wallet.type == "bitcoin" ? networks.bitcoin : networks.testnet
 
         const transaction = new Psbt({ network })
+        const signer = getSigner({ network, pairkey }) 
 
         const utxos = await getTxsUtxos(wallet.address ?? "", net)
 
@@ -128,12 +129,7 @@ export const createTransaction = async ({ amount, destination, wallet, pairkey }
         if (utxoAmount > amount)
             transaction.addOutput({ address: wallet.address ?? "", value: utxoAmount - amount })
 
-        transaction.signAllInputs({
-            network,
-            publicKey: Buffer.from(pairkey.publicKey, 'hex'),
-            sign: (hash: Buffer, lowR?: boolean): Buffer => signBuffer(hash, pairkey.privateKey, lowR),
-            getPublicKey: () => Buffer.from(pairkey.publicKey, 'hex')
-        })
+        transaction.signAllInputs(signer)
         
         transaction.validateSignaturesOfAllInputs(verifySign)
         
