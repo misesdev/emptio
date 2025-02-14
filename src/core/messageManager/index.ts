@@ -1,11 +1,11 @@
-import { deleteEventsByCondition, selecMessageChats, selecMessages 
-} from "@services/memory/database/events"
+import { deleteEventsByCondition, selecMessageChats, 
+    selecMessages } from "@services/memory/database/events"
 import { getPairKey } from "@services/memory/pairkeys"
 import { User } from "@services/memory/types"
-import { getPubkeyFromTags, listenerEvents } from "@services/nostr/events"
+import { getPubkeyFromTags } from "@services/nostr/events"
 import { ChatUser } from "@services/zustand/chats"
 import useNDKStore from "@services/zustand/ndk"
-import { NDKEvent, NDKFilter, NDKSubscriptionCacheUsage } from "@nostr-dev-kit/ndk-mobile"
+import { NDKEvent } from "@nostr-dev-kit/ndk-mobile"
 import { nip04 } from "nostr-tools"
 
 const listMessages = async (chat_id: string) : Promise<NDKEvent[]> => {
@@ -30,6 +30,10 @@ const listChats = async (user: User): Promise<ChatUser[]> => {
     return eventsChat.filter(c => !!c.lastMessage.pubkey).sort((a, b) => {
         return (b.lastMessage.created_at ?? 1) - (a.lastMessage.created_at ?? 1)
     })
+}
+
+const deleteChats = async (chat_ids: string[]) => {
+    await deleteEventsByCondition(`chat_id in ('${chat_ids.join("','")}')`, [])
 }
 
 const generateChatId = (event: NDKEvent): string => {
@@ -119,6 +123,7 @@ const deleteMessage = async ({ user, event, onlyForMe = false }: DeleteEventProp
 
 export const messageService = {
     listChats,
+    deleteChats,
     listMessages,
     generateChatId,
     decryptMessage,

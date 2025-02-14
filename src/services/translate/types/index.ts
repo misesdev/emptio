@@ -55,7 +55,9 @@ export type TranslateWords = "initial.message"
     | "commons.follow"
     | "commons.unfollow"
     | "commons.filters"
+    | "commons.cancel"
 
+    | "labels.all"
     | "labels.username"
     | "labels.about"
     | "labels.mywebsite"
@@ -169,7 +171,13 @@ export type TranslateWords = "initial.message"
 
     | "chats.title"
     | "chat.labels.message"
+    | "chat.labels.delete-conversations"
+    | "chat.action.markread"
     | "chat.empty"
+    | "chat.unread"
+    | "chat.unknown"
+
+    | "message.chats.alertdelete"
 
     | "feed.empty"
     | "feed.videos.comments"

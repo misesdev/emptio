@@ -1,22 +1,31 @@
 import theme from "@src/theme"
 import { StyleSheet, View, TouchableOpacity } from "react-native"
 import Ionicons from 'react-native-vector-icons/Ionicons'
-import { useEffect, useState } from "react"
+import { useEffect, useRef, useState } from "react"
 import { HeaderChats } from "./header"
 import { SearchBox } from "@components/form/SearchBox"
 import { useTranslateService } from "@src/providers/translateProvider"
 import { useAuth } from "@src/providers/userProvider"
-import ChatList from "./list"
 import useChatStore, { ChatUser } from "@services/zustand/chats"
 import { User } from "@services/memory/types"
 import { StackScreenProps } from "@react-navigation/stack"
+import ChatFilters, { ChatFilterType } from "./commons/filters"
+import ChatList, { FilterChat } from "./commons/list"
+import ChatGroupAction, { ChatActionType } from "./commons/options"
+import { messageService } from "@/src/core/messageManager"
+import MessageBox, { showMessage } from "@/src/components/general/MessageBox"
 
 const ChatsScreen = ({ navigation }: StackScreenProps<any>) => {
    
-    const { user } = useAuth()
-    const { chats } = useChatStore()
+    const timeout = useRef<any>(null)
+    const { user, followsEvent } = useAuth()
+    const { chats, markReadChat, setChats } = useChatStore()
     const { useTranslate } = useTranslateService()
-    const [searchTerm, setSearchTerm] = useState("")
+    const selectionMode = useRef<boolean>(false)
+    const selectedItems = useRef<ChatUser[]>([])
+    const filterChatsUsers = useRef<FilterChat[]>([])
+    const [filteredChats, setFilteredChats] = useState(chats)
+    const [filterSection, setFilterSection] = useState<ChatFilterType>("all")
 
     useEffect(() => {
         navigation.setOptions({
@@ -24,15 +33,76 @@ const ChatsScreen = ({ navigation }: StackScreenProps<any>) => {
         })
     }, [])
 
-    const handleSearch = (searchTerm: string) => {
-        // if(!searchTerm.replace(" ", "").length) {
-        //     return setFilteredChats(chats)
-        // }
-        // const filtered = chats.filter(c => `${c.user.display_name ?? ""}${c.user.name ?? ""}`.toUpperCase()
-        //     .includes(searchTerm.toUpperCase()))
+    useEffect(() => {
+        if(filterChatsUsers.current.length) {
+            if(timeout.current) clearTimeout(timeout.current)
+            timeout.current = setTimeout(() => handleFilter(filterSection), 50)
+        }
+    }, [chats, followsEvent])
 
-        // setFilteredChats(filtered)
-        // setSearchTerm(searchTerm)
+    const handleSearch = (searchTerm: string) => {
+        
+        const cleanSearchTerm = searchTerm.trim().toLowerCase()
+
+        if(!cleanSearchTerm.length) return setFilteredChats(chats)
+
+        const chat_ids = filterChatsUsers.current.filter(f => 
+            f.user_name.toLowerCase().includes(cleanSearchTerm))
+            .map(f => f.chat_id)
+
+        setFilteredChats(prev => prev.filter(c => chat_ids.includes(c.chat_id)))
+    }
+
+    const handleFilter = (section: ChatFilterType) => {
+        if(section == "all") {
+            setFilteredChats(chats)
+            setFilterSection("all")
+        }
+        if(section == "unread") {
+            const unreads = chats.filter(c => (c.unreadCount??0) > 0).map(c => c.chat_id)
+            setFilteredChats(chats.filter(c => unreads.includes(c.chat_id)))
+            setFilterSection("unread")
+        }
+        if(section == "friends") {
+            const friends = filterChatsUsers.current.filter(c => c.is_friend).map(c => c.chat_id)
+            setFilteredChats(chats.filter(c => friends.includes(c.chat_id)))
+            setFilterSection("friends")
+        }
+        if(section == "unknown") {
+            const friends = filterChatsUsers.current.filter(c => !c.is_friend).map(c => c.chat_id)
+            setFilteredChats(chats.filter(c => friends.includes(c.chat_id)))
+            setFilterSection("unknown")
+        }
+    }
+
+    const handleGroupAction = (action: ChatActionType) => {
+        if(action == "cancel") { 
+            selectionMode.current = false
+            selectedItems.current = []
+        }
+        if(action == "markread") {
+            selectedItems.current.forEach(chat => {
+                markReadChat(chat.chat_id)
+            })
+            selectionMode.current = false
+            selectedItems.current = []
+        }
+        if(action == "delete") {
+            showMessage({
+                title: useTranslate("chat.labels.delete-conversations"),
+                message: useTranslate("message.chats.alertdelete"),
+                action: {
+                    label: useTranslate("commons.delete"),
+                    onPress: () => {
+                        const chat_ids = selectedItems.current.map(c => c.chat_id)
+                        setChats(chats.filter(c => !chat_ids.includes(c.chat_id)))
+                        setTimeout(async () => await messageService.deleteChats(chat_ids), 20)
+                        selectionMode.current = false
+                        selectedItems.current = []
+                    }
+                }
+            })
+        }
     }
 
     const handleOpenChat = (chat_id: string, follow: User) => {
@@ -42,25 +112,35 @@ const ChatsScreen = ({ navigation }: StackScreenProps<any>) => {
     return (
         <View style={theme.styles.container}>
 
-            <SearchBox delayTime={0} seachOnLenth={0} 
+            <SearchBox delayTime={100} seachOnLenth={0}
                 label={useTranslate("commons.search")} onSearch={handleSearch} 
             /> 
 
-            {/* <ChatFilters onFilter={filterEvents} activeSection={activeSection} /> */}
+            {!selectionMode.current &&
+                <ChatFilters onFilter={handleFilter} activeSection={filterSection} />
+            }
+            {selectionMode.current &&
+                <ChatGroupAction onAction={handleGroupAction} />
+            }
 
-            <ChatList chats={chats} user={user} handleOpenChat={handleOpenChat} />
+            <ChatList chats={filteredChats} user={user}
+                filters={filterChatsUsers.current} handleOpenChat={handleOpenChat}
+                selectedItems={selectedItems} 
+                selectionMode={selectionMode}
+            />
 
             <View style={styles.rightButton}>
                 <TouchableOpacity activeOpacity={.7} style={styles.newChatButton} onPress={() => navigation.navigate("new-chat-stack")}>
                     <Ionicons name="pencil" size={theme.icons.medium} color={theme.colors.white} />
                 </TouchableOpacity>
             </View>
+            <MessageBox />
         </View>
     )
 }
 
 const styles = StyleSheet.create({
-    chatsScroll: { flex: 1, padding: 10 },
+    chatsScroll: { flex: 1, paddingVertical: 10 },
     newChatButton: { backgroundColor: theme.colors.blue, padding: 18, borderRadius: 50 },
     rightButton: { position: "absolute", bottom: 8, right: 0, width: 90, height: 70, justifyContent: "center", alignItems: "center" },
 

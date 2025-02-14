@@ -5,7 +5,7 @@ import SplashScreen from "@components/general/SplashScreen"
 import { useAuth } from "@src/providers/userProvider"
 import { userService } from "@src/core/userManager"
 import { hexToBytes } from "@noble/hashes/utils"
-import { useEffect, useState } from "react"
+import { useState } from "react"
 import { nip19 } from "nostr-tools";
 import theme from "@src/theme"
 import Ionicons from 'react-native-vector-icons/Ionicons'

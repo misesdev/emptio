@@ -7,6 +7,8 @@ import { useTranslateService } from '../providers/translateProvider'
 import useChatStore from '../services/zustand/chats'
 import theme from "@src/theme"
 import VideosFeed from '../screens/root/videos'
+import { tabBarStyle } from '../constants/RouteSettings'
+import { isKeyboardConnected } from 'react-native-device-info'
 
 const Tab = createBottomTabNavigator()
 
@@ -18,12 +20,14 @@ const TabRoutes = () => {
     return (
         <Tab.Navigator
             initialRouteName="home"
-            screenOptions={{ 
+            screenOptions={{
                 tabBarActiveTintColor: theme.colors.blue,
                 tabBarInactiveTintColor: theme.colors.gray,
-                tabBarStyle: { backgroundColor: theme.colors.black, borderTopWidth: 0 },
+                //tabBarStyle: { backgroundColor: theme.colors.black, borderTopWidth: 0 },
+                tabBarStyle: tabBarStyle,
                 headerStyle: { backgroundColor: theme.colors.blue },
-                headerTitle: ""
+                headerTitle: "",
+                tabBarHideOnKeyboard: true
             }}
         >
             <Tab.Screen

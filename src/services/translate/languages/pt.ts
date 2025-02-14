@@ -51,7 +51,9 @@ export default {
     "commons.follow": "seguir",
     "commons.unfollow": "desseguir",
     "commons.filters": "Filtros",
+    "commons.cancel": "Cancelar",
     
+    "labels.all": "Todos",
     "labels.friends": "Amigos",
     "labels.username": "Nome de Usuário",
     "labels.about": "Sobre min",
@@ -172,6 +174,12 @@ export default {
     "chats.title": "Conversas",
     "chat.empty": "Você não possui nenhuma mensagem",
     "chat.labels.message": "Message",
+    "chat.labels.delete-conversations": "Delete Conversations",
+    "chat.unread": "Não lidas",
+    "chat.unknown": "Desconhecidos",
+    "chat.action.markread": "Marcar como lida",
+
+    "message.chats.alertdelete": "Tem certeza que deseja excluir as conversas selecionadas? As mensagens serão excluidas apenas localmente.",
 
     "feed.empty": "Nenhuma ordem encontrada, tente adicionar amigos vendedores",
     "feed.videos.comments": "Comentários",

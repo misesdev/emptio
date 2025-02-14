@@ -51,7 +51,9 @@ export default {
     "commons.follow": "follow",
     "commons.unfollow": "unfollow",
     "commons.filters": "Filters",
+    "commons.cancel": "Cancel",
 
+    "labels.all": "All",
     "labels.friends": "Friends",
     "labels.username": "User Name",
     "labels.about": "About me",
@@ -169,6 +171,12 @@ export default {
     "chats.title": "Conversations",
     "chat.empty": "You don't have any messages",
     "chat.labels.message": "Message",
+    "chat.labels.delete-conversations": "Deletar Conversas",
+    "chat.unread": "Unread",
+    "chat.unknown": "Unknown",
+    "chat.action.markread": "Mark as read",
+
+    "message.chats.alertdelete": "Are you sure you want to delete the selected conversations? The messages will only be deleted locally.",
     
     "feed.empty": "No orders found, try adding seller friends",
     "feed.videos.comments": "Comments",

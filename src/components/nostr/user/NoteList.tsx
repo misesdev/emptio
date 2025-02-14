@@ -1,10 +1,10 @@
 import { FlatList, ScrollView } from "react-native-gesture-handler"
-import { Dimensions, StyleSheet, View, Text } from "react-native"
+import { Dimensions, StyleSheet, View } from "react-native"
 import NoteViewer from "../event/NoteViewer"
-import theme from "@src/theme"
 import { useCallback, useRef, useState } from "react"
 import { NDKEvent } from "@nostr-dev-kit/ndk-mobile"
-import { User } from "@/src/services/memory/types"
+import { User } from "@services/memory/types"
+import theme from "@src/theme"
 
 type NoteProps = {
     user?: User,
@@ -77,7 +77,6 @@ export const NoteList = ({ user, notes, isVisible, horizontal=true, pagingEnable
             viewabilityConfig={{ itemVisiblePercentThreshold: 70 }}
             snapToAlignment="center"
             decelerationRate="fast"
-            refreshing={refreshing}            
         />
     )
 }

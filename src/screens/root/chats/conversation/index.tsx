@@ -6,13 +6,13 @@ import { useAuth } from "@src/providers/userProvider"
 import { messageService } from "@src/core/messageManager"
 import { User } from "@services/memory/types"
 import useChatStore from "@services/zustand/chats"
-import ConversationList from "./listMessages"
-import MessageOptionsBox, { showOptiosMessage } from "./options"
+import ConversationList from "./commons/list"
+import MessageOptionsBox, { showOptiosMessage } from "./commons/options"
 import Ionicons from 'react-native-vector-icons/Ionicons'
-import theme from "@/src/theme"
+import theme from "@src/theme"
 import { StackScreenProps } from "@react-navigation/stack"
-import ConversationHeader from "./header"
-import { useTranslateService } from "@/src/providers/translateProvider"
+import ConversationHeader from "./commons/header"
+import { useTranslateService } from "@src/providers/translateProvider"
 
 const ConversationChat = ({ navigation, route }: StackScreenProps<any>) => {
     

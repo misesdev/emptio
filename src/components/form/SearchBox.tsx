@@ -1,8 +1,7 @@
 import theme from "@src/theme"
 import { useRef, useState } from "react"
 import Ionicons from 'react-native-vector-icons/Ionicons'
-import { StyleSheet, TextInput, View } from "react-native"
-import { TouchableOpacity } from "react-native-gesture-handler"
+import { StyleSheet, TextInput, View, TouchableOpacity } from "react-native"
 
 type SearchBoxProps = {
     label: string,
@@ -16,7 +15,7 @@ export const SearchBox = ({ label, textCenter, delayTime = 500, seachOnLenth = 1
     
     let TimeOutSearch: any = useRef(null)
 
-    const [search, setSearch] = useState<string>()
+    const [search, setSearch] = useState<string>("")
 
     const handleSearch = (value: string) => {
         setSearch(value)
@@ -25,6 +24,8 @@ export const SearchBox = ({ label, textCenter, delayTime = 500, seachOnLenth = 1
             TimeOutSearch.current = setTimeout(() => onSearch(value), delayTime)
         }
     }
+
+    const handleClear = () => handleSearch("")
 
     return (
         <View style={styles.control}>
@@ -41,7 +42,7 @@ export const SearchBox = ({ label, textCenter, delayTime = 500, seachOnLenth = 1
                 />
                 {search &&
                     <View style={styles.searchButton}>
-                        <TouchableOpacity activeOpacity={.7} onPress={() => setSearch("")}>
+                        <TouchableOpacity activeOpacity={.7} onPress={handleClear}>
                             <Ionicons name="close" size={theme.icons.large} color={theme.colors.gray} />
                         </TouchableOpacity>
                     </View>
