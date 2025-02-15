@@ -48,13 +48,11 @@ const FollowModal = ({ handleAddFollow }: FollowProps) => {
 
     useEffect(() => {
         if(visible) {
-            setTimeout(() => {
-                setloading(true)
-                userService.lastNotes(user, 6).then(events => {
-                    setNotes(events)
-                    setloading(false)
-                })
-            }, 20)
+            setloading(true)
+            setTimeout(async () => {
+                setNotes(await userService.lastNotes(user, 6))
+                setloading(false)
+            }, 50)
         }
     }, [visible])
 
@@ -115,7 +113,7 @@ const FollowModal = ({ handleAddFollow }: FollowProps) => {
                         {useTranslate("friends.notes.lasts")}
                     </Text>
                     
-                    <NoteList isVisible={visible} user={user} refreshing={loading} notes={notes} />
+                    <NoteList user={user} notes={notes} isVisible={visible}/>
                     {notes?.length <= 0 && loading && <ActivityIndicator color={theme.colors.gray} size={34} />}
                     {notes?.length <= 0 && !loading &&
                         <Text style={{ color: theme.colors.gray, textAlign: "center", margin: 15 }}>

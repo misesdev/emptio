@@ -1,7 +1,7 @@
 import theme from "@src/theme"
 import { StyleSheet, View, TouchableOpacity } from "react-native"
 import Ionicons from 'react-native-vector-icons/Ionicons'
-import { useEffect, useRef, useState } from "react"
+import { useCallback, useEffect, useMemo, useRef, useState } from "react"
 import { HeaderChats } from "./header"
 import { SearchBox } from "@components/form/SearchBox"
 import { useTranslateService } from "@src/providers/translateProvider"
@@ -53,29 +53,27 @@ const ChatsScreen = ({ navigation }: StackScreenProps<any>) => {
         setFilteredChats(prev => prev.filter(c => chat_ids.includes(c.chat_id)))
     }
 
-    const handleFilter = (section: ChatFilterType) => {
+    const handleFilter = useCallback((section: ChatFilterType) => {
+        setFilterSection(section)
+        
         if(section == "all") {
             setFilteredChats(chats)
-            setFilterSection("all")
         }
         if(section == "unread") {
             const unreads = chats.filter(c => (c.unreadCount??0) > 0).map(c => c.chat_id)
             setFilteredChats(chats.filter(c => unreads.includes(c.chat_id)))
-            setFilterSection("unread")
         }
         if(section == "friends") {
             const friends = filterChatsUsers.current.filter(c => c.is_friend).map(c => c.chat_id)
             setFilteredChats(chats.filter(c => friends.includes(c.chat_id)))
-            setFilterSection("friends")
         }
         if(section == "unknown") {
             const friends = filterChatsUsers.current.filter(c => !c.is_friend).map(c => c.chat_id)
             setFilteredChats(chats.filter(c => friends.includes(c.chat_id)))
-            setFilterSection("unknown")
         }
-    }
+    }, [chats, filterChatsUsers])
 
-    const handleGroupAction = (action: ChatActionType) => {
+    const handleGroupAction = useCallback((action: ChatActionType) => {
         if(action == "cancel") { 
             selectionMode.current = false
             selectedItems.current = []
@@ -103,21 +101,22 @@ const ChatsScreen = ({ navigation }: StackScreenProps<any>) => {
                 }
             })
         }
-    }
+    }, [selectedItems, markReadChat, setChats, useTranslate])
 
-    const handleOpenChat = (chat_id: string, follow: User) => {
+    const handleOpenChat = useCallback((chat_id: string, follow: User) => {
         navigation.navigate("conversation-chat-stack", { chat_id, follow })
-    }
+    }, [navigation])
 
     return (
         <View style={theme.styles.container}>
 
-            <SearchBox delayTime={100} seachOnLenth={0}
-                label={useTranslate("commons.search")} onSearch={handleSearch} 
-            /> 
-
             {!selectionMode.current &&
-                <ChatFilters onFilter={handleFilter} activeSection={filterSection} />
+                <>
+                    <SearchBox delayTime={100} seachOnLenth={0}
+                        label={useTranslate("commons.search")} onSearch={handleSearch} 
+                    /> 
+                    <ChatFilters onFilter={handleFilter} activeSection={filterSection} />
+                </>
             }
             {selectionMode.current &&
                 <ChatGroupAction onAction={handleGroupAction} />

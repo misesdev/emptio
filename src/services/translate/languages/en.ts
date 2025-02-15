@@ -170,6 +170,7 @@ export default {
 
     "chats.title": "Conversations",
     "chat.empty": "You don't have any messages",
+    "chat.labels.you": "You",
     "chat.labels.message": "Message",
     "chat.labels.delete-conversations": "Deletar Conversas",
     "chat.unread": "Unread",
@@ -184,6 +185,7 @@ export default {
     "feed.videos.share": "Share",
     "feed.videos.shared-for": "Sent to ",
     "feed.videos.comment": "Comment",
+    "feed.videos.notfound": "No videos found, please check filter tags.",
 
     "order.new.title": "New Sales Order",
     "order.new.amount-title": "How many Sats do you want to sell?",

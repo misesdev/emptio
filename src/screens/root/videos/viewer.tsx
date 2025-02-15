@@ -17,24 +17,24 @@ type VideoProps = {
 const FeedVideoViewer = ({ event, url, paused }: VideoProps) => {
 
     const timeout: any = useRef(null)
-    const pausedVideo = useRef<boolean>(paused)
+    const { useTranslate } = useTranslateService()
     const { width, height } = Dimensions.get("window")
     const videoRef = useRef<VideoRef>(null)
-    const duration = useRef<number>(0)
-    const currentTime = useRef<number>(0)
-    const { useTranslate } = useTranslateService()
+    const [duration, setDuration] = useState<number>(0)
+    const [currentTime, setCurrentTime] = useState<number>(0)
     const [error, setError] = useState<boolean>(false)
+    const [pausedVideo, setPausedVideo] = useState<boolean>(paused)
     const [mutedVideo, setMutedVideo] = useState<boolean>(false)
     const [showMuted, setShowMuted] = useState<boolean>(false)
 
-    useEffect(() => { pausedVideo.current = paused }, [paused])
+    useEffect(() => { setPausedVideo(paused) }, [paused])
 
     const onLoadVideo = (data: any) => {
-        if(data?.duration) duration.current = data.duration
+        setDuration(data?.duration||0)
     }
 
     const onProgressVideo = (data: any) => {
-        if(data?.currentTime) currentTime.current = data.currentTime
+        setCurrentTime(data?.currentTime||0)
     }
 
     const handleMute = () => {
@@ -49,19 +49,19 @@ const FeedVideoViewer = ({ event, url, paused }: VideoProps) => {
     const handleSeek = (time: number) => {
         if(videoRef.current) {
             videoRef.current.seek(time)
-            currentTime.current = time
+            setCurrentTime(time)
         }
     }
 
     const handleScreenShot = (state: boolean) => {
-        pausedVideo.current = state
+        setPausedVideo(state)
     }
 
     return (
         <View style={[styles.contentVideo, { width: width, height: height }]}>
             <Video onError={() => setError(true)} 
-                ref={videoRef} repeat paused={pausedVideo.current} muted={mutedVideo}
-                //playInBackground={false}
+                ref={videoRef} repeat paused={pausedVideo} muted={mutedVideo}
+                playInBackground={false}
                 fullscreenOrientation='portrait'
                 controlsStyles={{ 
                     hideNext: true, 
@@ -79,6 +79,7 @@ const FeedVideoViewer = ({ event, url, paused }: VideoProps) => {
             <TouchableOpacity activeOpacity={1} onPress={handleMute}
                 onLongPress={() => handleScreenShot(true)} 
                 onPressOut={() => handleScreenShot(false)}
+                delayLongPress={300}
                 style={styles.controlsContainer}
             >
                 {error && 
@@ -100,8 +101,8 @@ const FeedVideoViewer = ({ event, url, paused }: VideoProps) => {
                     <Slider
                         style={styles.controlsSlider}
                         minimumValue={0}
-                        maximumValue={duration.current}
-                        value={currentTime.current}
+                        value={currentTime}
+                        maximumValue={duration}
                         onSlidingComplete={handleSeek} // Busca no vídeo quando soltar o slider
                         minimumTrackTintColor={theme.colors.white}
                         maximumTrackTintColor={theme.colors.white}
@@ -125,13 +126,6 @@ const styles = StyleSheet.create({
     controlsSliderContainer: { width: "100%", position: "absolute", paddingVertical: 2, 
         borderRadius: 5, bottom: 22 },
     controlsSlider: { width: "100%" },
-
-    profilebar: { width: "100%", paddingVertical: 6, flexDirection: "row" },
-    profile: { width: 50, height: 50, borderRadius: 50, overflow: "hidden",
-        backgroundColor: theme.colors.black },
-    profileName: { textShadowOffset: { width: 2, height: 2 }, textShadowRadius: 8,
-        textShadowColor: theme.colors.black, fontSize: 16, fontWeight: "500", 
-        color: theme.colors.white },
 })
 
 export default FeedVideoViewer

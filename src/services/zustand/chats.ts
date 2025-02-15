@@ -23,24 +23,27 @@ const useChatStore = create<ChatStore>((set) => ({
     addChat: (newer: ChatUser) => {
         newer.unreadCount = 1
         set((state) => {
+            const updatedChatIds = [newer.chat_id, ...state.unreadChats.filter(c => c != newer.chat_id)]
             if(state.unreadChats.includes(newer.chat_id))
             {
                 return {
-                    unreadChats: [newer.chat_id, ...state.unreadChats.filter(c => c != newer.chat_id)],
+                    unreadChats: updatedChatIds,
                     chats: state.chats.map(chat => {
                         if(chat.chat_id == newer.chat_id && chat.unreadCount) {
-                            chat.unreadCount += 1
                             chat.lastMessage = newer.lastMessage
+                            chat.unreadCount += 1
                         }
                         return chat
                     })
                 }
             }
+           
+            const updatedChats = [newer, ...state.chats.filter(c => c.chat_id != newer.chat_id)]
+            updatedChats.sort((a,b) => (b.lastMessage.created_at??1) - (a.lastMessage.created_at??1))
             
             return {
-                unreadChats: [newer.chat_id, ...state.unreadChats.filter(c => c != newer.chat_id)],
-                chats: [newer, ...state.chats.filter(c => c.chat_id != newer.chat_id)]
-                    .sort((a,b) => (b.lastMessage.created_at??1) - (a.lastMessage.created_at??1))
+                unreadChats: updatedChatIds,
+                chats: updatedChats
             }                       
         })
     },

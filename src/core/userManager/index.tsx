@@ -2,7 +2,7 @@ import { clearStorage } from "@services/memory"
 import { createPairKeys, getHexKeys } from "@services/nostr"
 import { getUserData, pushUserData, pushUserFollows } from "@services/nostr/pool"
 import { getEvent, listenerEvents, publishEvent, NostrEvent } from "@services/nostr/events"
-import { NDKEvent, NDKSubscriptionCacheUsage } from "@nostr-dev-kit/ndk-mobile"
+import { NDKEvent, NDKFilter, NDKSubscriptionCacheUsage } from "@nostr-dev-kit/ndk-mobile"
 import { Response, trackException } from "@services/telemetry"
 import { getUser, insertUpdateUser } from "@services/memory/user"
 import { getPairKey, insertPairKey } from "@services/memory/pairkeys"
@@ -236,16 +236,15 @@ const searchUsers = async (user: User, searchTerm: string, limit: number = 50): 
 const lastNotes = async (user: User, limit: number = 3) : Promise<NDKEvent[]> => {
     try {
         const ndk = useNDKStore.getState().ndk
-
-        const events = await ndk.fetchEvents({
-            authors: [user.pubkey ?? ""],
-            kinds: [1],
-            limit: limit,
-        }, { cacheUsage: NDKSubscriptionCacheUsage.CACHE_FIRST })
+        
+        const filter: NDKFilter = { kinds: [1], authors: [user.pubkey??""], limit }
+        const events = await ndk.fetchEvents(filter, {
+            cacheUsage: NDKSubscriptionCacheUsage.CACHE_FIRST 
+        })
         
         return Array.from(events)
             .filter(e => !e.tags.filter(t => t[0] == "e").length)
-            .filter(e => e.content.length > 0)
+            // .filter(e => e.content.length > 0)
     } 
     catch { return [] }
 }

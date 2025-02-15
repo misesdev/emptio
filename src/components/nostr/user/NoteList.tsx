@@ -38,10 +38,9 @@ type NoteListProps = {
     horizontal?: boolean,
     pagingEnabled?: boolean,
     isVisible: boolean,
-    refreshing: boolean
 }
 
-export const NoteList = ({ user, notes, isVisible, horizontal=true, pagingEnabled=true, refreshing }: NoteListProps) => {
+export const NoteList = ({ user, notes, isVisible, horizontal=true, pagingEnabled=true }: NoteListProps) => {
     
     const listRef = useRef(null)
     const [playingIndex, setPlayingIndex] = useState(null)

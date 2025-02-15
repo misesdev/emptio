@@ -173,6 +173,7 @@ export default {
 
     "chats.title": "Conversas",
     "chat.empty": "Você não possui nenhuma mensagem",
+    "chat.labels.you": "Você",
     "chat.labels.message": "Message",
     "chat.labels.delete-conversations": "Delete Conversations",
     "chat.unread": "Não lidas",
@@ -187,6 +188,7 @@ export default {
     "feed.videos.share": "Compartilhar",
     "feed.videos.shared-for": "Enviado para ",
     "feed.videos.comment": "Comentário",
+    "feed.videos.notfound": "Nenhum vídeo encontrado, por favor verifique as tags de filtro.",
 
     "settings.about": "Sobre",
     "settings.about.content": `Emptio P2P é uma aplicação de código aberto que tem o objetivo de permitir inicialmente a compra e venda de bitcoin de pessoa para pessoa de forma descentralizada utilizando o protocolo Nostr.

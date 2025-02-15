@@ -62,6 +62,16 @@ export const insertEvent = async ({ event, category, chat_id }: dbEventProps) : 
     return !!data.changes;
 }
 
+export const updateEventContent = async (event: NDKEvent) => {
+    const db = await getDatabaseConnection()
+
+    await db.runAsync(`
+        UPDATE events SET 
+            content = ?
+        WHERE id = ?
+    `, [event.content, event.id])
+}
+
 export const listEventsByCategory = async (category: TypeCategory, limit = 50): Promise<NDKEvent[]> => {
     const db = await getDatabaseConnection()
 

@@ -3,7 +3,7 @@ import { User } from "@services/memory/types"
 import Ionicons from 'react-native-vector-icons/Ionicons'
 import { copyPubkey, getDisplayPubkey, getUserName } from "@/src/utils"
 import { NDKEvent, NDKFilter, NDKSubscriptionCacheUsage } from "@nostr-dev-kit/ndk-mobile"
-import { useEffect, useState, useRef } from "react"
+import { useEffect, useState, useRef, useCallback, useMemo } from "react"
 import { StyleSheet, View, Image, Text, TouchableOpacity } from "react-native"
 import VideoDescription from "./description"
 import { useTranslateService } from "@src/providers/translateProvider"
@@ -25,34 +25,33 @@ const VideoFooter = ({ event, url }: Props) => {
     const { user, follows, followsEvent } = useAuth()
     const { useTranslate } = useTranslateService()
     const profile = useRef<User>({})
-    const isFriend = useRef<boolean>(false)
     const [profileError, setProfileError] = useState<boolean>(false)
     const [commentsVisible, setCommentsVisible] = useState<boolean>(false)
     const [shareVisible, setShareVisible] = useState<boolean>(false)
     const reactions = useRef<NDKEvent[]>([])
+
+    const isFriend = useMemo(() => !!follows?.some(f => f.pubkey === event.pubkey), [follows, event.pubkey])
     
-    useEffect(() => { setTimeout(handleLoadData, 20) }, [])
+    useEffect(() => { 
+        const fetchData = async () => {
+            const filters: NDKFilter[] = [
+                { kinds: [0], authors:[event.pubkey], limit: 1 }, // profile
+                { kinds: [7], authors:[user.pubkey??""], "#e": [event.id], limit: 1 }, // reaction
+            ]
+                       
+            const events = await ndk.fetchEvents(filters, {
+                cacheUsage: NDKSubscriptionCacheUsage.PARALLEL
+            })
 
-    const handleLoadData = async () => {
-        console.log("load data footer")
-        isFriend.current = !!follows?.find(f => f.pubkey == event.pubkey)
+            events.forEach(note => {
+                if(note.kind == 0) profile.current = JSON.parse(note.content) as User
+                if(note.kind == 7) reactions.current = [...reactions.current, note]
+            })
+        }
+        fetchData()
+    }, [event.id, user.pubkey, ndk])
 
-        const filters: NDKFilter[] = [
-            { kinds: [0], authors:[event.pubkey], limit: 1 }, // profile
-            { kinds: [7], authors:[user.pubkey??""], "#e": [event.id], limit: 1 }, // reaction
-        ]
-                   
-        const events = await ndk.fetchEvents(filters, {
-            cacheUsage: NDKSubscriptionCacheUsage.PARALLEL
-        })
-
-        events.forEach(note => {
-            if(note.kind == 0) profile.current = JSON.parse(note.content) as User
-            if(note.kind == 7) reactions.current = [...reactions.current, note]
-        })
-    }
-
-    const handleReact = async () => {
+    const handleReact = useCallback(async () => {
         if(!reactions.current.length) {
             noteService.reactNote({ note: event, reaction:"❣️" }).then(reaction => {
                 reactions.current = [...reactions.current, reaction]
@@ -63,24 +62,18 @@ const VideoFooter = ({ event, url }: Props) => {
                 reactions.current = reactions.current.filter(r => r.id != reaction.id)
             })  
         }
-    }
+    }, [event])
 
-    const handleOpenChat = () => setCommentsVisible(true)
-
-    const handleShare = () => setShareVisible(true)
-
-    const handleFollow = async () => {
-        isFriend.current = !isFriend.current 
-
+    const handleFollow = useCallback(async () => {
         setTimeout(async () => {
-            if(isFriend.current) 
+            if(isFriend) 
                 followsEvent!.tags = followsEvent!.tags?.filter(t => t[0] == "p" && t[1] != event.pubkey)
-            if(!isFriend.current)
+            if(!isFriend)
                 followsEvent?.tags?.push(["p", event.pubkey])
 
             await userService.updateFollows({ user, follows: followsEvent })
         }, 20)
-    }
+    }, [isFriend, followsEvent, event.pubkey, user])
 
     return (
         <View style={styles.controlsSliderContainer}>
@@ -91,10 +84,10 @@ const VideoFooter = ({ event, url }: Props) => {
                         size={32} color={theme.colors.white} 
                     />
                 </TouchableOpacity>
-                <TouchableOpacity onPress={handleOpenChat} style={styles.reactionButton}>
+                <TouchableOpacity onPress={() => setCommentsVisible(true)} style={styles.reactionButton}>
                     <Ionicons name="chatbubble-outline" size={32} color={theme.colors.white} />
                 </TouchableOpacity>
-                <TouchableOpacity onPress={handleShare} style={styles.reactionButton}>
+                <TouchableOpacity onPress={() => setShareVisible(true)} style={styles.reactionButton}>
                     <Ionicons name="paper-plane-outline" size={32} color={theme.colors.white} />
                 </TouchableOpacity>
             </View>
@@ -130,12 +123,12 @@ const VideoFooter = ({ event, url }: Props) => {
                     <TouchableOpacity activeOpacity={.7} onPress={handleFollow} 
                         style={styles.followbutton} 
                     >
-                        {isFriend.current &&
-                            <Text style={{ color: theme.colors.white }}>
-                                {useTranslate("commons.unfollow")}
-                            </Text>
-                        }
-                        {!isFriend.current && 
+                        {/* {isFriend && */}
+                        {/*     <Text style={{ color: theme.colors.white }}> */}
+                        {/*         {useTranslate("commons.unfollow")} */}
+                        {/*     </Text> */}
+                        {/* } */}
+                        {!isFriend && 
                             <Text style={{ color: theme.colors.white }}>
                                 {useTranslate("commons.follow")}
                             </Text>

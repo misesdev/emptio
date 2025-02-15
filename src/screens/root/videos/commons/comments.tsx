@@ -1,13 +1,14 @@
-import NoteViewer from "@/src/components/nostr/event/NoteViewer"
-import { NDKEvent } from "@nostr-dev-kit/ndk-mobile"
+import NoteViewer from "@components/nostr/event/NoteViewer"
+import { NDKEvent, NDKFilter, NDKSubscriptionCacheUsage } from "@nostr-dev-kit/ndk-mobile"
 import { useCallback, useEffect, useState } from "react"
 import { Modal, StyleSheet, View, Text, TouchableOpacity } from "react-native"
 import { FlatList, TextInput } from "react-native-gesture-handler"
 import { ActivityIndicator } from "react-native-paper"
 import Ionicons from 'react-native-vector-icons/Ionicons'
-import { useTranslateService } from "@/src/providers/translateProvider"
+import { useTranslateService } from "@src/providers/translateProvider"
+import useNDKStore from "@services/zustand/ndk"
+import { noteService } from "@services/nostr/noteService"
 import theme from "@/src/theme"
-import { noteService } from "@/src/services/nostr/noteService"
 
 type ChatProps = {
     event: NDKEvent,
@@ -16,6 +17,7 @@ type ChatProps = {
 }
 const VideoComments = ({ event, visible, setVisible }: ChatProps) => {
 
+    const { ndk } = useNDKStore()
     const { useTranslate } = useTranslateService()
     const [message, setMessage] = useState<string>("")
     const [comments, setComments] = useState<NDKEvent[]>([])
@@ -26,11 +28,25 @@ const VideoComments = ({ event, visible, setVisible }: ChatProps) => {
     }, [visible])
 
     const handleLoadMessages = async () => {
-        setLoading(true)
-        noteService.listComments(event, 300).then(comments => { 
-            setComments(comments)
-            setLoading(false)
-        })
+        
+        const filter: NDKFilter = { 
+            kinds: [1], "#p": [event.pubkey], "#e": [event.id], since: event.created_at 
+        }
+
+        const subscription = ndk.subscribe(filter, {
+            cacheUsage: NDKSubscriptionCacheUsage.PARALLEL
+        }) 
+        
+        subscription.on("event", event => setComments(prev => [...prev, event]))
+
+        subscription.on("close", () => {})
+        subscription.on("eose", () => {})
+
+        subscription.start()
+
+        setTimeout(() => {
+            subscription.stop()
+        }, 300)
     }
 
     const handlePostComment = () => {

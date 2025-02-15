@@ -1,11 +1,11 @@
-import HashTagViewer from "@/src/components/nostr/event/HashTagViewer"
-import LinkPreview from "@/src/components/nostr/event/LinkPreview"
-import ProfileViewer from "@/src/components/nostr/event/ProfileViewer"
-import theme from "@/src/theme"
+import HashTagViewer from "@components/nostr/event/HashTagViewer"
+import LinkPreview from "@components/nostr/event/LinkPreview"
+import ProfileViewer from "@components/nostr/event/ProfileViewer"
 import { replaceContentEvent } from "@/src/utils"
 import { useCallback, useEffect, useState } from "react"
-import { StyleSheet, ScrollView, View, TouchableOpacity } from "react-native"
+import { StyleSheet, ScrollView, TouchableOpacity } from "react-native"
 import ParsedText from "react-native-parsed-text"
+import theme from "@/src/theme"
 
 type Props = { content: string, url: string }
 

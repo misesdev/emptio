@@ -1,72 +1,41 @@
-import { TouchableOpacity, View, Text, StyleSheet, FlatList } from "react-native"
-import NoteViewer from "@components/nostr/event/NoteViewer"
-import { messageService } from "@src/core/messageManager"
+import { StyleSheet, FlatList } from "react-native"
 import { User } from "@services/memory/types"
 import { NDKEvent } from "@nostr-dev-kit/ndk"
-import { memo, useCallback, useEffect, useState } from "react"
+import { MutableRefObject, RefObject, useCallback } from "react"
 import theme from "@/src/theme"
-
+import ListItemMessage from "./listItem"
+    
 type Props = {
     user: User,
+    follow: User,
     events: NDKEvent[],
-    onMessageOptions: (event: NDKEvent, isUser: boolean) => void
+    listRef: RefObject<FlatList>,
+    highLigthIndex: MutableRefObject<number|null>,
+    selectionMode: MutableRefObject<boolean>,
+    selectedItems: MutableRefObject<NDKEvent[]>,
+    replyEvent: MutableRefObject<NDKEvent|null>,
+    focusEventOnList: (event: NDKEvent) => void,
 }
 
-const ConversationList = ({ user, events, onMessageOptions }: Props) => {
-        
-    const ListItem = memo(({ item }: { item: NDKEvent }) => {
-        const isUser = (item.pubkey == user.pubkey)
-        const [event, setEvent] = useState<NDKEvent>(item)
-
-        useEffect(() => {
-            setTimeout(() => {
-                messageService.decryptMessage(user, item).then(setEvent)
-            },20)
-        }, [])
-
-        return (
-            <TouchableOpacity activeOpacity={1}
-                onPress={() => onMessageOptions(item, isUser)}
-                style={[styles.messageContainer, { flexDirection: isUser ? "row-reverse" : "row" }]}
-            >
-                <View style={[styles.contentMessage, 
-                        isUser ? styles.messageSended : styles.messageReceived
-                    ]}
-                >
-                    <NoteViewer showUser={false} note={event} />
-                    <View style={[styles.messageDetailBox, { flexDirection: isUser ? "row-reverse" : "row" }]}>
-                        <Text style={{ fontSize: 11, fontWeight: "500", color: theme.colors.gray }}>
-                            {new Date((event.created_at ?? 1) * 1000).toDateString()}
-                        </Text>
-                    </View>
-                </View>
-            </TouchableOpacity>
-        )
-    })
-
-    const renderItem = useCallback(({ item }:{ item: NDKEvent }) => {
-        return <ListItem item={item} />
-    }, [])
+const ConversationList = ({ user, follow, listRef, events, selectionMode, highLigthIndex, 
+    selectedItems, replyEvent, focusEventOnList }: Props) => {
+   
+    const renderItem = useCallback(({ item, index }: { item: NDKEvent; index: number }) => (
+        <ListItemMessage item={item} index={index} focusIndex={highLigthIndex.current} items={events} 
+            user={user} follow={follow} selectionMode={selectionMode} 
+            selectedItems={selectedItems} replyEvent={replyEvent} focusEventOnList={focusEventOnList} 
+        />
+    ), [highLigthIndex, events, user, follow, selectionMode, selectedItems, replyEvent, focusEventOnList]);
 
     return (
-        <FlatList inverted
-            data={events}
-            style={styles.scrollContainer}
-            showsVerticalScrollIndicator
-            renderItem={renderItem}
-            keyExtractor={(item) => item.id}
-            renderToHardwareTextureAndroid
+        <FlatList ref={listRef} inverted data={events} style={styles.scrollContainer}
+            showsVerticalScrollIndicator renderItem={renderItem} keyExtractor={item => item.id} 
         />
     )
 }
 
 const styles = StyleSheet.create({
-    scrollContainer: { width: "100%", padding: 10, backgroundColor: theme.colors.black },
-    messageContainer: { width: "100%", padding: 10 },
-    contentMessage: { width: "90%", padding: 10, borderBottomLeftRadius: 12, borderTopRightRadius: 12 },
-    messageReceived: { backgroundColor: theme.colors.section, borderBottomRightRadius: 12 },
-    messageSended: { backgroundColor: theme.colors.blueOpacity, borderTopLeftRadius: 12 },
-    messageDetailBox: { width: "100%", flexDirection: "row-reverse", marginTop: 12 },
+    scrollContainer: { width: "100%", backgroundColor: theme.colors.black },
 })
 
 export default ConversationList

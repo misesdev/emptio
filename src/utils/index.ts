@@ -11,13 +11,19 @@ export const copyToClipboard = (text: string) => {
     useTranslate("message.copied").then(pushMessage)
 }
 
-export const getUserName = (user: User, maxSize: number = 16): string => {
-    const userName = user.display_name ?? user.displayName ?? user.name ?? user.pubkey ?? ""
+export const getUserName = (user: User, maxsize: number = 16): string => {
+    const username = user.display_name ?? user.displayName ?? user.name ?? user.pubkey ?? ""
 
-    if(userName.length > maxSize)
-        return `${userName?.substring(0,maxSize)}..` 
+    if(username.length > maxsize)
+        return `${username?.substring(0,maxsize)}..` 
 
-    return userName
+    return username
+}
+
+export const getClipedContent = (content: string, limit: number=50) => {
+    if(content.length > limit)
+        return `${content.substring(0,limit)}...`
+    return content
 }
 
 export const getDisplayPubkey = (pubkey: string, maxSize: number = 20) => {
@@ -61,4 +67,4 @@ export const extractVideoUrl = (content: string) => {
     const match = content.match(videoRegex);
 
     return match ? match[0] : null;
-};
+}

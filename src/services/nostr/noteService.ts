@@ -1,5 +1,5 @@
 import { NDKEvent, NDKFilter, NDKSubscriptionCacheUsage } from "@nostr-dev-kit/ndk-mobile"
-import { User } from "../memory/types"
+import { FeedVideosSettings, User } from "../memory/types"
 import useNDKStore from "../zustand/ndk"
 import { useFeedVideosStore } from "../zustand/feedVideos"
 import { extractVideoUrl } from "@/src/utils"
@@ -68,7 +68,8 @@ const listComments = async (event: NDKEvent, timeout: number=500) :Promise<NDKEv
 
 
 interface SubscriptionVideosProps {
-    videos: NDKEvent[]
+    videos: NDKEvent[],
+    feedSettings: FeedVideosSettings
 }
 
 interface VideoControlsProps {
@@ -79,9 +80,7 @@ const videoControlls : VideoControlsProps = {
     lastTimestamp: undefined
 }
 
-const subscriptionVideos = async ({ videos }: SubscriptionVideosProps) : Promise<NDKEvent[]> => {
-
-    const feedSettings = useFeedVideosStore.getState().feedSettings
+const subscriptionVideos = async ({ videos, feedSettings }: SubscriptionVideosProps) : Promise<Set<NDKEvent>> => {
 
     return new Promise((resolve) => {
         console.log("fetching events", feedSettings.VIDEOS_LIMIT)
@@ -99,22 +98,24 @@ const subscriptionVideos = async ({ videos }: SubscriptionVideosProps) : Promise
             groupable: false
         })
 
-        const newerEvents: NDKEvent[] = []
+        const newerEvents: Set<NDKEvent> = new Set()
+        
         subscription.on("event", event => {
-            if(newerEvents.length >= feedSettings.VIDEOS_LIMIT) {
+            if(newerEvents.size >= feedSettings.VIDEOS_LIMIT) {
                 return subscription.stop()
             }
             videoControlls.lastTimestamp = event.created_at
             const url = extractVideoUrl(event.content)
             if(url && !videos.find(e => e.id == event.id)) 
             {
-                if(!newerEvents.find(e => e.id == event.id))
-                    newerEvents.push(event)
+                const videoIds = new Set(videos.map(e => e.id))
+                if(!videoIds.has(event.id))
+                    newerEvents.add(event)
             }
         })
 
         const finish = () => {
-            if(newerEvents.length <= 0) pushMessage("nenhum vídeo novo encotrado")
+            if(newerEvents.size <= 0) pushMessage("nenhum vídeo novo encotrado")
             if(timeout) clearTimeout(timeout)
             console.log("finish")
             resolve(newerEvents)

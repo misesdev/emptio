@@ -1,5 +1,6 @@
 import { deleteEventsByCondition, selecMessageChats, 
-    selecMessages } from "@services/memory/database/events"
+    selecMessages, 
+    updateEventContent} from "@services/memory/database/events"
 import { getPairKey } from "@services/memory/pairkeys"
 import { User } from "@services/memory/types"
 import { getPubkeyFromTags } from "@services/nostr/events"
@@ -70,6 +71,8 @@ const decryptMessage = async (user: User, event: NDKEvent) : Promise<NDKEvent> =
         event.content = await nip04.decrypt(pair.privateKey, pubkey, event.content)
     }
 
+    await updateEventContent(event)
+
     return {...event} as NDKEvent
 }
 
@@ -79,20 +82,26 @@ type MessageProps = {
     message: string 
 }
 
-const sendMessage = async ({ user, follow, message }: MessageProps) : Promise<NDKEvent> => {
-    
+const sendMessage = async (props: NDKEvent | MessageProps) : Promise<NDKEvent> => {
+   
+    var event: NDKEvent = { } as NDKEvent
     const ndk = useNDKStore.getState().ndk
 
-    const event = await encryptMessage(user, follow, new NDKEvent(ndk, {
-        kind: 4,
-        pubkey: user.pubkey ?? "",
-        content: message,
-        tags: [["p", follow.pubkey ?? ""]],
-        created_at: Math.floor(Date.now() / 1000)
-    }))
+    if((props as MessageProps).message) {
+        const { user, follow, message } = props as MessageProps
+        event = await encryptMessage(user, follow, new NDKEvent(ndk, {
+            kind: 4,
+            pubkey: user.pubkey ?? "",
+            content: message,
+            tags: [["p", follow.pubkey ?? ""]],
+            created_at: Math.floor(Date.now() / 1000)
+        }))     
+    }
     
-    event.publishReplaceable()
-
+    if((props as NDKEvent).pubkey) {
+        event = props as NDKEvent
+    }
+    event?.publishReplaceable()
     return event
 }
 
