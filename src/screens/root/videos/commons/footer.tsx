@@ -52,16 +52,17 @@ const VideoFooter = ({ event, url }: Props) => {
     }, [event.id, user.pubkey, ndk])
 
     const handleReact = useCallback(async () => {
-        if(!reactions.current.length) {
-            noteService.reactNote({ note: event, reaction:"❣️" }).then(reaction => {
-                reactions.current = [...reactions.current, reaction]
-            })
-        }
-        else {
-            noteService.deleteReact(reactions.current[0]).then(reaction => {
-                reactions.current = reactions.current.filter(r => r.id != reaction.id)
-            })  
-        }
+        console.log(event.pubkey)
+        // if(!reactions.current.length) {
+        //     noteService.reactNote({ note: event, reaction:"❣️" }).then(reaction => {
+        //         reactions.current = [...reactions.current, reaction]
+        //     })
+        // }
+        // else {
+        //     noteService.deleteReact(reactions.current[0]).then(reaction => {
+        //         reactions.current = reactions.current.filter(r => r.id != reaction.id)
+        //     })  
+        // }
     }, [event])
 
     const handleFollow = useCallback(async () => {

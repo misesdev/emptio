@@ -10,6 +10,7 @@ export interface ChatUser {
 interface ChatStore {
     chats: ChatUser[],
     unreadChats: string[],
+    blackList: string[],
     addChat: (chat: ChatUser) => void,
     removeChat: (chat_id: string) => void,
     markAllRead: () => void,
@@ -20,6 +21,7 @@ interface ChatStore {
 const useChatStore = create<ChatStore>((set) => ({
     chats: [],
     unreadChats: [],
+    blackList: [],
     addChat: (newer: ChatUser) => {
         newer.unreadCount = 1
         set((state) => {

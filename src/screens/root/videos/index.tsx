@@ -29,7 +29,7 @@ const VideosFeed = ({ navigation }: StackScreenProps<any>) => {
     const { ndk } = useNDKStore()
     const isFetching = useRef<boolean>(false) 
     const lastTimestamp = useRef<number>()
-    const { feedSettings } = useFeedVideosStore()
+    const { feedSettings, blackList } = useFeedVideosStore()
     const { useTranslate } = useTranslateService()
     const [videos, setVideos] = useState<NDKEvent[]>([])
     const [paused, setPaused] = useState<boolean>(false)
@@ -72,7 +72,8 @@ const VideosFeed = ({ navigation }: StackScreenProps<any>) => {
             }
             lastTimestamp.current = event.created_at
             const url = extractVideoUrl(event.content)
-            if(url && !videos.find(v => v.id == event.id)) 
+            if(url && !videos.find(v => v.id == event.id) && 
+                !blackList.includes(event.pubkey)) 
             {
                 setVideos(prev => [...prev, event])
                 founds++
