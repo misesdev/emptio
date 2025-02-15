@@ -125,7 +125,7 @@ const VideosFeed = ({ navigation }: StackScreenProps<any>) => {
                 renderItem={renderItem}
                 keyExtractor={(item: NDKEvent) => item.id}
                 showsVerticalScrollIndicator={false}
-                viewabilityConfig={{ itemVisiblePercentThreshold: 50 }}
+                viewabilityConfig={{ itemVisiblePercentThreshold: 70 }}
                 onViewableItemsChanged={onViewableItemsChanged}
                 onEndReached={fetchVideos}
                 onEndReachedThreshold={.2}

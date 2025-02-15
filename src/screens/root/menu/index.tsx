@@ -18,6 +18,7 @@ import { NostrEvent } from "@nostr-dev-kit/ndk"
 import { copyToClipboard } from "@src/utils"
 import DeviceInfo from 'react-native-device-info'
 import { StackScreenProps } from "@react-navigation/stack"
+import AppShareBar from "./commons/shareapp"
 
 const UserMenuScreen = ({ navigation }: StackScreenProps<any>) => {
 
@@ -27,6 +28,7 @@ const UserMenuScreen = ({ navigation }: StackScreenProps<any>) => {
     const { useTranslate } = useTranslateService()
     const [forceUpdate, setForceUpdate] = useState()
     const [loading, setLoading] = useState(false)
+    const [shareVisible, setShareVisible] = useState(false)
 
     const handleCopySecretKey = async () => {
         const biometrics = await authService.checkBiometric()
@@ -94,14 +96,18 @@ const UserMenuScreen = ({ navigation }: StackScreenProps<any>) => {
                 </View>
 
                 <View style={styles.sectiontop}>
-                    <TouchableOpacity style={styles.mediumsection} activeOpacity={opacity}>
+                    <TouchableOpacity style={styles.mediumsection} 
+                        activeOpacity={opacity} onPress={() => setShareVisible(true)}
+                    >
                         <SectionContainer style={styles.mediumcontainer}>
                             <Ionicons name="people" color={theme.colors.white} size={theme.icons.large} />
                             <Text style={{ color: theme.colors.white, paddingVertical: 5 }}>{useTranslate("section.title.talkdevelopers")}</Text>
                             <Text style={{ color: theme.colors.gray, fontSize: 12 }}>{useTranslate("section.description.talkdevelopers")}</Text>
                         </SectionContainer>
                     </TouchableOpacity>
-                    <TouchableOpacity style={styles.mediumsection} activeOpacity={opacity}>
+                    <TouchableOpacity style={styles.mediumsection} 
+                        activeOpacity={opacity} onPress={() => setShareVisible(true)}
+                    >
                         <SectionContainer style={styles.mediumcontainer}>
                             <Ionicons name="paper-plane" color={theme.colors.white} size={theme.icons.large} />
                             <Text style={{ color: theme.colors.white, paddingVertical: 5 }}>{useTranslate("section.title.sharefriend")}</Text>
@@ -140,6 +146,7 @@ const UserMenuScreen = ({ navigation }: StackScreenProps<any>) => {
 
             </ScrollView>
             <SelectLanguageBox forceUpdate={setForceUpdate} />
+            <AppShareBar visible={shareVisible} setVisible={setShareVisible} />
             <View key={forceUpdate}></View>
             <MessageBox />
         </View>

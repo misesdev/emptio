@@ -1,7 +1,7 @@
 import theme from "@src/theme"
-import { StyleSheet, View, TouchableOpacity } from "react-native"
+import { StyleSheet, View, TouchableOpacity, FlatList } from "react-native"
 import Ionicons from 'react-native-vector-icons/Ionicons'
-import { useCallback, useEffect, useMemo, useRef, useState } from "react"
+import { useCallback, useEffect, useRef, useState } from "react"
 import { HeaderChats } from "./header"
 import { SearchBox } from "@components/form/SearchBox"
 import { useTranslateService } from "@src/providers/translateProvider"
@@ -18,6 +18,7 @@ import MessageBox, { showMessage } from "@/src/components/general/MessageBox"
 const ChatsScreen = ({ navigation }: StackScreenProps<any>) => {
    
     const timeout = useRef<any>(null)
+    const listRef = useRef<FlatList>(null)
     const { user, followsEvent } = useAuth()
     const { chats, markReadChat, setChats } = useChatStore()
     const { useTranslate } = useTranslateService()
@@ -71,6 +72,8 @@ const ChatsScreen = ({ navigation }: StackScreenProps<any>) => {
             const friends = filterChatsUsers.current.filter(c => !c.is_friend).map(c => c.chat_id)
             setFilteredChats(chats.filter(c => friends.includes(c.chat_id)))
         }
+
+        listRef.current?.scrollToIndex({ index: 0, animated: true })
     }, [chats, filterChatsUsers])
 
     const handleGroupAction = useCallback((action: ChatActionType) => {
@@ -122,7 +125,7 @@ const ChatsScreen = ({ navigation }: StackScreenProps<any>) => {
                 <ChatGroupAction onAction={handleGroupAction} />
             }
 
-            <ChatList chats={filteredChats} user={user}
+            <ChatList chats={filteredChats} user={user} listRef={listRef}
                 filters={filterChatsUsers.current} handleOpenChat={handleOpenChat}
                 selectedItems={selectedItems} 
                 selectionMode={selectionMode}

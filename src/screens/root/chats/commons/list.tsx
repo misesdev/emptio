@@ -1,9 +1,8 @@
 import { User } from "@services/memory/types"
-import { FlatList } from "react-native-gesture-handler"
-import { StyleSheet, Text } from "react-native"
+import { StyleSheet, Text, FlatList } from "react-native"
 import { useTranslateService } from "@src/providers/translateProvider"
 import { ChatUser } from "@services/zustand/chats"
-import { useCallback } from "react"
+import { RefObject, useCallback } from "react"
 import theme from "@src/theme"
 import { MutableRefObject } from "react"
 import ListItemChat from "./listItem"
@@ -19,12 +18,13 @@ type Props = {
     user: User, 
     chats?: ChatUser[],
     filters: FilterChat[],
+    listRef: RefObject<FlatList>,
     selectedItems: MutableRefObject<ChatUser[]>,
     selectionMode: MutableRefObject<boolean>,
     handleOpenChat: (chat_id: string, user: User) => void
 }
 
-const ChatList = ({ user, chats, filters, selectionMode, selectedItems, handleOpenChat }: Props) => {
+const ChatList = ({ user, chats, listRef, filters, selectionMode, selectedItems, handleOpenChat }: Props) => {
   
     const { useTranslate } = useTranslateService()
 
@@ -44,7 +44,7 @@ const ChatList = ({ user, chats, filters, selectionMode, selectedItems, handleOp
     }, [user, filters, handleOpenChat, selectionMode, selectedItems])
 
     return (
-        <FlatList
+        <FlatList ref={listRef}
             data={chats}
             extraData={selectionMode}
             renderItem={renderItem}
