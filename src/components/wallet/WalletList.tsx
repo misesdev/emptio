@@ -67,10 +67,10 @@ const WalletList = ({ wallets, navigation, reload }: Props) => {
 
 const styles = StyleSheet.create({
     scroll: { },
-    wallet: { marginVertical: 10, marginHorizontal: 6, borderRadius: 18 },
+    wallet: { marginVertical: 10, marginHorizontal: 6, borderRadius: 10 },
     title: { color: theme.colors.white, fontSize: 24, fontWeight: "bold", marginTop: 20, marginHorizontal: 10 },
     description: { fontSize: 12, marginHorizontal: 10, marginVertical: 6 },
-    button: { margin: 10, maxWidth: 150, paddingVertical: 14, borderRadius: 15, },
+    button: { margin: 10, maxWidth: 150, paddingVertical: 14, borderRadius: 10, },
     buttonText: { color: theme.colors.white, fontSize: 13, fontWeight: "bold", textAlign: 'center', marginHorizontal: 28 },
 })
 

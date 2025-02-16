@@ -41,7 +41,7 @@ export const WalletHeader = ({ wallet, showOptions }: WalletProps) => {
                 <Text style={[{ fontSize: 18 }, styles.headerText]}>{formatName}</Text>
                 <Text style={[{ fontSize: 30 }, styles.headerText]}>{balanceSats} Sats</Text>
                 <Text style={[{ fontSize: 14 }, styles.headerText]}>{balanceBTC} BTC</Text>
-                <Text style={[styles.headerText, { fontSize: 12, backgroundColor: walletColor, padding: 10, borderRadius: 15, maxWidth: 130, textAlign: "center" }]}>
+                <Text style={[styles.headerText, { fontSize: 12, backgroundColor: walletColor, padding: 10, borderRadius: 10, maxWidth: 130, textAlign: "center" }]}>
                     {wallet?.type == "bitcoin" && mainnetTag }
                     {wallet?.type == "testnet" && testnetTag }
                     {wallet?.type == "lightning" && lightningTag }

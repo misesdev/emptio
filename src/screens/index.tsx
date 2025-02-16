@@ -19,6 +19,7 @@ import { useFeedVideosStore } from "../services/zustand/feedVideos"
 
 const InitializeScreen = ({ navigation }: any) => {
 
+    const { initialize } = useFeedVideosStore()
     const { setNDK, setNdkSigner } = useNDKStore()
     const { setChats, addChat } = useChatStore()
     const { setUser, setWallets, setFollowsEvent } = useAuth()
@@ -27,7 +28,7 @@ const InitializeScreen = ({ navigation }: any) => {
 
     useEffect(() => { 
         handleVerifyLogon()
-        useFeedVideosStore.getState().initialize()
+        initialize()
     }, [])
 
     const handleVerifyLogon = async () => {

@@ -5,6 +5,7 @@ import { memo, useCallback, useEffect, useRef, useState } from "react"
 import { walletService } from "@src/core/walletManager"
 import { FollowItem } from "./FollowItem"
 import theme from "@src/theme"
+import { getUserName } from "@/src/utils"
 
 type FriendListProps = {
     searchTerm?: string,
@@ -18,7 +19,8 @@ export const FollowList = ({ searchTerm, onPressFollow, toPayment = false,
     searchable, searchTimout = 100 }: FriendListProps) => {
 
     const { follows } = useAuth()
-    const searchTimeout:any = useRef(null);
+    const listRef = useRef<FlatList>(null)
+    const searchTimeout:any = useRef(null)
     const [followList, setFollowList] = useState<User[]>(follows??[])
 
     if (searchable) {
@@ -28,11 +30,15 @@ export const FollowList = ({ searchTerm, onPressFollow, toPayment = false,
                 const filter = searchTerm?.trim()
                 if (filter?.length && !walletService.address.validate(filter)) {
                     const searchResult = follows?.filter(follow => {
-                        let filterNameLower = `${follow.name}${follow.display_name}`.toLowerCase()
+                        let filterNameLower = `${getUserName(follow, 30)}`.toLowerCase()
                         return filterNameLower.includes(filter.toLowerCase())
                     })
 
                     setFollowList(searchResult ?? [])
+                    listRef.current?.scrollToIndex({
+                        animated: true,
+                        index: 0
+                    })
                 }
                 else setFollowList(follows??[])
             }, searchTimout)
@@ -62,7 +68,7 @@ export const FollowList = ({ searchTerm, onPressFollow, toPayment = false,
     }, [])
 
     return (
-        <FlatList
+        <FlatList ref={listRef}
             data={followList}
             renderItem={renderItem}
             contentContainerStyle={[theme.styles.scroll_container, { paddingBottom: 30 }]}

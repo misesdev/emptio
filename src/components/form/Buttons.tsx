@@ -5,6 +5,7 @@ import theme from '@src/theme';
 
 type Props = {
     label: string,
+    disabled?: boolean,
     leftIcon?: IconNames,
     rightIcon?: IconNames,
     style?: StyleProp<ViewStyle>,
@@ -12,10 +13,10 @@ type Props = {
     color?: string
 }
 
-const TouchableEmptio = ({ label, style, leftIcon, rightIcon, onPress }: Props) => {
+const TouchableEmptio = ({ label, disabled=false, style, leftIcon, rightIcon, onPress }: Props) => {
 
     return (
-        <TouchableOpacity style={style} onPress={onPress} activeOpacity={.7}>
+        <TouchableOpacity disabled={disabled} style={style} onPress={onPress} activeOpacity={.7}>
             <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'center' }}>
                 {leftIcon && <Ionicons style={{ marginLeft: 10, color: theme.icons.white }} name={leftIcon} size={18} />}
                 <Text style={styles.text}> {label} </Text>
@@ -25,16 +26,16 @@ const TouchableEmptio = ({ label, style, leftIcon, rightIcon, onPress }: Props) 
     )
 }
 
-export const ButtonSuccess = ({ label, style, leftIcon, rightIcon, onPress }: Props) => {
-    return <TouchableEmptio label={label} leftIcon={leftIcon} rightIcon={rightIcon} onPress={onPress} style={[styles.button, styles.succes, style]} />
+export const ButtonSuccess = ({ label, style, disabled=false, leftIcon, rightIcon, onPress }: Props) => {
+    return <TouchableEmptio label={label} disabled={disabled} leftIcon={leftIcon} rightIcon={rightIcon} onPress={onPress} style={[styles.button, styles.succes, style]} />
 }
 
-export const ButtonPrimary = ({ label, style, leftIcon, rightIcon, onPress }: Props) => {
-    return <TouchableEmptio label={label} leftIcon={leftIcon} rightIcon={rightIcon} onPress={onPress} style={[styles.button, styles.primary, style]} />
+export const ButtonPrimary = ({ label, style, disabled=false, leftIcon, rightIcon, onPress }: Props) => {
+    return <TouchableEmptio label={label} disabled={disabled} leftIcon={leftIcon} rightIcon={rightIcon} onPress={onPress} style={[styles.button, styles.primary, style]} />
 }
 
-export const ButtonDanger = ({ label, style, leftIcon, rightIcon, onPress }: Props) => {
-    return <TouchableEmptio label={label} leftIcon={leftIcon} rightIcon={rightIcon} onPress={onPress} style={[styles.button, styles.danger, style]} />
+export const ButtonDanger = ({ label, style, disabled=false, leftIcon, rightIcon, onPress }: Props) => {
+    return <TouchableEmptio label={label} disabled={disabled} leftIcon={leftIcon} rightIcon={rightIcon} onPress={onPress} style={[styles.button, styles.danger, style]} />
 }
 
 export const ButtonDefault = ({ label, style, leftIcon, rightIcon, onPress }: Props) => {
@@ -78,7 +79,7 @@ export const ButtonIcon = ({ icon, size, style, buttonStyle, onPress }: IconProp
 }
 
 const styles = StyleSheet.create({
-    button: { margin: 10, minWidth: 150, maxWidth: "96%", paddingVertical: 14, borderRadius: 18 },
+    button: { margin: 10, minWidth: 150, maxWidth: "96%", paddingVertical: 14, borderRadius: 10 },
     succes: { backgroundColor: theme.colors.green },
     primary: { backgroundColor: theme.colors.blue },
     danger: { backgroundColor: theme.colors.red },

@@ -4,9 +4,9 @@ import { ScrollView, StyleSheet, Text, View } from "react-native"
 import { ButtonPrimary } from "@components/form/Buttons"
 import { useTranslateService } from "@src/providers/translateProvider"
 import { useEffect, useState } from "react"
-import theme from "@src/theme"
 import { StackScreenProps } from "@react-navigation/stack"
 import { Wallet } from "@/src/services/memory/types"
+import theme from "@src/theme"
 
 type SeedParams = {
     wallet: Wallet,
@@ -63,12 +63,13 @@ const CreatedSeedScren = ({ navigation, route }: StackScreenProps<any>) => {
 }
 
 const styles = StyleSheet.create({
-    title: { fontSize: 30, maxWidth: "90%", fontWeight: "bold", textAlign: "center", color: theme.colors.white, marginVertical: 20 },
+    title: { fontSize: 30, maxWidth: "90%", fontWeight: "bold", textAlign: "center", 
+        color: theme.colors.white, marginVertical: 20 },
     seedarea: { width: "100%", marginVertical: 20, flexDirection: "row" },
-    buttonarea: { width: "100%", paddingVertical: 6, marginBottom: 40, justifyContent: "center", alignItems: "center" },
+    buttonarea: { width: "100%", paddingVertical: 6, marginBottom: 40, 
+        justifyContent: "center", alignItems: "center" },
     word: { color: theme.colors.white, fontSize: 14, fontWeight: "bold", 
-        marginVertical: 10, padding: 15, paddingVertical: 20, borderRadius: 10, 
-        backgroundColor: theme.colors.blueOpacity }
+        textAlign: "center", padding: 15, paddingVertical: 20, borderRadius: 10 }
 })
 
 export default CreatedSeedScren

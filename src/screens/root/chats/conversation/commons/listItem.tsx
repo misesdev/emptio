@@ -104,7 +104,7 @@ const ListItemMessage = ({
                         isUser ? styles.messageSended : styles.messageReceived,
                         animatedSwipeStyle
                     ]}>
-                        <TouchableOpacity activeOpacity={0.7} onPress={handleOnPress} delayLongPress={300} onLongPress={handleSelectionMode}>
+                        <TouchableOpacity activeOpacity={0.7} onPress={handleOnPress} delayLongPress={100} onLongPress={handleSelectionMode}>
                             <ReplyTool user={user} event={item} follow={follow} messages={items} focusEventOnList={focusEventOnList} />
                             <NoteViewer showUser={false} note={event} />
                             <View style={[styles.messageDetailBox, { flexDirection: isUser ? "row-reverse" : "row" }]}>

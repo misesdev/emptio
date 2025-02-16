@@ -21,7 +21,7 @@ export const saveFeedVideoSettings = async (settings: FeedVideosSettings) => {
     await AsyncStorage.setItem("feed-videos-settings", JSON.stringify(settings))
 }
 
-var defaultFeedSettings: FeedVideosSettings = { 
+const defaultFeedSettings: FeedVideosSettings = { 
     FETCH_LIMIT: 100,
     VIDEOS_LIMIT: 15,
     filterTags: [
@@ -41,19 +41,19 @@ export const getFeedVideoSettings = async () : Promise<FeedVideosSettings> => {
     return settings
 }
 
-var defaultBlackList: string[] = [
+const defaultBlackList: string[] = [
     "12912202b395d8fbdcef436eea9f4638b8c09fbc064813568e9592685176bc9f",
     "ae8b31f0c09c3ce1d4ea604c395b34b384b592e472f74e180d72307c8af8583c"
 ]
 
 export const getBlackListPubkeys = async (): Promise<string[]> => {
     
-    var blackList: string[] = defaultBlackList
+    var blackList = defaultBlackList
 
-    var data = await AsyncStorage.getItem("feed-videos-settings")
+    var data = await AsyncStorage.getItem("black-list-pubkeys")
 
     if(data)
-        blackList = JSON.parse(data) as string[] 
+        blackList = JSON.parse(data) as string[]
 
     return blackList
 }

@@ -85,7 +85,7 @@ const ListItemChat = ({ item, user, filters,
         >
             <TouchableOpacity
                 activeOpacity={.7}
-                delayLongPress={300}
+                delayLongPress={100}
                 style={styles.chatRow}
                 onPress={handleOnPress}
                 onLongPress={handleSelectionMode}

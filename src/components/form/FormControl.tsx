@@ -75,7 +75,8 @@ export const FormControlSwitch = ({ label, value, onChangeValue, fullScreen = fa
 
 const styles = StyleSheet.create({
     control: { width: "100%", alignItems: "center", paddingVertical: 5 },
-    container: { color: theme.colors.white, backgroundColor: theme.input.backGround, borderRadius: 24, margin: 5 },
+    container: { color: theme.colors.white, backgroundColor: theme.input.backGround, 
+        borderRadius: 10, margin: 5 },
     label: { width: "100%", fontSize: 12, fontWeight: "400", marginTop: 10, paddingHorizontal: 20, color: theme.colors.white },
     labelSwitch: { width: "100%", fontSize: 15, fontWeight: "400", marginTop: 10, paddingHorizontal: 20, color: theme.colors.white },
     input: { paddingVertical: 15, paddingHorizontal: 30, color: theme.input.textColor }

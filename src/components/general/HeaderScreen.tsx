@@ -19,7 +19,7 @@ export const HeaderScreen = ({ title, onClose, style }: HeaderProps) => {
             </View>
             <View style={{ width: "25%", padding: 6, flexDirection: "row-reverse" }}>
                 <TouchableOpacity activeOpacity={.7} onPress={onClose} style={styles.button}>
-                    <Ionicons name="close" size={theme.icons.medium} color={theme.colors.white} />
+                    <Ionicons name="close" size={30} color={theme.colors.white} />
                 </TouchableOpacity>
             </View>
         </View>
@@ -29,5 +29,5 @@ export const HeaderScreen = ({ title, onClose, style }: HeaderProps) => {
 const styles = StyleSheet.create({
     header: { backgroundColor: theme.colors.black, flexDirection: "row", width: "100%" },
     title: { color: theme.colors.white, fontSize: 20, fontWeight: "bold", marginLeft: 15 },
-    button: { borderRadius: 20, padding: 6, backgroundColor: theme.colors.gray, marginRight: 15 }
+    button: { borderRadius: 20, padding: 6, marginRight: 15 }
 })

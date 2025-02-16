@@ -25,10 +25,12 @@ const VideoFooter = ({ event, url }: Props) => {
     const { user, follows, followsEvent } = useAuth()
     const { useTranslate } = useTranslateService()
     const profile = useRef<User>({})
+    const timeout = useRef<any>(null)
     const [profileError, setProfileError] = useState<boolean>(false)
     const [commentsVisible, setCommentsVisible] = useState<boolean>(false)
     const [shareVisible, setShareVisible] = useState<boolean>(false)
-    const reactions = useRef<NDKEvent[]>([])
+    const [reacted, setReacted] = useState<boolean>(false)
+    const [reactions, setReactions] = useState<NDKEvent[]>([])
 
     const isFriend = useMemo(() => !!follows?.some(f => f.pubkey === event.pubkey), [follows, event.pubkey])
     
@@ -45,25 +47,37 @@ const VideoFooter = ({ event, url }: Props) => {
 
             events.forEach(note => {
                 if(note.kind == 0) profile.current = JSON.parse(note.content) as User
-                if(note.kind == 7) reactions.current = [...reactions.current, note]
+                if(note.kind == 7) {
+                    setReactions(prev => [...prev, note])
+                    setReacted(true)
+                }
             })
         }
         fetchData()
     }, [event.id, user.pubkey, ndk])
 
     const handleReact = useCallback(async () => {
-        console.log(event.pubkey)
-        // if(!reactions.current.length) {
-        //     noteService.reactNote({ note: event, reaction:"❣️" }).then(reaction => {
-        //         reactions.current = [...reactions.current, reaction]
-        //     })
-        // }
-        // else {
-        //     noteService.deleteReact(reactions.current[0]).then(reaction => {
-        //         reactions.current = reactions.current.filter(r => r.id != reaction.id)
-        //     })  
-        // }
-    }, [event])
+        if(!reacted) {
+            setReacted(prev => !prev)
+            // setTimeout(() => { 
+            //     noteService.reactNote({ note: event, reaction:"❣️" }).then(reaction => {
+            //         setReactions(prev => [...prev, reaction])
+            //     })
+            // }, 20)
+        }
+        if(reacted) {
+            setReacted(prev => !prev)
+            setTimeout(() => {
+                console.log(reactions)
+                if(reactions[0]) {
+                    noteService.deleteReact(reactions[0]).then(reaction => {
+                        setReactions(prev => [...prev.filter(r => r.id != reaction.id)])
+                        console.log("deleted")
+                    })
+                }
+            }, 20)
+        }
+    }, [event, reactions])
 
     const handleFollow = useCallback(async () => {
         setTimeout(async () => {
@@ -81,7 +95,7 @@ const VideoFooter = ({ event, url }: Props) => {
             <View style={styles.reactionControls}>
                 <TouchableOpacity onPress={handleReact} style={styles.reactionButton}>
                     <Ionicons 
-                        name={reactions.current.length ? "heart" : "heart-outline"} 
+                        name={reacted ? "heart" : "heart-outline"} 
                         size={32} color={theme.colors.white} 
                     />
                 </TouchableOpacity>
@@ -121,20 +135,15 @@ const VideoFooter = ({ event, url }: Props) => {
                     </TouchableOpacity>
                 </View>
                 <View style={{ width: "25%", paddingVertical: 10, flexDirection: "row" }}>
-                    <TouchableOpacity activeOpacity={.7} onPress={handleFollow} 
-                        style={styles.followbutton} 
-                    >
-                        {/* {isFriend && */}
-                        {/*     <Text style={{ color: theme.colors.white }}> */}
-                        {/*         {useTranslate("commons.unfollow")} */}
-                        {/*     </Text> */}
-                        {/* } */}
-                        {!isFriend && 
+                    {!isFriend && 
+                        <TouchableOpacity activeOpacity={.7} onPress={handleFollow} 
+                            style={styles.followbutton} 
+                        >
                             <Text style={{ color: theme.colors.white }}>
                                 {useTranslate("commons.follow")}
                             </Text>
-                        }
-                    </TouchableOpacity>
+                        </TouchableOpacity>
+                    }
                 </View>
             </View>
             <VideoDescription content={event.content} url={url} />

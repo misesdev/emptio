@@ -8,13 +8,12 @@ import { useTranslateService } from "@src/providers/translateProvider"
 import { Network } from "@services/bitcoin/types"
 import { useEffect, useState } from "react"
 import theme from "@src/theme"
-import { StackScreenProps } from "@react-navigation/stack"
 
 type ScreenParams = {
     params: { wallet: Wallet }
 }
 
-const WalletManagerScreen = ({ navigation, route }: StackScreenProps<any>) => {
+const WalletManagerScreen = ({ navigation, route }: any) => {
 
     const wallet = route?.params?.wallet as Wallet
     const { useTranslate } = useTranslateService()

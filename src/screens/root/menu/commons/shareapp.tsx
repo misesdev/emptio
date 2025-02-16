@@ -1,11 +1,9 @@
 
-import { NDKEvent } from "@nostr-dev-kit/ndk-mobile"
 import { Modal, StyleSheet, View, Text, TouchableOpacity } from "react-native"
 import { FollowList } from "@components/nostr/follow/FollowList"
 import { User } from "@services/memory/types"
 import { SearchBox } from "@components/form/SearchBox"
 import { useTranslateService } from "@src/providers/translateProvider"
-import { messageService } from "@src/core/messageManager"
 import { useAuth } from "@src/providers/userProvider"
 import { pushMessage } from "@services/notification"
 import { getUserName } from "@src/utils"
@@ -24,7 +22,6 @@ const AppShareBar = ({ visible, setVisible }: ChatProps) => {
 
     const handleSend = (follow: User) => {
         
-
         // setTimeout(() => { 
         //     messageService.sendMessage({ user, follow, message })
         // }, 20)
