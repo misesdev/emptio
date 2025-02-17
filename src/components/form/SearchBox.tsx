@@ -54,7 +54,8 @@ export const SearchBox = ({ label, textCenter, delayTime = 500, seachOnLenth = 1
 
 const styles = StyleSheet.create({
     control: { width: "100%", alignItems: "center", paddingVertical: 5 },
-    container: { width: "94%", color: theme.colors.white, backgroundColor: theme.input.backGround, borderRadius: 24, margin: 5 },
+    container: { width: "94%", color: theme.colors.white, backgroundColor: theme.input.backGround,
+        borderRadius: 10, margin: 5 },
     input: { paddingVertical: 15, paddingHorizontal: 10, color: theme.input.textColor },
     searchIcon: { width: "14%", justifyContent: "center", alignItems: "center" },
     searchButton: { width: "14%", justifyContent: "center", alignItems: "center" }

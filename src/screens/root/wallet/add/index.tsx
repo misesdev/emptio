@@ -52,6 +52,7 @@ const AddWalletScreen = ({ navigation }: StackScreenProps<any>) => {
             return pushMessage(useTranslate("message.wallet.nameempty"))
 
         setLoading(true)
+        setDisabled(true)
 
         setTimeout(async () => {
             const response = await walletService.create({ 
@@ -83,6 +84,7 @@ const AddWalletScreen = ({ navigation }: StackScreenProps<any>) => {
             }
 
             setLoading(false)
+            setDisabled(false)
         }, 20)
     }
 
@@ -91,9 +93,6 @@ const AddWalletScreen = ({ navigation }: StackScreenProps<any>) => {
         
         navigation.navigate("import-wallet-stack", { type })
     }
-
-    if (loading)
-        return <SplashScreen />
 
     return (
         <ScrollView contentContainerStyle={theme.styles.container}>
@@ -109,11 +108,11 @@ const AddWalletScreen = ({ navigation }: StackScreenProps<any>) => {
 
             <View style={{ width: "100%", alignItems: "center", marginVertical: 30 }}>
                 <TouchableOpacity activeOpacity={.7}
-                    style={[styles.selection, { borderWidth: walletType == "bitcoin" ? 1 : 0 }]}
+                    style={[styles.selection, { borderColor: walletType == "bitcoin" ? 
+                        theme.colors.white : theme.colors.transparent }]}
                     onPress={() => handleWalletType("bitcoin")}
                 >
                     <View style={{ width: "15%", height: "100%", alignItems: "center", justifyContent: "center" }}>
-                        {/* <Image source={{ uri: "" }} style={{ }}/> */}
                         <Ionicons name="logo-bitcoin" size={theme.icons.large} color={theme.colors.orange} />
                     </View>
                     <View style={{ width: "85%" }}>
@@ -127,11 +126,11 @@ const AddWalletScreen = ({ navigation }: StackScreenProps<any>) => {
                 </TouchableOpacity>
 
                 <TouchableOpacity activeOpacity={.7}
-                    style={[styles.selection, { borderWidth: walletType == "testnet" ? 1 : 0 }]}
+                    style={[styles.selection, { borderColor: walletType == "testnet" ? 
+                        theme.colors.white : theme.colors.transparent }]}
                     onPress={() => handleWalletType("testnet")}
                 >
                     <View style={{ width: "15%", height: "100%", alignItems: "center", justifyContent: "center" }}>
-                        {/* <Image source={{ uri: "" }} style={{ }}/> */}
                         <Ionicons name="logo-bitcoin" size={theme.icons.large} color={theme.colors.green} />
                     </View>
                     <View style={{ width: "85%" }}>
@@ -164,14 +163,14 @@ const AddWalletScreen = ({ navigation }: StackScreenProps<any>) => {
             </View>
 
             {/* Import wallet from seed phrase */}
-
             <ButtonLink label={useTranslate("commons.import")} onPress={handleImportWallet} color={theme.colors.gray} />
 
             <View style={styles.buttonArea}>
                 <ButtonPrimary label={useTranslate("commons.create")} 
-                    onPress={() => handleCreate()} disabled={disabled}
-                    style={{ backgroundColor: disabled ? 
-                        theme.colors.disabled : theme.colors.blue }}
+                    onPress={() => handleCreate()} disabled={disabled} loading={loading}
+                    style={{ backgroundColor: disabled ? theme.colors.disabled 
+                        : theme.colors.blue 
+                    }}
                 />
             </View>
         </ScrollView>
@@ -182,7 +181,7 @@ const styles = StyleSheet.create({
     title: { top: 50, fontSize: 22, fontWeight: 'bold', position: "absolute", 
         color: theme.colors.white },
     selection: { width: "90%", minHeight: 20, maxHeight: 100, borderRadius: 10, 
-        marginVertical: 10, flexDirection: "row", borderColor: theme.colors.white },
+        marginVertical: 10, flexDirection: "row", borderWidth: 1 },
     typeTitle: { fontSize: 16, fontWeight: "bold", marginTop: 15, color: theme.colors.white },
     typeDescription: { marginBottom: 15, color: theme.colors.gray },
     buttonArea: { width: '100%', position: 'absolute', justifyContent: 'center', 

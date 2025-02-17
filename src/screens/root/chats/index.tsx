@@ -73,7 +73,8 @@ const ChatsScreen = ({ navigation }: StackScreenProps<any>) => {
             setFilteredChats(chats.filter(c => friends.includes(c.chat_id)))
         }
 
-        listRef.current?.scrollToIndex({ index: 0, animated: true })
+        if(chats.length)
+            listRef.current?.scrollToIndex({ index: 0, animated: true })
     }, [chats, filterChatsUsers])
 
     const handleGroupAction = useCallback((action: ChatActionType) => {
@@ -112,14 +113,12 @@ const ChatsScreen = ({ navigation }: StackScreenProps<any>) => {
 
     return (
         <View style={theme.styles.container}>
-
+            
+            <SearchBox delayTime={100} seachOnLenth={0}
+                label={useTranslate("commons.search")} onSearch={handleSearch} 
+            />
             {!selectionMode.current &&
-                <>
-                    <SearchBox delayTime={100} seachOnLenth={0}
-                        label={useTranslate("commons.search")} onSearch={handleSearch} 
-                    /> 
-                    <ChatFilters onFilter={handleFilter} activeSection={filterSection} />
-                </>
+                <ChatFilters onFilter={handleFilter} activeSection={filterSection} />
             }
             {selectionMode.current &&
                 <ChatGroupAction onAction={handleGroupAction} />

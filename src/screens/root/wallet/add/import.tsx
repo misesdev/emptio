@@ -2,7 +2,6 @@ import { HeaderScreen } from "@components/general/HeaderScreen"
 import { StyleSheet, View, Text } from "react-native"
 import { FormControl } from "@components/form/FormControl"
 import { ButtonPrimary } from "@components/form/Buttons"
-import SplashScreen from "@components/general/SplashScreen"
 import { walletService } from "@src/core/walletManager"
 import { pushMessage } from "@services/notification"
 import { useTranslateService } from "@src/providers/translateProvider"
@@ -17,6 +16,7 @@ const ImportWalletScreen = ({ navigation, route }: StackScreenProps<any>) => {
     const { setWallets } = useAuth()
     const type = route?.params?.type as WalletType
     const [loading, setLoading] = useState(false)
+    const [disabled, setDisabled] = useState(true)
     const [walletName, setWalletName] = useState<string>("")
     const [seedPhrase, setSeedPhrase] = useState<string>("")
     const [passPhrase, setPassPhrase] = useState<string>()
@@ -31,17 +31,35 @@ const ImportWalletScreen = ({ navigation, route }: StackScreenProps<any>) => {
         })
     })
 
+    const handleSetName = (value: string) => {
+        setWalletName(value)
+        setTimeout(Validate, 20)
+    }
+
+    const handleSetSeed = (value: string) => {
+        setSeedPhrase(value)
+        setTimeout(Validate, 20)
+    }
+
+    const Validate = () => {
+        var words = seedPhrase?.trim().split(" ")
+        if(words?.length != 12) return setDisabled(true)
+        if(walletName.length <= 5) return setDisabled(true)
+        return setDisabled(false)
+    }
+
     const handleImport = async () => {
 
-        var words = seedPhrase?.trim().split(" ")
+        // var words = seedPhrase?.trim().split(" ")
 
-        if (!walletName)
-            return pushMessage(useTranslate("message.wallet.nameempty"))
+        // if (!walletName)
+        //     return pushMessage(useTranslate("message.wallet.nameempty"))
 
-        if (words && words?.length < 12 || words.length > 12)
-            return pushMessage(`${useTranslate("message.wallet.invalidseed")} ${words.length}.`)
+        // if (words && words?.length < 12 || words.length > 12)
+        //     return pushMessage(`${useTranslate("message.wallet.invalidseed")} ${words.length}.`)
         
         setLoading(true)
+        setDisabled(true)
 
         setTimeout(async () => {
             const response = await walletService.import({ 
@@ -53,17 +71,15 @@ const ImportWalletScreen = ({ navigation, route }: StackScreenProps<any>) => {
 
             if(setWallets) setWallets(await walletService.list())
 
-            setLoading(false)
-
             if (response.success)
                 navigation.reset({ index: 0, routes: [{ name: "core-stack" }] })
             else if(response.message)
                 pushMessage(response.message)
-        }, 50)
+            
+            setDisabled(false)
+            setLoading(false)
+        }, 20)
     }
-
-    if (loading)
-        return <SplashScreen />
 
     return (
         <View style={theme.styles.container}>
@@ -85,17 +101,30 @@ const ImportWalletScreen = ({ navigation, route }: StackScreenProps<any>) => {
 
             <FormControl  
                 value={walletName} 
-                onChangeText={setWalletName}                 
+                onChangeText={handleSetName}                 
                 label={useTranslate("labels.wallet.name")}
             />
 
-            <FormControl label="Seed Phrase" value={seedPhrase} onChangeText={value => setSeedPhrase(value.toLowerCase())} isTextArea />
+            <FormControl isTextArea
+                value={seedPhrase} 
+                label="Seed Phrase"
+                onChangeText={value => handleSetSeed(value.toLowerCase())}  
+            />
             
-            <FormControl label={useTranslate("labels.wallet.password")} value={passPhrase} onChangeText={setPassPhrase} type="password" /> 
+            <FormControl value={passPhrase}
+                label={useTranslate("labels.wallet.password")} 
+                onChangeText={setPassPhrase} type="password" 
+            /> 
            
             {/* Footer */}
             <View style={styles.buttonArea}>
-                <ButtonPrimary label={useTranslate("commons.import")} onPress={() => handleImport()} />
+                <ButtonPrimary disabled={disabled} loading={loading}
+                    label={useTranslate("commons.import")} 
+                    style={{ backgroundColor: disabled ? theme.colors.disabled 
+                        : theme.colors.blue 
+                    }}
+                    onPress={() => handleImport()} 
+                />
             </View>
         </View>
     )

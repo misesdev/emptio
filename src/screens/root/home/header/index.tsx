@@ -6,6 +6,7 @@ import { pushMessage } from "@services/notification"
 import { Wallet } from "@services/memory/types"
 import { StackNavigationProp } from "@react-navigation/stack"
 import theme from "@src/theme"
+import { useState } from "react"
 
 type Props = {
     navigation: StackNavigationProp<any>
@@ -14,6 +15,7 @@ type Props = {
 export const HeaderHome = ({ navigation }: Props) => {
 
     const { user, wallets } = useAuth()
+    const [error, setError] = useState(false)
     const { useTranslate } = useTranslateService()
 
     const goToDonate = (items: Wallet[]) => {
@@ -29,27 +31,29 @@ export const HeaderHome = ({ navigation }: Props) => {
         <View style={styles.header}>
             <View style={{ width: "15%", alignItems: "center", justifyContent: "center" }}>
                 <TouchableOpacity onPress={() => navigation.navigate("user-menu-stack")}>
-                    {user?.picture && <Image source={{ uri: user?.picture }} style={styles.userMenu} />}
-                    {!!!user?.picture && <Image source={require("@assets/images/defaultProfile.png")} style={styles.userMenu} />}
+                    <Image style={styles.userMenu}
+                        onError={() => setError(true)}
+                        source={(error || !user.picture) ? require("@assets/images/defaultProfile.png")
+                            : { uri: user?.picture }}
+                    />
                 </TouchableOpacity>
             </View>
-            <View style={{ width: "60%", alignItems: "center", justifyContent: "center" }}>
-                {/* <SearchButton label={useTranslate("commons.search")} onPress={() => navigation.navigate("search-home-stack")} /> */}
+            <View style={{ width: "70%", alignItems: "center", justifyContent: "center" }}>
                 <Text style={{ color: theme.colors.white, fontSize: 18, fontWeight: "600" }}>
                     {useTranslate("commons.hello")}, {user?.display_name?.substring(0, 15)}
                     {user?.display_name && user?.display_name?.length > 15 && ".."}
                 </Text>    
             </View>
-            <View style={{ width: "12%", alignItems: "center", justifyContent: "center" }}>
+            <View style={{ width: "15%", alignItems: "center", justifyContent: "center" }}>
                 <TouchableOpacity onPress={() => goToDonate(wallets)}>
                     <Ionicons name="heart" color={theme.colors.gray} size={theme.icons.large} />
                 </TouchableOpacity>
             </View>
-            <View style={{ width: "13%", alignItems: "center", justifyContent: "center" }}>
-                <TouchableOpacity onPress={() => navigation.navigate("add-follow-stack")}>
-                    <Ionicons name="person-add-sharp" color={theme.colors.gray} size={theme.icons.large} />
-                </TouchableOpacity>
-            </View>
+            {/* <View style={{ width: "13%", alignItems: "center", justifyContent: "center" }}> */}
+            {/*     <TouchableOpacity onPress={() => navigation.navigate("add-follow-stack")}> */}
+            {/*         <Ionicons name="person-add-sharp" color={theme.colors.gray} size={theme.icons.large} /> */}
+            {/*     </TouchableOpacity> */}
+            {/* </View> */}
         </View>
     )
 }
@@ -64,8 +68,6 @@ const styles = StyleSheet.create({
     userMenu: {
         width: theme.icons.extra,
         height: theme.icons.extra,
-        borderRadius: 20,
-        borderColor: theme.colors.blue,
-        // borderWidth: 2
+        borderRadius: 50
     }
 })

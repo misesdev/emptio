@@ -1,53 +1,62 @@
 import { useState } from "react";
-import SplashScreen from "@components/general/SplashScreen";
 import { Image, StyleSheet, Text, View } from "react-native";
 import { ButtonPrimary } from "@components/form/Buttons";
-import { TextBox } from "@components/form/TextBoxs";
 import MessageBox, { showMessage } from "@components/general/MessageBox";
-import { userService } from "@src/core/userManager";
+import { createFollowEvent, userService } from "@src/core/userManager";
 import { useAuth } from "@src/providers/userProvider";
 import { useTranslateService } from "@src/providers/translateProvider";
-import useNDKStore from "@services/zustand/ndk";
-import { subscribeUserChat } from "@services/nostr/pool";
 import useChatStore from "@services/zustand/chats";
+import { pushUserFollows, subscribeUser } from "@services/nostr/pool";
+import { FormControl } from "@components/form/FormControl";
 import theme from "@src/theme";
+import { getPairKey } from "@/src/services/memory/pairkeys";
 
 const RegisterScreen = ({ navigation }: any) => {
 
     const { addChat } = useChatStore()
-    const { setNdkSigner } = useNDKStore()
-    const { setUser, setFollows } = useAuth()
+    const { setUser, setFollowsEvent } = useAuth()
     const { useTranslate } = useTranslateService()
     const [userName, setUserName] = useState("")
     const [loading, setLoading] = useState(false)
+    const [disabled, setDisabled] = useState(true)
+
+    const setValidateUserName = (value: string) => {
+        setDisabled(value.length < 5)
+        setUserName(value)
+    }
 
     const handlerRegister = async () => {
-        if (userName) {
-
-            if (userName.length <= 5)
-                return showMessage({ message: useTranslate("message.profile.alertname") })
-
+        if (userName)
+        {
             setLoading(true)
+            setDisabled(true)
             setTimeout(async () => {
-                const result = await userService.signUp({ userName, setUser, setFollows })
+                const result = await userService.signUp({ userName, setUser })
 
                 if (result.success && result.data) 
-                { 
-                    setNdkSigner(result.data)
-                    subscribeUserChat({ user: result.data, addChat })
+                {
+                    subscribeUser({ user: result.data, addChat })
+
+                    const pairKey = await getPairKey(result.data.keychanges??"")
+                    
+                    const followsEvent = createFollowEvent(result.data ?? {}, [
+                        ["p", result.data.pubkey??""]
+                    ])
+
+                    await pushUserFollows(followsEvent, pairKey)
+
+                    if(setFollowsEvent) setFollowsEvent(followsEvent)
 
                     return navigation.reset({ index: 0, routes: [{ name: "core-stack" }] })
                 }
                 else {
                     showMessage({ message: `${useTranslate("message.request.error")} ${result.message}` })
+                    setDisabled(false)
                     setLoading(false)
                 }
-            }, 100)
+            }, 20)
         }
     }
-
-    if (loading)
-        return <SplashScreen message="" />
 
     return (
         <View style={{ flex: 1 }}>
@@ -56,12 +65,23 @@ const RegisterScreen = ({ navigation }: any) => {
 
                 <Text style={styles.title}>{useTranslate("register.message")}</Text>
 
-                <TextBox placeholder={useTranslate("labels.username")} value={userName} onChangeText={setUserName} />
+                <View style={{ width: "96%" }}>
+                    <FormControl value={userName}
+                        label={useTranslate("labels.username")} 
+                        onChangeText={setValidateUserName}
+                    />
+                </View>
 
                 <View style={{ height: 100 }}></View>
 
                 <View style={styles.buttonArea}>
-                    <ButtonPrimary label={useTranslate("commons.signup")} onPress={handlerRegister} />
+                    <ButtonPrimary loading={loading} disabled={disabled}
+                        label={useTranslate("commons.signup")} 
+                        onPress={handlerRegister}
+                        style={{ backgroundColor: disabled ? theme.colors.disabled
+                            : theme.colors.blue
+                        }}
+                    />
                 </View>
             </View>
             <MessageBox />

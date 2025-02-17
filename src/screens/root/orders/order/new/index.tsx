@@ -4,11 +4,12 @@ import { AmountBox } from "@components/wallet/inputs"
 import Ionicons from 'react-native-vector-icons/Ionicons'
 import { useTranslateService } from "@src/providers/translateProvider"
 import { useAuth } from "@src/providers/userProvider"
+import { StackScreenProps } from "@react-navigation/stack"
 import { Wallet } from "@services/memory/types"
 import { useEffect, useState } from "react"
 import theme from "@src/theme"
 
-const NewOrderScreen = ({ navigation }: any) => {
+const NewOrderScreen = ({ navigation }: StackScreenProps<any>) => {
 
     const { wallets } = useAuth()
     const { useTranslate } = useTranslateService()
@@ -31,12 +32,21 @@ const NewOrderScreen = ({ navigation }: any) => {
             backgroundColor: theme.colors.black
         }}>
             {/* Hader */}
-            <HeaderScreen title={useTranslate("order.new.title")} onClose={() => navigation.navigate("feed")} />
+            <HeaderScreen 
+                title={useTranslate("order.new.title")} 
+                onClose={() => navigation.goBack()} 
+            />
 
             {/* Body */}
             <Text style={styles.title}>{useTranslate("order.new.amount-title")}</Text>
 
-            <AmountBox wallet={wallet} setWallet={setWallet} manageWallet={wallets.length > 1} value={amount} onChangeText={setAmount} isValidHandle={(valid) => setNextDisabled(!valid)} />
+            <AmountBox wallet={wallet} 
+                setWallet={setWallet}
+                manageWallet={wallets.length > 1} 
+                value={amount} 
+                onChangeText={setAmount} 
+                isValidHandle={(valid) => setNextDisabled(!valid)}
+            />
 
             {/* Footer */}
             <View style={styles.buttonArea}>

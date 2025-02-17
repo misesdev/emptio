@@ -52,6 +52,7 @@ const ConversationChat = ({ navigation, route }: StackScreenProps<any>) => {
     }, [chat_id, unreadChats])
 
     const sendMessage = async (follow: User) => {
+        if(!message.trim().length) return
         const messageTags: string[][] = [["p", follow.pubkey??""]]
         if(replyEvent.current) messageTags.push(["e", replyEvent.current.id])
         const messageEvent: NDKEvent = new NDKEvent(ndk, {
@@ -138,7 +139,7 @@ const ConversationChat = ({ navigation, route }: StackScreenProps<any>) => {
 
 const styles = StyleSheet.create({
     chatBoxContainer: { padding: 6, width: "100%", backgroundColor: theme.colors.black },
-    chatInputContainer: { width: "82%", borderRadius: 20, paddingHorizontal: 14, 
+    chatInputContainer: { width: "82%", borderRadius: 10, paddingHorizontal: 14, 
         backgroundColor: theme.input.backGround },
     chatInput: { color: theme.input.textColor, paddingVertical: 16, paddingHorizontal: 6 },
     sendButton: { borderRadius: 50, padding: 12, backgroundColor: theme.colors.blue, 

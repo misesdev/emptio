@@ -1,6 +1,6 @@
 import { clearStorage } from "@services/memory"
 import { createPairKeys, getHexKeys } from "@services/nostr"
-import { getUserData, pushUserData, pushUserFollows } from "@services/nostr/pool"
+import { getNostrInstance, getUserData, pushUserData, pushUserFollows } from "@services/nostr/pool"
 import { getEvent, listenerEvents, publishEvent, NostrEvent } from "@services/nostr/events"
 import { NDKEvent, NDKFilter, NDKSubscriptionCacheUsage } from "@nostr-dev-kit/ndk-mobile"
 import { Response, trackException } from "@services/telemetry"
@@ -16,34 +16,31 @@ import useChatStore from "@/src/services/zustand/chats"
 type SignUpProps = { 
     userName: string, 
     setUser?: (user: User) => void,  
-    setFollows?: (event: NostrEvent) => void  
 }
 
-const signUp = async ({ userName, setUser, setFollows }: SignUpProps): Promise<Response<User|null>> => {
-    try {        
+const signUp = async ({ userName, setUser }: SignUpProps): Promise<Response<User|null>> => {
+    try {    
+
         const pairKey: PairKey = createPairKeys()
 
-        const userData: User = {
+        const profile: User = {
             name: userName.trim(),
             pubkey: pairKey.publicKey,
             display_name: userName.trim(),
             keychanges: pairKey.key,
         }
-
-        const followsEvent = createFollowEvent(userData, [[]])
-
-        await pushUserData(userData, pairKey)
-
-        await pushUserFollows(followsEvent, pairKey)
-
-        await insertUpdateUser(userData)
         
         await insertPairKey(pairKey)
+        
+        await useNDKStore.getState().setNdkSigner(profile)
+       
+        await pushUserData(profile, pairKey)
 
-        if (setUser) setUser(userData)
-        if (setFollows) setFollows(followsEvent)
+        await insertUpdateUser(profile)
+        
+        if (setUser) setUser(profile)
 
-        return { success: true, data: userData }
+        return { success: true, data: profile }
     }
     catch (ex) {
         return trackException(ex, null)
@@ -191,7 +188,7 @@ const updateFollows = async ({ user, follows } : UpdateFollowsProps) => {
     catch {  }
 }
 
-const createFollowEvent = (user: User, friends: [string[]]) : NostrEvent => {
+export const createFollowEvent = (user: User, friends: [string[]]) : NostrEvent => {
 
     const ndk = useNDKStore.getState().ndk
 

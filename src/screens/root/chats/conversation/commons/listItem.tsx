@@ -1,6 +1,6 @@
 import { User } from "@services/memory/types";
 import { NDKEvent } from "@nostr-dev-kit/ndk-mobile";
-import { MutableRefObject, useCallback, useEffect, useState } from "react";
+import { MutableRefObject, memo, useCallback, useEffect, useState } from "react";
 import Animated, { interpolateColor, runOnJS, useAnimatedStyle, 
     useSharedValue, withSpring, withTiming } from "react-native-reanimated";
 import { messageService } from "@src/core/messageManager";
@@ -23,7 +23,7 @@ interface ListItemProps {
     focusEventOnList: (event: NDKEvent) => void;
 }
 
-const ListItemMessage = ({
+const ListItemMessage = memo(({
     item, index, focusIndex, items, user, follow, selectionMode, selectedItems, replyEvent, focusEventOnList
 }: ListItemProps) => {
     
@@ -118,7 +118,7 @@ const ListItemMessage = ({
             </View>
         </Animated.View>
     )
-}
+})
 
 const styles = StyleSheet.create({
     messageContainer: { width: "100%", padding: 6, marginVertical: 1 },

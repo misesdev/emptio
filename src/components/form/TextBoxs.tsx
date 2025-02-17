@@ -72,7 +72,7 @@ const styles = StyleSheet.create({
         backgroundColor: theme.input.backGround,
         paddingHorizontal: 24,
         paddingVertical: 15,
-        borderRadius: 24,
+        borderRadius: 10,
         margin: 10
     },
     input: {

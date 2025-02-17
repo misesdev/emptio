@@ -19,6 +19,7 @@ const WalletReceiveScreen = ({ navigation, route }: StackScreenProps<any>) => {
     const { useTranslate } = useTranslateService()
     const [address, setAddress] = useState<string>(wallet?.address ?? "")
     const [valueText, setValueText] = useState<string>(wallet?.address ?? "")
+    const [pictureError, setPictureError] = useState<boolean>(false)
 
     const handleCopyValue = async () => {
 
@@ -40,8 +41,12 @@ const WalletReceiveScreen = ({ navigation, route }: StackScreenProps<any>) => {
 
                 {/* Profile Picture */}
                 <View style={styles.image}>
-                    {user.picture && <Image onError={() => user.picture = ""} source={{ uri: user.picture }} style={{ flex: 1 }} />}
-                    {!user.picture && <Image source={require("@assets/images/defaultProfile.png")} style={{ width: 100, height: 100 }} />}
+                    <Image style={{ width: 100, height: 100 }}
+                        onError={() => setPictureError(true)} 
+                        source={(pictureError || !user.picture) ? require("@assets/images/defaultProfile.png")
+                            : { uri: user.picture }
+                        } 
+                    />
                 </View>
                 {/* Profile Name */}
                 <Text style={styles.userName}>{user.name}</Text>
@@ -73,13 +78,18 @@ const WalletReceiveScreen = ({ navigation, route }: StackScreenProps<any>) => {
 }
 
 const styles = StyleSheet.create({
-    qrcode: { padding: 12, borderRadius: 10, backgroundColor: theme.colors.white, marginVertical: 20 },
-    content: { flex: 1, justifyContent: "center", alignItems: "center", backgroundColor: theme.colors.black },
-    copycontent: { padding: 12, marginVertical: 10, borderRadius: 8, backgroundColor: theme.colors.gray },
+    qrcode: { padding: 12, borderRadius: 10, backgroundColor: theme.colors.white,
+        marginVertical: 20 },
+    content: { flex: 1, justifyContent: "center", alignItems: "center",
+        backgroundColor: theme.colors.black },
+    copycontent: { padding: 12, marginVertical: 10, borderRadius: 8, 
+        backgroundColor: theme.colors.gray },
     copytext: { color: theme.colors.white, fontSize: 10, textAlign: "center" },
     footer: { position: "absolute", bottom: 40, justifyContent: "center" },
-    image: { width: 100, height: 100, overflow: "hidden", borderRadius: 50, backgroundColor: theme.colors.gray },
-    userName: { color: theme.colors.white, fontSize: 18, fontWeight: "500", marginVertical: 15, textAlign: "center" }
+    image: { width: 100, height: 100, overflow: "hidden", borderRadius: 50, 
+        backgroundColor: theme.colors.black },
+    userName: { color: theme.colors.white, fontSize: 18, fontWeight: "500", marginVertical: 15, 
+        textAlign: "center" }
 })
 
 export default WalletReceiveScreen

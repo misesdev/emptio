@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react"
+import { useEffect, useRef, useState } from "react"
 import { Modal, StyleSheet, Text, TouchableOpacity, View, Image } from "react-native"
 import { useTranslateService } from "@src/providers/translateProvider"
 import { User } from "@services/memory/types"
@@ -44,15 +44,17 @@ const FollowModal = ({ handleAddFollow }: FollowProps) => {
     const [notes, setNotes] = useState<NDKEvent[]>([])
     const [visible, setVisible] = useState(false)
     const [loading, setloading] = useState(false)
+    const [pictureError, setPictureError] = useState(false)
     const { useTranslate } = useTranslateService()
 
     useEffect(() => {
-        if(visible) {
+        if(visible) 
+        {
             setloading(true)
             setTimeout(async () => {
                 setNotes(await userService.lastNotes(user, 6))
                 setloading(false)
-            }, 50)
+            }, 20)
         }
     }, [visible])
 
@@ -62,12 +64,14 @@ const FollowModal = ({ handleAddFollow }: FollowProps) => {
     }
 
     const handleClose = () => {
+        setPictureError(false)
         setVisible(false)
         setNotes([])
     }
 
     const handleAction = async () => {
         handleAddFollow(user as User)
+        setPictureError(false)
         setVisible(false)
         setNotes([])
     }
@@ -80,8 +84,12 @@ const FollowModal = ({ handleAddFollow }: FollowProps) => {
                     <View style={{ flexDirection: "row" }}>
                         <TouchableOpacity activeOpacity={.3} onPress={() => {}}>
                             <View style={styles.image}>
-                                {user?.picture && <Image onError={() => user.picture = ""} source={{ uri: user?.picture }} style={{ flex: 1 }} />}
-                                {!user?.picture && <Image source={require("@assets/images/defaultProfile.png")} style={{ width: 60, height: 60 }} />}
+                                <Image style={{ width: 60, height: 60 }}
+                                    onError={() => setPictureError(true)} 
+                                    source={pictureError ? require("@assets/images/defaultProfile.png")
+                                        : { uri: user?.picture }
+                                    }
+                                />
                             </View>
                         </TouchableOpacity>
                         <View style={{ paddingHorizontal: 12 }}>

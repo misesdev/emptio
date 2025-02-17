@@ -2,7 +2,6 @@ import MessageBox, { showMessage } from "@components/general/MessageBox";
 import { Image, StyleSheet, Text, View } from "react-native";
 import { QRCodeTextBox } from "@components/form/TextBoxs";
 import { ButtonPrimary } from "@components/form/Buttons";
-import SplashScreen from "@components/general/SplashScreen";
 import { validatePrivateKey } from "@services/nostr";
 import { userService } from "@src/core/userManager";
 import { useAuth } from "@src/providers/userProvider";
@@ -25,6 +24,7 @@ const LoginScreen = ({ navigation }: any) => {
     const { setUser, setFollowsEvent } = useAuth()
     const { useTranslate } = useTranslateService()
     const [loading, setLoading] = useState(false)
+    const [disabled, setDisabled] = useState(true)
     const [secretKey, setSecretKey] = useState("")
 
     useEffect(() => {
@@ -32,6 +32,11 @@ const LoginScreen = ({ navigation }: any) => {
 
         AppState.addEventListener("change", handleAppStateChange)
     }, [])
+
+    const setValidateSecretKey = (value: string) => {
+        setDisabled(!validatePrivateKey(value))
+        setSecretKey(value)
+    }
 
     const checkClipboardContainsKey = async () => {
         // verify clipboard for a privateKey nostr
@@ -52,7 +57,7 @@ const LoginScreen = ({ navigation }: any) => {
                 infolog: useTranslate("message.detectedkey.value") + key,
                 action: {
                     label: useTranslate("commons.yes"), onPress: () => {
-                        setSecretKey(key)
+                        setValidateSecretKey(key)
                     }
                 }
             })
@@ -61,7 +66,7 @@ const LoginScreen = ({ navigation }: any) => {
 
     const handlerLogin = async () => {
         setLoading(true)
-
+        setDisabled(true)
         setTimeout(async () => {
             if (validatePrivateKey(secretKey))
             {
@@ -94,11 +99,9 @@ const LoginScreen = ({ navigation }: any) => {
                 showMessage({ message: useTranslate("message.invalidkey"), infolog: secretKey })
 
             setLoading(false)
-        }, 50)
+            setDisabled(false)
+        }, 20)
     }
-
-    if (loading)
-        return <SplashScreen message="" />
 
     return (
         <View style ={{ flex: 1 }}>
@@ -108,12 +111,21 @@ const LoginScreen = ({ navigation }: any) => {
 
                 <Text style={styles.title}>{useTranslate("login.message")}</Text>
 
-                <QRCodeTextBox placeholder={useTranslate("labels.privatekey")} onChangeText={setSecretKey} value={secretKey} />
+                <QRCodeTextBox value={secretKey}
+                    placeholder={useTranslate("labels.privatekey")} 
+                    onChangeText={setValidateSecretKey}
+                />
 
                 <View style={{ height: 100 }}></View>
                 
                 <View style={styles.buttonArea}>
-                    <ButtonPrimary label={useTranslate("commons.signin")} onPress={handlerLogin} />
+                    <ButtonPrimary disabled={disabled} loading={loading}
+                        label={useTranslate("commons.signin")} 
+                        onPress={handlerLogin} 
+                        style={{ backgroundColor: disabled ? theme.colors.disabled
+                            : theme.colors.blue
+                        }}
+                    />
                 </View>
             </View>
             <MessageBox />

@@ -13,7 +13,7 @@ import theme from "@src/theme"
 
 const AddFolowScreen = ({ navigation }: StackScreenProps<any>) => {
 
-    const { user, follows, setFollows, followsEvent, setFollowsEvent } = useAuth()
+    const { user, follows, setFollows, followsEvent } = useAuth()
     const { useTranslate } = useTranslateService()
     const [users, setUsers] = useState<User[]>([])
     const [loading, setLoading] = useState(false)

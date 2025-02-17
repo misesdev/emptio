@@ -60,7 +60,7 @@ export const getNostrInstance = async ({ user }: NostrInstanceProps): Promise<ND
         clientName: "emptio_p2p",        
     })
 
-    if(user) 
+    if(user?.keychanges) 
     {
         const pairKey = await getPairKey(user.keychanges ?? "")
 

@@ -14,8 +14,8 @@ import { messageService } from "../core/messageManager"
 import useChatStore from "@services/zustand/chats"
 import useNDKStore from "@services/zustand/ndk"
 import { NostrEventKinds } from "../constants/Events"
+import { useFeedVideosStore } from "@services/zustand/feedVideos"
 import theme from "@src/theme"
-import { useFeedVideosStore } from "../services/zustand/feedVideos"
 
 const InitializeScreen = ({ navigation }: any) => {
 

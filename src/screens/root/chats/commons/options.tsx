@@ -1,7 +1,7 @@
-import { TouchableOpacity, Text, StyleSheet } from "react-native"
-import theme from "@src/theme"
+import { TouchableOpacity, StyleSheet } from "react-native"
+import Ionicons from "react-native-vector-icons/Ionicons"
 import { ScrollView } from "react-native-gesture-handler"
-import { useTranslateService } from "@/src/providers/translateProvider"
+import theme from "@src/theme"
 
 export type ChatActionType = "delete" | "markread" | "cancel" 
 
@@ -11,8 +11,6 @@ type Props = {
 
 const ChatGroupAction = ({ onAction }: Props) => {
     
-    const { useTranslate } = useTranslateService()
-
     return (
         <ScrollView horizontal 
             style={styles.container}
@@ -22,28 +20,28 @@ const ChatGroupAction = ({ onAction }: Props) => {
                 style={styles.section}
                 onPress={() => onAction("cancel")}
             >
-                <Text style={styles.sectionLabel}>{useTranslate("commons.cancel")}</Text>
+                <Ionicons name="arrow-undo" size={20} color={theme.colors.white}/>
             </TouchableOpacity>
             <TouchableOpacity
                 style={styles.section}
                 onPress={() => onAction("markread")}
             >
-                <Text style={styles.sectionLabel}>{useTranslate("chat.action.markread")}</Text>
+                <Ionicons name="mail-open" size={20} color={theme.colors.white}/>
             </TouchableOpacity>
             <TouchableOpacity
                 style={styles.section}
                 onPress={() => onAction("delete")}
             >
-                <Text style={styles.sectionLabel}>{useTranslate("commons.delete")}</Text>
+                <Ionicons name="trash" size={20} color={theme.colors.white}/>
             </TouchableOpacity>
         </ScrollView>
     )
 }
 
 const styles = StyleSheet.create({
-    container: { width: "100%", paddingHorizontal: 14, 
+    container: { width: "100%", paddingHorizontal: 14, flexDirection: "row-reverse", 
         maxHeight: 42, backgroundColor: theme.colors.semitransparent },
-    section: { paddingHorizontal: 12, padding: 6, minWidth: 60, margin: 5, 
+    section: { paddingHorizontal: 12, padding: 6, margin: 5, 
         borderRadius: 10, backgroundColor: theme.colors.blue },
     sectionLabel: { textAlign: "center", color: theme.colors.white }
 })

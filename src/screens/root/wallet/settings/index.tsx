@@ -57,14 +57,6 @@ const WalletSettings = ({ navigation, route }: StackScreenProps<any>) => {
         })
     }
 
-    const handleViewSeed = async () => {
-
-        const biometrics = await authService.checkBiometric()
-
-        if(biometrics)
-            navigation.navigate("seed-wallet-stack", { origin: "options", wallet })
-    }
-
     const handleSave = async () => {
 
         setLoading(true)
@@ -86,7 +78,7 @@ const WalletSettings = ({ navigation, route }: StackScreenProps<any>) => {
 
         pushMessage(useTranslate("message.wallet.saved"))
 
-        navigation.navigate("wallet-stack", { wallet })
+        navigation.goBack()
     }
 
     if (loading)

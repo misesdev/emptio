@@ -1,11 +1,10 @@
-import SplashScreen from "@components/general/SplashScreen"
 import { HeaderScreen } from "@components/general/HeaderScreen"
 import { ScrollView, StyleSheet, Text, View } from "react-native"
 import { ButtonPrimary } from "@components/form/Buttons"
 import { useTranslateService } from "@src/providers/translateProvider"
 import { useEffect, useState } from "react"
 import { StackScreenProps } from "@react-navigation/stack"
-import { Wallet } from "@/src/services/memory/types"
+import { Wallet } from "@services/memory/types"
 import theme from "@src/theme"
 
 type SeedParams = {
@@ -17,7 +16,6 @@ const CreatedSeedScren = ({ navigation, route }: StackScreenProps<any>) => {
 
     const { mnemonic } = route?.params as SeedParams
     const { useTranslate } = useTranslateService()
-    const [loading, setLoading] = useState(false)
     const [wordList, setWordList] = useState<string[]>()
 
     useEffect(() => {
@@ -34,9 +32,6 @@ const CreatedSeedScren = ({ navigation, route }: StackScreenProps<any>) => {
     const handleClose = () => {
         navigation.reset({ index: 0, routes: [{ name: "core-stack" }] })
     }
-
-    if (loading)
-        return <SplashScreen />
 
     return (
         <View style={theme.styles.container}>

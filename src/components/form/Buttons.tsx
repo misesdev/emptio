@@ -2,9 +2,11 @@ import { TouchableOpacity, StyleSheet, Text, View, ViewStyle, StyleProp, TextSty
 import { IconNames } from '@services/types/icons';
 import Ionicons from 'react-native-vector-icons/Ionicons'
 import theme from '@src/theme';
+import { ActivityIndicator } from 'react-native-paper';
 
 type Props = {
     label: string,
+    loading?: boolean,
     disabled?: boolean,
     leftIcon?: IconNames,
     rightIcon?: IconNames,
@@ -13,7 +15,7 @@ type Props = {
     color?: string
 }
 
-const TouchableEmptio = ({ label, disabled=false, style, leftIcon, rightIcon, onPress }: Props) => {
+const TouchableEmptio = ({ label, disabled=false, loading=false, style, leftIcon, rightIcon, onPress }: Props) => {
 
     return (
         <TouchableOpacity disabled={disabled} style={style} onPress={onPress} activeOpacity={.7}>
@@ -21,25 +23,26 @@ const TouchableEmptio = ({ label, disabled=false, style, leftIcon, rightIcon, on
                 {leftIcon && <Ionicons style={{ marginLeft: 10, color: theme.icons.white }} name={leftIcon} size={18} />}
                 <Text style={styles.text}> {label} </Text>
                 {rightIcon && <Ionicons style={{ marginRight: 10, color: theme.icons.white }} name={rightIcon} size={18} />}
+                {loading && <ActivityIndicator size={18} color={theme.colors.white} />}
             </View>
         </TouchableOpacity>
     )
 }
 
-export const ButtonSuccess = ({ label, style, disabled=false, leftIcon, rightIcon, onPress }: Props) => {
-    return <TouchableEmptio label={label} disabled={disabled} leftIcon={leftIcon} rightIcon={rightIcon} onPress={onPress} style={[styles.button, styles.succes, style]} />
+export const ButtonSuccess = ({ label, style, disabled=false, loading=false, leftIcon, rightIcon, onPress }: Props) => {
+    return <TouchableEmptio label={label} disabled={disabled} loading={loading} leftIcon={leftIcon} rightIcon={rightIcon} onPress={onPress} style={[styles.button, styles.succes, style]} />
 }
 
-export const ButtonPrimary = ({ label, style, disabled=false, leftIcon, rightIcon, onPress }: Props) => {
-    return <TouchableEmptio label={label} disabled={disabled} leftIcon={leftIcon} rightIcon={rightIcon} onPress={onPress} style={[styles.button, styles.primary, style]} />
+export const ButtonPrimary = ({ label, style, disabled=false, loading=false, leftIcon, rightIcon, onPress }: Props) => {
+    return <TouchableEmptio label={label} disabled={disabled} loading={loading} leftIcon={leftIcon} rightIcon={rightIcon} onPress={onPress} style={[styles.button, styles.primary, style]} />
 }
 
-export const ButtonDanger = ({ label, style, disabled=false, leftIcon, rightIcon, onPress }: Props) => {
-    return <TouchableEmptio label={label} disabled={disabled} leftIcon={leftIcon} rightIcon={rightIcon} onPress={onPress} style={[styles.button, styles.danger, style]} />
+export const ButtonDanger = ({ label, style, disabled=false, loading=false, leftIcon, rightIcon, onPress }: Props) => {
+    return <TouchableEmptio label={label} disabled={disabled} loading={loading} leftIcon={leftIcon} rightIcon={rightIcon} onPress={onPress} style={[styles.button, styles.danger, style]} />
 }
 
-export const ButtonDefault = ({ label, style, leftIcon, rightIcon, onPress }: Props) => {
-    return <TouchableEmptio label={label} leftIcon={leftIcon} rightIcon={rightIcon} onPress={onPress} style={[styles.button, styles.default, style]} />
+export const ButtonDefault = ({ label, style, disabled=false, loading=false, leftIcon, rightIcon, onPress }: Props) => {
+    return <TouchableEmptio label={label} disabled={disabled} loading={loading} leftIcon={leftIcon} rightIcon={rightIcon} onPress={onPress} style={[styles.button, styles.default, style]} />
 }
 
 export const ButtonHead = ({ label, style, leftIcon, rightIcon, onPress }: Props) => {
