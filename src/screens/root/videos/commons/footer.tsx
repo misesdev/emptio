@@ -22,10 +22,10 @@ type Props = {
 const VideoFooter = ({ event, url }: Props) => {
 
     const { ndk } = useNDKStore()
+    const timeout = useRef<any>(null)
     const { user, follows, followsEvent } = useAuth()
     const { useTranslate } = useTranslateService()
-    const profile = useRef<User>({})
-    const timeout = useRef<any>(null)
+    const [profile, setProfile] = useState<User>({})
     const [profileError, setProfileError] = useState<boolean>(false)
     const [commentsVisible, setCommentsVisible] = useState<boolean>(false)
     const [shareVisible, setShareVisible] = useState<boolean>(false)
@@ -46,7 +46,7 @@ const VideoFooter = ({ event, url }: Props) => {
             })
 
             events.forEach(note => {
-                if(note.kind == 0) profile.current = JSON.parse(note.content) as User
+                if(note.kind == 0) setProfile(JSON.parse(note.content) as User)
                 if(note.kind == 7) {
                     setReactions(prev => [...prev, note])
                     setReacted(true)
@@ -59,20 +59,18 @@ const VideoFooter = ({ event, url }: Props) => {
     const handleReact = useCallback(async () => {
         if(!reacted) {
             setReacted(prev => !prev)
-            // setTimeout(() => { 
-            //     noteService.reactNote({ note: event, reaction:"❣️" }).then(reaction => {
-            //         setReactions(prev => [...prev, reaction])
-            //     })
-            // }, 20)
+            setTimeout(() => { 
+                noteService.reactNote({ note: event, reaction:"❣️" }).then(reaction => {
+                    setReactions(prev => [...prev, reaction])
+                })
+            }, 20)
         }
         if(reacted) {
             setReacted(prev => !prev)
             setTimeout(() => {
-                console.log(reactions)
                 if(reactions[0]) {
                     noteService.deleteReact(reactions[0]).then(reaction => {
                         setReactions(prev => [...prev.filter(r => r.id != reaction.id)])
-                        console.log("deleted")
                     })
                 }
             }, 20)
@@ -109,17 +107,17 @@ const VideoFooter = ({ event, url }: Props) => {
             <View style={styles.profilebar}>
                 <View style={{ width: "15%", paddingHorizontal: 2 }}>
                     <View style={styles.profile}>
-                        {profile.current.picture && 
-                            <Image onError={() => setProfileError(true)} source={{ uri: profile.current.picture }} style={styles.profile}/>
-                        }
-                        {(!profile.current.picture || profileError) && 
-                            <Image source={require("@assets/images/defaultProfile.png")} style={styles.profile}/>
-                        }
+                        <Image style={styles.profile}
+                            onError={() => setProfileError(true)} 
+                            source={(profileError || !profile.picture) ? require("@assets/images/defaultProfile.png")
+                                : { uri: profile.picture }
+                            } 
+                        />
                     </View>
                 </View>
                 <View style={{ width: "60%", paddingHorizontal: 6 }}>
                     <Text style={styles.profileName}>
-                        {getUserName(profile.current, 24)}
+                        {getUserName(profile, 24)}
                     </Text>
                     <TouchableOpacity activeOpacity={.7} 
                         onPress={() => copyPubkey(event.pubkey)}
@@ -147,7 +145,7 @@ const VideoFooter = ({ event, url }: Props) => {
                 </View>
             </View>
             <VideoDescription content={event.content} url={url} />
-            <VideoComments event={event} 
+            <VideoComments event={event}
                 visible={commentsVisible} 
                 setVisible={setCommentsVisible} 
             />

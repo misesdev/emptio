@@ -14,6 +14,7 @@ import { useTranslateService } from "@src/providers/translateProvider"
 import { useEffect, useState } from "react"
 import theme from "@src/theme"
 import { StackScreenProps } from "@react-navigation/stack"
+import { getColorFromPubkey } from "@/src/utils"
 
 const UserEditScreen = ({ navigation }: StackScreenProps<any>) => {
 
@@ -25,8 +26,13 @@ const UserEditScreen = ({ navigation }: StackScreenProps<any>) => {
     const [myWebsite, setMyWebsite] = useState(user.website)
     const [lnAddress, setLnAddress] = useState(user.lud16)
     const [profile, setProfile] = useState(user.picture)
+    const [profileColor, setProfileColor] = useState(theme.colors.green)
     const [pictureError, setPictureError] = useState(false)
     const { useTranslate } = useTranslateService()
+    
+    useEffect(() => {
+        setProfileColor(getColorFromPubkey(user.pubkey??""))
+    },[])
 
     const handlePickImage = async (location: "profile" | "banner") => {
         // allow to user select a image of your galery
@@ -88,8 +94,8 @@ const UserEditScreen = ({ navigation }: StackScreenProps<any>) => {
             <View style={styles.profileArea}>
                 <View style={styles.imageArea}>
                     <TouchableOpacity activeOpacity={.7} onPress={() => handlePickImage("profile")}>
-                        <View style={styles.image}>
-                            <Image style={{ width: 100, height: 100 }}
+                        <View style={[styles.image,{borderColor:profileColor}]}>
+                            <Image style={{ width: 96, height: 96 }}
                                 onError={() => setPictureError(true)}
                                 source={(pictureError || !profile) ? require("@assets/images/defaultProfile.png")
                                     : { uri: profile }
@@ -119,7 +125,7 @@ const UserEditScreen = ({ navigation }: StackScreenProps<any>) => {
 const styles = StyleSheet.create({
     imageArea: { width: 100, height: 100, borderRadius: 50, backgroundColor: theme.colors.black },
     image: { width: 100, height: 100, borderRadius: 50, backgroundColor: theme.colors.black, 
-        borderWidth: 2, borderColor: theme.colors.section, overflow: "hidden" },
+        borderWidth: 2, overflow: "hidden" },
     profileArea: { width: "100%", alignItems: "center", marginVertical: 10, marginBottom: 20 },
     banner: { width: "100%", height: 140, position: "absolute", top: 0 },
     buttonBanner: { position: "absolute", top: 14, right: 12, 

@@ -5,18 +5,20 @@ import { memo, useCallback, useEffect, useRef, useState } from "react"
 import { walletService } from "@src/core/walletManager"
 import { FollowItem } from "./FollowItem"
 import theme from "@src/theme"
-import { getUserName } from "@/src/utils"
+import { getUserName } from "@src/utils"
 
 type FriendListProps = {
     searchTerm?: string,
+    toSend?: boolean,
+    toOpen?: boolean,
     toPayment?: boolean,
     searchable?: boolean,
     searchTimout?: number,
     onPressFollow?: (user: User) => void,
 }
 
-export const FollowList = ({ searchTerm, onPressFollow, toPayment = false, 
-    searchable, searchTimout = 100 }: FriendListProps) => {
+export const FollowList = ({ searchTerm, onPressFollow, toPayment=false, searchable, 
+    searchTimout=100, toSend=false, toOpen=false }: FriendListProps) => {
 
     const { follows } = useAuth()
     const listRef = useRef<FlatList>(null)
@@ -35,10 +37,12 @@ export const FollowList = ({ searchTerm, onPressFollow, toPayment = false,
                     })
 
                     setFollowList(searchResult ?? [])
-                    listRef.current?.scrollToIndex({
-                        animated: true,
-                        index: 0
-                    })
+                    // if(searchResult.length) {
+                    //     listRef.current?.scrollToIndex({
+                    //         animated: true,
+                    //         index: 0
+                    //     })
+                    // }
                 }
                 else setFollowList(follows??[])
             }, searchTimout)
@@ -46,34 +50,26 @@ export const FollowList = ({ searchTerm, onPressFollow, toPayment = false,
         }, [searchTerm])
     }
    
-    // useEffect(() => { handleListFollows() }, [])
-
-    // const handleListFollows = async () => {
-    //     if(follows?.length) { 
-    //         setFollowListData(follows)
-    //         setFollowList(follows)
-    //         setRefreshing(false)
-    //     } 
-    // }
-
     const handleClickFollow = useCallback((follow: User) => {
         if (onPressFollow)
             onPressFollow(follow)
     }, [onPressFollow])
 
-    const ListItem = memo(({ item }: { item: User }) => <FollowItem follow={item} handleClickFollow={handleClickFollow} />)
+    const ListItem = memo(({ item }: { item: User }) => (
+        <FollowItem follow={item} toOpen={toOpen} toSend={toSend} handleClickFollow={handleClickFollow} />
+    ))
 
     const renderItem = useCallback(({ item }: { item: User }) => {
         return <ListItem item={item} />
     }, [])
 
     return (
-        <FlatList ref={listRef}
+        <FlatList 
+            ref={listRef}
             data={followList}
             renderItem={renderItem}
             contentContainerStyle={[theme.styles.scroll_container, { paddingBottom: 30 }]}
             keyExtractor={item => item.pubkey ?? Math.random().toString()}
-            /* refreshControl={<RefreshControl refreshing={refreshing} onRefresh={handleListFollows} />} */
         />
     )
 }

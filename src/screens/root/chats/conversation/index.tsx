@@ -1,20 +1,21 @@
 import { useCallback, useEffect, useRef, useState } from "react"
 import { View, StyleSheet, TextInput, FlatList, 
-    TouchableOpacity, Vibration } from "react-native"
+    TouchableOpacity } from "react-native"
 import { NDKEvent } from "@nostr-dev-kit/ndk"
 import { useAuth } from "@src/providers/userProvider"
 import { messageService } from "@src/core/messageManager"
 import { User } from "@services/memory/types"
 import useChatStore from "@services/zustand/chats"
 import ConversationList from "./commons/list"
-import MessageOptionsBox, { showOptiosMessage } from "./commons/options"
 import Ionicons from 'react-native-vector-icons/Ionicons'
 import theme from "@src/theme"
 import { StackScreenProps } from "@react-navigation/stack"
 import ConversationHeader from "./commons/header"
 import { useTranslateService } from "@src/providers/translateProvider"
 import ReplyBox from "./commons/reply"
-import useNDKStore from "@/src/services/zustand/ndk"
+import useNDKStore from "@services/zustand/ndk"
+import MessageGroupAction, { MessageActionType } from "./commons/options"
+import { copyToClipboard } from "@src/utils"
 
 const ConversationChat = ({ navigation, route }: StackScreenProps<any>) => {
     
@@ -89,10 +90,31 @@ const ConversationChat = ({ navigation, route }: StackScreenProps<any>) => {
         }
     }
 
+    const handleGroupAction = (option: MessageActionType) => {
+        if(option == "copy") {
+            const text = selectedItems.current.map(e => e.content).join("\n\n")
+            copyToClipboard(text)
+            selectionMode.current = false
+            selectedItems.current = []
+        }
+        if(option == "delete") {
+            selectionMode.current = false
+            selectedItems.current = []
+        }
+        if(option == "cancel") {
+            selectionMode.current = false
+            selectedItems.current = []
+        }
+    }
+
     return (
         <View style={theme.styles.container}>
             <ConversationHeader follow={follow} />
-            
+           
+            {selectionMode.current && 
+                <MessageGroupAction onAction={handleGroupAction}/>
+            }
+
             <ConversationList user={user} follow={follow} 
                 listRef={listRef} 
                 events={messages} 
@@ -132,7 +154,6 @@ const ConversationChat = ({ navigation, route }: StackScreenProps<any>) => {
                     </View>
                 </View>
             </View>
-            <MessageOptionsBox user={user} deleteMessage={deleteMessage} />
         </View>
     )
 }

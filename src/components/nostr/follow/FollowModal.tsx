@@ -6,7 +6,7 @@ import { userService } from "@src/core/userManager"
 import { NoteList } from "../user/NoteList"
 import { ActivityIndicator } from "react-native-paper"
 import Ionicons from "react-native-vector-icons/Ionicons"
-import { copyPubkey, getDisplayPubkey, getUserName } from "@src/utils"
+import { copyPubkey, getColorFromPubkey, getDisplayPubkey, getUserName } from "@src/utils"
 import { NDKEvent } from "@nostr-dev-kit/ndk-mobile"
 import theme from "@src/theme"
 
@@ -44,6 +44,7 @@ const FollowModal = ({ handleAddFollow }: FollowProps) => {
     const [notes, setNotes] = useState<NDKEvent[]>([])
     const [visible, setVisible] = useState(false)
     const [loading, setloading] = useState(false)
+    const [profileColor, setProfileColor] = useState(theme.colors.green)
     const [pictureError, setPictureError] = useState(false)
     const { useTranslate } = useTranslateService()
 
@@ -61,6 +62,7 @@ const FollowModal = ({ handleAddFollow }: FollowProps) => {
     showFollowModalFunction = async ({ user }: followModalProps) => {
         setUser(user)
         setVisible(true)
+        setProfileColor(getColorFromPubkey(user.pubkey??""))
     }
 
     const handleClose = () => {
@@ -83,10 +85,10 @@ const FollowModal = ({ handleAddFollow }: FollowProps) => {
 
                     <View style={{ flexDirection: "row" }}>
                         <TouchableOpacity activeOpacity={.3} onPress={() => {}}>
-                            <View style={styles.image}>
-                                <Image style={{ width: 60, height: 60 }}
+                            <View style={[styles.image, {borderColor:profileColor}]}>
+                                <Image style={{ width: 56, height: 56 }}
                                     onError={() => setPictureError(true)} 
-                                    source={pictureError ? require("@assets/images/defaultProfile.png")
+                                    source={(pictureError||!user.picture) ? require("@assets/images/defaultProfile.png")
                                         : { uri: user?.picture }
                                     }
                                 />
@@ -130,8 +132,8 @@ const FollowModal = ({ handleAddFollow }: FollowProps) => {
                     }
 
                     <View style={styles.sectionButtons}>
-                        {!user?.friend && <ButtonLight label={useTranslate("commons.add")} onPress={handleAction} />}
-                        {user?.friend && <ButtonLight label={useTranslate("commons.remove")} onPress={handleAction} />}
+                        {!user?.friend && <ButtonLight label={useTranslate("commons.follow")} onPress={handleAction} />}
+                        {user?.friend && <ButtonLight label={useTranslate("commons.unfollow")} onPress={handleAction} />}
                         <ButtonLight label={useTranslate("commons.close")} onPress={handleClose} />
                     </View>
                 </View>
@@ -149,7 +151,7 @@ const styles = StyleSheet.create({
     message: { fontSize: 14, color: theme.colors.gray },
     infolog: { paddingHorizontal: 15, paddingVertical: 8, marginVertical: 18, borderRadius: 10,
         backgroundColor: theme.colors.semitransparent, color: theme.colors.gray },
-    image: { width: 60, height: 60, borderRadius: 50, overflow: "hidden", borderWidth: 1, 
+    image: { width: 60, height: 60, borderRadius: 50, overflow: "hidden", borderWidth: 2, 
         borderColor: theme.colors.blue },
     sectionButtons: { width: "100%", flexDirection: "row-reverse" },
     absolute: {

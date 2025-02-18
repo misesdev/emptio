@@ -5,7 +5,7 @@ import { ChatUser } from '../../zustand/chats';
 
 let database: SQLite.SQLiteDatabase
 
-const getDatabaseConnection = async () : Promise<SQLite.SQLiteDatabase> => {
+export const getDatabaseConnection = async () : Promise<SQLite.SQLiteDatabase> => {
     if(!database)
         database = await SQLite.openDatabaseAsync('events.db');
     return database
@@ -31,7 +31,7 @@ export const initDatabase = async () => {
     `)
 }
 
-type dbEventProps = {
+export type dbEventProps = {
     event: NDKEvent,
     category: TypeCategory,
     chat_id?: string
@@ -60,6 +60,32 @@ export const insertEvent = async ({ event, category, chat_id }: dbEventProps) : 
     `, params)
 
     return !!data.changes;
+}
+
+export const insertEventsInBatch = async (events: dbEventProps[]) => {
+    const db = await getDatabaseConnection()
+    
+    const placeholders = events.map(() => "(?, ?, ?, ?, ?, ?, ?, ?, ?)").join(", ")
+    const params: any[] = []
+    
+    events.forEach(({ event, category, chat_id }) => {
+        params.push(
+            event.id, 
+            event.kind ?? 0,
+            event.pubkey ?? "",
+            event.content, 
+            event.sig ?? "",
+            JSON.stringify(event.tags),
+            event.created_at ?? 0,
+            category,
+            chat_id ?? ""
+        )
+    })
+
+    await db.runAsync(`
+        INSERT OR IGNORE INTO events (id, kind, pubkey, content, sig, tags, created_at, category, chat_id)
+        VALUES ${placeholders};
+    `, params)
 }
 
 export const updateEventContent = async (event: NDKEvent) => {

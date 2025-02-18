@@ -7,7 +7,7 @@ import { ChatUser } from "@services/zustand/chats"
 import Ionicons from "react-native-vector-icons/Ionicons"
 import { MutableRefObject, useEffect, useState } from "react"
 import { FilterChat } from "./list"
-import { getUserName } from "@/src/utils"
+import { getColorFromPubkey, getUserName } from "@/src/utils"
 import { Vibration, View, Text, Image, TouchableOpacity, 
     StyleSheet } from "react-native"
 import theme from "@/src/theme"
@@ -29,6 +29,7 @@ const ListItemChat = ({ item, user, filters,
     const [pictureError, setPictureError] = useState(false)
     const [selected, setSelected] = useState(false)
     const [event, setEvent] = useState<NDKEvent>(item.lastMessage)
+    const [profileColor, setProfileColor] = useState<string>(theme.colors.green)
 
     useEffect(() => { loadItemData() }, [])
     useEffect(() => {
@@ -57,6 +58,7 @@ const ListItemChat = ({ item, user, filters,
                 is_friend: !!follows.filter(f => f.pubkey == profile?.pubkey).length,
             })
         }
+        setProfileColor(getColorFromPubkey(profile.pubkey??""))
         setFollow(profile)
     }
 
@@ -91,9 +93,12 @@ const ListItemChat = ({ item, user, filters,
                 onLongPress={handleSelectionMode}
             >
                 <View style={{ width: "15%" }}>
-                    <View style={styles.profile}>
-                        {follow?.picture && <Image onError={() => setPictureError(true)} source={{ uri: follow.picture }} style={{ flex: 1 }} />}
-                        {(!follow?.picture || pictureError) && <Image source={require("@assets/images/defaultProfile.png")} style={{ width: 50, height: 50 }} />}
+                    <View style={[styles.profile, {borderColor: profileColor}]}>
+                        <Image style={{ width: 46, height: 46 }} 
+                            onError={() => setPictureError(true)} 
+                            source={(pictureError || !follow?.picture) ? require("@assets/images/defaultProfile.png")
+                                : { uri: follow.picture }} 
+                        />
                     </View>
                     {selected && 
                         <Ionicons name="checkmark-circle" size={24} color={theme.colors.green} 
@@ -135,7 +140,7 @@ const ListItemChat = ({ item, user, filters,
 const styles = StyleSheet.create({
     chatContainer: { width: "100%", padding: 10, marginVertical: 2, borderRadius: 10 },
     chatRow: { paddingVertical: 5, flexDirection: "row" },
-    profile: { width: 50, height: 50, borderRadius: 50, overflow: "hidden" },
+    profile: { width: 50, height: 50, borderRadius: 50, borderWidth: 2, overflow: "hidden" },
     profileName: { fontSize: 16, fontWeight: "500", color: theme.colors.white, paddingHorizontal: 5 },
     message: { color: theme.colors.gray, paddingTop: 2 },
     dateMessage: { color: theme.colors.white, fontSize: 11, fontWeight: "500" },

@@ -49,7 +49,7 @@ const AppShareBar = ({ visible, setVisible }: ChatProps) => {
                         onSearch={(searchTerm) => setSearchTerm(searchTerm)} 
                     />
                     {visible && 
-                        <FollowList searchable 
+                        <FollowList searchable toSend 
                             searchTimout={50}
                             searchTerm={searchTerm} 
                             onPressFollow={handleSend} 

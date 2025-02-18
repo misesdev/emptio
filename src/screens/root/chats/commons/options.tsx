@@ -42,7 +42,7 @@ const styles = StyleSheet.create({
     container: { width: "100%", paddingHorizontal: 14, flexDirection: "row-reverse", 
         maxHeight: 42, backgroundColor: theme.colors.semitransparent },
     section: { paddingHorizontal: 12, padding: 6, margin: 5, 
-        borderRadius: 10, backgroundColor: theme.colors.blue },
+        borderRadius: 10, backgroundColor: theme.colors.transparent },
     sectionLabel: { textAlign: "center", color: theme.colors.white }
 })
 

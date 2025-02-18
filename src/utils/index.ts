@@ -3,6 +3,7 @@ import { pushMessage } from "@services/notification"
 import { useTranslate } from "@services/translate"
 import { User, WalletType } from "@services/memory/types"
 import { hexToNpub } from "../services/converter"
+import theme from "../theme"
 
 export const copyToClipboard = (text: string) => {
     
@@ -68,3 +69,18 @@ export const extractVideoUrl = (content: string) => {
 
     return match ? match[0] : null;
 }
+
+export const getColorFromPubkey = (pubkey: string): string => {
+    if (!pubkey) return theme.colors.green; 
+
+    let hash = 0;
+    for (let i = 0; i < pubkey.length; i++) {
+        hash = pubkey.charCodeAt(i) + ((hash << 5) - hash);
+    }
+
+    const color = `#${((hash >> 24) & 0xFF).toString(16).padStart(2, "0")}` +
+                  `${((hash >> 16) & 0xFF).toString(16).padStart(2, "0")}` +
+                  `${((hash >> 8) & 0xFF).toString(16).padStart(2, "0")}`;
+
+    return color;
+};

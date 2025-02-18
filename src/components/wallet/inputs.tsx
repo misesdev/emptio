@@ -73,7 +73,7 @@ export const AmountBox = ({ value, placeholder, onChangeText, isValidHandle, wal
             {manageWallet &&
                 <TouchableOpacity style={styles.wallets} onPress={showSelectWallet}>
                     <Text style={[styles.balance, {color: theme.colors.white, textAlign:"center"}]}>
-                        {walletTag}: {walletName()}
+                        {walletTag}: {walletName()} {'>'}
                     </Text>
                 </TouchableOpacity>
             }
@@ -85,8 +85,11 @@ export const AmountBox = ({ value, placeholder, onChangeText, isValidHandle, wal
 }
 
 const styles = StyleSheet.create({
-    container: { width: "90%", paddingHorizontal: 30, paddingVertical: 15, borderRadius: 24, margin: 10 },
-    amount: { padding: 10, fontSize: 32, fontWeight: "bold", borderBottomWidth: 1, borderBottomColor: theme.colors.gray, color: theme.colors.white },
-    wallets: { width: "65%", borderRadius: 16, paddingHorizontal: 10, backgroundColor: theme.colors.gray }, 
+    container: { width: "90%", paddingHorizontal: 30, paddingVertical: 15, borderRadius: 24, 
+        margin: 10 },
+    amount: { padding: 10, fontSize: 32, fontWeight: "bold", borderBottomWidth: 1, 
+        borderBottomColor: theme.colors.gray, color: theme.colors.white },
+    wallets: { width: "65%", borderRadius: 10, paddingHorizontal: 10, 
+        backgroundColor: theme.colors.transparent }, 
     balance: { fontSize: 14, marginVertical: 10, color: theme.colors.gray }
 })

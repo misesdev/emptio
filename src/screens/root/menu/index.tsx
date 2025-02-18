@@ -5,7 +5,7 @@ import SplashScreen from "@components/general/SplashScreen"
 import { useAuth } from "@src/providers/userProvider"
 import { userService } from "@src/core/userManager"
 import { hexToBytes } from "@noble/hashes/utils"
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import { nip19 } from "nostr-tools";
 import theme from "@src/theme"
 import Ionicons from 'react-native-vector-icons/Ionicons'
@@ -15,7 +15,7 @@ import SelectLanguageBox, { showSelectLanguage } from "@components/modal/SelectL
 import { pushMessage } from "@services/notification"
 import { useTranslateService } from "@src/providers/translateProvider"
 import { NostrEvent } from "@nostr-dev-kit/ndk"
-import { copyToClipboard } from "@src/utils"
+import { copyToClipboard, getColorFromPubkey } from "@src/utils"
 import DeviceInfo from 'react-native-device-info'
 import { StackScreenProps } from "@react-navigation/stack"
 import AppShareBar from "./commons/shareapp"
@@ -29,6 +29,12 @@ const UserMenuScreen = ({ navigation }: StackScreenProps<any>) => {
     const [forceUpdate, setForceUpdate] = useState()
     const [loading, setLoading] = useState(false)
     const [shareVisible, setShareVisible] = useState(false)
+    const [pictureError, setPictureError] = useState(false)
+    const [profileColor, setProfileColor] = useState(theme.colors.green)
+
+    useEffect(() => {
+        setProfileColor(getColorFromPubkey(user.pubkey??""))
+    }, [])
 
     const handleCopySecretKey = async () => {
         const biometrics = await authService.checkBiometric()
@@ -86,9 +92,13 @@ const UserMenuScreen = ({ navigation }: StackScreenProps<any>) => {
                 <View style={styles.area}>
                     <View style={styles.profileArea}>
                         <TouchableOpacity activeOpacity={opacity} onPress={() => navigation.navigate("manage-account-stack")}>
-                            <View style={styles.image}>
-                                {user?.picture && <Image onError={() => user.picture = ""} source={{ uri: user?.picture }} style={{ flex: 1 }} />}
-                                {!user?.picture && <Image source={require("@assets/images/defaultProfile.png")} style={{ width: 97, height: 97 }} />}
+                            <View style={[styles.image, {borderColor:profileColor}]}>
+                                <Image style={{ width: 96, height: 96 }}
+                                    onError={() => setPictureError(true)}
+                                    source={(pictureError||!user.picture) ? require("@assets/images/defaultProfile.png")
+                                        : { uri: user?.picture }
+                                    } 
+                                />
                             </View> 
                         </TouchableOpacity>                
                     </View> 
@@ -140,7 +150,7 @@ const UserMenuScreen = ({ navigation }: StackScreenProps<any>) => {
 
                 <View style={{ flexDirection: "row", marginBottom: 40 }}>
                     <Text style={{ textAlign: "center", color: theme.colors.gray, fontWeight: "400", fontSize: 14 }}>
-                        version {appVersion}
+                        {useTranslate("commons.version")} {appVersion}
                     </Text>
                 </View>
 
@@ -160,7 +170,8 @@ const styles = StyleSheet.create({
     area: { width: "100%", alignItems: "center", marginVertical: 10 },
     name: { fontSize: 18, fontWeight: 'bold', color: theme.colors.white, marginVertical: 10 },
     profileArea: { width: 100, height: 100, borderRadius: 50, backgroundColor: theme.colors.black },
-    image: { width: 100, height: 100, borderRadius: 50, overflow: "hidden", borderWidth: 3, borderColor: theme.colors.blue, backgroundColor: theme.colors.black },
+    image: { width: 100, height: 100, borderRadius: 50, overflow: "hidden", borderWidth: 3, 
+        backgroundColor: theme.colors.black },
     banner: { width: "96%", height: 145, borderRadius: 20, overflow: "hidden", position: "absolute", top: 0 },
     bunnerBlur: { flex: 1, backgroundColor: theme.colors.semitransparent }
 })

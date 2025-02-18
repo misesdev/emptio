@@ -1,4 +1,4 @@
-import { RefreshControl, ScrollView, StyleSheet, View, } from "react-native"
+import { RefreshControl, ScrollView, StyleSheet, Vibration, View, } from "react-native"
 import { ActionHeader, SectionHeader } from "@components/general/section/headers"
 import { useTranslateService } from "@src/providers/translateProvider"
 import { useAuth } from "@src/providers/userProvider"
@@ -9,7 +9,6 @@ import { walletService } from "@src/core/walletManager"
 import { HeaderHome } from "./header"
 import { StackScreenProps } from "@react-navigation/stack"
 import theme from "@src/theme"
-import { messageService } from "@/src/core/messageManager"
 
 const HomeScreen = ({ navigation }: StackScreenProps<any>) => {
 
@@ -25,6 +24,7 @@ const HomeScreen = ({ navigation }: StackScreenProps<any>) => {
 
     const handleData = async () => {
         setLoading(true)
+        if(wallets.length) Vibration.vibrate(45)
 
         if(setWallets) setWallets(await walletService.list())
 

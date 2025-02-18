@@ -1,14 +1,14 @@
-import NDK, { NDKCacheAdapterSqlite, NDKEvent, NDKPrivateKeySigner, NDKRelay, NDKUser } from "@nostr-dev-kit/ndk-mobile"
+import NDK, { NDKCacheAdapterSqlite, NDKFilter, NDKPrivateKeySigner, 
+    NDKSubscriptionCacheUsage } from "@nostr-dev-kit/ndk-mobile"
 import { PairKey, User } from "../memory/types"
-import { publishEvent, NostrEvent, getPubkeyFromTags, getEvent } from "./events"
+import { publishEvent, NostrEvent, getEvent } from "./events"
 import { getRelays } from "../memory/relays"
 import { getPairKey } from "../memory/pairkeys"
 import { AppState } from "react-native"
-import { insertEvent } from "../memory/database/events"
-import { messageService } from "@/src/core/messageManager"
 import { ChatUser } from "../zustand/chats"
 import useNDKStore from "../zustand/ndk"
 import { NostrEventKinds } from "@/src/constants/Events"
+import { processEventMessage } from "./processEvents"
 
 export const getUserData = async (publicKey: string): Promise<User> => {
 
@@ -78,53 +78,22 @@ type SubscribeProps = {
 }
 
 export const subscribeUser = ({ user, addChat }: SubscribeProps) => {
-    
+   
     const ndk = useNDKStore.getState().ndk
-    const promises: Promise<void>[] = []
 
-    const subscriptionMessages = ndk.subscribe([
+    const filters: NDKFilter[] = [
         { kinds: [4], "#p": [user.pubkey ?? ""] },
         { kinds: [4], authors: [user.pubkey ?? ""] }
-    ])
+    ]
+
+    const subscriptionMessages = ndk.subscribe(filters, {
+        cacheUsage: NDKSubscriptionCacheUsage.PARALLEL
+    })
 
     subscriptionMessages.on("event", event => {
-        if(event.kind == 4)
-            promises.push(processEventMessage({ user, event, addChat }))
+        if(event.kind == 4) processEventMessage({ user, event, addChat })
     })
 
     subscriptionMessages.start()
-    
-    setTimeout(async () => {
-        await Promise.all(promises)
-    }, 500)
 }
 
-type addChatProps = { 
-    user: User,
-    event: NDKEvent,
-    addChat: (chat: ChatUser) => void
-}
-
-const processEventMessage = async ({ user, event, addChat }: addChatProps) => { 
-    try {
-        const chat_id = messageService.generateChatId(event)
-
-        if(await insertEvent({ event, category: "message", chat_id })) 
-        {
-            if(event.pubkey == user.pubkey)
-                event.pubkey = getPubkeyFromTags(event)
-
-            addChat({ chat_id, lastMessage: event })
-
-            // if(["inactive", "background"].includes(AppState.currentState))
-            // {
-            //     await event.decrypt() 
-            //     const profile = await event.author.fetchProfile()
-            //     await pushNotification({ 
-            //         title: profile?.displayName ?? profile?.name ?? "",
-            //         message: event.content.length <= 30 ? event.content : `${event.content.substring(0,30)}..`
-            //     })
-            // }
-        }
-    } catch { }
-}
