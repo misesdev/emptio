@@ -1,7 +1,7 @@
 import { userService } from "@src/core/userManager"
 import { User } from "@services/memory/types"
 import Ionicons from 'react-native-vector-icons/Ionicons'
-import { copyPubkey, getDisplayPubkey, getUserName } from "@/src/utils"
+import { copyPubkey, getColorFromPubkey, getDisplayPubkey, getUserName } from "@/src/utils"
 import { NDKEvent, NDKFilter, NDKSubscriptionCacheUsage } from "@nostr-dev-kit/ndk-mobile"
 import { useEffect, useState, useRef, useCallback, useMemo } from "react"
 import { StyleSheet, View, Image, Text, TouchableOpacity } from "react-native"
@@ -13,6 +13,7 @@ import VideoShareBar from "./share"
 import { noteService } from "@services/nostr/noteService"
 import useNDKStore from "@services/zustand/ndk"
 import theme from "@src/theme"
+import { ProfilePicture } from "@/src/components/nostr/user/ProfilePicture"
 
 type Props = { 
     event: NDKEvent, 
@@ -22,11 +23,9 @@ type Props = {
 const VideoFooter = ({ event, url }: Props) => {
 
     const { ndk } = useNDKStore()
-    const timeout = useRef<any>(null)
     const { user, follows, followsEvent } = useAuth()
     const { useTranslate } = useTranslateService()
     const [profile, setProfile] = useState<User>({})
-    const [profileError, setProfileError] = useState<boolean>(false)
     const [commentsVisible, setCommentsVisible] = useState<boolean>(false)
     const [shareVisible, setShareVisible] = useState<boolean>(false)
     const [reacted, setReacted] = useState<boolean>(false)
@@ -57,8 +56,9 @@ const VideoFooter = ({ event, url }: Props) => {
     }, [event.id, user.pubkey, ndk])
 
     const handleReact = useCallback(async () => {
+        console.log(event.pubkey)
+        setReacted(prev => !prev)
         if(!reacted) {
-            setReacted(prev => !prev)
             setTimeout(() => { 
                 noteService.reactNote({ note: event, reaction:"❣️" }).then(reaction => {
                     setReactions(prev => [...prev, reaction])
@@ -66,7 +66,6 @@ const VideoFooter = ({ event, url }: Props) => {
             }, 20)
         }
         if(reacted) {
-            setReacted(prev => !prev)
             setTimeout(() => {
                 if(reactions[0]) {
                     noteService.deleteReact(reactions[0]).then(reaction => {
@@ -106,14 +105,7 @@ const VideoFooter = ({ event, url }: Props) => {
             </View>
             <View style={styles.profilebar}>
                 <View style={{ width: "15%", paddingHorizontal: 2 }}>
-                    <View style={styles.profile}>
-                        <Image style={styles.profile}
-                            onError={() => setProfileError(true)} 
-                            source={(profileError || !profile.picture) ? require("@assets/images/defaultProfile.png")
-                                : { uri: profile.picture }
-                            } 
-                        />
-                    </View>
+                    <ProfilePicture user={profile} size={50} />
                 </View>
                 <View style={{ width: "60%", paddingHorizontal: 6 }}>
                     <Text style={styles.profileName}>
@@ -163,8 +155,6 @@ const styles = StyleSheet.create({
     controlsSlider: { width: "100%" },
 
     profilebar: { width: "100%", paddingVertical: 6, flexDirection: "row" },
-    profile: { width: 50, height: 50, borderRadius: 50, overflow: "hidden",
-        backgroundColor: theme.colors.black },
     profileName: { textShadowOffset: { width: 2, height: 2 }, textShadowRadius: 8,
         textShadowColor: theme.colors.black, fontSize: 16, fontWeight: "500", 
         color: theme.colors.white },

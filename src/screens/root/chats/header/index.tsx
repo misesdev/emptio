@@ -4,6 +4,7 @@ import { StackNavigationProp } from "@react-navigation/stack"
 import { useAuth } from "@/src/providers/userProvider"
 import Ionicons from "react-native-vector-icons/Ionicons"
 import theme from "@/src/theme"
+import { ProfilePicture } from "@/src/components/nostr/user/ProfilePicture"
 
 type ScreenProps = { 
     navigation: StackNavigationProp<any> 
@@ -17,8 +18,7 @@ export const HeaderChats = ({ navigation }: ScreenProps) => {
         <View style={styles.header}>
             <View style={{ width: "15%", alignItems: "center", justifyContent: "center" }}>
                 <TouchableOpacity onPress={() => navigation.navigate("user-menu-stack")}>
-                    {user?.picture && <Image source={{ uri: user?.picture }} style={styles.userMenu} />}
-                    {!!!user?.picture && <Image source={require("@assets/images/defaultProfile.png")} style={styles.userMenu} />}
+                    <ProfilePicture user={user} size={38} withBorder={false} />
                 </TouchableOpacity>
             </View>
 
@@ -44,10 +44,4 @@ const styles = StyleSheet.create({
         backgroundColor: theme.colors.black
     },
     title: { color: theme.colors.white, fontSize: 20, fontWeight: "bold", marginLeft: 15 },
-    userMenu: {
-        width: theme.icons.extra,
-        height: theme.icons.extra,
-        borderRadius: 20,
-        borderColor: theme.colors.blue,
-    }
 })

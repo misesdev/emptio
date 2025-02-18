@@ -1,13 +1,12 @@
-import { ButtonPrimary } from "@/src/components/form/Buttons"
+import { ButtonPrimary } from "@components/form/Buttons"
 import { useTranslateService } from "@/src/providers/translateProvider"
 import { StyleSheet, Modal, View, ScrollView, TouchableOpacity, Text } from "react-native"
-import { SectionHeader } from "@/src/components/general/section/headers"
-import { FormControl } from "@/src/components/form/FormControl"
+import { FormControl } from "@components/form/FormControl"
 import Ionicons from 'react-native-vector-icons/Ionicons'
 import theme from "@/src/theme"
 import { useState } from "react"
-import { useFeedVideosStore } from "@/src/services/zustand/feedVideos"
-import { saveFeedVideoSettings } from "@/src/services/memory/settings"
+import { useFeedVideosStore } from "@services/zustand/feedVideos"
+import { saveFeedVideoSettings } from "@services/memory/settings"
 
 type Props = {
     visible: boolean,
@@ -36,12 +35,10 @@ const VideosFilters = ({ visible, setVisible }: Props) => {
     }
 
     const handleSave = () => {
-        setTimeout(() => { 
-            feedSettings.filterTags = filterTags
-            setFeedSettings(feedSettings)
-            saveFeedVideoSettings(feedSettings)
-            setVisible(false)
-        }, 20)
+        feedSettings.filterTags = filterTags
+        setFeedSettings(feedSettings)
+        saveFeedVideoSettings(feedSettings)
+        setVisible(false)
     }
 
     return (
@@ -50,8 +47,14 @@ const VideosFilters = ({ visible, setVisible }: Props) => {
         >
            <View style={styles.overlayer}> 
                 <View style={styles.modalContainer}>
-                    <SectionHeader label={useTranslate("commons.filters")} icon="filter" />
-
+                    <View style={styles.header}>
+                        <Text style={styles.headerText}>
+                            {useTranslate("commons.filters")}
+                        </Text>
+                        <TouchableOpacity onPress={() => setVisible(false)}>
+                            <Text style={styles.closeButton}>✕</Text>
+                        </TouchableOpacity>
+                    </View>
                     <View style={styles.tagadd}>
                         <View style={{ width: "85%" }}>
                             <FormControl showLabel={false}
@@ -110,11 +113,11 @@ const styles = StyleSheet.create({
         backgroundColor: theme.colors.semitransparentdark,
         borderTopLeftRadius: 10,
         borderTopRightRadius: 10,
-        padding: 0,
+        padding: 10,
     },
     container: { flex: 1, backgroundColor: theme.colors.semitransparentdark },
-    tagadd: { width: "100%", padding: 10, flexDirection: "row" },
-    addbutton: { padding: 10, borderRadius: 50, justifyContent: "center", 
+    tagadd: { width: "100%", flexDirection: "row" },
+    addbutton: { padding: 10, borderRadius: 10, justifyContent: "center", 
         alignItems: "center", backgroundColor: theme.colors.blue },
     tagarea: { width: "100%", padding: 10, alignItems: "center", flexDirection: "row",
         flexWrap: "wrap" },
@@ -124,6 +127,15 @@ const styles = StyleSheet.create({
     tagicon: { margin: 4 },
 
     closebutton: { position: "absolute", width: "100%", paddingHorizontal: 24, bottom: 10 },
+    header: {
+        flexDirection: "row",
+        justifyContent: "space-between",
+        alignItems: "center",
+        marginBottom: 10,
+        paddingHorizontal: 10
+    },
+    headerText: { fontSize: 18, fontWeight: "bold", color: theme.colors.white },
+    closeButton: { fontSize: 22, color: "#555" },
 })
 
 export default VideosFilters

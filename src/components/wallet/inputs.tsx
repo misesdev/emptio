@@ -71,11 +71,14 @@ export const AmountBox = ({ value, placeholder, onChangeText, isValidHandle, wal
             </Text>
             
             {manageWallet &&
-                <TouchableOpacity style={styles.wallets} onPress={showSelectWallet}>
-                    <Text style={[styles.balance, {color: theme.colors.white, textAlign:"center"}]}>
-                        {walletTag}: {walletName()} {'>'}
-                    </Text>
-                </TouchableOpacity>
+                <View style={{ width: "100%", flexDirection: "row" }}>
+                    <TouchableOpacity style={styles.wallets} onPress={showSelectWallet}>
+                        <Text style={{ fontWeight: "500", color: theme.colors.white }}
+                        >
+                            {walletName()} 
+                        </Text>
+                    </TouchableOpacity>
+                </View>
             }
 
             <SelectWalletBox wallet={wallet} setWallet={walletSelection} />
@@ -89,7 +92,6 @@ const styles = StyleSheet.create({
         margin: 10 },
     amount: { padding: 10, fontSize: 32, fontWeight: "bold", borderBottomWidth: 1, 
         borderBottomColor: theme.colors.gray, color: theme.colors.white },
-    wallets: { width: "65%", borderRadius: 10, paddingHorizontal: 10, 
-        backgroundColor: theme.colors.transparent }, 
+    wallets: { borderRadius: 10, backgroundColor: theme.colors.transparent }, 
     balance: { fontSize: 14, marginVertical: 10, color: theme.colors.gray }
 })

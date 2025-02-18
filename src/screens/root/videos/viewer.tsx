@@ -77,9 +77,9 @@ const FeedVideoViewer = ({ event, url, paused }: VideoProps) => {
                 onProgress={onProgressVideo}
             />
             <TouchableOpacity activeOpacity={1} onPress={handleMute}
-                onLongPress={() => handleScreenShot(true)} 
+                onLongPress={() => handleScreenShot(true)}  
                 onPressOut={() => handleScreenShot(false)}
-                delayLongPress={300}
+                delayLongPress={100}
                 style={styles.controlsContainer}
             >
                 {error && 

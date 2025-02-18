@@ -56,7 +56,7 @@ const styles = StyleSheet.create({
     container: { width: "100%", paddingHorizontal: 14, maxHeight: 42, 
         backgroundColor: theme.colors.semitransparent },
     section: { paddingHorizontal: 12, padding: 6, minWidth: 60, margin: 5, borderRadius: 10 },
-    sectionLabel: { textAlign: "center", color: theme.colors.white }
+    sectionLabel: { textAlign: "center", fontWeight: "500", color: theme.colors.white }
 })
 
 export default ChatFilters

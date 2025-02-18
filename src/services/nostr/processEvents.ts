@@ -8,13 +8,15 @@ import { getPubkeyFromTags } from "./events"
 var batchTimer: NodeJS.Timeout|null = null
 var enqueueEvents: dbEventProps[] = []
 
-const processEventsInBatch = async () => {
+const processEventsInBatch = async (notify: (dbEvent: dbEventProps) => void) => {
     if(enqueueEvents.length <= 0) return
 
     const batch = [...enqueueEvents]
     enqueueEvents.length = 0
 
-    await insertEventsInBatch(batch)
+    const withSuccess = await insertEventsInBatch(batch)
+   
+    withSuccess.forEach(notify) 
 }
 
 type addChatProps = { user: User, event: NDKEvent, addChat: (chat: ChatUser) => void }
@@ -25,15 +27,15 @@ export const processEventMessage = async ({ user, event, addChat }: addChatProps
 
         enqueueEvents.push({ chat_id, event, category: "message" })
 
-        if(event.pubkey == user.pubkey)
-            event.pubkey = getPubkeyFromTags(event)
-
-        addChat({ chat_id, lastMessage: event })
-        
         if(!batchTimer) 
         {
             batchTimer = setTimeout(async() => {
-                await processEventsInBatch()
+                await processEventsInBatch(dbEvent => {
+                    const lastMessage = {...dbEvent.event} as NDKEvent
+                    if(lastMessage.pubkey == user.pubkey)
+                        lastMessage.pubkey = getPubkeyFromTags(dbEvent.event)
+                    addChat({ chat_id: dbEvent.chat_id??"", lastMessage })
+                })
                 batchTimer = null
             }, 100)
         }

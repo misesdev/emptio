@@ -23,9 +23,9 @@ export const saveFeedVideoSettings = async (settings: FeedVideosSettings) => {
 
 const defaultFeedSettings: FeedVideosSettings = { 
     FETCH_LIMIT: 100,
-    VIDEOS_LIMIT: 15,
+    VIDEOS_LIMIT: 30,
     filterTags: [
-        "video", "meme", "memes", "memestr", "nostr"
+        "video", "meme", "memestr", "nostr", "news", "animalstr", "animal", "bitcoin"
     ]
 }
 
@@ -43,7 +43,7 @@ export const getFeedVideoSettings = async () : Promise<FeedVideosSettings> => {
 
 const defaultBlackList: string[] = [
     "12912202b395d8fbdcef436eea9f4638b8c09fbc064813568e9592685176bc9f",
-    "ae8b31f0c09c3ce1d4ea604c395b34b384b592e472f74e180d72307c8af8583c"
+    "ae8b31f0c09c3ce1d4ea604c395b34b384b592e472f74e180d72307c8af8583c",
 ]
 
 export const getBlackListPubkeys = async (): Promise<string[]> => {

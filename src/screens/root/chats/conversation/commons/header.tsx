@@ -1,9 +1,9 @@
-import { User } from "@/src/services/memory/types"
-import theme from "@/src/theme"
-import { copyPubkey, getColorFromPubkey, getDisplayPubkey, getUserName } from "@/src/utils"
-import { StyleSheet, View, Text, Image, TouchableOpacity } from "react-native"
+import { User } from "@services/memory/types"
+import { copyPubkey, getDisplayPubkey, getUserName } from "@/src/utils"
+import { StyleSheet, View, Text, TouchableOpacity } from "react-native"
 import Ionicons from "react-native-vector-icons/Ionicons"
-import { useEffect, useState } from "react"
+import { ProfilePicture } from "@components/nostr/user/ProfilePicture"
+import theme from "@/src/theme"
 
 type Props = {
     follow: User
@@ -11,24 +11,10 @@ type Props = {
 
 const ConversationHeader = ({ follow }: Props) => {
 
-    const [pictureError, setPictureError] = useState(false)
-    const [profileColor, setProfileColor] = useState(theme.colors.green)
-
-    useEffect(() => {
-        setProfileColor(getColorFromPubkey(follow.pubkey??""))
-    }, [])
-
     return (
         <View style={styles.headerContainer}>
             <View style={{ width: "16%", alignItems: "center", justifyContent: "center" }}>
-                <View style={[styles.imageContainer,{borderColor: profileColor}]}>
-                    <Image style={{ width: 36, height: 36 }}
-                        onError={() => setPictureError(true)} 
-                        source={(pictureError||!follow.picture) ? require("@assets/images/defaultProfile.png")
-                            : { uri: follow?.picture }
-                        } 
-                    />
-                </View>
+                <ProfilePicture user={follow} size={40} />
             </View>
             <View style={{ width: "70%", padding: 5 }}>
                 <View style={{ }}>

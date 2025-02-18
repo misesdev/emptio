@@ -49,7 +49,7 @@ const VideosFeed = ({ navigation }: StackScreenProps<any>) => {
     useEffect(() => {
         setVideos([])
         lastTimestamp.current = undefined
-        setTimeout(fetchVideos, 20)
+        fetchVideos()
     }, [feedSettings])
 
     useFocusEffect(() => { setPaused(false) })
@@ -58,8 +58,7 @@ const VideosFeed = ({ navigation }: StackScreenProps<any>) => {
         if(isFetching.current) return
         isFetching.current = true
         const filter: NDKFilter = {
-            until: lastTimestamp.current, 
-            kinds: [1, 1063], "#t": feedSettings.filterTags, 
+            since: lastTimestamp.current, "#t": feedSettings.filterTags, kinds: [1, 1063] 
         }
         const subscription = ndk.subscribe(filter, {
             cacheUsage: NDKSubscriptionCacheUsage.PARALLEL
@@ -86,6 +85,8 @@ const VideosFeed = ({ navigation }: StackScreenProps<any>) => {
 
         subscription.on("eose", finish)
         subscription.on("close", finish)
+
+        subscription.start()
 
         setTimeout(() => {
             if(founds <= 0) pushMessage(useTranslate("feed.videos.notfound"))
@@ -129,7 +130,7 @@ const VideosFeed = ({ navigation }: StackScreenProps<any>) => {
                 viewabilityConfig={{ itemVisiblePercentThreshold: 70 }}
                 onViewableItemsChanged={onViewableItemsChanged}
                 onEndReached={fetchVideos}
-                onEndReachedThreshold={.2}
+                onEndReachedThreshold={.3}
                 removeClippedSubviews
                 maxToRenderPerBatch={5}
                 initialNumToRender={5} 

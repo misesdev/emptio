@@ -4,6 +4,7 @@ import Ionicons from 'react-native-vector-icons/Ionicons'
 import { useEffect, useState } from "react"
 import theme from "@src/theme"
 import axios from "axios"
+import { useTranslateService } from "@/src/providers/translateProvider"
 
 type RelayProps = {
     relay: string,
@@ -20,17 +21,10 @@ type RelayMetadata = {
 
 export const RelayItem = ({ relay, onDelete }: RelayProps) => {
 
+    const { useTranslate } = useTranslateService()
     const [metadata, setMetadata] = useState<RelayMetadata>()
-    const [version, setVersion] = useState<string>("")
-    const [description, setDescription] = useState<string>("")
-    const [supportedNips, setSupportedNips] = useState<string>("")
 
-    useEffect(() => { 
-        loadRelayData() 
-        useTranslate("commons.version").then(setVersion)
-        useTranslate("commons.description").then(setDescription)
-        useTranslate("message.relay.supported_nips").then(setSupportedNips)
-    }, [])
+    useEffect(() => { loadRelayData() }, [])
 
     const loadRelayData = async () => {
         try {
@@ -55,16 +49,18 @@ export const RelayItem = ({ relay, onDelete }: RelayProps) => {
                         </TouchableOpacity>
                     </View>
                 </View>
-                {metadata?.description &&
+                {metadata?.description && 
                     <View style={styles.relay_row}>
                         <View style={{ width: "50%" }}>
-                            <Text style={{ color: theme.colors.white }}>{description}</Text>
+                            <Text style={{ color: theme.colors.white }}>
+                                {useTranslate("commons.description")}
+                            </Text>
                         </View>
                         <View style={{ width: "50%" }}>
-                            <Text style={{ color: theme.colors.gray }}>{metadata.description}</Text>
+                            <Text style={{ color: theme.colors.gray }}>{metadata?.description}</Text>
                         </View>
                     </View>
-                }
+                } 
 
                 {relay &&
                     <View style={styles.relay_row}>
@@ -75,36 +71,42 @@ export const RelayItem = ({ relay, onDelete }: RelayProps) => {
                             <Text style={{ color: theme.colors.gray }}>{relay}</Text>
                         </View>
                     </View>
-                }
+                } 
 
-                {metadata?.version &&
+                {metadata?.version && 
                     <View style={styles.relay_row}>
                         <View style={{ width: "50%" }}>
-                            <Text style={{ color: theme.colors.white }}>{version}</Text>
+                            <Text style={{ color: theme.colors.white }}>
+                                {useTranslate("commons.version")}
+                            </Text>
                         </View>
                         <View style={{ width: "50%" }}>
-                            <Text style={{ color: theme.colors.gray }}>{metadata.version}</Text>
+                            <Text style={{ color: theme.colors.gray }}>{metadata?.version}</Text>
                         </View>
                     </View>
-                }
+                } 
 
-                {metadata?.supported_nips && metadata.supported_nips.length &&
+                {metadata?.supported_nips && metadata.supported_nips.length && 
                     <View style={{ padding: 5 }}>
                         <View style={{}}>
-                            <Text style={{ color: theme.colors.white }}>{supportedNips}</Text>
+                            <Text style={{ color: theme.colors.white }}>
+                                {useTranslate("message.relay.supported_nips")}
+                            </Text>
                         </View>
-                        <ScrollView contentContainerStyle={{ padding: 10, flexDirection: "row" }} horizontal>
-                            {metadata.supported_nips.map((nip, index) => <View key={index} style={styles.nip}><Text style={styles.nip_text}>{nip}</Text></View>)}
+                        <ScrollView showsHorizontalScrollIndicator={false} horizontal
+                            contentContainerStyle={{ overflow: "hidden", maxHeight: 50,padding: 10, flexDirection: "row" }}
+                        >
+                            {metadata?.supported_nips?.map((nip, index) => <View key={index} style={styles.nip}><Text style={styles.nip_text}>{nip}</Text></View>)}
                         </ScrollView>
                     </View>
-                }
+                } 
             </View>
     )
 }
 
 const styles = StyleSheet.create({
     relay_container: { width: "94%", padding: 12, marginVertical: 5, borderRadius: 10, backgroundColor: "rgba(0, 55, 55, .2)" },
-    button_delete: { borderRadius: 20, padding: 2, backgroundColor: theme.colors.default },
+    button_delete: { borderRadius: 20, padding: 2, backgroundColor: theme.colors.transparent },
     relay_row: { width: "100%", flexDirection: "row", padding: 5 },
     nip: { borderRadius: 8, marginHorizontal: 10, padding: 5, backgroundColor: theme.colors.black },
     nip_text: { color: theme.colors.gray, fontWeight: "bold" }

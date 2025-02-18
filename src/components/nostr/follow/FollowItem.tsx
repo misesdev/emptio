@@ -1,10 +1,10 @@
 import { TouchableOpacity, View, Image, Text, StyleSheet } from "react-native"
 import { User } from "@services/memory/types"
 import { memo, useEffect, useState } from "react"
-import Ionicons from "react-native-vector-icons/Ionicons"
 import theme from "@src/theme"
 import { getColorFromPubkey, getDisplayPubkey, getUserName } from "@/src/utils"
 import { useTranslateService } from "@/src/providers/translateProvider"
+import { ProfilePicture } from "../user/ProfilePicture"
 
 type UserItemProps = {
     follow: User,
@@ -19,12 +19,6 @@ export const FollowItem = memo(({ follow, handleClickFollow, toSend=false,
     toFollow=false, isFriend=false, toOpen=false }: UserItemProps) => {
 
     const { useTranslate } = useTranslateService()
-    const [pictureError, setPictureError] = useState(false)
-    const [profileColor, setProfileColor] = useState(theme.colors.green)
-
-    useEffect(() => { 
-        setProfileColor(getColorFromPubkey(follow.pubkey??""))
-    }, [])
 
     const handleClick = (toFollow||toSend||toOpen) 
             ? () => {} : () => handleClickFollow(follow)
@@ -36,14 +30,7 @@ export const FollowItem = memo(({ follow, handleClickFollow, toSend=false,
             onPress={handleClick}
         >
             <View style={styles.profileArea}>
-                <View style={[styles.profileView,{borderColor: profileColor}]}>
-                    <Image style={{flex:1, maxWidth: 46, maxHeight: 46}}
-                        onError={() => setPictureError(true)}
-                        source={(pictureError || !follow.picture) ? require("@assets/images/defaultProfile.png") 
-                            : { uri: follow.picture }
-                        } 
-                    />
-                </View>
+                <ProfilePicture user={follow} size={50} />
             </View>
             <View style={{ width: "60%", minHeight: 70 }}>
                 <View style={{ width: "100%" }}>

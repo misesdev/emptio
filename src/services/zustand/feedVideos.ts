@@ -13,8 +13,10 @@ interface FeedVideoStore {
 export const useFeedVideosStore = create<FeedVideoStore>((set) => ({
     feedSettings: { 
         FETCH_LIMIT: 100,
-        VIDEOS_LIMIT: 15,
-        filterTags: ["video", "meme", "memestr", "nostr"]
+        VIDEOS_LIMIT: 30,
+        filterTags: [
+            "video", "meme", "memestr", "nostr", "news", "animalstr", "animal", "bitcoin"
+        ]
     },
     blackList: [],
     addOnBlackList: (newer: string) => {

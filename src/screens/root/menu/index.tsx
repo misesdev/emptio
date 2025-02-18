@@ -15,10 +15,11 @@ import SelectLanguageBox, { showSelectLanguage } from "@components/modal/SelectL
 import { pushMessage } from "@services/notification"
 import { useTranslateService } from "@src/providers/translateProvider"
 import { NostrEvent } from "@nostr-dev-kit/ndk"
-import { copyToClipboard, getColorFromPubkey } from "@src/utils"
+import { copyToClipboard } from "@src/utils"
 import DeviceInfo from 'react-native-device-info'
 import { StackScreenProps } from "@react-navigation/stack"
 import AppShareBar from "./commons/shareapp"
+import { ProfilePicture } from "@components/nostr/user/ProfilePicture"
 
 const UserMenuScreen = ({ navigation }: StackScreenProps<any>) => {
 
@@ -29,12 +30,6 @@ const UserMenuScreen = ({ navigation }: StackScreenProps<any>) => {
     const [forceUpdate, setForceUpdate] = useState()
     const [loading, setLoading] = useState(false)
     const [shareVisible, setShareVisible] = useState(false)
-    const [pictureError, setPictureError] = useState(false)
-    const [profileColor, setProfileColor] = useState(theme.colors.green)
-
-    useEffect(() => {
-        setProfileColor(getColorFromPubkey(user.pubkey??""))
-    }, [])
 
     const handleCopySecretKey = async () => {
         const biometrics = await authService.checkBiometric()
@@ -92,14 +87,7 @@ const UserMenuScreen = ({ navigation }: StackScreenProps<any>) => {
                 <View style={styles.area}>
                     <View style={styles.profileArea}>
                         <TouchableOpacity activeOpacity={opacity} onPress={() => navigation.navigate("manage-account-stack")}>
-                            <View style={[styles.image, {borderColor:profileColor}]}>
-                                <Image style={{ width: 96, height: 96 }}
-                                    onError={() => setPictureError(true)}
-                                    source={(pictureError||!user.picture) ? require("@assets/images/defaultProfile.png")
-                                        : { uri: user?.picture }
-                                    } 
-                                />
-                            </View> 
+                            <ProfilePicture user={user} size={100} />
                         </TouchableOpacity>                
                     </View> 
                     <Text style={styles.name}>{user?.display_name ?? user.name}</Text>

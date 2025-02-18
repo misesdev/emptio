@@ -80,6 +80,7 @@ const styles = StyleSheet.create({
         justifyContent: "space-between",
         alignItems: "center",
         marginBottom: 10,
+        paddingHorizontal: 10
     },
     headerText: { fontSize: 18, fontWeight: "bold", color: theme.colors.white },
     closeButton: { fontSize: 22, color: "#555" },

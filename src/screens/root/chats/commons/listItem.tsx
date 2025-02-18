@@ -11,6 +11,7 @@ import { getColorFromPubkey, getUserName } from "@/src/utils"
 import { Vibration, View, Text, Image, TouchableOpacity, 
     StyleSheet } from "react-native"
 import theme from "@/src/theme"
+import { ProfilePicture } from "@/src/components/nostr/user/ProfilePicture"
 
 interface ListItemProps {
     user: User,
@@ -26,10 +27,8 @@ const ListItemChat = ({ item, user, filters,
 
     const { follows } = useAuth()
     const [follow, setFollow] = useState<User|null>(null)
-    const [pictureError, setPictureError] = useState(false)
     const [selected, setSelected] = useState(false)
     const [event, setEvent] = useState<NDKEvent>(item.lastMessage)
-    const [profileColor, setProfileColor] = useState<string>(theme.colors.green)
 
     useEffect(() => { loadItemData() }, [])
     useEffect(() => {
@@ -58,7 +57,6 @@ const ListItemChat = ({ item, user, filters,
                 is_friend: !!follows.filter(f => f.pubkey == profile?.pubkey).length,
             })
         }
-        setProfileColor(getColorFromPubkey(profile.pubkey??""))
         setFollow(profile)
     }
 
@@ -93,13 +91,7 @@ const ListItemChat = ({ item, user, filters,
                 onLongPress={handleSelectionMode}
             >
                 <View style={{ width: "15%" }}>
-                    <View style={[styles.profile, {borderColor: profileColor}]}>
-                        <Image style={{ width: 46, height: 46 }} 
-                            onError={() => setPictureError(true)} 
-                            source={(pictureError || !follow?.picture) ? require("@assets/images/defaultProfile.png")
-                                : { uri: follow.picture }} 
-                        />
-                    </View>
+                    <ProfilePicture user={follow??{}} size={50} />
                     {selected && 
                         <Ionicons name="checkmark-circle" size={24} color={theme.colors.green} 
                             style={{ position: "absolute", bottom: 0, right: 0 }}

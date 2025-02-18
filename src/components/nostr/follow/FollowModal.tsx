@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react"
+import { useEffect, useState } from "react"
 import { Modal, StyleSheet, Text, TouchableOpacity, View, Image } from "react-native"
 import { useTranslateService } from "@src/providers/translateProvider"
 import { User } from "@services/memory/types"
@@ -6,9 +6,10 @@ import { userService } from "@src/core/userManager"
 import { NoteList } from "../user/NoteList"
 import { ActivityIndicator } from "react-native-paper"
 import Ionicons from "react-native-vector-icons/Ionicons"
-import { copyPubkey, getColorFromPubkey, getDisplayPubkey, getUserName } from "@src/utils"
+import { copyPubkey, getDisplayPubkey, getUserName } from "@src/utils"
 import { NDKEvent } from "@nostr-dev-kit/ndk-mobile"
 import theme from "@src/theme"
+import { ProfilePicture } from "../user/ProfilePicture"
 
 type followModalProps = {
     user: User,
@@ -44,8 +45,6 @@ const FollowModal = ({ handleAddFollow }: FollowProps) => {
     const [notes, setNotes] = useState<NDKEvent[]>([])
     const [visible, setVisible] = useState(false)
     const [loading, setloading] = useState(false)
-    const [profileColor, setProfileColor] = useState(theme.colors.green)
-    const [pictureError, setPictureError] = useState(false)
     const { useTranslate } = useTranslateService()
 
     useEffect(() => {
@@ -62,18 +61,15 @@ const FollowModal = ({ handleAddFollow }: FollowProps) => {
     showFollowModalFunction = async ({ user }: followModalProps) => {
         setUser(user)
         setVisible(true)
-        setProfileColor(getColorFromPubkey(user.pubkey??""))
     }
 
     const handleClose = () => {
-        setPictureError(false)
         setVisible(false)
         setNotes([])
     }
 
     const handleAction = async () => {
         handleAddFollow(user as User)
-        setPictureError(false)
         setVisible(false)
         setNotes([])
     }
@@ -85,14 +81,7 @@ const FollowModal = ({ handleAddFollow }: FollowProps) => {
 
                     <View style={{ flexDirection: "row" }}>
                         <TouchableOpacity activeOpacity={.3} onPress={() => {}}>
-                            <View style={[styles.image, {borderColor:profileColor}]}>
-                                <Image style={{ width: 56, height: 56 }}
-                                    onError={() => setPictureError(true)} 
-                                    source={(pictureError||!user.picture) ? require("@assets/images/defaultProfile.png")
-                                        : { uri: user?.picture }
-                                    }
-                                />
-                            </View>
+                            <ProfilePicture user={user} size={60} />
                         </TouchableOpacity>
                         <View style={{ paddingHorizontal: 12 }}>
                             <Text style={{ color: theme.colors.white, fontSize: 20, fontWeight: 'bold' }}>

@@ -62,8 +62,22 @@ export const insertEvent = async ({ event, category, chat_id }: dbEventProps) : 
     return !!data.changes;
 }
 
-export const insertEventsInBatch = async (events: dbEventProps[]) => {
+export const insertEventsInBatch = async (events: dbEventProps[]): Promise<dbEventProps[]> => {
+    if(!events.length) return []
+
     const db = await getDatabaseConnection()
+
+    const eventIds = events.map(e => e.event.id)
+
+    const existingEvents = await db.getAllAsync(`
+        SELECT id FROM events WHERE id IN (${eventIds.map(() => "?").join(", ")})
+    `, eventIds)
+
+    const existingIds = new Set(existingEvents.map((e:any) => e.id))
+
+    const newEvents = events.filter(e => !existingIds.has(e.event.id))
+
+    if (newEvents.length === 0) return []
     
     const placeholders = events.map(() => "(?, ?, ?, ?, ?, ?, ?, ?, ?)").join(", ")
     const params: any[] = []
@@ -86,6 +100,8 @@ export const insertEventsInBatch = async (events: dbEventProps[]) => {
         INSERT OR IGNORE INTO events (id, kind, pubkey, content, sig, tags, created_at, category, chat_id)
         VALUES ${placeholders};
     `, params)
+
+    return newEvents
 }
 
 export const updateEventContent = async (event: NDKEvent) => {

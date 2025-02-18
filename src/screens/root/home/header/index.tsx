@@ -1,13 +1,12 @@
 import { useAuth } from "@src/providers/userProvider"
-import { TouchableOpacity, View, Text, Image, StyleSheet } from "react-native"
+import { TouchableOpacity, View, Text, StyleSheet } from "react-native"
 import Ionicons from 'react-native-vector-icons/Ionicons'
 import { useTranslateService } from "@src/providers/translateProvider"
 import { pushMessage } from "@services/notification"
 import { Wallet } from "@services/memory/types"
 import { StackNavigationProp } from "@react-navigation/stack"
 import theme from "@src/theme"
-import { useEffect, useState } from "react"
-import { getColorFromPubkey } from "@/src/utils"
+import { ProfilePicture } from "@/src/components/nostr/user/ProfilePicture"
 
 type Props = {
     navigation: StackNavigationProp<any>
@@ -16,13 +15,7 @@ type Props = {
 export const HeaderHome = ({ navigation }: Props) => {
 
     const { user, wallets } = useAuth()
-    const [error, setError] = useState(false)
-    const [profileColor, setProfileColor] = useState(theme.colors.green)
     const { useTranslate } = useTranslateService()
-
-    useEffect(() => {
-        setProfileColor(getColorFromPubkey(user.pubkey??""))
-    }, [])
 
     const goToDonate = (items: Wallet[]) => {
         if(!items.length)
@@ -37,11 +30,7 @@ export const HeaderHome = ({ navigation }: Props) => {
         <View style={styles.header}>
             <View style={{ width: "15%", alignItems: "center", justifyContent: "center" }}>
                 <TouchableOpacity onPress={() => navigation.navigate("user-menu-stack")}>
-                    <Image style={[styles.userMenu,{borderColor:profileColor}]}
-                        onError={() => setError(true)}
-                        source={(error || !user.picture) ? require("@assets/images/defaultProfile.png")
-                            : { uri: user?.picture }}
-                    />
+                    <ProfilePicture user={user} size={38} withBorder={false} />
                 </TouchableOpacity>
             </View>
             <View style={{ width: "70%", alignItems: "center", justifyContent: "center" }}>
