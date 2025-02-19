@@ -107,6 +107,8 @@ export type TranslateWords = "initial.message"
     | "section.description.sharefriend"
     | "section.title.talkdevelopers"
     | "section.description.talkdevelopers"
+    | "section.title.managefriends"
+    | "section.description.managefriends"
 
     | "message.wallet.alertcreate"
     | "message.wallet.notfound"

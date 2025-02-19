@@ -42,7 +42,8 @@ const ChatsScreen = ({ navigation }: StackScreenProps<any>) => {
     }, [chats, followsEvent])
 
     const handleSearch = (searchTerm: string) => {
-        
+      
+        console.log(searchTerm)
         const cleanSearchTerm = searchTerm.trim().toLowerCase()
 
         if(!cleanSearchTerm.length) return setFilteredChats(chats)
@@ -51,7 +52,7 @@ const ChatsScreen = ({ navigation }: StackScreenProps<any>) => {
             f.user_name.toLowerCase().includes(cleanSearchTerm))
             .map(f => f.chat_id)
 
-        setFilteredChats(prev => prev.filter(c => chat_ids.includes(c.chat_id)))
+        setFilteredChats(chats.filter(c => chat_ids.includes(c.chat_id)))
     }
 
     const handleFilter = useCallback((section: ChatFilterType) => {
@@ -116,7 +117,7 @@ const ChatsScreen = ({ navigation }: StackScreenProps<any>) => {
     return (
         <View style={theme.styles.container}>
             
-            <SearchBox delayTime={50} seachOnLenth={0}
+            <SearchBox delayTime={200} seachOnLenth={0}
                 label={useTranslate("commons.search")} onSearch={handleSearch} 
             />
             {!selectionMode.current &&

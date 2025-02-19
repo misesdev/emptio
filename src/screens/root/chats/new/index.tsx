@@ -1,19 +1,16 @@
-import { SearchBox } from "@components/form/SearchBox"
 import { HeaderScreen } from "@components/general/HeaderScreen"
 import { FollowList } from "@components/nostr/follow/FollowList"
-import { StyleSheet, View } from "react-native"
+import { View } from "react-native"
 import { User } from "@services/memory/types"
 import { useTranslateService } from "@/src/providers/translateProvider"
 import { useAuth } from "@src/providers/userProvider"
 import { StackScreenProps } from "@react-navigation/stack"
-import { useState } from "react"
 import theme from "@src/theme"
 
 const NewChatScreen = ({ navigation }: StackScreenProps<any>) => {
 
     const { user } = useAuth()
     const { useTranslate } = useTranslateService()
-    const [searchTerm, setSearchTerm] = useState("")
 
     const handleChatFollow = (follow: User) => {
         var chat_id: string = ""
@@ -26,11 +23,16 @@ const NewChatScreen = ({ navigation }: StackScreenProps<any>) => {
     return (
         <View style={theme.styles.container}>
 
-            <HeaderScreen title={useTranslate("screen.title.newchat")} onClose={() => navigation.goBack()} />
+            <HeaderScreen 
+                title={useTranslate("screen.title.newchat")}
+                onClose={() => navigation.goBack()} 
+            />
 
-            <SearchBox seachOnLenth={0} delayTime={100} label={useTranslate("commons.search")} onSearch={(searchTerm) => setSearchTerm(searchTerm)} />
-
-            <FollowList toOpen searchable searchTimout={100} searchTerm={searchTerm} onPressFollow={handleChatFollow} />
+            <FollowList toOpen 
+                searchable 
+                searchTimout={200} 
+                onPressFollow={handleChatFollow} 
+            />
 
         </View>
     )

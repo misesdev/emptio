@@ -12,12 +12,14 @@ import theme from "@src/theme"
 type FriendListProps = {
     searchTerm?: string,
     loadCombo?: number,
+    toFollow?: boolean,
     toPayment?: boolean,
     searchable?: boolean,
     onPressFollow?: (user: User) => void,
 }
 
-export const FriendList = ({ searchTerm, onPressFollow, loadCombo = 20, toPayment = false, searchable }: FriendListProps) => {
+export const FriendList = ({ searchTerm, onPressFollow, loadCombo=20, 
+    toFollow=false, toPayment=false, searchable }: FriendListProps) => {
 
     const { user, follows } = useAuth()
     const [listCounter, setListCounter] = useState(loadCombo)

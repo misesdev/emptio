@@ -132,6 +132,8 @@ export default {
     "section.description.sharefriend": "Invite your friends to the app, share the bitcoining journey!",
     "section.title.talkdevelopers": "Talk to Developers",
     "section.description.talkdevelopers": "Suggest improvements, report bugs, and chat with the community developers!",
+    "section.title.managefriends": "Manage Friends",
+    "section.description.managefriends": "Add or remove people from your friends list!",
 
     "wallet.lightning.tag": "Lightning Wallet",
     "wallet.lightning.description": "This functionality will be available soon",

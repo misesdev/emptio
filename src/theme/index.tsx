@@ -3,18 +3,20 @@ import { StyleSheet } from "react-native";
 const theme = {
     colors: {
         black: "#000000",
-        white: "#BBB",
+        white: "#DDD",
         red: "#C14D45",
         green: "#0b612f",
         blue: "#184149",
         blueOpacity: "rgba(0, 55, 55, .4)",
-        gray: "#525B5F",
+        gray: "#828B8F",
         default: "#2D3138",
         orange: "#d95716",
         yellow: "#d4a91e",
 
         icons: "#FFFFFF",
         section: "#0c1e21",
+        chat_received: "#0c1e21",
+        chat_sended: "#033333",
         transparent: "transparent",
         semitransparent: "rgba(0,0,0,.6)",
         semitransparentdark: "rgba(0,0,0,.88)",

@@ -132,6 +132,8 @@ export default {
     "section.description.sharefriend": "Convide seus amigos para o app, compartilhe a jornada bitconheira!",
     "section.title.talkdevelopers": "Fale com Desenvolvedores",
     "section.description.talkdevelopers": "Proponha melhorias, reporte erros e converse com os desenvolvedores da comunidade!",
+    "section.title.managefriends": "Gerenciar Amigos",
+    "section.description.managefriends": "Adicione ou remova pessoas da sua lista de amigos!",
 
     "wallet.lightning.tag": "Carteira Lightning",
     "wallet.lightning.description": "Essa funcionalidade estará disponível em breve",

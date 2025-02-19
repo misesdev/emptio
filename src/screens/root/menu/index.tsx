@@ -1,11 +1,11 @@
-import { StyleSheet, View, Text, Image, ScrollView, TouchableOpacity } from "react-native"
+import { StyleSheet, View, Text, ScrollView, TouchableOpacity } from "react-native"
 import { LinkSection, SectionContainer } from "@components/general/section"
 import { getPairKey } from "@services/memory/pairkeys"
 import SplashScreen from "@components/general/SplashScreen"
 import { useAuth } from "@src/providers/userProvider"
 import { userService } from "@src/core/userManager"
 import { hexToBytes } from "@noble/hashes/utils"
-import { useEffect, useState } from "react"
+import { useState } from "react"
 import { nip19 } from "nostr-tools";
 import theme from "@src/theme"
 import Ionicons from 'react-native-vector-icons/Ionicons'
@@ -99,8 +99,8 @@ const UserMenuScreen = ({ navigation }: StackScreenProps<any>) => {
                     >
                         <SectionContainer style={styles.mediumcontainer}>
                             <Ionicons name="people" color={theme.colors.white} size={theme.icons.large} />
-                            <Text style={{ color: theme.colors.white, paddingVertical: 5 }}>{useTranslate("section.title.talkdevelopers")}</Text>
-                            <Text style={{ color: theme.colors.gray, fontSize: 12 }}>{useTranslate("section.description.talkdevelopers")}</Text>
+                            <Text style={{ color: theme.colors.white, paddingVertical: 5 }}>{useTranslate("section.title.managefriends")}</Text>
+                            <Text style={{ color: theme.colors.gray, fontSize: 12 }}>{useTranslate("section.description.managefriends")}</Text>
                         </SectionContainer>
                     </TouchableOpacity>
                     <TouchableOpacity style={styles.mediumsection} 

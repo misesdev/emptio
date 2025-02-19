@@ -9,6 +9,7 @@ import { RefreshControl } from "react-native-gesture-handler"
 type FriendListProps = {
     users: User[],
     setUsers: (user: User[]) => void,
+    toOpen?: boolean,
     toPayment?: boolean,
     toFollow?: boolean,
     refreshing: boolean,
@@ -16,8 +17,8 @@ type FriendListProps = {
     onPressUser?: (user: User) => void,
 }
 
-export const UserList = ({ users, setUsers, onPressUser, toPayment = false, 
-    toFollow = false, showEmptyMessage = false, refreshing }: FriendListProps) => {
+export const UserList = ({ users, setUsers, onPressUser, toPayment=false, toOpen=false, 
+    toFollow=false, showEmptyMessage=false, refreshing }: FriendListProps) => {
 
     const { useTranslate } = useTranslateService()
 
@@ -26,7 +27,7 @@ export const UserList = ({ users, setUsers, onPressUser, toPayment = false,
     }, [onPressUser])
 
     const ListItem = useCallback(({ item }: { item: User }) => {
-        return <FollowItem 
+        return <FollowItem toOpen={toOpen}
             follow={item} toFollow={toFollow} isFriend={item.friend ?? false}
             handleClickFollow={handleClickFollow} 
         />

@@ -7,11 +7,11 @@ import { ChatUser } from "@services/zustand/chats"
 import Ionicons from "react-native-vector-icons/Ionicons"
 import { MutableRefObject, useEffect, useState } from "react"
 import { FilterChat } from "./list"
-import { getColorFromPubkey, getUserName } from "@/src/utils"
-import { Vibration, View, Text, Image, TouchableOpacity, 
+import { getUserName } from "@src/utils"
+import { Vibration, View, Text, TouchableOpacity, 
     StyleSheet } from "react-native"
 import theme from "@/src/theme"
-import { ProfilePicture } from "@/src/components/nostr/user/ProfilePicture"
+import { ProfilePicture } from "@components/nostr/user/ProfilePicture"
 
 interface ListItemProps {
     user: User,
@@ -85,7 +85,7 @@ const ListItemChat = ({ item, user, filters,
         >
             <TouchableOpacity
                 activeOpacity={.7}
-                delayLongPress={100}
+                delayLongPress={150}
                 style={styles.chatRow}
                 onPress={handleOnPress}
                 onLongPress={handleSelectionMode}

@@ -1,5 +1,5 @@
 import { Video, VideoRef } from 'react-native-video'
-import { useEffect, useRef, useState } from "react"
+import { memo, useEffect, useRef, useState } from "react"
 import { View, StyleSheet, TouchableOpacity, Text, Dimensions } from 'react-native'
 import Ionicons from 'react-native-vector-icons/Ionicons'
 import Slider from '@react-native-community/slider'
@@ -7,15 +7,16 @@ import { useTranslateService } from '@/src/providers/translateProvider'
 import { NDKEvent } from '@nostr-dev-kit/ndk-mobile'
 import VideoFooter from './commons/footer'
 import theme from '@/src/theme'
+import { extractVideoUrl } from '@/src/utils'
 
 type VideoProps = { 
-    url: string,
     event: NDKEvent,
     paused: boolean
 }
 
-const FeedVideoViewer = ({ event, url, paused }: VideoProps) => {
+const FeedVideoViewer = memo(({ event, paused }: VideoProps) => {
 
+    const url = extractVideoUrl(event.content) ?? ""
     const timeout: any = useRef(null)
     const { useTranslate } = useTranslateService()
     const { width, height } = Dimensions.get("window")
@@ -69,7 +70,7 @@ const FeedVideoViewer = ({ event, url, paused }: VideoProps) => {
                     hidePrevious: true,
                     hideRewind: true, 
                     hideFullscreen: true
-                }}                
+                }}    
                 source={{ uri: url }}                
                 style={styles.video}
                 resizeMode="contain"
@@ -112,7 +113,9 @@ const FeedVideoViewer = ({ event, url, paused }: VideoProps) => {
             </TouchableOpacity>
         </View>
     )
-}
+}, (prev, next) => {
+    return prev.event.id == next.event.id && prev.paused == next.paused
+})
 
 const styles = StyleSheet.create({
     contentVideo: { flex: 1, overflow: "hidden",  backgroundColor: theme.colors.black },

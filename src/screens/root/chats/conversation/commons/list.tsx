@@ -1,7 +1,7 @@
 import { StyleSheet, FlatList } from "react-native"
 import { User } from "@services/memory/types"
 import { NDKEvent } from "@nostr-dev-kit/ndk"
-import { MutableRefObject, RefObject, useCallback } from "react"
+import { MutableRefObject, RefObject, useCallback, useMemo } from "react"
 import theme from "@/src/theme"
 import ListItemMessage from "./listItem"
     
@@ -12,30 +12,54 @@ type Props = {
     listRef: RefObject<FlatList>,
     highLigthIndex: MutableRefObject<number|null>,
     selectionMode: MutableRefObject<boolean>,
-    selectedItems: MutableRefObject<NDKEvent[]>,
-    replyEvent: MutableRefObject<NDKEvent|null>,
-    focusEventOnList: (event: NDKEvent) => void,
+    selectedItems: MutableRefObject<Set<NDKEvent>>,
+    setReplyEvent: (event: NDKEvent|null, index: number|null) => void,
 }
 
 const ConversationList = ({ user, follow, listRef, events, selectionMode, highLigthIndex, 
-    selectedItems, replyEvent, focusEventOnList }: Props) => {
+    selectedItems, setReplyEvent }: Props) => {
    
-    const renderItem = useCallback(({ item, index }: { item: NDKEvent; index: number }) => (
-        <ListItemMessage item={item} index={index} focusIndex={highLigthIndex.current} items={events} 
-            user={user} follow={follow} selectionMode={selectionMode} 
-            selectedItems={selectedItems} replyEvent={replyEvent} focusEventOnList={focusEventOnList} 
-        />
-    ), [highLigthIndex, events, user, follow, selectionMode, selectedItems, replyEvent, focusEventOnList]);
+    const focusEvent = useCallback((index: number) => {
+        try {
+            if(index != -1) {
+                listRef.current?.scrollToIndex({ viewPosition: .5, animated: true, index })
+                highLigthIndex.current = index
+                setTimeout(() => highLigthIndex.current = null, 350)
+            }
+        } catch {}
+    }, [highLigthIndex, listRef])  
+
+    const renderItem = useMemo(() => 
+        ({ item, index }: { item: NDKEvent; index: number }) => (
+            <ListItemMessage 
+                item={item} index={index} 
+                focusIndex={highLigthIndex.current} items={events} 
+                user={user} follow={follow} selectionMode={selectionMode} 
+                selectedItems={selectedItems} setReplyEvent={setReplyEvent} 
+                focusReply={focusEvent}
+            />
+        ), [
+        highLigthIndex, events, user, follow, selectionMode, selectedItems, 
+        setReplyEvent, focusEvent 
+    ]);
 
     return (
-        <FlatList ref={listRef} inverted data={events} style={styles.scrollContainer}
-            showsVerticalScrollIndicator renderItem={renderItem} keyExtractor={item => item.id} 
+        <FlatList inverted
+            ref={listRef} 
+            data={events}
+            initialNumToRender={45}
+            maxToRenderPerBatch={15}
+            windowSize={15}
+            style={styles.scrollContainer}
+            showsVerticalScrollIndicator 
+            renderItem={renderItem} 
+            keyExtractor={item => item.id}
         />
     )
 }
 
 const styles = StyleSheet.create({
-    scrollContainer: { width: "100%", backgroundColor: theme.colors.black },
+    scrollContainer: { width: "100%", backgroundColor: theme.colors.transparent },
 })
 
 export default ConversationList

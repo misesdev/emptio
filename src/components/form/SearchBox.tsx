@@ -40,13 +40,13 @@ export const SearchBox = ({ label, textCenter, delayTime = 500, seachOnLenth = 1
                     placeholderTextColor={theme.colors.gray}
                     value={search}
                 />
-                {search &&
-                    <View style={styles.searchButton}>
+                <View style={styles.searchButton}>
+                    {search &&
                         <TouchableOpacity activeOpacity={.7} onPress={handleClear}>
                             <Ionicons name="close" size={theme.icons.large} color={theme.colors.gray} />
                         </TouchableOpacity>
-                    </View>
-                }
+                    }
+                </View>
             </View>
         </View>
     )

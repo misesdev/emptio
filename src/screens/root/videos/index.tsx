@@ -1,6 +1,6 @@
 import { NDKEvent, NDKFilter, NDKSubscriptionCacheUsage } from "@nostr-dev-kit/ndk-mobile"
 import { StackScreenProps } from "@react-navigation/stack"
-import { memo, useCallback, useEffect, useRef, useState } from "react"
+import { useCallback, useEffect, useRef, useState } from "react"
 import { View, FlatList, SafeAreaView, Text, StyleSheet } from "react-native"
 import { extractVideoUrl } from "@src/utils"
 import Ionicons from 'react-native-vector-icons/Ionicons'
@@ -15,14 +15,6 @@ import { useTranslateService } from "@src/providers/translateProvider"
 import FeedVideoViewer from "./viewer"
 import theme from "@src/theme"
 import useNDKStore from "@services/zustand/ndk"
-
-const MemoizedFeedVideoViewer = memo(({ item, paused }: { item: NDKEvent, paused: boolean }) => {
-    console.log("renderItem:", item.id);
-    const url = extractVideoUrl(item.content);
-    return <FeedVideoViewer url={url ?? ""} event={item} paused={paused} />;
-}, (prevProps, nextProps) => {
-    return prevProps.item.id === nextProps.item.id && prevProps.paused === nextProps.paused;
-})
 
 const VideosFeed = ({ navigation }: StackScreenProps<any>) => {
 
@@ -71,8 +63,7 @@ const VideosFeed = ({ navigation }: StackScreenProps<any>) => {
             }
             lastTimestamp.current = event.created_at
             const url = extractVideoUrl(event.content)
-            if(url && !videos.find(v => v.id == event.id) && 
-                !blackList.includes(event.pubkey)) 
+            if(url && !videos.find(v => v.id == event.id) && !blackList.includes(event.pubkey)) 
             {
                 setVideos(prev => [...prev, event])
                 founds++
@@ -85,13 +76,12 @@ const VideosFeed = ({ navigation }: StackScreenProps<any>) => {
 
         subscription.on("eose", finish)
         subscription.on("close", finish)
-
         subscription.start()
 
         setTimeout(() => {
             if(founds <= 0) pushMessage(useTranslate("feed.videos.notfound"))
             subscription.stop()
-        }, 3000)
+        }, 5000)
     }
 
     const onViewableItemsChanged = useCallback(({ viewableItems }: any) => {
@@ -101,9 +91,7 @@ const VideosFeed = ({ navigation }: StackScreenProps<any>) => {
     }, [])
 
     const renderItem = useCallback(({ item, index }:{ item: NDKEvent, index: number }) => {
-        return <MemoizedFeedVideoViewer item={item} 
-            paused={index !== playingIndex || paused} 
-        /> 
+        return <FeedVideoViewer event={item} paused={index !== playingIndex || paused} /> 
     }, [playingIndex, paused])
 
     const handleDownload = async () => {
@@ -127,7 +115,7 @@ const VideosFeed = ({ navigation }: StackScreenProps<any>) => {
                 renderItem={renderItem}
                 keyExtractor={(item: NDKEvent) => item.id}
                 showsVerticalScrollIndicator={false}
-                viewabilityConfig={{ itemVisiblePercentThreshold: 70 }}
+                viewabilityConfig={{ itemVisiblePercentThreshold: 50 }}
                 onViewableItemsChanged={onViewableItemsChanged}
                 onEndReached={fetchVideos}
                 onEndReachedThreshold={.3}

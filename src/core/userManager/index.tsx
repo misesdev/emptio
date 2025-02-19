@@ -1,6 +1,6 @@
 import { clearStorage } from "@services/memory"
 import { createPairKeys, getHexKeys } from "@services/nostr"
-import { getNostrInstance, getUserData, pushUserData, pushUserFollows } from "@services/nostr/pool"
+import { getUserData, pushUserData } from "@services/nostr/pool"
 import { getEvent, listenerEvents, publishEvent, NostrEvent } from "@services/nostr/events"
 import { NDKEvent, NDKFilter, NDKSubscriptionCacheUsage } from "@nostr-dev-kit/ndk-mobile"
 import { Response, trackException } from "@services/telemetry"
@@ -209,7 +209,7 @@ const searchUsers = async (user: User, searchTerm: string, limit: number = 50): 
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
                 pubkey: user.pubkey,
-                searchTerm: searchTerm,
+                searchTerm,
                 limit
             })
         })
@@ -219,13 +219,13 @@ const searchUsers = async (user: User, searchTerm: string, limit: number = 50): 
         return users.filter((u: any) => u.pubkey != user.pubkey)
             .sort((a:any, b:any) => (b.similarity ?? 1) - (a.similarity ?? 1))
             .map((user: any) => {
-            return {
-                name: user.name,
-                pubkey: user.pubkey,
-                picture: user.profile,
-                display_name: user.displayName
-            }
-        })
+                return {
+                    name: user.name,
+                    pubkey: user.pubkey,
+                    picture: user.profile,
+                    display_name: user.displayName
+                }
+            })
     }
     catch { return [] }
 }

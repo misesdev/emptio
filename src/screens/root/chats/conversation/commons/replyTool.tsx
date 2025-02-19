@@ -10,10 +10,10 @@ interface ReplyToolProps {
     messages: NDKEvent[],
     user: User,
     follow: User,
-    focusEventOnList: (event: NDKEvent) => void
+    focusReply: (index: number) => void
 }
 
-const ReplyTool = ({ event, messages, user, follow, focusEventOnList }: ReplyToolProps) => {
+const ReplyTool = ({ event, messages, user, follow, focusReply }: ReplyToolProps) => {
     
     const { useTranslate } = useTranslateService()
 
@@ -23,11 +23,14 @@ const ReplyTool = ({ event, messages, user, follow, focusEventOnList }: ReplyToo
     const userReply = reply?.pubkey === user.pubkey ? useTranslate("chat.labels.you") 
         : getUserName(follow, 26)
 
-    const handleFocusReply = reply ? () => focusEventOnList(reply) : undefined 
+    const focusReplyMessage = () => {
+        const index = messages.findIndex(m => m.id == reply.id)
+        focusReply(index)
+    }
 
     return (
         <TouchableOpacity activeOpacity={.7} 
-                onPress={handleFocusReply} style={styles.content}
+                onPress={focusReplyMessage} style={styles.content}
             >
             <View style={{ width: "90%" }}>
                 <Text style={{ color: theme.colors.green, fontSize: 16 }}>
@@ -42,7 +45,7 @@ const ReplyTool = ({ event, messages, user, follow, focusEventOnList }: ReplyToo
 }
 
 const styles = StyleSheet.create({
-    content: { width: "100%", borderRadius: 6, borderLeftColor: theme.colors.blue,
+    content: { width: "100%", borderRadius: 10, borderLeftColor: theme.colors.blue,
         borderLeftWidth: 2, flexDirection: "row", padding: 6, paddingHorizontal: 10, },
 })
 

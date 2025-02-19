@@ -5,10 +5,11 @@ import Ionicons from 'react-native-vector-icons/Ionicons'
 type HeaderProps = {
     title: string,
     onClose: () => void,
+    action?: React.JSX.Element,
     style?: StyleProp<ViewStyle>
 }
 
-export const HeaderScreen = ({ title, onClose, style }: HeaderProps) => {
+export const HeaderScreen = ({ title, onClose, action, style }: HeaderProps) => {
 
     return (
         <View style={[styles.header, style]}>
@@ -18,6 +19,7 @@ export const HeaderScreen = ({ title, onClose, style }: HeaderProps) => {
                 </Text>
             </View>
             <View style={{ width: "25%", padding: 6, flexDirection: "row-reverse" }}>
+                {action && action}
                 <TouchableOpacity activeOpacity={.7} onPress={onClose} style={styles.button}>
                     <Ionicons name="close" size={30} color={theme.colors.white} />
                 </TouchableOpacity>

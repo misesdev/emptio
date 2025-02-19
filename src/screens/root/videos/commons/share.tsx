@@ -3,13 +3,11 @@ import { NDKEvent } from "@nostr-dev-kit/ndk-mobile"
 import { Modal, StyleSheet, View, Text, TouchableOpacity } from "react-native"
 import { FollowList } from "@/src/components/nostr/follow/FollowList"
 import { User } from "@/src/services/memory/types"
-import { SearchBox } from "@/src/components/form/SearchBox"
 import { useTranslateService } from "@/src/providers/translateProvider"
 import { messageService } from "@/src/core/messageManager"
 import { useAuth } from "@/src/providers/userProvider"
 import { pushMessage } from "@/src/services/notification"
 import { getUserName } from "@/src/utils"
-import { useState } from "react"
 import theme from "@/src/theme"
 
 type ChatProps = {
@@ -17,11 +15,11 @@ type ChatProps = {
     visible: boolean,
     setVisible: (state: boolean) => void
 }
+
 const VideoShareBar = ({ event, visible, setVisible }: ChatProps) => {
 
     const { user } = useAuth()
     const { useTranslate } = useTranslateService()
-    const [searchTerm, setSearchTerm] = useState("")
 
     const handleSend = (follow: User) => {
 
@@ -48,15 +46,9 @@ const VideoShareBar = ({ event, visible, setVisible }: ChatProps) => {
                         </TouchableOpacity>
                     </View>
 
-                    <SearchBox seachOnLenth={0} 
-                        delayTime={50} 
-                        label={useTranslate("commons.search")} 
-                        onSearch={(searchTerm) => setSearchTerm(searchTerm)} 
-                    />
                     {visible && 
                         <FollowList searchable toSend 
-                            searchTimout={50}
-                            searchTerm={searchTerm} 
+                            searchTimout={200}
                             onPressFollow={handleSend} 
                         />
                     }

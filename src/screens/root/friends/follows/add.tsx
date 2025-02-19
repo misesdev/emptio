@@ -67,11 +67,21 @@ const AddFolowScreen = ({ navigation }: StackScreenProps<any>) => {
     return (
         <View style={theme.styles.container}>
 
-            <HeaderScreen title={useTranslate("screen.title.addfriend")} onClose={() => navigation.goBack()} />
+            <HeaderScreen 
+                title={useTranslate("screen.title.addfriend")} 
+                onClose={() => navigation.goBack()} 
+            />
 
-            <SearchBox seachOnLenth={1} label={useTranslate("commons.search")} onSearch={handleSearch} />
+            <SearchBox 
+                seachOnLenth={1} delayTime={300}
+                label={useTranslate("commons.search")} 
+                onSearch={handleSearch} 
+            />
 
-            <UserList refreshing={loading} toFollow users={users} setUsers={setUsers} onPressUser={handleAddFollow} />
+            <UserList toOpen
+                refreshing={loading} users={users} 
+                setUsers={setUsers} onPressUser={handleAddFollow}
+            />
 
             <View style={{ height: 38 }}></View>
 

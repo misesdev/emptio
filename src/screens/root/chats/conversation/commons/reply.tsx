@@ -5,29 +5,27 @@ import { NDKEvent } from "@nostr-dev-kit/ndk-mobile"
 import Ionicons from 'react-native-vector-icons/Ionicons'
 import { StyleSheet, View, Text, TouchableOpacity } from "react-native"
 import { useTranslateService } from "@/src/providers/translateProvider"
-import { MutableRefObject } from "react"
 
 interface ReplyProps {
     user: User,
     follow: User,
-    reply: MutableRefObject<NDKEvent|null>
+    reply: NDKEvent,
+    setReply: (event: NDKEvent|null) => void,
     focusEventOnList: (event: NDKEvent|null) => void
 }
 
-const ReplyBox = ({ reply, focusEventOnList, user, follow }: ReplyProps) => {
+const ReplyBox = ({ reply, setReply, focusEventOnList, user, follow }: ReplyProps) => {
     
-    if(!reply.current) return null
+    if(!reply) return null
     
     const { useTranslate } = useTranslateService()
    
-    const handleClean = () => reply.current = null 
+    const handleClean = () => setReply(null) 
 
-    const userReply = reply.current?.pubkey === user.pubkey ? useTranslate("chat.labels.you")
+    const userReply = reply?.pubkey === user.pubkey ? useTranslate("chat.labels.you")
         : getUserName(follow, 26)
 
-    const handleFocusReply = reply.current ? () => focusEventOnList(reply.current) : undefined
-
-    if(!reply) return <></>
+    const handleFocusReply = reply ? () => focusEventOnList(reply) : undefined
 
     return (
         <View style={styles.container}>
@@ -39,7 +37,7 @@ const ReplyBox = ({ reply, focusEventOnList, user, follow }: ReplyProps) => {
                         {userReply}
                     </Text>
                     <Text style={{ color: theme.colors.gray }}>
-                        {getClipedContent(reply.current.content, 130)}
+                        {getClipedContent(reply.content, 130)}
                     </Text>
                 </View>
                 <View style={{ width: "10%", alignItems: "flex-end" }}>
@@ -54,7 +52,7 @@ const ReplyBox = ({ reply, focusEventOnList, user, follow }: ReplyProps) => {
 }
 
 const styles = StyleSheet.create({
-    container: { width: "100%", padding: 4, backgroundColor: theme.colors.semitransparent },
+    container: { width: "100%", padding: 4, borderRadius: 10, backgroundColor: theme.colors.semitransparent },
     content: { width: "100%", borderRadius: 6, borderLeftColor: theme.colors.blue,
         borderLeftWidth: 2, flexDirection: "row", padding: 6, paddingHorizontal: 10, },
     close: { padding: 4, borderRadius: 50, backgroundColor: theme.colors.blueOpacity }

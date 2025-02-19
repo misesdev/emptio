@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useRef, useState } from "react"
-import { View, StyleSheet, TextInput, FlatList, 
+import { View, StyleSheet, TextInput, FlatList, Image, 
     TouchableOpacity } from "react-native"
 import { NDKEvent } from "@nostr-dev-kit/ndk"
 import { useAuth } from "@src/providers/userProvider"
@@ -24,23 +24,27 @@ const ConversationChat = ({ navigation, route }: StackScreenProps<any>) => {
     const timeout:any = useRef(null)
     const listRef = useRef<FlatList>(null)
     const selectionMode = useRef<boolean>(false)
-    const selectedItems = useRef<NDKEvent[]>([])
+    const selectedItems = useRef<Set<NDKEvent>>(new Set<NDKEvent>())
     const highLigthIndex = useRef<number|null>(null)
+    const replyIndex = useRef<number|null>(null)
     const replyEvent = useRef<NDKEvent|null>(null)
     const { useTranslate } = useTranslateService()
     const { markReadChat, unreadChats } = useChatStore()
     const { follow, chat_id } = route.params as { chat_id: string, follow: User }
     const [message, setMessage] = useState<string>("")
-    const [messages, setMessages] = useState<NDKEvent[]>([])
+    const messagesRef = useRef<NDKEvent[]>([])
 
     useEffect(() => {
         if(timeout.current) clearTimeout(timeout.current)
-        timeout.current = setTimeout(async() => { 
-            await loadMessages() 
-        }, 20)
+        timeout.current = setTimeout(loadMessages, 10)
 
         return () => timeout.current && clearTimeout(timeout.current)
     }, [unreadChats])
+
+    const setReplyEvent = useCallback((event: NDKEvent|null, index: number|null=null) => {
+        replyEvent.current = event
+        replyIndex.current = index
+    }, [])
 
     const loadMessages = useCallback(async () => {
         
@@ -49,7 +53,7 @@ const ConversationChat = ({ navigation, route }: StackScreenProps<any>) => {
 
         const chatMessages = await messageService.listMessages(chat_id)
         
-        setMessages(chatMessages)
+        messagesRef.current = chatMessages
     }, [chat_id, unreadChats])
 
     const sendMessage = async (follow: User) => {
@@ -64,8 +68,8 @@ const ConversationChat = ({ navigation, route }: StackScreenProps<any>) => {
             created_at: Math.floor(Date.now() / 1000)
         }) 
         messageService.sendMessage(messageEvent)
-        setMessages(prev => [messageEvent, ...prev])
-        replyEvent.current = null
+        messagesRef.current.unshift(messageEvent)
+        setReplyEvent(null)
         setMessage("")
     }
 
@@ -76,39 +80,41 @@ const ConversationChat = ({ navigation, route }: StackScreenProps<any>) => {
 
     const deleteMessage = async (user: User, event: NDKEvent, onlyForMe: boolean) => {
         messageService.deleteMessage({ user, event, onlyForMe })
-        setMessages(messages.filter(e => e.id != event.id))
+        messagesRef.current = [...messagesRef.current.filter(e => e.id != event.id)]
     }
 
-    const focusEventOnList = (event: NDKEvent|null) => {
-        if(event) {
-            const index = messages.findIndex(e => e.id == event.id)
-            if(index != -1) {
-                listRef.current?.scrollToIndex({ viewPosition: .5, animated: true, index })
-                highLigthIndex.current = index
-                setTimeout(() => highLigthIndex.current = null, 350)
+    const focusEventOnList = useCallback((event: NDKEvent|null) => {
+        try {
+            if(event) {
+                const index = messagesRef.current.findIndex(e => e.id == event.id)
+                if(index != -1) {
+                    listRef.current?.scrollToIndex({ viewPosition: .5, animated: true, index })
+                    highLigthIndex.current = index
+                    setTimeout(() => highLigthIndex.current = null, 350)
+                }
             }
-        }
-    }
+        } catch {}
+    }, [messagesRef, highLigthIndex, listRef])
 
-    const handleGroupAction = (option: MessageActionType) => {
+    const handleGroupAction = useCallback((option: MessageActionType) => {
         if(option == "copy") {
-            const text = selectedItems.current.map(e => e.content).join("\n\n")
-            copyToClipboard(text)
-            selectionMode.current = false
-            selectedItems.current = []
+            copyToClipboard([...selectedItems.current].map(e => e.content).join("\n\n"))
         }
         if(option == "delete") {
-            selectionMode.current = false
-            selectedItems.current = []
         }
         if(option == "cancel") {
-            selectionMode.current = false
-            selectedItems.current = []
         }
-    }
+        selectionMode.current = false
+        selectedItems.current.clear()
+    }, [])
 
     return (
         <View style={theme.styles.container}>
+
+            <Image style={{ position: "absolute", width: "100%", height: "100%" }}
+                source={require("@assets/images/background-chat7.jpg")}
+            />
+
             <ConversationHeader follow={follow} />
            
             {selectionMode.current && 
@@ -117,21 +123,22 @@ const ConversationChat = ({ navigation, route }: StackScreenProps<any>) => {
 
             <ConversationList user={user} follow={follow} 
                 listRef={listRef} 
-                events={messages} 
+                events={messagesRef.current} 
                 highLigthIndex={highLigthIndex}
                 selectionMode={selectionMode} 
                 selectedItems={selectedItems}
-                replyEvent={replyEvent}
-                focusEventOnList={focusEventOnList}
+                setReplyEvent={setReplyEvent}
             />
 
             {/* Chat Box */}
             <View style={styles.chatBoxContainer}>
                 {/* Reply Box */}
-                <ReplyBox user={user} follow={follow} 
-                    focusEventOnList={focusEventOnList} 
-                    reply={replyEvent}  
-                />
+                {replyEvent.current && 
+                    <ReplyBox user={user} follow={follow} 
+                        focusEventOnList={focusEventOnList} 
+                        reply={replyEvent.current} setReply={setReplyEvent} 
+                    />
+                }
                 <View style={{ flexDirection: "row" }}>
                     <View style={styles.chatInputContainer}>
                         <TextInput style={styles.chatInput} 
@@ -159,7 +166,7 @@ const ConversationChat = ({ navigation, route }: StackScreenProps<any>) => {
 }
 
 const styles = StyleSheet.create({
-    chatBoxContainer: { padding: 6, width: "100%", backgroundColor: theme.colors.black },
+    chatBoxContainer: { padding: 6, width: "100%", backgroundColor: theme.colors.transparent },
     chatInputContainer: { width: "82%", borderRadius: 10, paddingHorizontal: 14, 
         backgroundColor: theme.input.backGround },
     chatInput: { color: theme.input.textColor, paddingVertical: 16, paddingHorizontal: 6 },

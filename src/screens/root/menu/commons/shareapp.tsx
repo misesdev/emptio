@@ -16,9 +16,7 @@ type ChatProps = {
 }
 const AppShareBar = ({ visible, setVisible }: ChatProps) => {
 
-    const { user } = useAuth()
     const { useTranslate } = useTranslateService()
-    const [searchTerm, setSearchTerm] = useState("")
 
     const handleSend = (follow: User) => {
         
@@ -43,15 +41,9 @@ const AppShareBar = ({ visible, setVisible }: ChatProps) => {
                         </TouchableOpacity>
                     </View>
 
-                    <SearchBox seachOnLenth={0} 
-                        delayTime={50} 
-                        label={useTranslate("commons.search")} 
-                        onSearch={(searchTerm) => setSearchTerm(searchTerm)} 
-                    />
                     {visible && 
                         <FollowList searchable toSend 
                             searchTimout={50}
-                            searchTerm={searchTerm} 
                             onPressFollow={handleSend} 
                         />
                     }

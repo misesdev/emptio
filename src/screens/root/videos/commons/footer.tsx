@@ -3,7 +3,7 @@ import { User } from "@services/memory/types"
 import Ionicons from 'react-native-vector-icons/Ionicons'
 import { copyPubkey, getColorFromPubkey, getDisplayPubkey, getUserName } from "@/src/utils"
 import { NDKEvent, NDKFilter, NDKSubscriptionCacheUsage } from "@nostr-dev-kit/ndk-mobile"
-import { useEffect, useState, useRef, useCallback, useMemo } from "react"
+import { useEffect, useState, useRef, useCallback, useMemo, memo } from "react"
 import { StyleSheet, View, Image, Text, TouchableOpacity } from "react-native"
 import VideoDescription from "./description"
 import { useTranslateService } from "@src/providers/translateProvider"
@@ -20,7 +20,7 @@ type Props = {
     url: string,
 }
 
-const VideoFooter = ({ event, url }: Props) => {
+const VideoFooter = memo(({ event, url }: Props) => {
 
     const { ndk } = useNDKStore()
     const { user, follows, followsEvent } = useAuth()
@@ -147,7 +147,7 @@ const VideoFooter = ({ event, url }: Props) => {
             />
         </View>
     )
-}
+})
 
 const styles = StyleSheet.create({
     controlsSliderContainer: { width: "95%", position: "absolute", paddingBottom: 4, 

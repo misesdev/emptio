@@ -18,13 +18,14 @@ interface ListItemProps {
     user: User;
     follow: User;
     selectionMode: MutableRefObject<boolean>;
-    selectedItems: MutableRefObject<NDKEvent[]>;
-    replyEvent: MutableRefObject<NDKEvent|null>;
-    focusEventOnList: (event: NDKEvent) => void;
+    selectedItems: MutableRefObject<Set<NDKEvent>>;
+    setReplyEvent: (event: NDKEvent|null, index: number) => void;
+    focusReply: (index: number) => void;
 }
 
 const ListItemMessage = ({
-    item, index, focusIndex, items, user, follow, selectionMode, selectedItems, replyEvent, focusEventOnList
+    item, index, focusIndex, items, user, follow, selectionMode, selectedItems, 
+    setReplyEvent, focusReply
 }: ListItemProps) => {
     
     const threshold = 10;
@@ -37,9 +38,13 @@ const ListItemMessage = ({
     useEffect(() => {
         if (focusIndex === index) {
             highlight.value = 1;
-            highlight.value = withTiming(0, { duration: 1800 });
+            highlight.value = withTiming(0, { duration: 800 });
         }
     }, [focusIndex]);
+
+    useEffect(() => {
+        if(!selectionMode.current) setSelected(false)
+    }, [selectionMode.current])
 
     useEffect(() => {
         if (event.content.includes("?iv=")) {
@@ -47,10 +52,10 @@ const ListItemMessage = ({
         }
     }, []);
 
-    const replyMessage = useCallback(() => {
-        replyEvent.current = event;
-        Vibration.vibrate(35);
-    }, [event, replyEvent]);
+    const replyMessage = () => {
+        setReplyEvent(event, index)
+        Vibration.vibrate(35)
+    }
 
     const swipeGesture = Gesture.Pan()
         .activeOffsetX([-10, 10])
@@ -75,11 +80,11 @@ const ListItemMessage = ({
     const handleOnPress = useCallback(() => {
         if (selectionMode.current) {
             if (!selected) {
-                selectedItems.current.push(item);
+                selectedItems.current.add(item);
             } else {
-                selectedItems.current = selectedItems.current.filter(el => el !== item);
+                selectedItems.current.delete(item);
             }
-            if (!selectedItems.current.length) selectionMode.current = false;
+            if (!selectedItems.current.size) selectionMode.current = false;
             setSelected(prev => !prev);
         }
     }, [selected, selectionMode, selectedItems, item]);
@@ -87,25 +92,38 @@ const ListItemMessage = ({
     const handleSelectionMode = useCallback(() => {
         setSelected(true);
         selectionMode.current = true;
-        selectedItems.current.push(item);
+        selectedItems.current.add(item);
         Vibration.vibrate(45);
     }, [selectionMode, selectedItems, item]);
 
     return (
         <Animated.View style={animatedFocusStyle}>
-            <View style={[
-                styles.messageContainer,
-                { flexDirection: isUser ? "row-reverse" : "row" },
-                { backgroundColor: selected ? theme.colors.blueOpacity : "transparent" }
-            ]}>
+            <View 
+                style={[
+                    styles.messageContainer,
+                    { flexDirection: isUser ? "row-reverse" : "row" },
+                    { backgroundColor: selected ? theme.colors.blueOpacity : "transparent" }
+                ]}
+            >
                 <GestureDetector gesture={swipeGesture}>
                     <Animated.View style={[
                         styles.contentMessage,
                         isUser ? styles.messageSended : styles.messageReceived,
                         animatedSwipeStyle
                     ]}>
-                        <TouchableOpacity activeOpacity={0.7} onPress={handleOnPress} delayLongPress={100} onLongPress={handleSelectionMode}>
-                            <ReplyTool user={user} event={item} follow={follow} messages={items} focusEventOnList={focusEventOnList} />
+                        <TouchableOpacity 
+                            activeOpacity={0.5} 
+                            onPress={handleOnPress}
+                            delayLongPress={150} 
+                            onLongPress={handleSelectionMode}
+                        >
+                            <ReplyTool 
+                                user={user} 
+                                event={item} 
+                                follow={follow}
+                                messages={items}
+                                focusReply={focusReply}
+                            />
                             <NoteViewer showUser={false} note={event} />
                             <View style={[styles.messageDetailBox, { flexDirection: isUser ? "row-reverse" : "row" }]}>
                                 <Text style={{ fontSize: 11, fontWeight: "500", color: theme.colors.gray }}>
@@ -123,8 +141,8 @@ const ListItemMessage = ({
 const styles = StyleSheet.create({
     messageContainer: { width: "100%", padding: 6, marginVertical: 1 },
     contentMessage: { width: "90%", padding: 10, borderBottomLeftRadius: 12, borderTopRightRadius: 12 },
-    messageReceived: { backgroundColor: theme.colors.section, borderBottomRightRadius: 12 },
-    messageSended: { backgroundColor: theme.colors.blueOpacity, borderTopLeftRadius: 12 },
+    messageReceived: { backgroundColor: theme.colors.chat_received, borderBottomRightRadius: 12 },
+    messageSended: { backgroundColor: theme.colors.chat_sended, borderTopLeftRadius: 12 },
     messageDetailBox: { width: "100%", flexDirection: "row-reverse", marginTop: 12 },
 })
 
