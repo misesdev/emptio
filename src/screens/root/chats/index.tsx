@@ -1,5 +1,5 @@
 import theme from "@src/theme"
-import { StyleSheet, View, TouchableOpacity, FlatList, Vibration, BackHandler } from "react-native"
+import { StyleSheet, View, TouchableOpacity, FlatList, BackHandler } from "react-native"
 import Ionicons from 'react-native-vector-icons/Ionicons'
 import { useCallback, useEffect, useRef, useState } from "react"
 import { HeaderChats } from "./header"
@@ -74,25 +74,22 @@ const ChatsScreen = ({ navigation }: StackScreenProps<any>) => {
     }
 
     const handleFilter = useCallback((section: ChatFilterType) => {
+       
+        console.log(section)
         setFilterSection(section)
         
-        if(section == "all") {
-            //if(filteredChats.length) listRef.current?.scrollToIndex({ index: 0, animated: true })
-            setFilteredChats(chats)
-        }
+        if(section == "all") setFilteredChats(chats)
+        
         if(section == "unread") {
             const unreads = chats.filter(c => (c.unreadCount??0) > 0).map(c => c.chat_id)
-            //if(unreads.length) listRef.current?.scrollToIndex({ index: 0, animated: true })
             setFilteredChats(chats.filter(c => unreads.includes(c.chat_id)))
         }
         if(section == "friends") {
             const friends = filterChatsUsers.current.filter(c => c.is_friend).map(c => c.chat_id)
-            //if(friends.length) listRef.current?.scrollToIndex({ index: 0, animated: true })
             setFilteredChats(chats.filter(c => friends.includes(c.chat_id)))
         }
         if(section == "unknown") {
             const friends = filterChatsUsers.current.filter(c => !c.is_friend).map(c => c.chat_id)
-            //if(friends.length) listRef.current?.scrollToIndex({ index: 0, animated: true })
             setFilteredChats(chats.filter(c => friends.includes(c.chat_id)))
         }
 

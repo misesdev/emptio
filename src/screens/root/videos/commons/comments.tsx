@@ -1,6 +1,6 @@
 import NoteViewer from "@components/nostr/event/NoteViewer"
 import { NDKEvent, NDKFilter, NDKSubscriptionCacheUsage } from "@nostr-dev-kit/ndk-mobile"
-import { useCallback, useEffect, useState } from "react"
+import { useCallback, useEffect, useMemo, useState } from "react"
 import { Modal, StyleSheet, View, Text, TouchableOpacity } from "react-native"
 import { FlatList, TextInput } from "react-native-gesture-handler"
 import { ActivityIndicator } from "react-native-paper"
@@ -21,7 +21,7 @@ const VideoComments = ({ event, visible, setVisible }: ChatProps) => {
     const { useTranslate } = useTranslateService()
     const [message, setMessage] = useState<string>("")
     const [comments, setComments] = useState<NDKEvent[]>([])
-    const [loading, setLoading] = useState<boolean>(false)
+    const memorizedComments = useMemo(() => comments, [comments])
 
     useEffect(() => {
         if(visible) setTimeout(handleLoadMessages, 20)
@@ -46,7 +46,7 @@ const VideoComments = ({ event, visible, setVisible }: ChatProps) => {
 
         setTimeout(() => {
             subscription.stop()
-        }, 300)
+        }, 500)
     }
 
     const handlePostComment = () => {
@@ -58,8 +58,6 @@ const VideoComments = ({ event, visible, setVisible }: ChatProps) => {
     }, [])
 
     const Loader = () => {
-        if(!loading) return <></>
-
         return <ActivityIndicator size={22} color={theme.colors.white} />
     }
 
@@ -77,10 +75,11 @@ const VideoComments = ({ event, visible, setVisible }: ChatProps) => {
                         </TouchableOpacity>
                     </View>
                     <FlatList 
-                        data={comments}
+                        data={memorizedComments}
                         keyExtractor={event => event.id}
                         renderItem={renderItem}
                         style={{ flex: 1 }}
+                        contentContainerStyle={styles.listComments}
                         initialNumToRender={10}
                         ListFooterComponent={<Loader/>}
                     />
@@ -140,6 +139,8 @@ const styles = StyleSheet.create({
     sendButton: { borderRadius: 50, padding: 12, backgroundColor: theme.colors.blue, 
         transform: [{ rotate: "45deg" }]
     },
+
+    listComments: { justifyContent: "center", alignItems: "center" }
 })
 
 export default VideoComments

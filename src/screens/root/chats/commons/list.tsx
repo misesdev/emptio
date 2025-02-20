@@ -2,7 +2,7 @@ import { User } from "@services/memory/types"
 import { StyleSheet, Text, FlatList } from "react-native"
 import { useTranslateService } from "@src/providers/translateProvider"
 import { ChatUser } from "@services/zustand/chats"
-import { RefObject, useCallback } from "react"
+import { RefObject, useCallback, useMemo } from "react"
 import theme from "@src/theme"
 import { MutableRefObject } from "react"
 import ListItemChat from "./listItem"
@@ -24,13 +24,15 @@ type Props = {
     handleOpenChat: (chat_id: string, user: User) => void
 }
 
-const ChatList = ({ user, chats, listRef, filters, selectionMode, selectedItems, handleOpenChat }: Props) => {
+const ChatList = ({ user, chats, listRef, filters, selectionMode,
+    selectedItems, handleOpenChat }: Props) => {
   
     const { useTranslate } = useTranslateService()
+    const memorizedChats = useMemo(() => chats, [chats])
 
     const EmptyComponent = () => {
         return (
-            <Text style={{ color: theme.colors.gray, marginTop: 200, textAlign: "center" }}>
+            <Text style={styles.empty}>
                 {useTranslate("chat.empty")}
             </Text>
         )
@@ -45,7 +47,7 @@ const ChatList = ({ user, chats, listRef, filters, selectionMode, selectedItems,
 
     return (
         <FlatList ref={listRef}
-            data={chats}
+            data={memorizedChats}
             extraData={selectionMode}
             renderItem={renderItem}
             keyExtractor={(item) => `${item.chat_id}-${item?.unreadCount??0}`}
@@ -58,6 +60,7 @@ const ChatList = ({ user, chats, listRef, filters, selectionMode, selectedItems,
 
 const styles = StyleSheet.create({
     chatsScroll: { flex: 1, paddingVertical: 10 },
+    empty: { color: theme.colors.gray, marginTop: 200, textAlign: "center" }
 })
 
 export default ChatList

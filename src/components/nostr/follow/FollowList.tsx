@@ -26,20 +26,10 @@ export const FollowList = ({ onPressFollow, toPayment=false, searchable, toView=
     const { follows } = useAuth()
     const listRef = useRef<FlatList>(null)
     const { useTranslate } = useTranslateService()
-    const [filter, setFilter] = useState<string>("")
     const [followList, setFollowList] = useState<User[]>(follows??[])
     const memorizedFollows = useMemo(() => followList, [followList])
     
-    useEffect(() => {
-        setFollowList(follows?.filter(f => {
-            if(!filter) return true
-            const name = getUserName(f,30).toLowerCase()
-            return name.includes(filter)
-        }))
-    }, [follows])
-
     const handleSearch = (filter: string) => {
-        setFilter(filter.toLowerCase())
         if (filter?.length && !walletService.address.validate(filter)) {
             const searchResult = follows?.filter(follow => {
                 let filterNameLower = getUserName(follow, 30).toLowerCase()

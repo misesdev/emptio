@@ -13,11 +13,10 @@ import { blobService } from "@services/blob"
 import { pushMessage } from "@services/notification"
 import { useTranslateService } from "@src/providers/translateProvider"
 import FeedVideoViewer from "./viewer"
-import theme from "@src/theme"
 import useNDKStore from "@services/zustand/ndk"
+import theme from "@src/theme"
 
 const MemoizedFeedVideoViewer = memo(({ item, paused }: { item: NDKEvent, paused: boolean }) => {
-    console.log("renderItem:", item.pubkey);
     return <FeedVideoViewer event={item} paused={paused} />;
 }, (prevProps, nextProps) => {
     return prevProps.item.id === nextProps.item.id && prevProps.paused === nextProps.paused;
@@ -26,8 +25,9 @@ const MemoizedFeedVideoViewer = memo(({ item, paused }: { item: NDKEvent, paused
 const VideosFeed = ({ navigation }: StackScreenProps<any>) => {
 
     const { ndk } = useNDKStore()
-    const isFetching = useRef<boolean>(false) 
+    const listRef = useRef<FlatList>(null)
     const lastTimestamp = useRef<number>()
+    const isFetching = useRef<boolean>(false) 
     const { feedSettings, blackList } = useFeedVideosStore()
     const { useTranslate } = useTranslateService()
     const [videos, setVideos] = useState<NDKEvent[]>([])
@@ -46,8 +46,8 @@ const VideosFeed = ({ navigation }: StackScreenProps<any>) => {
     }, [])
 
     useEffect(() => {
-        setVideos([])
         lastTimestamp.current = undefined
+        setVideos([])
         fetchVideos()
     }, [feedSettings])
 
@@ -116,9 +116,15 @@ const VideosFeed = ({ navigation }: StackScreenProps<any>) => {
         }
     }
 
+    const EndLoader = () => (
+        <View style={{ paddingVertical: 20 }}>
+            <ActivityIndicator size={30} color={theme.colors.white} />
+        </View>
+    )
+
     return (
         <SafeAreaView style={theme.styles.container}>
-            <FlatList pagingEnabled
+            <FlatList ref={listRef} pagingEnabled
                 data={memorizedVideos}
                 style={{ flex: 1 }}
                 renderItem={renderItem}
@@ -155,12 +161,6 @@ const VideosFeed = ({ navigation }: StackScreenProps<any>) => {
         </SafeAreaView>
     )
 }
-
-const EndLoader = () => (
-    <View style={{ paddingVertical: 20 }}>
-        <ActivityIndicator size={30} color={theme.colors.white} />
-    </View>
-)
 
 const styles = StyleSheet.create({
     downloadProgressContent: { position: "absolute", top: 300, alignItems: "center", 
