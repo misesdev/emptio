@@ -1,5 +1,5 @@
 import theme from "@src/theme"
-import { StyleSheet, View, TouchableOpacity, FlatList } from "react-native"
+import { StyleSheet, View, TouchableOpacity, FlatList, Vibration, BackHandler } from "react-native"
 import Ionicons from 'react-native-vector-icons/Ionicons'
 import { useCallback, useEffect, useRef, useState } from "react"
 import { HeaderChats } from "./header"
@@ -14,6 +14,7 @@ import ChatList, { FilterChat } from "./commons/list"
 import ChatGroupAction, { ChatActionType } from "./commons/options"
 import { messageService } from "@/src/core/messageManager"
 import MessageBox, { showMessage } from "@/src/components/general/MessageBox"
+import { useFocusEffect } from "@react-navigation/native"
 
 const ChatsScreen = ({ navigation }: StackScreenProps<any>) => {
    
@@ -33,6 +34,23 @@ const ChatsScreen = ({ navigation }: StackScreenProps<any>) => {
             header: () => <HeaderChats navigation={navigation} /> 
         })
     }, [])
+
+    useFocusEffect(
+        useCallback(() => {
+            const onBackPress = () => {
+                if (selectionMode.current) {
+                    selectionMode.current = false
+                    selectedItems.current = []
+                    return true 
+                }
+                return false 
+            }
+
+            const backHandler = BackHandler.addEventListener("hardwareBackPress", onBackPress)
+
+            return () => backHandler.remove() 
+        }, [selectionMode, selectedItems])
+    )
 
     useEffect(() => {
         if(filterChatsUsers.current.length) {

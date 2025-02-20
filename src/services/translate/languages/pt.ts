@@ -52,6 +52,7 @@ export default {
     "commons.unfollow": "desseguir",
     "commons.filters": "Filtros",
     "commons.cancel": "Cancelar",
+    "commons.details": "Detalhes",
     
     "labels.all": "Todos",
     "labels.friends": "Amigos",
@@ -129,7 +130,7 @@ export default {
     "section.title.transactions.empty": "Suas transações serão exibidas aqui",
     "section.title.frends.empty": "Seus amigos serão exibidos aqui",
     "section.title.sharefriend": "Convidar amigos",
-    "section.description.sharefriend": "Convide seus amigos para o app, compartilhe a jornada bitconheira!",
+    "section.description.sharefriend": "Convide seus amigos, compartilhe a jornada bitconheira!",
     "section.title.talkdevelopers": "Fale com Desenvolvedores",
     "section.description.talkdevelopers": "Proponha melhorias, reporte erros e converse com os desenvolvedores da comunidade!",
     "section.title.managefriends": "Gerenciar Amigos",

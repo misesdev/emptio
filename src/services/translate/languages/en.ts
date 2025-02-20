@@ -52,6 +52,7 @@ export default {
     "commons.unfollow": "unfollow",
     "commons.filters": "Filters",
     "commons.cancel": "Cancel",
+    "commons.details": "Details",
 
     "labels.all": "All",
     "labels.friends": "Friends",
@@ -129,7 +130,7 @@ export default {
     "section.title.transactions.empty": "Your transactions will paper here!",
     "section.title.frends.empty": "Your friends will be displayed here",
     "section.title.sharefriend": "Invite Friends",
-    "section.description.sharefriend": "Invite your friends to the app, share the bitcoining journey!",
+    "section.description.sharefriend": "Invite your friends, share the bitcoining journey!",
     "section.title.talkdevelopers": "Talk to Developers",
     "section.description.talkdevelopers": "Suggest improvements, report bugs, and chat with the community developers!",
     "section.title.managefriends": "Manage Friends",

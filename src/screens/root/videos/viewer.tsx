@@ -14,7 +14,7 @@ type VideoProps = {
     paused: boolean
 }
 
-const FeedVideoViewer = memo(({ event, paused }: VideoProps) => {
+const FeedVideoViewer = ({ event, paused }: VideoProps) => {
 
     const url = extractVideoUrl(event.content) ?? ""
     const timeout: any = useRef(null)
@@ -27,8 +27,6 @@ const FeedVideoViewer = memo(({ event, paused }: VideoProps) => {
     const [pausedVideo, setPausedVideo] = useState<boolean>(paused)
     const [mutedVideo, setMutedVideo] = useState<boolean>(false)
     const [showMuted, setShowMuted] = useState<boolean>(false)
-
-    useEffect(() => { setPausedVideo(paused) }, [paused])
 
     const onLoadVideo = (data: any) => {
         setDuration(data?.duration||0)
@@ -45,6 +43,7 @@ const FeedVideoViewer = memo(({ event, paused }: VideoProps) => {
         timeout.current = setTimeout(() => {
             setShowMuted(false)
         }, 1000)
+        console.log("block:", event.pubkey)
     }
 
     const handleSeek = (time: number) => {
@@ -61,7 +60,7 @@ const FeedVideoViewer = memo(({ event, paused }: VideoProps) => {
     return (
         <View style={[styles.contentVideo, { width: width, height: height }]}>
             <Video onError={() => setError(true)} 
-                ref={videoRef} repeat paused={pausedVideo} muted={mutedVideo}
+                ref={videoRef} repeat paused={paused} muted={mutedVideo}
                 playInBackground={false}
                 fullscreenOrientation='portrait'
                 controlsStyles={{ 
@@ -113,9 +112,7 @@ const FeedVideoViewer = memo(({ event, paused }: VideoProps) => {
             </TouchableOpacity>
         </View>
     )
-}, (prev, next) => {
-    return prev.event.id == next.event.id && prev.paused == next.paused
-})
+}
 
 const styles = StyleSheet.create({
     contentVideo: { flex: 1, overflow: "hidden",  backgroundColor: theme.colors.black },

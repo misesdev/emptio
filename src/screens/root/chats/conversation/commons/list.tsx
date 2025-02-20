@@ -18,7 +18,9 @@ type Props = {
 
 const ConversationList = ({ user, follow, listRef, events, selectionMode, highLigthIndex, 
     selectedItems, setReplyEvent }: Props) => {
-   
+  
+    const memorizedEvents = useMemo(() => events, [events])
+
     const focusEvent = useCallback((index: number) => {
         try {
             if(index != -1) {
@@ -29,8 +31,7 @@ const ConversationList = ({ user, follow, listRef, events, selectionMode, highLi
         } catch {}
     }, [highLigthIndex, listRef])  
 
-    const renderItem = useMemo(() => 
-        ({ item, index }: { item: NDKEvent; index: number }) => (
+    const renderItem = useCallback(({ item, index }: { item: NDKEvent; index: number }) => (
             <ListItemMessage 
                 item={item} index={index} 
                 focusIndex={highLigthIndex.current} items={events} 
@@ -46,10 +47,10 @@ const ConversationList = ({ user, follow, listRef, events, selectionMode, highLi
     return (
         <FlatList inverted
             ref={listRef} 
-            data={events}
-            initialNumToRender={45}
-            maxToRenderPerBatch={15}
-            windowSize={15}
+            data={memorizedEvents}
+            initialNumToRender={30}
+            maxToRenderPerBatch={30}
+            windowSize={30}
             style={styles.scrollContainer}
             showsVerticalScrollIndicator 
             renderItem={renderItem} 

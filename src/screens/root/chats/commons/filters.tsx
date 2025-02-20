@@ -3,7 +3,7 @@ import theme from "@src/theme"
 import { ScrollView } from "react-native-gesture-handler"
 import { useTranslateService } from "@/src/providers/translateProvider"
 
-export type ChatFilterType = "friends" | "unknown" | "all" | "unread"
+export type ChatFilterType = "friends" | "unknown" | "all" | "unread" | "markread"
 
 type Props = {
     activeSection: ChatFilterType,
@@ -19,41 +19,34 @@ const ChatFilters = ({ onFilter, activeSection }: Props) => {
         return theme.colors.default
     }
 
+    const OptionFilter = ({ label, section }: { label: string, section: ChatFilterType }) => {
+        return (
+            <TouchableOpacity
+                style={[styles.section, { backgroundColor: getSectionBackground(section) }]}
+                onPress={() => onFilter("unknown")}
+            >
+                <Text style={styles.sectionLabel}>{label}</Text>
+            </TouchableOpacity> 
+        )
+    }
+
     return (
         <ScrollView horizontal 
             style={styles.container}
-            contentContainerStyle={{ flexDirection: "row-reverse" }}
+            showsHorizontalScrollIndicator={false}
+            contentContainerStyle={{ paddingHorizontal: 10, flexDirection: "row-reverse" }}
         >
-            <TouchableOpacity
-                style={[styles.section, { backgroundColor: getSectionBackground("unknown") }]}
-                onPress={() => onFilter("unknown")}
-            >
-                <Text style={styles.sectionLabel}>{useTranslate("chat.unknown")}</Text>
-            </TouchableOpacity> 
-            <TouchableOpacity
-                style={[styles.section, { backgroundColor: getSectionBackground("friends") }]}
-                onPress={() => onFilter("friends")}
-            >
-                <Text style={styles.sectionLabel}>{useTranslate("labels.friends")}</Text>
-            </TouchableOpacity>
-            <TouchableOpacity
-                style={[styles.section, { backgroundColor: getSectionBackground("unread") }]}
-                onPress={() => onFilter("unread")}
-            >
-                <Text style={styles.sectionLabel}>{useTranslate("chat.unread")}</Text>
-            </TouchableOpacity>
-             <TouchableOpacity
-                style={[styles.section, { backgroundColor: getSectionBackground("all") }]}
-                onPress={() => onFilter("all")}
-            >
-                <Text style={styles.sectionLabel}>{useTranslate("labels.all")}</Text>
-            </TouchableOpacity>               
+            {/* <OptionFilter section="markread" label={useTranslate("chat.action.markread")} /> */}
+            <OptionFilter section="unknown" label={useTranslate("chat.unknown")} />
+            <OptionFilter section="friends" label={useTranslate("labels.friends")} />
+            <OptionFilter section="unread" label={useTranslate("chat.unread")} />
+            <OptionFilter section="all" label={useTranslate("labels.all")} />
         </ScrollView>
     )
 }
 
 const styles = StyleSheet.create({
-    container: { width: "100%", paddingHorizontal: 14, maxHeight: 42, 
+    container: { width: "100%", maxHeight: 42, 
         backgroundColor: theme.colors.semitransparent },
     section: { paddingHorizontal: 12, padding: 6, minWidth: 60, margin: 5, borderRadius: 10 },
     sectionLabel: { textAlign: "center", fontWeight: "500", color: theme.colors.white }

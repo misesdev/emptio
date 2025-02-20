@@ -20,7 +20,7 @@ import SendScreen from "@screens/root/wallet/send"
 import SendReceiverScreen from "@screens/root/wallet/send/receiver"
 import SendFinalScreen from "@screens/root/wallet/send/final"
 import WalletSettings from "@screens/root/wallet/settings"
-import AddFolowScreen from "@screens/root/friends/follows/add"
+import AddFolowScreen from "@screens/root/friends/add"
 import DonateScreen from "@screens/root/donate"
 import NewChatScreen from "@screens/root/chats/new"
 import WalletReceiveScreen from "@screens/root/wallet/receive"
@@ -29,6 +29,7 @@ import CreatedSeedScren from "@screens/root/wallet/add/seed"
 import TransactionScreen from "@screens/root/wallet/transaction"
 import NewOrderScreen from "@screens/root/orders/order/new"
 import ConversationChat from "@screens/root/chats/conversation"
+import ManageFriendsScreen from "../screens/root/friends"
 
 const Stack = createStackNavigator()
 
@@ -74,6 +75,7 @@ const AppRoutes = () => {
                 <Stack.Screen name="wallet-transaction-stack" component={TransactionScreen} options={ScreenCardOptions} />
 
                 <Stack.Screen name="add-follow-stack" component={AddFolowScreen} options={ScreenCardOptions} />
+                <Stack.Screen name="friends-list-stack" component={ManageFriendsScreen} options={ScreenCardOptions} />
 
                 <Stack.Screen name="feed-order-new" component={NewOrderScreen} options={ScreenCardOptions} />
             </Stack.Navigator>

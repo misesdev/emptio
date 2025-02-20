@@ -1,94 +1,68 @@
-
-import { useState } from "react"
+import { useCallback, useEffect, useRef, useState } from "react"
 import { Modal, StyleSheet, Text, TouchableOpacity, View } from "react-native"
 import { useTranslateService } from "@src/providers/translateProvider"
 import Ionicons from 'react-native-vector-icons/Ionicons'
-import { User } from "@services/memory/types"
-import { NDKEvent } from "@nostr-dev-kit/ndk"
 import { IconNames } from "@services/types/icons"
-import { copyToClipboard } from "@src/utils"
 import theme from "@src/theme"
 
-type OptionProps = { 
+interface OptionProps { 
     label: string, 
     icon: IconNames, 
     onPress: () => void 
 }
 
-type ShowFunctionProps = { event: NDKEvent, isUser: boolean }
+const OptionItem = ({ label, icon, onPress }: OptionProps) =>  (
+    <TouchableOpacity onPress={onPress} style={styles.option} >
+        <View style={{ width: "8%", height: "100%", alignItems: "center" }}>
+            <Ionicons style={{ paddingVertical: 10 }} name={icon} size={18} color={theme.colors.white} />
+        </View>
+        <View style={{ width: "92%", height: "100%", alignItems: "center" }}>
+            <Text style={styles.labelOption}>{label}</Text>
+        </View>
+    </TouchableOpacity>
+)
 
-var showMessageOptionsFunction: (props: ShowFunctionProps) => void
+var showDeleteOptionsFunction: () => void
 
-type Props = {
-    user: User,
-    deleteMessage: (user: User, event: NDKEvent, onlyForMe: boolean) => void
+interface DeleteProps {
+    deleteMessages: (onlyForMe: boolean) => void
 }
 
-const MessageOptionsBox = ({ user, deleteMessage }: Props) => {
+const DeleteOptionsBox = ({ deleteMessages }: DeleteProps) => {
 
-    const { useTranslate } = useTranslateService()
-    const [eventMessage, setEventMessage] = useState<NDKEvent>()
     const [visible, setVisible] = useState(false)
-    const [isUser, setIsUser] = useState(false)
+    const { useTranslate } = useTranslateService()
 
-    showMessageOptionsFunction = ({ event, isUser }) => {
-        setEventMessage(event)
-        setIsUser(isUser)
-        setVisible(true)
-    }
+    showDeleteOptionsFunction = () => setVisible(true)
 
-    const handleDeleteMessage = (onlyForMe: boolean) => {
-        if(eventMessage)
-            deleteMessage(user, eventMessage, onlyForMe)
+    const handleDeleteMessage = useCallback((onlyForMe: boolean) => {
+        deleteMessages(onlyForMe)
         setVisible(false)
-    }
-
-    const handleCopy = async () => {
-        copyToClipboard(eventMessage?.content ?? "")
-        setVisible(false)
-    }
-    
-    const OptionItem = ({ label, icon, onPress }: OptionProps) => {
-        return (
-            <TouchableOpacity onPress={onPress} style={styles.option} >
-                <View style={{ width: "8%", height: "100%", alignItems: "center" }}>
-                    <Ionicons style={{ paddingVertical: 10 }} name={icon} size={18} color={theme.colors.white} />
-                </View>
-                <View style={{ width: "92%", height: "100%", alignItems: "center" }}>
-                    <Text style={styles.labelOption}>{label}</Text>
-                </View>
-            </TouchableOpacity>
-        )
-    }
+    }, [])
 
     return (
-        <Modal animationType="fade" transparent visible={visible}
+        <Modal animationType="none" visible={visible} transparent
             onRequestClose={() => setVisible(false)} 
         >
-            <View style={styles.container}>
+            <TouchableOpacity style={styles.container}
+                onPress={() => setVisible(false)} activeOpacity={.9}
+            >
                 <View style={styles.box}>
-                   <OptionItem icon="copy-outline"
-                        label={useTranslate("commons.copy-text")} onPress={() => handleCopy()}
+                   <OptionItem icon="trash-outline"
+                        label={useTranslate("commons.delete-for-all")} 
+                        onPress={() => handleDeleteMessage(false)} // onlyForMe=false
                     />
-                    { isUser &&
-                       <OptionItem icon="trash-outline"
-                            label={useTranslate("commons.delete-for-all")} 
-                            onPress={() => handleDeleteMessage(false)} // onlyForMe=false
-                        />
-                    }
                    <OptionItem icon="trash-bin-outline"
                         label={useTranslate("commons.delete-for-me")} 
                         onPress={() => handleDeleteMessage(true)} // onlyForMe=true
                     />
                 </View>
-            </View> 
+            </TouchableOpacity> 
         </Modal>
     )
 }
 
-export const showOptiosMessage = (props: ShowFunctionProps) => {
-    showMessageOptionsFunction(props)
-}
+export const showDeleteOptions = () => showDeleteOptionsFunction()
 
 const styles = StyleSheet.create({
     container: { flex: 1, alignItems: "center", justifyContent: "center",
@@ -100,4 +74,4 @@ const styles = StyleSheet.create({
         fontSize: 14 },
 })
 
-export default MessageOptionsBox
+export default DeleteOptionsBox

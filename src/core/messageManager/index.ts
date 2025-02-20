@@ -130,6 +130,42 @@ const deleteMessage = async ({ user, event, onlyForMe = false }: DeleteEventProp
     }
 }
 
+type DeleteEventsProps = {
+    user: User,
+    events: NDKEvent[],
+    onlyForMe?: boolean,
+}
+
+const deleteMessages = async ({ user, events, onlyForMe = false }: DeleteEventsProps) => {
+    
+    const promises: Promise<void>[] = []
+    const ndk = useNDKStore.getState().ndk
+
+    const event_ids = `('${events.map(e => e.id).join("','")}')`
+    await deleteEventsByCondition(`id IN ${event_ids}`, [])
+
+    if(!onlyForMe) 
+    {
+        events.filter(e => e.pubkey == user.pubkey).forEach(event => {
+            promises.push(new Promise<void>(async (resolve) => {
+                try {
+                    const deleteEvent = new NDKEvent(ndk, {
+                        pubkey: user.pubkey ?? "",
+                        kind: 5,
+                        content: "deleting event",
+                        tags: [["e", event.id ?? ""]],
+                        created_at: Math.floor(Date.now() / 1000)
+                    })
+                    await deleteEvent.publish()
+                    resolve()
+                } catch { resolve() }
+            }))
+        })
+    }
+
+    Promise.all(promises)
+}
+
 export const messageService = {
     listChats,
     deleteChats,
@@ -138,7 +174,8 @@ export const messageService = {
     decryptMessage,
     encryptMessage,
     sendMessage,
-    deleteMessage
+    deleteMessage,
+    deleteMessages
 }
 
 

@@ -1,8 +1,10 @@
+import { messageService } from "@/src/core/messageManager"
 import { useTranslateService } from "@/src/providers/translateProvider"
 import { User } from "@/src/services/memory/types"
 import theme from "@/src/theme"
 import { getClipedContent, getUserName } from "@/src/utils"
 import { NDKEvent } from "@nostr-dev-kit/ndk-mobile"
+import { useEffect } from "react"
 import { TouchableOpacity, View, Text, StyleSheet } from "react-native"
 
 interface ReplyToolProps {
@@ -17,14 +19,20 @@ const ReplyTool = ({ event, messages, user, follow, focusReply }: ReplyToolProps
     
     const { useTranslate } = useTranslateService()
 
-    const reply = messages.find(e => e.id === event.tags.find(t => t[0] === "e")?.[1])
+    var reply = messages.find(e => e.id === event.tags.find(t => t[0] === "e")?.[1])
     if(!reply) return null
+
+    useEffect(() => {
+        if (reply?.content.includes("?iv=")) {
+            messageService.decryptMessage(user, reply).then(event => reply = event);
+        }
+    }, [])
 
     const userReply = reply?.pubkey === user.pubkey ? useTranslate("chat.labels.you") 
         : getUserName(follow, 26)
 
     const focusReplyMessage = () => {
-        const index = messages.findIndex(m => m.id == reply.id)
+        const index = messages.findIndex(m => m.id == reply?.id)
         focusReply(index)
     }
 

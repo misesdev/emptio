@@ -33,7 +33,7 @@ export const SearchBox = ({ label, textCenter, delayTime = 500, seachOnLenth = 1
                 <View style={styles.searchIcon}>
                     <Ionicons name="search" size={theme.icons.large} color={theme.colors.gray} />
                 </View>
-                <TextInput style={[styles.input, { textAlign: textCenter ? "center" : "auto", width: "72%" }]}
+                <TextInput style={[styles.input, { textAlign: textCenter ? "center" : "auto", width: "76%" }]}
                     placeholder={label}
                     onChangeText={handleSearch}
                     //clearTextOnFocus={true}
@@ -57,6 +57,6 @@ const styles = StyleSheet.create({
     container: { width: "94%", color: theme.colors.white, backgroundColor: theme.input.backGround,
         borderRadius: 10, margin: 5 },
     input: { paddingVertical: 15, paddingHorizontal: 10, color: theme.input.textColor },
-    searchIcon: { width: "14%", justifyContent: "center", alignItems: "center" },
-    searchButton: { width: "14%", justifyContent: "center", alignItems: "center" }
+    searchIcon: { width: "12%", justifyContent: "center", alignItems: "center" },
+    searchButton: { width: "12%", justifyContent: "center", alignItems: "center" }
 })

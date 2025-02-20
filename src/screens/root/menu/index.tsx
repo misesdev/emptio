@@ -95,7 +95,7 @@ const UserMenuScreen = ({ navigation }: StackScreenProps<any>) => {
 
                 <View style={styles.sectiontop}>
                     <TouchableOpacity style={styles.mediumsection} 
-                        activeOpacity={opacity} onPress={() => setShareVisible(true)}
+                        activeOpacity={opacity} onPress={() => navigation.navigate("friends-list-stack")}
                     >
                         <SectionContainer style={styles.mediumcontainer}>
                             <Ionicons name="people" color={theme.colors.white} size={theme.icons.large} />

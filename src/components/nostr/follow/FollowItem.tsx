@@ -1,8 +1,9 @@
-import { TouchableOpacity, View, Image, Text, StyleSheet } from "react-native"
+import { TouchableOpacity, View, Text, StyleSheet } from "react-native"
 import { User } from "@services/memory/types"
-import { memo, useEffect, useState } from "react"
+import { memo } from "react"
 import theme from "@src/theme"
-import { getColorFromPubkey, getDisplayPubkey, getUserName } from "@/src/utils"
+import Ionicons from "react-native-vector-icons/Ionicons"
+import { getDisplayPubkey, getUserName } from "@/src/utils"
 import { useTranslateService } from "@/src/providers/translateProvider"
 import { ProfilePicture } from "../user/ProfilePicture"
 
@@ -10,13 +11,15 @@ type UserItemProps = {
     follow: User,
     toOpen?: boolean,
     toSend?: boolean,
+    toView?: boolean,
     toFollow?: boolean,
+    toManage?: boolean,
     isFriend?: boolean,
     handleClickFollow: (follow: User) => void
 }
 
-export const FollowItem = memo(({ follow, handleClickFollow, toSend=false, 
-    toFollow=false, isFriend=false, toOpen=false }: UserItemProps) => {
+export const FollowItem = memo(({ follow, handleClickFollow, toSend=false, toView=false,
+    toFollow=false, isFriend=false, toOpen=false, toManage=false }: UserItemProps) => {
 
     const { useTranslate } = useTranslateService()
 
@@ -25,17 +28,22 @@ export const FollowItem = memo(({ follow, handleClickFollow, toSend=false,
 
     return (
         <TouchableOpacity
-            activeOpacity={.7}
+            activeOpacity={.6}
             style={styles.sectionUser}
             onPress={handleClick}
         >
             <View style={styles.profileArea}>
                 <ProfilePicture user={follow} size={50} />
+                {isFriend && toFollow &&
+                    <Text style={styles.friendtag}>
+                        <Ionicons name="beer" size={16} color={theme.colors.yellow} />
+                    </Text>
+                }
             </View>
             <View style={{ width: "60%", minHeight: 70 }}>
-                <View style={{ width: "100%" }}>
+                <View style={{ width: "100%", flexDirection: "row" }}>
                     <Text style={styles.userName}>
-                        {getUserName(follow, 24)}
+                        {getUserName(follow, 22)}
                     </Text>
                 </View>
                 <View style={{ flexDirection: "row", width: "100%" }}>
@@ -43,13 +51,6 @@ export const FollowItem = memo(({ follow, handleClickFollow, toSend=false,
                         {getDisplayPubkey(follow.pubkey ?? "", 24)}
                     </Text>
                 </View>
-                {isFriend && toFollow &&
-                    <Text style={{ position: "absolute", right: 10, top: -2, paddingHorizontal: 12, 
-                        borderRadius: 5, fontWeight: "400", fontSize: 11, paddingVertical: 3,
-                        color: theme.colors.white, backgroundColor: theme.colors.blue }}>
-                        {useTranslate("friends.user.is-friend")}
-                    </Text>
-                }
             </View>    
             <View style={{ width: "24%", alignItems: "center", justifyContent: "center" }}>
                 <TouchableOpacity 
@@ -59,8 +60,11 @@ export const FollowItem = memo(({ follow, handleClickFollow, toSend=false,
                     onPress={() => handleClickFollow(follow)} 
                 >
                     <Text style={{fontWeight: "500", color: theme.colors.white}}>
+                        {(toManage && isFriend) && useTranslate("commons.remove")} 
+                        {(toManage && !isFriend) && useTranslate("commons.add")} 
                         {(toFollow && isFriend) && useTranslate("commons.unfollow")} 
                         {(toFollow && !isFriend) && useTranslate("commons.follow")} 
+                        {toView && useTranslate("commons.details")} 
                         {toOpen && useTranslate("commons.open")} 
                         {toSend && useTranslate("commons.send")} 
                     </Text>
@@ -79,5 +83,6 @@ const styles = StyleSheet.create({
     userAbout: { fontSize: 12, color: theme.colors.gray, margin: 2, paddingRight: 8, 
         paddingBottom: 8, fontWeight: "bold" },
     sectionUser: { width: "98%", minHeight: 65, maxHeight: 120, borderRadius: 10,
-        marginVertical: 1, flexDirection: "row", backgroundColor: "rgba(0, 55, 55, .2)" }
+        marginVertical: 1, flexDirection: "row", backgroundColor: "rgba(0, 55, 55, .2)" },
+    friendtag: { position: "absolute", bottom: 2, right: -5, padding: 8 }
 })

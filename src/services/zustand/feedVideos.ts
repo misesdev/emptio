@@ -5,7 +5,7 @@ import { getBlackListPubkeys, getFeedVideoSettings } from "../memory/settings"
 interface FeedVideoStore {
     feedSettings: FeedVideosSettings,
     setFeedSettings: (settings: FeedVideosSettings) => void,
-    blackList: string[],
+    blackList: Set<string>,
     addOnBlackList: (pubkey: string) => void,
     initialize: () => Promise<void>
 }
@@ -18,11 +18,12 @@ export const useFeedVideosStore = create<FeedVideoStore>((set) => ({
             "video", "meme", "memestr", "nostr", "news", "animalstr", "animal", "bitcoin"
         ]
     },
-    blackList: [],
-    addOnBlackList: (newer: string) => {
-        set(state => ({
-            blackList: [newer, ...state.blackList]
-        }))
+    blackList: new Set<string>([]),
+    addOnBlackList: (pubkey: string) => {
+        set(state => {
+            state.blackList.add(pubkey)
+            return { blackList: state.blackList }
+        })
     },
     setFeedSettings: (settings: FeedVideosSettings) => {
         set(() => ({

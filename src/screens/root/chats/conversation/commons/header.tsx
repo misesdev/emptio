@@ -40,7 +40,8 @@ const ConversationHeader = ({ follow }: Props) => {
 const styles = StyleSheet.create({
     headerContainer: { flexDirection: "row", width: "100%", padding: 2,
         backgroundColor: theme.colors.semitransparent },
-    imageContainer: { width: 40, height: 40, borderWidth: 2, borderRadius: 50, overflow: "hidden" },
+    imageContainer: { width: 40, height: 40, borderWidth: 2, borderRadius: 50, 
+        overflow: "hidden" },
     userName: { fontSize: 18, fontWeight: "500", color: theme.colors.white },
     pubkey: { fontSize: 14, fontWeight: "400", color: theme.colors.gray },
 })

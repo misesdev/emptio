@@ -1,6 +1,6 @@
 import { NDKEvent, NDKFilter, NDKSubscriptionCacheUsage } from "@nostr-dev-kit/ndk-mobile"
 import { StackScreenProps } from "@react-navigation/stack"
-import { useCallback, useEffect, useRef, useState } from "react"
+import { memo, useCallback, useEffect, useMemo, useRef, useState } from "react"
 import { View, FlatList, SafeAreaView, Text, StyleSheet } from "react-native"
 import { extractVideoUrl } from "@src/utils"
 import Ionicons from 'react-native-vector-icons/Ionicons'
@@ -15,6 +15,13 @@ import { useTranslateService } from "@src/providers/translateProvider"
 import FeedVideoViewer from "./viewer"
 import theme from "@src/theme"
 import useNDKStore from "@services/zustand/ndk"
+
+const MemoizedFeedVideoViewer = memo(({ item, paused }: { item: NDKEvent, paused: boolean }) => {
+    console.log("renderItem:", item.pubkey);
+    return <FeedVideoViewer event={item} paused={paused} />;
+}, (prevProps, nextProps) => {
+    return prevProps.item.id === nextProps.item.id && prevProps.paused === nextProps.paused;
+})
 
 const VideosFeed = ({ navigation }: StackScreenProps<any>) => {
 
@@ -46,6 +53,8 @@ const VideosFeed = ({ navigation }: StackScreenProps<any>) => {
 
     useFocusEffect(() => { setPaused(false) })
 
+    const memorizedVideos = useMemo(() => videos, [videos])
+
     const fetchVideos = async () => {
         if(isFetching.current) return
         isFetching.current = true
@@ -63,7 +72,7 @@ const VideosFeed = ({ navigation }: StackScreenProps<any>) => {
             }
             lastTimestamp.current = event.created_at
             const url = extractVideoUrl(event.content)
-            if(url && !videos.find(v => v.id == event.id) && !blackList.includes(event.pubkey)) 
+            if(url && !videos.find(v => v.id == event.id) && !blackList.has(event.pubkey)) 
             {
                 setVideos(prev => [...prev, event])
                 founds++
@@ -91,7 +100,7 @@ const VideosFeed = ({ navigation }: StackScreenProps<any>) => {
     }, [])
 
     const renderItem = useCallback(({ item, index }:{ item: NDKEvent, index: number }) => {
-        return <FeedVideoViewer event={item} paused={index !== playingIndex || paused} /> 
+        return <MemoizedFeedVideoViewer item={item} paused={index !== playingIndex || paused} />
     }, [playingIndex, paused])
 
     const handleDownload = async () => {
@@ -110,7 +119,7 @@ const VideosFeed = ({ navigation }: StackScreenProps<any>) => {
     return (
         <SafeAreaView style={theme.styles.container}>
             <FlatList pagingEnabled
-                data={videos}
+                data={memorizedVideos}
                 style={{ flex: 1 }}
                 renderItem={renderItem}
                 keyExtractor={(item: NDKEvent) => item.id}
@@ -119,10 +128,10 @@ const VideosFeed = ({ navigation }: StackScreenProps<any>) => {
                 onViewableItemsChanged={onViewableItemsChanged}
                 onEndReached={fetchVideos}
                 onEndReachedThreshold={.3}
-                removeClippedSubviews
-                maxToRenderPerBatch={5}
-                initialNumToRender={5} 
-                windowSize={5}
+                removeClippedSubviews // risk of bugs, do not use please
+                maxToRenderPerBatch={3}
+                initialNumToRender={3} 
+                windowSize={3}
                 snapToAlignment="center"
                 decelerationRate="fast"
                 ListFooterComponent={<EndLoader />}

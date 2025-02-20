@@ -13,6 +13,7 @@ import HashTagViewer from './HashTagViewer';
 import { User } from '@/src/services/memory/types';
 import { useEffect, useState } from 'react';
 import { userService } from '@/src/core/userManager';
+import { ProfilePicture } from '../user/ProfilePicture';
 
 type Props = { 
     user?: User,
@@ -99,8 +100,7 @@ const NoteViewer = ({ user, showUser=true, note, videoMuted=true, videoPaused=tr
                 <View style={styles.header}>
                     <View style={{ width: "10%", justifyContent: "center" }}>
                         <TouchableOpacity>
-                            {eventAuthor?.picture && <Image onError={() => setPictureError(true)} source={{ uri: eventAuthor?.picture }} style={styles.userProfile} />}
-                            {(!eventAuthor?.picture || pictureError) && <Image source={require("@assets/images/defaultProfile.png")} style={styles.userProfile} />}
+                            <ProfilePicture withBorder user={eventAuthor} size={34} />
                         </TouchableOpacity>
                     </View>
                     <View style={{ width: "80%", paddingHorizontal: 15 }}>
@@ -155,7 +155,6 @@ const styles = StyleSheet.create({
     link: { color: theme.colors.blue, textDecorationLine: 'underline' },
     webview: { padding: 0, overflow: "hidden" },
     header: { width: "100%", flexDirection: "row", paddingVertical: 4 },
-    userProfile: { width: theme.icons.extra, height: theme.icons.extra, borderRadius: 50 },
     profileName: { fontSize: 16, fontWeight: "500", color: theme.colors.white },
 });
 

@@ -121,8 +121,8 @@ const FollowModal = ({ handleAddFollow }: FollowProps) => {
                     }
 
                     <View style={styles.sectionButtons}>
-                        {!user?.friend && <ButtonLight label={useTranslate("commons.follow")} onPress={handleAction} />}
-                        {user?.friend && <ButtonLight label={useTranslate("commons.unfollow")} onPress={handleAction} />}
+                        {!user?.friend && <ButtonLight label={useTranslate("commons.add")} onPress={handleAction} />}
+                        {user?.friend && <ButtonLight label={useTranslate("commons.remove")} onPress={handleAction} />}
                         <ButtonLight label={useTranslate("commons.close")} onPress={handleClose} />
                     </View>
                 </View>

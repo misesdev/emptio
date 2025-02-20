@@ -2,7 +2,7 @@ import { FlatList, Text } from "react-native"
 import { User } from "@services/memory/types"
 import { FollowItem } from "../follow/FollowItem"
 import { useTranslateService } from "@src/providers/translateProvider"
-import { useCallback } from "react"
+import { useCallback, useMemo } from "react"
 import theme from "@src/theme"
 import { RefreshControl } from "react-native-gesture-handler"
 
@@ -10,6 +10,7 @@ type FriendListProps = {
     users: User[],
     setUsers: (user: User[]) => void,
     toOpen?: boolean,
+    toView?: boolean,
     toPayment?: boolean,
     toFollow?: boolean,
     refreshing: boolean,
@@ -18,16 +19,17 @@ type FriendListProps = {
 }
 
 export const UserList = ({ users, setUsers, onPressUser, toPayment=false, toOpen=false, 
-    toFollow=false, showEmptyMessage=false, refreshing }: FriendListProps) => {
+    toFollow=false, toView=false, showEmptyMessage=false, refreshing }: FriendListProps) => {
 
     const { useTranslate } = useTranslateService()
+    const memorizedUsers = useMemo(() => users, [users])
 
     const handleClickFollow = useCallback((follow: User) => {
         if (onPressUser) onPressUser(follow)
     }, [onPressUser])
 
     const ListItem = useCallback(({ item }: { item: User }) => {
-        return <FollowItem toOpen={toOpen}
+        return <FollowItem toOpen={toOpen} toView={toView}
             follow={item} toFollow={toFollow} isFriend={item.friend ?? false}
             handleClickFollow={handleClickFollow} 
         />
@@ -41,7 +43,7 @@ export const UserList = ({ users, setUsers, onPressUser, toPayment=false, toOpen
 
     return (
         <FlatList
-            data={users}
+            data={memorizedUsers}
             ListEmptyComponent={EmptyComponent}
             renderItem={({ item }) => <ListItem item={item} />}
             contentContainerStyle={theme.styles.scroll_container}

@@ -3,41 +3,52 @@ import { useTranslateService } from "@/src/providers/translateProvider"
 import { StyleSheet, Modal, View, ScrollView, TouchableOpacity, Text } from "react-native"
 import { FormControl } from "@components/form/FormControl"
 import Ionicons from 'react-native-vector-icons/Ionicons'
-import theme from "@/src/theme"
-import { useState } from "react"
 import { useFeedVideosStore } from "@services/zustand/feedVideos"
 import { saveFeedVideoSettings } from "@services/memory/settings"
+import theme from "@src/theme"
+import { memo, useCallback, useState } from "react"
+import { FlatList } from "react-native-gesture-handler"
 
-type Props = {
-    visible: boolean,
-    setVisible: (state: boolean) => void 
-}
+interface TagItemProps { tag: string, handlePress: (tag: string) => void }
+const TagItem = memo(({ tag, handlePress }: TagItemProps) => {
+    return (
+        <TouchableOpacity activeOpacity={.7} style={styles.tagbutton} 
+            onPress={() => handlePress(tag)}
+        >
+            <Text style={styles.tagitem}>#{tag}</Text>
+            <Ionicons name="close" size={15} style={styles.tagicon} 
+                color={theme.colors.white} 
+            />
+        </TouchableOpacity>
+    )
+})
 
-const VideosFilters = ({ visible, setVisible }: Props) => {
+interface FilterProps { visible: boolean, setVisible: (state: boolean) => void }
+
+const VideosFilters = ({ visible, setVisible }: FilterProps) => {
     
     const { feedSettings, setFeedSettings } = useFeedVideosStore()
     const { useTranslate } = useTranslateService()
-    const [tagNameText, setTagNameText] = useState<string>()
+    const [tagNameText, setTagNameText] = useState<string>("")
     const [filterTags, setFilterTags] = useState<string[]>(feedSettings.filterTags)
 
-    const handleAddTagfilter = () => {
+    const handleAddTagfilter = useCallback(() => {
         if(!tagNameText) return;
         const hashtag = tagNameText.replaceAll("#", "").trim()
         if(filterTags.find(t => t == hashtag)) return
         setFilterTags(prev => [hashtag, ...prev])
         setTagNameText("")
-    }
+    }, [tagNameText, filterTags])
 
-    const handleRemoveTag = (tag: string) => {
+    const handleRemoveTag = useCallback((tag: string) => {
         if(filterTags.length <= 1) return
 
-        setFilterTags(prev => prev.filter(t => t != tag))
-    }
+        setFilterTags(prev => [...prev.filter(t => t != tag)])
+    }, [filterTags, setFilterTags])
 
     const handleSave = () => {
-        feedSettings.filterTags = filterTags
-        setFeedSettings(feedSettings)
-        saveFeedVideoSettings(feedSettings)
+        setFeedSettings({...feedSettings, filterTags})
+        saveFeedVideoSettings({...feedSettings, filterTags})
         setVisible(false)
     }
 
@@ -71,32 +82,14 @@ const VideosFilters = ({ visible, setVisible }: Props) => {
                             </TouchableOpacity>
                         </View>
                     </View>
-
-                    <ScrollView style={{ flex: 1 }}>
-                        <View style={styles.tagarea}>
-                            {filterTags.length &&
-                                filterTags.map((tag: string, key: number) => {
-                                    return (
-                                        <TouchableOpacity key={key}
-                                            activeOpacity={.7}
-                                            style={styles.tagbutton} 
-                                            onPress={() => handleRemoveTag(tag)}
-                                        >
-                                            <Text style={styles.tagitem}>
-                                                #{tag}
-                                            </Text>
-                                            <Ionicons name="close" size={15}
-                                                style={styles.tagicon} 
-                                                color={theme.colors.white} 
-                                            />
-                                        </TouchableOpacity>
-                                    )
-                                })
-                            }
-                            <View style={{ height: 75 }}></View>
-                        </View>
-
-                    </ScrollView>
+                    <FlatList 
+                        data={filterTags}
+                        keyExtractor={item => item}
+                        renderItem={({ item }) => <TagItem tag={item} handlePress={handleRemoveTag} />}
+                        contentContainerStyle={styles.tagarea}
+                        style={{ flex: 1 }}
+                        numColumns={3}
+                    />
                     <View style={styles.closebutton}>
                         <ButtonPrimary label={useTranslate("commons.save")} onPress={handleSave} />
                     </View>
@@ -119,11 +112,10 @@ const styles = StyleSheet.create({
     tagadd: { width: "100%", flexDirection: "row" },
     addbutton: { padding: 10, borderRadius: 10, justifyContent: "center", 
         alignItems: "center", backgroundColor: theme.colors.blue },
-    tagarea: { width: "100%", padding: 10, alignItems: "center", flexDirection: "row",
-        flexWrap: "wrap" },
+    tagarea: { width: "100%", padding: 10, alignItems: "center" },
     tagbutton: { margin: 4, padding: 10, borderRadius: 10, color:  theme.colors.white, 
         flexDirection: 'row', backgroundColor: theme.colors.section },
-    tagitem: { color:  theme.colors.white },
+    tagitem: { color:  theme.colors.white, fontWeight: "500" },
     tagicon: { margin: 4 },
 
     closebutton: { position: "absolute", width: "100%", paddingHorizontal: 24, bottom: 10 },

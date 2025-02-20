@@ -4,49 +4,41 @@ import theme from "@src/theme"
 
 export type MessageActionType = "delete" | "copy" | "cancel" | "foward" 
 
-type Props = {
-    onAction: (type: MessageActionType) => void
+interface OptionProps { 
+    action: MessageActionType;
+    handleClick: (type: MessageActionType) => void;
+}
+const OptionGroup = ({ action, handleClick }: OptionProps) => {
+    return (
+        <TouchableOpacity style={styles.section} onPress={() => handleClick(action)}>
+            {action == "cancel" && <Ionicons name="arrow-undo" size={20} color={theme.colors.white}/>}
+            {action == "copy" && <Ionicons name="copy" size={20} color={theme.colors.white}/>}
+            {action == "delete" && <Ionicons name="trash" size={20} color={theme.colors.white}/>}
+            {action == "foward" && <Ionicons name="arrow-redo" size={20} color={theme.colors.white}/>}
+        </TouchableOpacity>
+    )
 }
 
-const MessageGroupAction = ({ onAction }: Props) => {
-    
+type Props = {
+    handleAction: (type: MessageActionType) => void
+}
+
+const MessageGroupAction = ({ handleAction }: Props) => {
     return (
-        <ScrollView horizontal style={styles.container}>
-            <View style={styles.containerRow}>
-                <TouchableOpacity
-                    style={styles.section}
-                    onPress={() => onAction("cancel")}
-                >
-                    <Ionicons name="arrow-undo" size={20} color={theme.colors.white}/>
-                </TouchableOpacity>
-                <TouchableOpacity
-                    style={styles.section}
-                    onPress={() => onAction("copy")}
-                >
-                    <Ionicons name="copy" size={20} color={theme.colors.white}/>
-                </TouchableOpacity>
-                <TouchableOpacity
-                    style={styles.section}
-                    onPress={() => onAction("delete")}
-                >
-                    <Ionicons name="trash" size={20} color={theme.colors.white}/>
-                </TouchableOpacity>
-                <TouchableOpacity
-                    style={styles.section}
-                    onPress={() => onAction("foward")}
-                >
-                    <Ionicons name="arrow-redo" size={20} color={theme.colors.white}/>
-                </TouchableOpacity>
-            </View>
-        </ScrollView>
+        <View style={styles.container}>
+            <OptionGroup action="cancel" handleClick={handleAction} />
+            <OptionGroup action="copy" handleClick={handleAction} />
+            <OptionGroup action="delete" handleClick={handleAction}/>
+            <OptionGroup action="foward" handleClick={handleAction}/>
+        </View>
     )
 }
 
 const styles = StyleSheet.create({
-    container: { width: "100%", backgroundColor: theme.colors.semitransparent,
-        minHeight: 50, flexDirection: "row-reverse" },
+    container: { position: "absolute", top: 58, zIndex: 999, width: "100%", backgroundColor: theme.colors.semitransparent,
+         flexDirection: "row-reverse" },
     containerRow: { width: "100%", padding: 6, flexDirection: "row-reverse" },
-    section: { padding: 6, marginHorizontal: 5, borderRadius: 10, paddingHorizontal: 14,
+    section: { padding: 6, margin: 10, marginHorizontal: 5, borderRadius: 10, paddingHorizontal: 14,
         backgroundColor: theme.colors.section },
 })
 

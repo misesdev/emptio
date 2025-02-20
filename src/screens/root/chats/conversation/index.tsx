@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useRef, useState } from "react"
 import { View, StyleSheet, TextInput, FlatList, Image, 
-    TouchableOpacity } from "react-native"
+    TouchableOpacity, BackHandler} from "react-native"
 import { NDKEvent } from "@nostr-dev-kit/ndk"
 import { useAuth } from "@src/providers/userProvider"
 import { messageService } from "@src/core/messageManager"
@@ -16,8 +16,11 @@ import ReplyBox from "./commons/reply"
 import useNDKStore from "@services/zustand/ndk"
 import MessageGroupAction, { MessageActionType } from "./commons/options"
 import { copyToClipboard } from "@src/utils"
+import DeleteOptionsBox, { showDeleteOptions } from "./commons/delete"
+import { useFocusEffect } from "@react-navigation/native"
+import MessageShareBar from "./commons/share"
 
-const ConversationChat = ({ navigation, route }: StackScreenProps<any>) => {
+const ConversationChat = ({ route }: StackScreenProps<any>) => {
     
     const { ndk } = useNDKStore()
     const { user }= useAuth()
@@ -32,6 +35,7 @@ const ConversationChat = ({ navigation, route }: StackScreenProps<any>) => {
     const { markReadChat, unreadChats } = useChatStore()
     const { follow, chat_id } = route.params as { chat_id: string, follow: User }
     const [message, setMessage] = useState<string>("")
+    const [shareVisible, setShareVisible] = useState(false)
     const messagesRef = useRef<NDKEvent[]>([])
 
     useEffect(() => {
@@ -41,10 +45,27 @@ const ConversationChat = ({ navigation, route }: StackScreenProps<any>) => {
         return () => timeout.current && clearTimeout(timeout.current)
     }, [unreadChats])
 
+    useFocusEffect(
+        useCallback(() => {
+            const onBackPress = () => {
+                if (selectionMode.current) {
+                    selectionMode.current = false
+                    selectedItems.current.clear()
+                    return true 
+                }
+                return false 
+            }
+
+            const backHandler = BackHandler.addEventListener("hardwareBackPress", onBackPress)
+
+            return () => backHandler.remove() 
+        }, [selectionMode, selectedItems])
+    )
+
     const setReplyEvent = useCallback((event: NDKEvent|null, index: number|null=null) => {
         replyEvent.current = event
         replyIndex.current = index
-    }, [])
+    }, [replyEvent])
 
     const loadMessages = useCallback(async () => {
         
@@ -73,16 +94,6 @@ const ConversationChat = ({ navigation, route }: StackScreenProps<any>) => {
         setMessage("")
     }
 
-    // const messageOptions = async (event: NDKEvent, isUser: boolean) => {
-    //     Vibration.vibrate(45)
-    //     showOptiosMessage({ event, isUser })
-    // }
-
-    const deleteMessage = async (user: User, event: NDKEvent, onlyForMe: boolean) => {
-        messageService.deleteMessage({ user, event, onlyForMe })
-        messagesRef.current = [...messagesRef.current.filter(e => e.id != event.id)]
-    }
-
     const focusEventOnList = useCallback((event: NDKEvent|null) => {
         try {
             if(event) {
@@ -95,30 +106,52 @@ const ConversationChat = ({ navigation, route }: StackScreenProps<any>) => {
             }
         } catch {}
     }, [messagesRef, highLigthIndex, listRef])
+    
+    const deleteMessages = useCallback(async (onlyForMe: boolean) => {
+        
+        const events = Array.from(selectedItems.current)
 
-    const handleGroupAction = useCallback((option: MessageActionType) => {
-        if(option == "copy") {
-            copyToClipboard([...selectedItems.current].map(e => e.content).join("\n\n"))
-        }
-        if(option == "delete") {
-        }
-        if(option == "cancel") {
-        }
+        messageService.deleteMessages({ events, onlyForMe, user })
+        
+        const event_ids = events.map(e => e.id) 
+
+        messagesRef.current = [
+            ...messagesRef.current.filter(e => !event_ids.includes(e.id))
+        ]
+
         selectionMode.current = false
         selectedItems.current.clear()
-    }, [])
+    }, [user, selectedItems, selectionMode])
+
+    const fowardMessages = (follow: User) => {
+        console.log("send selected messages")
+    }
+
+    const handleGroupAction = useCallback((option: MessageActionType) => {
+        if(option == "delete") showDeleteOptions()
+        if(option == "copy") {
+            copyToClipboard([...selectedItems.current].map(e => e.content).join("\n\n"))
+            selectionMode.current = false
+            selectedItems.current.clear()
+        }
+        if(option == "foward") setShareVisible(true) 
+        if(option == "cancel") {
+            selectionMode.current = false
+            selectedItems.current.clear()
+        }
+    }, [selectionMode, selectedItems])
 
     return (
-        <View style={theme.styles.container}>
+        <View style={{ flex: 1 }}>
 
-            <Image style={{ position: "absolute", width: "100%", height: "100%" }}
-                source={require("@assets/images/background-chat7.jpg")}
-            />
+            {/* <Image style={{ position: "absolute", width: "100%", height: "100%" }} */}
+            {/*     source={require("@assets/images/background-chat7.jpg")} */}
+            {/* /> */}
 
             <ConversationHeader follow={follow} />
-           
+            
             {selectionMode.current && 
-                <MessageGroupAction onAction={handleGroupAction}/>
+                <MessageGroupAction handleAction={handleGroupAction}/>
             }
 
             <ConversationList user={user} follow={follow} 
@@ -161,6 +194,10 @@ const ConversationChat = ({ navigation, route }: StackScreenProps<any>) => {
                     </View>
                 </View>
             </View>
+            <MessageShareBar visible={shareVisible} setVisible={setShareVisible}
+                sendMessages={fowardMessages}
+            />
+            <DeleteOptionsBox deleteMessages={deleteMessages} />
         </View>
     )
 }

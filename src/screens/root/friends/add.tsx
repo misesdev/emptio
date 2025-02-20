@@ -78,7 +78,7 @@ const AddFolowScreen = ({ navigation }: StackScreenProps<any>) => {
                 onSearch={handleSearch} 
             />
 
-            <UserList toOpen
+            <UserList toView
                 refreshing={loading} users={users} 
                 setUsers={setUsers} onPressUser={handleAddFollow}
             />

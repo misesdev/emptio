@@ -12,6 +12,7 @@ import { Vibration, View, Text, TouchableOpacity,
     StyleSheet } from "react-native"
 import theme from "@/src/theme"
 import { ProfilePicture } from "@components/nostr/user/ProfilePicture"
+import Animated, { interpolateColor, useAnimatedStyle, useSharedValue } from "react-native-reanimated"
 
 interface ListItemProps {
     user: User,
@@ -26,13 +27,14 @@ const ListItemChat = ({ item, user, filters,
     selectionMode, selectedItems, handleOpenChat }: ListItemProps) => {
 
     const { follows } = useAuth()
+    const highlight = useSharedValue(0);
     const [follow, setFollow] = useState<User|null>(null)
-    const [selected, setSelected] = useState(false)
+    //const [selected, setSelected] = useState(false)
     const [event, setEvent] = useState<NDKEvent>(item.lastMessage)
 
     useEffect(() => { loadItemData() }, [])
     useEffect(() => {
-        if(!selectionMode.current) setSelected(false)
+        if(!selectionMode.current) highlight.value = 0//setSelected(false)
     }, [selectionMode.current])
 
     const loadItemData = async () => {
@@ -62,26 +64,30 @@ const ListItemChat = ({ item, user, filters,
 
     const handleOnPress = () => {
         if(selectionMode.current) {
-            if(!selected) selectedItems.current.push(item) 
-            if(selected) selectedItems.current.splice(selectedItems.current.indexOf(item), 1) 
-            if(!selectedItems.current.length) selectionMode.current = false
-            setSelected(prev => !prev)
+            //setSelected(prev => !prev)
+            if(!highlight.value) selectedItems.current.push(item) 
+            if(highlight.value) selectedItems.current.splice(selectedItems.current.indexOf(item), 1) 
+            selectionMode.current = (!!selectedItems.current.length) 
+            highlight.value = highlight.value == 1 ? 0: 1
         } else if(follow) {
             handleOpenChat(item.chat_id, follow)
         }
     }
 
     const handleSelectionMode = () => {
-        setSelected(true)
+        //setSelected(true)
+        highlight.value = 1
         selectionMode.current = true
         selectedItems.current.push(item)
         Vibration.vibrate(45)
     }
 
+    const animatedFocusStyle = useAnimatedStyle(() => ({
+        backgroundColor: interpolateColor(highlight.value, [0, 1], ["transparent", theme.colors.blueOpacity]),
+    }));
+
     return (
-        <View style={[styles.chatContainer, {
-                backgroundColor: selected ? theme.colors.blueOpacity : "transparent"
-            }]}
+        <Animated.View style={[styles.chatContainer, animatedFocusStyle]}
         >
             <TouchableOpacity
                 activeOpacity={.7}
@@ -90,14 +96,14 @@ const ListItemChat = ({ item, user, filters,
                 onPress={handleOnPress}
                 onLongPress={handleSelectionMode}
             >
-                <View style={{ width: "15%" }}>
+                <TouchableOpacity style={{ width: "15%" }}>
                     <ProfilePicture user={follow??{}} size={50} />
-                    {selected && 
-                        <Ionicons name="checkmark-circle" size={24} color={theme.colors.green} 
-                            style={{ position: "absolute", bottom: 0, right: 0 }}
-                        />
-                    }
-                </View>
+                    {/* {selected &&  */}
+                    {/*     <Ionicons name="checkmark-circle" size={24} color={theme.colors.green}  */}
+                    {/*         style={{ position: "absolute", bottom: 0, right: 0 }} */}
+                    {/*     /> */}
+                    {/* } */}
+                </TouchableOpacity>
                 <View style={{ width: "60%", overflow: "hidden" }}>
                     {follow &&
                         <View style={{ width: "100%" }}>
@@ -125,7 +131,7 @@ const ListItemChat = ({ item, user, filters,
                     </View>
                 } 
             </TouchableOpacity>
-        </View>
+        </Animated.View>
     )
 }
 
