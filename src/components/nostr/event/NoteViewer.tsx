@@ -14,9 +14,10 @@ import { User } from '@/src/services/memory/types';
 import { useEffect, useState } from 'react';
 import { userService } from '@/src/core/userManager';
 import { ProfilePicture } from '../user/ProfilePicture';
+import { useAuth } from '@/src/providers/userProvider';
 
 type Props = { 
-    user?: User,
+    author?: User,
     note: NDKEvent, 
     showUser?: boolean,
     videoMuted?: boolean, 
@@ -25,10 +26,10 @@ type Props = {
     videoFullScreen?: boolean 
 }
 
-const NoteViewer = ({ user, showUser=true, note, videoMuted=true, videoPaused=true, videoFullScreen=false, setMutedVideo }: Props) => {
+const NoteViewer = ({ author, showUser=true, note, videoMuted=true, videoPaused=true, videoFullScreen=false, setMutedVideo }: Props) => {
    
-    const [pictureError, setPictureError] = useState(false)
-    const [eventAuthor, setEventAutor] = useState<User>(user ?? {})
+    const { user, follows } = useAuth()
+    const [eventAuthor, setEventAutor] = useState<User>(author ?? {})
     const hashTagRegex = /#\w+/g
     const urlRegex = /(https?:\/\/[^\s]+)/g
     const nostrRegex = /(npub|nprofile|nevent|note|naddr)1[023456789acdefghjklmnpqrstuvwxyz]+/g
@@ -36,8 +37,13 @@ const NoteViewer = ({ user, showUser=true, note, videoMuted=true, videoPaused=tr
     useEffect(() => { loadUserData() }, [])
 
     const loadUserData = async () => {
-        if(!user && showUser)
+        if(!author && showUser)
         {
+            if(note.pubkey == user.pubkey) return setEventAutor(user)
+
+            const author = follows.find(f => f.pubkey == note.pubkey)
+            if(author) return setEventAutor(author)
+
             const userData = await userService.getProfile(note.pubkey ?? "")
             if(userData) setEventAutor(userData)
         }

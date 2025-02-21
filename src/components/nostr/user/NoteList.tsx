@@ -26,7 +26,7 @@ const NoteItem = ({ user, note, videoMuted=true, setVideoMuted, videoPaused=true
             style={[styles.scrollNote, { width: noteWidth }]}
         >
             <View style={{ flex: 1, justifyContent: "center", padding: 24 }}>
-                <NoteViewer user={user} setMutedVideo={setVideoMuted} videoMuted={videoMuted} videoPaused={videoPaused} note={note} />
+                <NoteViewer author={user} setMutedVideo={setVideoMuted} videoMuted={videoMuted} videoPaused={videoPaused} note={note} />
             </View>
         </ScrollView>
     )

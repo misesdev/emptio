@@ -7,6 +7,7 @@ export const DefaultRelays = [
     "wss://relay.nostr.bg",
     "wss://nostr.wine",
     "wss://relay.noswhere.com",
+    "wss://relay.nostrcheck.me",
     // "wss://puravida.nostr.land",  // error non listener users
     // "wss://eden.nostr.land",  // error non listener users
     // "wss://relay.nostr.com.au",  // error non listener users

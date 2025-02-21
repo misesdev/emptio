@@ -24,9 +24,11 @@ const ReplyTool = ({ event, messages, user, follow, focusReply }: ReplyToolProps
 
     useEffect(() => {
         if (reply?.content.includes("?iv=")) {
-            messageService.decryptMessage(user, reply).then(event => reply = event);
+            messageService.decryptMessage(user, reply).then((event) => { 
+                reply!.content = event.content
+            });
         }
-    }, [])
+    }, [reply])
 
     const userReply = reply?.pubkey === user.pubkey ? useTranslate("chat.labels.you") 
         : getUserName(follow, 26)

@@ -183,6 +183,7 @@ export default {
     "message.chats.alertdelete": "Are you sure you want to delete the selected conversations? The messages will only be deleted locally.",
     
     "feed.empty": "No orders found, try adding seller friends",
+    "feed.comments.empty": "No comments here",
     "feed.videos.comments": "Comments",
     "feed.videos.addtag": "Add filter tag",
     "feed.videos.share": "Share",

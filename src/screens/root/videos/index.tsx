@@ -15,8 +15,11 @@ import { useTranslateService } from "@src/providers/translateProvider"
 import FeedVideoViewer from "./viewer"
 import useNDKStore from "@services/zustand/ndk"
 import theme from "@src/theme"
+import { timeSeconds } from "@services/converter"
 
-const MemoizedFeedVideoViewer = memo(({ item, paused }: { item: NDKEvent, paused: boolean }) => {
+interface VideoItemProps { item: NDKEvent, paused: boolean }
+const MemoizedFeedVideoViewer = memo(({ item, paused }: VideoItemProps) => {
+    console.log("render: ", item.pubkey)
     return <FeedVideoViewer event={item} paused={paused} />;
 }, (prevProps, nextProps) => {
     return prevProps.item.id === nextProps.item.id && prevProps.paused === nextProps.paused;
@@ -26,7 +29,7 @@ const VideosFeed = ({ navigation }: StackScreenProps<any>) => {
 
     const { ndk } = useNDKStore()
     const listRef = useRef<FlatList>(null)
-    const lastTimestamp = useRef<number>()
+    const lastTimestamp = useRef<number>(timeSeconds.without(7))
     const isFetching = useRef<boolean>(false) 
     const { feedSettings, blackList } = useFeedVideosStore()
     const { useTranslate } = useTranslateService()
@@ -36,6 +39,7 @@ const VideosFeed = ({ navigation }: StackScreenProps<any>) => {
     const [downloading, setDownloading] = useState<boolean>(false)
     const [downloadProgress, setDownloadProgress] = useState<number>(0)
     const [filtersVisible, setFiltersVisible] = useState<boolean>(false)
+    const memorizedVideos = useMemo(() => videos, [videos])
 
     useEffect(() => {
         const unsubscribe = navigation.addListener("blur", () => {
@@ -46,14 +50,12 @@ const VideosFeed = ({ navigation }: StackScreenProps<any>) => {
     }, [])
 
     useEffect(() => {
-        lastTimestamp.current = undefined
         setVideos([])
-        fetchVideos()
+        lastTimestamp.current = timeSeconds.without(7) 
+        setTimeout(fetchVideos, 10)
     }, [feedSettings])
 
     useFocusEffect(() => { setPaused(false) })
-
-    const memorizedVideos = useMemo(() => videos, [videos])
 
     const fetchVideos = async () => {
         if(isFetching.current) return
@@ -70,7 +72,8 @@ const VideosFeed = ({ navigation }: StackScreenProps<any>) => {
             if(founds >= feedSettings.VIDEOS_LIMIT) {
                 return subscription.stop()
             }
-            lastTimestamp.current = event.created_at
+            if(event.created_at) lastTimestamp.current = event.created_at
+
             const url = extractVideoUrl(event.content)
             if(url && !videos.find(v => v.id == event.id) && !blackList.has(event.pubkey)) 
             {

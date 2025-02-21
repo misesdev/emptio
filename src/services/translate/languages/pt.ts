@@ -177,7 +177,7 @@ export default {
     "chats.title": "Conversas",
     "chat.empty": "Você não possui nenhuma mensagem",
     "chat.labels.you": "Você",
-    "chat.labels.message": "Message",
+    "chat.labels.message": "Mensagem",
     "chat.labels.delete-conversations": "Delete Conversations",
     "chat.unread": "Não lidas",
     "chat.unknown": "Desconhecidos",
@@ -186,6 +186,7 @@ export default {
     "message.chats.alertdelete": "Tem certeza que deseja excluir as conversas selecionadas? As mensagens serão excluidas apenas localmente.",
 
     "feed.empty": "Nenhuma ordem encontrada, tente adicionar amigos vendedores",
+    "feed.comments.empty": "Nenhum comentário aqui",
     "feed.videos.comments": "Comentários",
     "feed.videos.addtag": "Adicionar tag de filtro",
     "feed.videos.share": "Compartilhar",

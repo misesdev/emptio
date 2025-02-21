@@ -36,3 +36,13 @@ export const hexToNpub = (pubkey: string) => {
     return bech32.encode("npub", words)
 }
 
+export const timeSeconds = {
+    minute: 60,
+    hour: 3600,
+    day: 86400,
+    week: 604800,
+    without: (days: number) => {
+        return Math.floor(Date.now() / 1000) - (days * timeSeconds.day)
+    },
+    now: () => Math.floor(Date.now() / 1000)
+}

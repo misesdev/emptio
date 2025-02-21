@@ -1,13 +1,12 @@
 import { ButtonPrimary } from "@components/form/Buttons"
-import { useTranslateService } from "@/src/providers/translateProvider"
-import { StyleSheet, Modal, View, ScrollView, TouchableOpacity, Text } from "react-native"
+import { useTranslateService } from "@src/providers/translateProvider"
+import { StyleSheet, Modal, View, TouchableOpacity, FlatList, Text } from "react-native"
 import { FormControl } from "@components/form/FormControl"
 import Ionicons from 'react-native-vector-icons/Ionicons'
 import { useFeedVideosStore } from "@services/zustand/feedVideos"
 import { saveFeedVideoSettings } from "@services/memory/settings"
-import theme from "@src/theme"
 import { memo, useCallback, useState } from "react"
-import { FlatList } from "react-native-gesture-handler"
+import theme from "@src/theme"
 
 interface TagItemProps { tag: string, handlePress: (tag: string) => void }
 const TagItem = memo(({ tag, handlePress }: TagItemProps) => {
@@ -42,7 +41,6 @@ const VideosFilters = ({ visible, setVisible }: FilterProps) => {
 
     const handleRemoveTag = useCallback((tag: string) => {
         if(filterTags.length <= 1) return
-
         setFilterTags(prev => [...prev.filter(t => t != tag)])
     }, [filterTags, setFilterTags])
 

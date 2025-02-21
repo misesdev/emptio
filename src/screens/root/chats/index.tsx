@@ -61,7 +61,6 @@ const ChatsScreen = ({ navigation }: StackScreenProps<any>) => {
 
     const handleSearch = (searchTerm: string) => {
       
-        console.log(searchTerm)
         const cleanSearchTerm = searchTerm.trim().toLowerCase()
 
         if(!cleanSearchTerm.length) return setFilteredChats(chats)
@@ -75,7 +74,6 @@ const ChatsScreen = ({ navigation }: StackScreenProps<any>) => {
 
     const handleFilter = useCallback((section: ChatFilterType) => {
        
-        console.log(section)
         setFilterSection(section)
         
         if(section == "all") setFilteredChats(chats)
@@ -117,6 +115,7 @@ const ChatsScreen = ({ navigation }: StackScreenProps<any>) => {
                         const chat_ids = selectedItems.current.map(c => c.chat_id)
                         setChats(chats.filter(c => !chat_ids.includes(c.chat_id)))
                         setTimeout(async () => await messageService.deleteChats(chat_ids), 20)
+                        chat_ids.forEach(markReadChat)
                         selectionMode.current = false
                         selectedItems.current = []
                     }

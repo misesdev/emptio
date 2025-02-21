@@ -1,6 +1,8 @@
-import { TouchableOpacity, Text, StyleSheet, ScrollView } from "react-native"
+import { TouchableOpacity, Text, StyleSheet } from "react-native"
 import { useTranslateService } from "@src/providers/translateProvider"
 import theme from "@src/theme"
+import { useCallback, useEffect, useState } from "react"
+import { FlatList } from "react-native-gesture-handler"
 
 export type ChatFilterType = "friends" | "unknown" | "all" | "unread" | "markread"
 
@@ -12,48 +14,52 @@ type Props = {
 const ChatFilters = ({ onFilter, activeSection }: Props) => {
    
     const { useTranslate } = useTranslateService()
-
-    const getSectionBackground = (section: ChatFilterType) => {
-        if(activeSection == section) return theme.colors.blue
-        return theme.colors.default
-    }
+    const [filters, setFilters] = useState<ChatFilterType[]>([])
+    const [sectionLabels, setSectionLabels] = useState<Map<ChatFilterType, string>>()
+    
+    useEffect(() => { 
+        setFilters(["all", "unread", "friends", "unknown"])
+        setSectionLabels(new Map<ChatFilterType, string>([
+            ["unknown", useTranslate("chat.unknown")],
+            ["unread", useTranslate("chat.unread")],
+            ["friends", useTranslate("labels.friends")],
+            ["all", useTranslate("labels.all")]
+        ]))
+    }, [useTranslate])
 
     interface OptionProps {
         label: string, 
         section: ChatFilterType,
         handleFilter: (section: ChatFilterType) => void
     }
-    const OptionFilter = ({ label, section, handleFilter }: OptionProps) => {
+    
+    const OptionFilter = useCallback(({ label, section, handleFilter }: OptionProps) => {
         return (
-            <TouchableOpacity
-                style={[styles.section, { backgroundColor: getSectionBackground(section) }]}
-                onPress={() => handleFilter(section)}
+            <TouchableOpacity onPress={() => handleFilter(section)}
+                style={[styles.section, { 
+                    backgroundColor: (activeSection == section) ? theme.colors.blue
+                        : theme.colors.default
+                }]}
             >
                 <Text style={styles.sectionLabel}>{label}</Text>
             </TouchableOpacity> 
         )
-    }
+    }, [activeSection])
+
+    const renderItem = useCallback(({ item }: { item: ChatFilterType }) => {
+        return <OptionFilter section={item}
+            label={sectionLabels?.get(item)??""}  
+            handleFilter={onFilter} 
+        />
+    }, [onFilter, sectionLabels, activeSection])
 
     return (
-        <ScrollView horizontal 
+        <FlatList horizontal 
+            data={filters}
+            renderItem={renderItem}
             style={styles.container}
-            showsHorizontalScrollIndicator={false}
-            contentContainerStyle={{ paddingHorizontal: 10, flexDirection: "row-reverse" }}
-        >
-            {/* <OptionFilter section="markread" label={useTranslate("chat.action.markread")} /> */}
-            <OptionFilter section="unknown" handleFilter={onFilter}
-                label={useTranslate("chat.unknown")}
-            />
-            <OptionFilter section="friends" handleFilter={onFilter}
-                label={useTranslate("labels.friends")} 
-            />
-            <OptionFilter section="unread" handleFilter={onFilter}
-                label={useTranslate("chat.unread")} 
-            />
-            <OptionFilter section="all" handleFilter={onFilter}
-                label={useTranslate("labels.all")}
-            />
-        </ScrollView>
+            contentContainerStyle={{ paddingHorizontal: 10 }}
+        />
     )
 }
 
@@ -64,3 +70,4 @@ const styles = StyleSheet.create({
 })
 
 export default ChatFilters
+

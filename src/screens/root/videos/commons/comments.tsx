@@ -1,46 +1,60 @@
 import NoteViewer from "@components/nostr/event/NoteViewer"
 import { NDKEvent, NDKFilter, NDKSubscriptionCacheUsage } from "@nostr-dev-kit/ndk-mobile"
 import { useCallback, useEffect, useMemo, useState } from "react"
-import { Modal, StyleSheet, View, Text, TouchableOpacity } from "react-native"
-import { FlatList, TextInput } from "react-native-gesture-handler"
-import { ActivityIndicator } from "react-native-paper"
+import { Modal, StyleSheet, View, Text, TouchableOpacity, 
+    TextInput, FlatList } from "react-native"
+import { RefreshControl } from "react-native-gesture-handler"
 import Ionicons from 'react-native-vector-icons/Ionicons'
 import { useTranslateService } from "@src/providers/translateProvider"
 import useNDKStore from "@services/zustand/ndk"
-import { noteService } from "@services/nostr/noteService"
-import theme from "@/src/theme"
+import { useAuth } from "@src/providers/userProvider"
+import { timeSeconds } from "@services/converter"
+import theme from "@src/theme"
 
-type ChatProps = {
+interface ChatProps {
     event: NDKEvent,
     visible: boolean,
     setVisible: (state: boolean) => void
 }
 const VideoComments = ({ event, visible, setVisible }: ChatProps) => {
 
+    const { user } = useAuth()
     const { ndk } = useNDKStore()
     const { useTranslate } = useTranslateService()
     const [message, setMessage] = useState<string>("")
     const [comments, setComments] = useState<NDKEvent[]>([])
-    const memorizedComments = useMemo(() => comments, [comments])
+    const [refreshing, setRefreshing] = useState<boolean>(false)
+    
+    const memorizedComments = useMemo(() => {
+        return comments.sort((a,b) => (a.created_at??1)-(b.created_at??1))
+    }, [comments])
 
     useEffect(() => {
-        if(visible) setTimeout(handleLoadMessages, 20)
+        if(visible) setTimeout(handleLoadComments, 10)
     }, [visible])
 
-    const handleLoadMessages = async () => {
+    const handleLoadComments = async () => {
         
+        setRefreshing(true)
+
         const filter: NDKFilter = { 
-            kinds: [1], "#p": [event.pubkey], "#e": [event.id], since: event.created_at 
+            kinds: [1], "#e": [event.id]
         }
 
         const subscription = ndk.subscribe(filter, {
             cacheUsage: NDKSubscriptionCacheUsage.PARALLEL
         }) 
         
-        subscription.on("event", event => setComments(prev => [...prev, event]))
+        subscription.on("event", event => { 
+            if(event.tags.find(t => t[0] == "e" && t[3] == "root")) {
+                setComments(prev => [event, ...prev])
+            }
+        })
 
-        subscription.on("close", () => {})
-        subscription.on("eose", () => {})
+        const finish = () => setRefreshing(false)
+
+        subscription.on("close", finish)
+        subscription.on("eose", finish)
 
         subscription.start()
 
@@ -49,16 +63,38 @@ const VideoComments = ({ event, visible, setVisible }: ChatProps) => {
         }, 500)
     }
 
-    const handlePostComment = () => {
+    const handlePostComment = useCallback(async () => {
+        if(!message.trim().length) return
 
-    }
+        const comment = new NDKEvent(ndk, {
+            kind: 1,
+            pubkey: user.pubkey??"",
+            content: message.trim(),
+            tags: [
+                ["e", event.id, "", "root"],
+                ["p", event.pubkey]
+            ],
+            created_at: timeSeconds.now()
+        })
+
+        await comment.sign()
+        // comment.publishReplaceable()
+
+        setComments(prev => [...prev, comment])
+        setMessage("")
+
+    }, [message, user, event])
 
     const renderItem = useCallback(({ item }: { item: NDKEvent }) => {
         return <NoteViewer note={item} />
     }, [])
 
-    const Loader = () => {
-        return <ActivityIndicator size={22} color={theme.colors.white} />
+    const EmptyComponent = () => {
+        return (
+            <Text style={styles.empty}>
+                {useTranslate("feed.comments.empty")}
+            </Text>
+        )
     }
 
     return (
@@ -81,7 +117,8 @@ const VideoComments = ({ event, visible, setVisible }: ChatProps) => {
                         style={{ flex: 1 }}
                         contentContainerStyle={styles.listComments}
                         initialNumToRender={10}
-                        ListFooterComponent={<Loader/>}
+                        ListEmptyComponent={<EmptyComponent />}
+                        refreshControl={<RefreshControl refreshing={refreshing}/>}
                     />
                     {/* Chat Box */}
                     <View style={styles.chatBoxContainer}>
@@ -101,6 +138,7 @@ const VideoComments = ({ event, visible, setVisible }: ChatProps) => {
                             <View style={{ width: "18%", alignItems: "center", justifyContent: "center" }}>
                                 <TouchableOpacity style={styles.sendButton} onPress={handlePostComment} >
                                     <Ionicons name="paper-plane" 
+                                        style={{ transform: [{ rotate: "45deg" }] }}
                                         size={24} color={theme.colors.white}
                                     />
                                 </TouchableOpacity>
@@ -131,16 +169,17 @@ const styles = StyleSheet.create({
     },
     headerText: { fontSize: 18, fontWeight: "bold", color: theme.colors.white },
     closeButton: { fontSize: 22, color: "#555" },
+    
     inputBox: { position: "absolute", bottom: 10, width: "100%" },
-    chatBoxContainer: {  padding: 10, width: "100%", backgroundColor: theme.colors.black },
-    chatInputContainer: { width: "82%", borderRadius: 20, paddingHorizontal: 18, 
+    chatBoxContainer: {  width: "100%", borderRadius: 10,
+        backgroundColor: theme.input.backGround },
+    chatInputContainer: { width: "82%", borderRadius: 10, paddingHorizontal: 18, 
         backgroundColor: theme.input.backGround },
     chatInput: { color: theme.input.textColor, paddingVertical: 16, paddingHorizontal: 6 },
-    sendButton: { borderRadius: 50, padding: 12, backgroundColor: theme.colors.blue, 
-        transform: [{ rotate: "45deg" }]
-    },
+    sendButton: { borderRadius: 10, padding: 12 },
 
-    listComments: { justifyContent: "center", alignItems: "center" }
+    listComments: { justifyContent: "center", alignItems: "center" },
+    empty: { color: theme.colors.gray, marginTop: 200, textAlign: "center" }
 })
 
 export default VideoComments

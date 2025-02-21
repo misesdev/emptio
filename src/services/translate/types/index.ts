@@ -184,6 +184,7 @@ export type TranslateWords = "initial.message"
     | "message.chats.alertdelete"
 
     | "feed.empty"
+    | "feed.comments.empty"
     | "feed.videos.comments"
     | "feed.videos.comment"
     | "feed.videos.addtag"

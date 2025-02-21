@@ -4,15 +4,15 @@ import { useAuth } from "@/src/providers/userProvider"
 import { NDKEvent } from "@nostr-dev-kit/ndk-mobile"
 import { User } from "@services/memory/types"
 import { ChatUser } from "@services/zustand/chats"
-import { MutableRefObject, useEffect, useState } from "react"
+import { MutableRefObject, useEffect, useRef, useState } from "react"
 import { FilterChat } from "./list"
 import { getUserName } from "@src/utils"
 import { Vibration, View, Text, TouchableOpacity, 
     StyleSheet, Animated } from "react-native"
 import theme from "@/src/theme"
 import { ProfilePicture } from "@components/nostr/user/ProfilePicture"
-import { interpolateColor, useAnimatedStyle, useDerivedValue, 
-    useSharedValue } from "react-native-reanimated"
+// import Animated, { interpolateColor, useAnimatedStyle, useDerivedValue, 
+//      useSharedValue } from "react-native-reanimated"
 
 interface ListItemProps {
     user: User,
@@ -27,13 +27,14 @@ const ListItemChat = ({ item, user, filters,
     selectionMode, selectedItems, handleOpenChat }: ListItemProps) => {
 
     const { follows } = useAuth()
-    const highlight = useSharedValue(0);
+    const selected = useRef(0);
+    const highlight = useRef(new Animated.Value(0)).current
     const [follow, setFollow] = useState<User|null>(null)
     const [event, setEvent] = useState<NDKEvent>(item.lastMessage)
 
     useEffect(() => { loadItemData() }, [])
     useEffect(() => {
-        if(!selectionMode.current) highlight.value = 0
+        if(!selectionMode.current) highlight.setValue(0) 
     }, [selectionMode.current])
 
     const loadItemData = async () => {
@@ -62,33 +63,46 @@ const ListItemChat = ({ item, user, filters,
     }
 
     const handleOnPress = () => {
-        if(selectionMode.current) {
-            if(!highlight.value) selectedItems.current.push(item) 
-            if(highlight.value) selectedItems.current.splice(selectedItems.current.indexOf(item), 1) 
-            selectionMode.current = (!!selectedItems.current.length) 
-            highlight.value = highlight.value == 1 ? 0: 1
-        } else if(follow) {
+        if(selectionMode.current) 
+        {
+            if(!selected.current) { 
+                highlight.setValue(1)
+                selectedItems.current = [...selectedItems.current, item] 
+                selected.current = 1
+            } else {
+                highlight.setValue(0)
+                selectedItems.current = [
+                    ...selectedItems.current.filter(i => i.chat_id != item.chat_id)
+                ]
+                selected.current = 0
+            }
+
+            if(selectedItems.current.length === 0)
+                selectionMode.current = false
+        } 
+        else if(follow) {
             handleOpenChat(item.chat_id, follow)
         }
     }
 
     const handleSelectionMode = () => {
-        highlight.value = 1
+        highlight.setValue(1)
+        selected.current = 1
         selectionMode.current = true
-        selectedItems.current.push(item)
+        highlight.setValue(1)
+        if (!selectedItems.current.includes(item)) {
+            selectedItems.current = [...selectedItems.current, item]; // Evita modificar diretamente a ref
+        }
         Vibration.vibrate(45)
     }
 
-    const animatedBackground = useDerivedValue(() => {
-        return interpolateColor(highlight.value, [0, 1], ["transparent", theme.colors.disabled]);
+    const backgroundColor = highlight.interpolate({
+        inputRange: [0, 1],
+        outputRange: ["transparent", theme.colors.disabled],
     })
 
-    const animatedFocusStyle = useAnimatedStyle(() => ({
-        backgroundColor: animatedBackground.value,
-    }));
-
     return (
-        <Animated.View style={[styles.chatContainer, animatedFocusStyle]}>
+        <Animated.View style={[styles.chatContainer, { backgroundColor }]}>
             <TouchableOpacity
                 activeOpacity={.7}
                 delayLongPress={150}
