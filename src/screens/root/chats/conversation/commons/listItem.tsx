@@ -1,14 +1,13 @@
 import { User } from "@services/memory/types";
 import { NDKEvent } from "@nostr-dev-kit/ndk-mobile";
-import { MutableRefObject, useCallback, useEffect, useState } from "react";
-import Animated, { interpolateColor, runOnJS, useAnimatedStyle, 
-    useDerivedValue, useSharedValue, withSpring, withTiming } from "react-native-reanimated";
+import { MutableRefObject, memo, useCallback, useEffect, useRef, useState } from "react";
 import { messageService } from "@src/core/messageManager";
-import { Vibration, View, Text, TouchableOpacity, StyleSheet } from "react-native";
-import { Gesture, GestureDetector } from "react-native-gesture-handler";
+import { Vibration, View, Text, TouchableOpacity, StyleSheet, Animated } from "react-native";
+import { GestureHandlerRootView, PanGestureHandler } from "react-native-gesture-handler";
 import ReplyTool from "./replyTool";
 import NoteViewer from "@components/nostr/event/NoteViewer";
 import theme from "@src/theme";
+import useChatStore from "@/src/services/zustand/chats";
 
 interface ListItemProps {
     item: NDKEvent;
@@ -17,99 +16,130 @@ interface ListItemProps {
     focusIndex: number | null;
     user: User;
     follow: User;
-    selectionMode: MutableRefObject<boolean>;
     selectedItems: MutableRefObject<Set<NDKEvent>>;
     setReplyEvent: (event: NDKEvent|null, index: number) => void;
     focusReply: (index: number) => void;
 }
 
 const ListItemMessage = ({
-    item, index, focusIndex, items, user, follow, selectionMode, selectedItems, 
+    item, index, focusIndex, items, user, follow, selectedItems, 
     setReplyEvent, focusReply
 }: ListItemProps) => {
-    
-    const highlight = useSharedValue(0);
-    const translateX = useSharedValue(0);
+   
+    const selected = useRef(false)
     const isUser = item.pubkey === user.pubkey;
+    const highlight = useRef(new Animated.Value(0)).current
+    const translateX = useRef(new Animated.Value(0)).current
     const [event, setEvent] = useState<NDKEvent>(item);
+    const { selectionMode, toggleSelectionMode } = useChatStore()
 
     useEffect(() => {
-        if (focusIndex === index) {
-            highlight.value = 1;
-            highlight.value = withTiming(0, { duration: 800 });
-        }
+        if (focusIndex === index) lightAnimation() 
     }, [focusIndex]);
 
     useEffect(() => {
-        if(!selectionMode.current) highlight.value = 0
-    }, [selectionMode.current])
-
-    useEffect(() => {
-        if (event.content.includes("?iv=")) {
-            messageService.decryptMessage(user, item).then(setEvent);
+        if(!selectionMode && selected.current) {
+            selected.current = false
+            highlight.setValue(0)
         }
-    }, []);
+    }, [selectionMode])
 
-    const replyMessage = useCallback(() => {
-        setReplyEvent(event, index)
-        Vibration.vibrate(35)
-    }, [event, index])
+    const decryptMessage = useCallback(async () => {
+        if (event.content.includes("?iv=")) { 
+            const decrypted = await messageService.decryptMessage(user, item)
+            item.content = decrypted.content
+            setEvent(decrypted)
+        }
+    }, [])
 
-    const swipeGesture = Gesture.Pan()
-        .activeOffsetX([-15, 15])
-        .onUpdate(event => translateX.value = event.translationX)
-        .onEnd(event => {
-            if (event.translationX > 60) runOnJS(replyMessage)();
-            translateX.value = withSpring(0, { damping: 10, stiffness: 50 });
-        });
+    useEffect(() => { decryptMessage() }, [decryptMessage])
     
-    const limitedTranslation = useDerivedValue(() => {
-        return Math.min(translateX.value, 100);
-    })
+    const replyMessage = () => {
+        setReplyEvent(item, index)
+        Vibration.vibrate(35)
+    }
 
-    const animatedSwipeStyle = useAnimatedStyle(() => ({
-        transform: [{ translateX: limitedTranslation.value }],
-    }));
+    const lightAnimation = useCallback(() => {
+        Animated.sequence([
+            Animated.timing(highlight, {
+                toValue: 1,
+                duration: 300,
+                useNativeDriver: true,
+            }),
+            Animated.timing(highlight, {
+                toValue: 0,
+                duration: 2500,
+                useNativeDriver: true,
+            }),
+        ]).start()
+    }, [highlight])
 
-    const animatedBackground = useDerivedValue(() => {
-        return interpolateColor(highlight.value, [0, 1], ["transparent", theme.colors.disabled]);
-    })
+    const handleOnPress = () => {
+        if (selectionMode) {
+            selected.current = !selected.current
+            highlight.setValue(selected.current ? 1 : 0)
 
-    const animatedFocusStyle = useAnimatedStyle(() => ({
-        backgroundColor: animatedBackground.value
-    }));
-
-    const handleOnPress = useCallback(() => {
-        if (selectionMode.current) {
-            highlight.value = highlight.value == 1 ? 0 : 1
-            if (!selectedItems.current.has(item)) {
-                selectedItems.current.add(item);
-            } else {
-                selectedItems.current.delete(item);
-            }
-            selectionMode.current = (!!selectedItems.current.size);
+            if(selectedItems.current.has(item)) 
+                selectedItems.current.add(item)
+            else 
+                selectedItems.current.delete(item)
+            
+            if(selectedItems.current.size === 0)
+                toggleSelectionMode(false)
         }
-    }, [selectionMode, selectedItems, item]);
+    }
 
-    const handleSelectionMode = useCallback(() => {
-        highlight.value = 1 
-        selectionMode.current = true;
-        selectedItems.current.add(item);
+    const handleSelectionMode = () => {
+        highlight.setValue(1) 
+        selected.current = true
+        toggleSelectionMode(true)
+        selectedItems.current.add(item)
         Vibration.vibrate(45);
-    }, [selectionMode, selectedItems, item]);
+    }
+
+    const backgroundColor = highlight.interpolate({
+        inputRange: [0,1],
+        outputRange: ["transparent", theme.colors.disabled]
+    })
+
+    const handleSwipeEnd = (dx: number) => {
+        if (dx > 60) replyMessage()
+        Animated.spring(translateX, {
+            toValue: 0,
+            damping: 15,
+            stiffness: 60,
+            useNativeDriver: true
+        }).start()
+    }
+
+    const onGestureEvent = Animated.event(
+        [{ nativeEvent: { translationX: translateX } }],
+        { useNativeDriver: false }
+    );
+
+    const onHandlerStateChange = (event: any) => {
+        const { translationX, state } = event.nativeEvent
+
+        if (state === 5) { // FINAL STATE
+            handleSwipeEnd(translationX);
+        }
+    }
 
     return (
+        <GestureHandlerRootView>
         <Animated.View 
-            style={[
-                styles.messageContainer, animatedFocusStyle,
+            style={[styles.messageContainer, { backgroundColor },
                 { flexDirection: isUser ? "row-reverse" : "row" },
             ]}
         >
-            <GestureDetector gesture={swipeGesture}>
+            <PanGestureHandler activeOffsetX={[-5,5]}
+                onGestureEvent={onGestureEvent}
+                onHandlerStateChange={onHandlerStateChange}
+            >
                 <Animated.View style={[
                     styles.contentMessage,
                     isUser ? styles.messageSended : styles.messageReceived,
-                    animatedSwipeStyle
+                    { transform: [{ translateX }] } 
                 ]}>
                     <TouchableOpacity 
                         activeOpacity={0.5} 
@@ -132,8 +162,9 @@ const ListItemMessage = ({
                         </View>
                     </TouchableOpacity>
                 </Animated.View>
-            </GestureDetector>
+            </PanGestureHandler> 
         </Animated.View>
+        </GestureHandlerRootView>
     )
 }
 
@@ -145,4 +176,6 @@ const styles = StyleSheet.create({
     messageDetailBox: { width: "100%", flexDirection: "row-reverse", marginTop: 12 },
 })
 
-export default ListItemMessage
+export default memo(ListItemMessage, (prev, next) => {
+    return prev.item.id == next.item.id && prev.index != next.focusIndex
+})

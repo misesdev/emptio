@@ -52,7 +52,8 @@ const ReplyBox = ({ reply, setReply, focusEventOnList, user, follow }: ReplyProp
 }
 
 const styles = StyleSheet.create({
-    container: { width: "100%", padding: 4, borderRadius: 10, backgroundColor: theme.colors.semitransparent },
+    container: { width: "100%", padding: 4, borderRadius: 10, marginBottom: 10,
+        backgroundColor: theme.colors.semitransparent },
     content: { width: "100%", borderRadius: 6, borderLeftColor: theme.colors.blue,
         borderLeftWidth: 2, flexDirection: "row", padding: 6, paddingHorizontal: 10, },
     close: { padding: 4, borderRadius: 50, backgroundColor: theme.colors.blueOpacity }

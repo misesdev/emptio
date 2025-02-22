@@ -11,12 +11,11 @@ type Props = {
     events: NDKEvent[],
     listRef: RefObject<FlatList>,
     highLigthIndex: MutableRefObject<number|null>,
-    selectionMode: MutableRefObject<boolean>,
     selectedItems: MutableRefObject<Set<NDKEvent>>,
     setReplyEvent: (event: NDKEvent|null, index: number|null) => void,
 }
 
-const ConversationList = ({ user, follow, listRef, events, selectionMode, highLigthIndex, 
+const ConversationList = ({ user, follow, listRef, events, highLigthIndex, 
     selectedItems, setReplyEvent }: Props) => {
   
     const memorizedEvents = useMemo(() => events, [events])
@@ -35,12 +34,11 @@ const ConversationList = ({ user, follow, listRef, events, selectionMode, highLi
             <ListItemMessage 
                 item={item} index={index} 
                 focusIndex={highLigthIndex.current} items={events} 
-                user={user} follow={follow} selectionMode={selectionMode} 
-                selectedItems={selectedItems} setReplyEvent={setReplyEvent} 
-                focusReply={focusEvent}
+                user={user} follow={follow} selectedItems={selectedItems} 
+                setReplyEvent={setReplyEvent} focusReply={focusEvent}
             />
         ), [
-        highLigthIndex, events, user, follow, selectionMode, selectedItems, 
+        highLigthIndex, events, user, follow, selectedItems, 
         setReplyEvent, focusEvent 
     ]);
 
@@ -48,9 +46,6 @@ const ConversationList = ({ user, follow, listRef, events, selectionMode, highLi
         <FlatList inverted
             ref={listRef} 
             data={memorizedEvents}
-            initialNumToRender={30}
-            maxToRenderPerBatch={30}
-            windowSize={30}
             style={styles.scrollContainer}
             showsVerticalScrollIndicator 
             renderItem={renderItem} 

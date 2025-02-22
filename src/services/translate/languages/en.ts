@@ -175,7 +175,7 @@ export default {
     "chat.empty": "You don't have any messages",
     "chat.labels.you": "You",
     "chat.labels.message": "Message",
-    "chat.labels.delete-conversations": "Deletar Conversas",
+    "chat.labels.delete-conversations": "Delete Conversations",
     "chat.unread": "Unread",
     "chat.unknown": "Unknown",
     "chat.action.markread": "Mark as read",

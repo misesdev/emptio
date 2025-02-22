@@ -3,52 +3,55 @@ import { userService } from "@/src/core/userManager"
 import { useAuth } from "@/src/providers/userProvider"
 import { NDKEvent } from "@nostr-dev-kit/ndk-mobile"
 import { User } from "@services/memory/types"
-import { ChatUser } from "@services/zustand/chats"
-import { MutableRefObject, useEffect, useRef, useState } from "react"
+import useChatStore, { ChatUser } from "@services/zustand/chats"
+import { MutableRefObject, memo, useCallback, useEffect, useRef, useState } from "react"
 import { FilterChat } from "./list"
 import { getUserName } from "@src/utils"
-import { Vibration, View, Text, TouchableOpacity, 
-    StyleSheet, Animated } from "react-native"
-import theme from "@/src/theme"
+import { Vibration, View, Text, TouchableOpacity, StyleSheet, Animated } from "react-native"
 import { ProfilePicture } from "@components/nostr/user/ProfilePicture"
-// import Animated, { interpolateColor, useAnimatedStyle, useDerivedValue, 
-//      useSharedValue } from "react-native-reanimated"
+import theme from "@/src/theme"
+import { getClipedContent } from "@src/utils"
 
 interface ListItemProps {
     user: User,
     item: ChatUser,
     filters: FilterChat[],
-    selectionMode: MutableRefObject<boolean>,
-    selectedItems: MutableRefObject<ChatUser[]>,
+    selectedItems: MutableRefObject<Set<ChatUser>>,
     handleOpenChat: (chat_id: string, user: User) => void
 }
 
 const ListItemChat = ({ item, user, filters,
-    selectionMode, selectedItems, handleOpenChat }: ListItemProps) => {
+    selectedItems, handleOpenChat }: ListItemProps) => {
 
     const { follows } = useAuth()
-    const selected = useRef(0);
+    const selected = useRef(false);
     const highlight = useRef(new Animated.Value(0)).current
     const [follow, setFollow] = useState<User|null>(null)
-    const [event, setEvent] = useState<NDKEvent>(item.lastMessage)
+    const eventRef = useRef<NDKEvent>(item.lastMessage)
+    const { toggleSelectionMode, selectionMode } = useChatStore()
 
-    useEffect(() => { loadItemData() }, [])
     useEffect(() => {
-        if(!selectionMode.current) highlight.setValue(0) 
-    }, [selectionMode.current])
+        if(!selectionMode && selected.current) {
+            selected.current = false
+            highlight.setValue(0) 
+        }
+    }, [selectionMode])
 
-    const loadItemData = async () => {
+    const loadItemData = useCallback(async () => {
+        
+        if(follow?.pubkey) return
+
         var profile = follows?.find(f => f.pubkey == item.lastMessage.pubkey)
         
-        if(!profile) {
+        if(!profile) 
             profile = filters.find(f => f.profile.pubkey == item.lastMessage.pubkey)?.profile
-        }
+        
         if(!profile) 
             profile = await userService.getProfile(item.lastMessage.pubkey)
 
-        if(event.content.includes("?iv=")) {
+        if(eventRef.current.content.includes("?iv=")) {
             const decrypted = await messageService.decryptMessage(user, item.lastMessage)
-            setEvent(decrypted)
+            eventRef.current.content = decrypted.content
         }
         
         if(!filters.find(f => f.chat_id == item.chat_id)) {
@@ -60,25 +63,26 @@ const ListItemChat = ({ item, user, filters,
             })
         }
         setFollow(profile)
-    }
+    }, [follows, follow, eventRef, filters])
 
+    useEffect(() => { 
+        loadItemData()
+    }, [loadItemData])
+    
     const handleOnPress = () => {
-        if(selectionMode.current) 
+        if(selectionMode) 
         {
-            if(!selected.current) { 
-                highlight.setValue(1)
-                selectedItems.current = [...selectedItems.current, item] 
-                selected.current = 1
+            selected.current = !selected.current
+            highlight.setValue(selected.current ? 1 : 0)
+
+            if(selected.current) { 
+                selectedItems.current.add(item) 
             } else {
-                highlight.setValue(0)
-                selectedItems.current = [
-                    ...selectedItems.current.filter(i => i.chat_id != item.chat_id)
-                ]
-                selected.current = 0
+                selectedItems.current.delete(item)
             }
 
-            if(selectedItems.current.length === 0)
-                selectionMode.current = false
+            if(selectedItems.current.size === 0)
+                toggleSelectionMode(false)
         } 
         else if(follow) {
             handleOpenChat(item.chat_id, follow)
@@ -87,12 +91,9 @@ const ListItemChat = ({ item, user, filters,
 
     const handleSelectionMode = () => {
         highlight.setValue(1)
-        selected.current = 1
-        selectionMode.current = true
-        highlight.setValue(1)
-        if (!selectedItems.current.includes(item)) {
-            selectedItems.current = [...selectedItems.current, item]; // Evita modificar diretamente a ref
-        }
+        selected.current = true
+        toggleSelectionMode(true)
+        selectedItems.current.add(item)
         Vibration.vibrate(45)
     }
 
@@ -123,13 +124,13 @@ const ListItemChat = ({ item, user, filters,
                     }
                     <View style={{ width: "100%" }}>
                         <Text style={styles.message}>
-                            {event.content.substring(0, 26).replaceAll("\n", " ")}..
+                            {getClipedContent(eventRef.current.content.replaceAll("\n", " "), 26)}
                         </Text>
                     </View>
                 </View>                    
                 <View style={{ width: "25%", overflow: "hidden", flexDirection: "row-reverse" }}>
                     <Text style={styles.dateMessage}>
-                        {new Date((event.created_at ?? 1) * 1000).toDateString()}
+                        {new Date((eventRef.current.created_at ?? 1) * 1000).toDateString()}
                     </Text>
                 </View>
                 { !!item.unreadCount && 
@@ -155,5 +156,7 @@ const styles = StyleSheet.create({
         backgroundColor: theme.colors.red, padding: 2, minWidth: 18, alignItems: "center" }
 })
 
-export default ListItemChat
+export default memo(ListItemChat, (prev, next) => {
+    return prev.item.chat_id == next.item.chat_id 
+})
 

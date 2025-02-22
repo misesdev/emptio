@@ -19,12 +19,11 @@ type Props = {
     chats?: ChatUser[],
     filters: FilterChat[],
     listRef: RefObject<FlatList>,
-    selectedItems: MutableRefObject<ChatUser[]>,
-    selectionMode: MutableRefObject<boolean>,
+    selectedItems: MutableRefObject<Set<ChatUser>>,
     handleOpenChat: (chat_id: string, user: User) => void
 }
 
-const ChatList = ({ user, chats, listRef, filters, selectionMode,
+const ChatList = ({ user, chats, listRef, filters,
     selectedItems, handleOpenChat }: Props) => {
   
     const { useTranslate } = useTranslateService()
@@ -41,14 +40,13 @@ const ChatList = ({ user, chats, listRef, filters, selectionMode,
     const renderItem = useCallback(({ item }: { item: ChatUser }) => {
         return <ListItemChat 
             item={item} user={user} filters={filters} handleOpenChat={handleOpenChat}
-            selectedItems={selectedItems} selectionMode={selectionMode}
+            selectedItems={selectedItems} 
         />
-    }, [user, filters, handleOpenChat, selectionMode, selectedItems])
+    }, [user, filters, handleOpenChat, selectedItems])
 
     return (
         <FlatList ref={listRef}
             data={memorizedChats}
-            extraData={selectionMode}
             renderItem={renderItem}
             keyExtractor={(item) => `${item.chat_id}-${item?.unreadCount??0}`}
             style={styles.chatsScroll}

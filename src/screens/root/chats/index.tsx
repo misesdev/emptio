@@ -23,24 +23,18 @@ const ChatsScreen = ({ navigation }: StackScreenProps<any>) => {
     const { user, followsEvent } = useAuth()
     const { chats, markReadChat, setChats } = useChatStore()
     const { useTranslate } = useTranslateService()
-    const selectionMode = useRef<boolean>(false)
-    const selectedItems = useRef<ChatUser[]>([])
+    const selectedItems = useRef<Set<ChatUser>>(new Set<ChatUser>())
     const filterChatsUsers = useRef<FilterChat[]>([])
     const [filteredChats, setFilteredChats] = useState(chats)
     const [filterSection, setFilterSection] = useState<ChatFilterType>("all")
-
-    useEffect(() => {
-        navigation.setOptions({
-            header: () => <HeaderChats navigation={navigation} /> 
-        })
-    }, [])
+    const { selectionMode, toggleSelectionMode } = useChatStore()
 
     useFocusEffect(
         useCallback(() => {
             const onBackPress = () => {
-                if (selectionMode.current) {
-                    selectionMode.current = false
-                    selectedItems.current = []
+                if (selectionMode) {
+                    toggleSelectionMode(false)
+                    selectedItems.current.clear()
                     return true 
                 }
                 return false 
@@ -53,9 +47,10 @@ const ChatsScreen = ({ navigation }: StackScreenProps<any>) => {
     )
 
     useEffect(() => {
+        console.log("removed chat")
         if(filterChatsUsers.current.length) {
             if(timeout.current) clearTimeout(timeout.current)
-            timeout.current = setTimeout(() => handleFilter(filterSection), 50)
+            timeout.current = setTimeout(() => handleFilter(filterSection), 10)
         }
     }, [chats, followsEvent])
 
@@ -95,15 +90,15 @@ const ChatsScreen = ({ navigation }: StackScreenProps<any>) => {
 
     const handleGroupAction = useCallback((action: ChatActionType) => {
         if(action == "cancel") { 
-            selectionMode.current = false
-            selectedItems.current = []
+            toggleSelectionMode(false)
+            selectedItems.current.clear()
         }
         if(action == "markread") {
             selectedItems.current.forEach(chat => {
                 markReadChat(chat.chat_id)
             })
-            selectionMode.current = false
-            selectedItems.current = []
+            toggleSelectionMode(false)
+            selectedItems.current.clear()
         }
         if(action == "delete") {
             showMessage({
@@ -112,12 +107,12 @@ const ChatsScreen = ({ navigation }: StackScreenProps<any>) => {
                 action: {
                     label: useTranslate("commons.delete"),
                     onPress: () => {
-                        const chat_ids = selectedItems.current.map(c => c.chat_id)
+                        toggleSelectionMode(false)
+                        selectedItems.current.clear()
+                        const chat_ids = [...selectedItems.current].map(c => c.chat_id)
                         setChats(chats.filter(c => !chat_ids.includes(c.chat_id)))
                         setTimeout(async () => await messageService.deleteChats(chat_ids), 20)
                         chat_ids.forEach(markReadChat)
-                        selectionMode.current = false
-                        selectedItems.current = []
                     }
                 }
             })
@@ -130,21 +125,20 @@ const ChatsScreen = ({ navigation }: StackScreenProps<any>) => {
 
     return (
         <View style={theme.styles.container}>
-            
+            <HeaderChats navigation={navigation} />
             <SearchBox delayTime={200} seachOnLenth={0}
                 label={useTranslate("commons.search")} onSearch={handleSearch} 
             />
-            {!selectionMode.current &&
+            {!selectionMode &&
                 <ChatFilters onFilter={handleFilter} activeSection={filterSection} />
             }
-            {selectionMode.current &&
+            {selectionMode &&
                 <ChatGroupAction onAction={handleGroupAction} />
             }
 
             <ChatList chats={filteredChats} user={user} listRef={listRef}
                 filters={filterChatsUsers.current} handleOpenChat={handleOpenChat}
                 selectedItems={selectedItems} 
-                selectionMode={selectionMode}
             />
 
             <View style={styles.rightButton}>

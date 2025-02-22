@@ -8,7 +8,6 @@ import useChatStore from '../services/zustand/chats'
 import theme from "@src/theme"
 import VideosFeed from '../screens/root/videos'
 import { tabBarStyle } from '../constants/RouteSettings'
-import { isKeyboardConnected } from 'react-native-device-info'
 
 const Tab = createBottomTabNavigator()
 
@@ -25,9 +24,9 @@ const TabRoutes = () => {
                 tabBarInactiveTintColor: theme.colors.gray,
                 //tabBarStyle: { backgroundColor: theme.colors.black, borderTopWidth: 0 },
                 tabBarStyle: tabBarStyle,
-                headerStyle: { backgroundColor: theme.colors.blue },
-                headerTitle: "",
-                tabBarHideOnKeyboard: true
+                headerStyle: { backgroundColor: theme.colors.black },
+                tabBarHideOnKeyboard: true,
+                headerTitle: ""
             }}
         >
             <Tab.Screen
@@ -43,6 +42,7 @@ const TabRoutes = () => {
                 name="orders"
                 component={FeedOrdersScreen}
                 options={{
+                    headerShown: false,
                     tabBarLabel: useTranslate("menu.orders"),
                     tabBarIcon: ({ color }) => <Ionicons name="briefcase" color={color} size={theme.icons.large} />,
                     // tabBarBadge: false
@@ -62,6 +62,7 @@ const TabRoutes = () => {
                 name="chats"
                 component={ChatsScreen}
                 options={{
+                    headerShown: false,
                     tabBarLabel: useTranslate("menu.chats"),
                     tabBarIcon: ({ color }) => <Ionicons name="chatbox" color={color} size={theme.icons.medium} />,
                     tabBarBadge: !!unreadChats.length ? unreadChats.length : undefined,

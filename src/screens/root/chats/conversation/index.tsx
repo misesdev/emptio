@@ -26,30 +26,30 @@ const ConversationChat = ({ route }: StackScreenProps<any>) => {
     const { user }= useAuth()
     const timeout:any = useRef(null)
     const listRef = useRef<FlatList>(null)
-    const selectionMode = useRef<boolean>(false)
     const selectedItems = useRef<Set<NDKEvent>>(new Set<NDKEvent>())
     const highLigthIndex = useRef<number|null>(null)
     const replyIndex = useRef<number|null>(null)
     const replyEvent = useRef<NDKEvent|null>(null)
     const { useTranslate } = useTranslateService()
-    const { markReadChat, unreadChats } = useChatStore()
+    const { markReadChat, unreadChats, removeChat } = useChatStore()
     const { follow, chat_id } = route.params as { chat_id: string, follow: User }
+    const { selectionMode, toggleSelectionMode } = useChatStore()
     const [message, setMessage] = useState<string>("")
     const [shareVisible, setShareVisible] = useState(false)
     const messagesRef = useRef<NDKEvent[]>([])
 
     useEffect(() => {
-        if(timeout.current) clearTimeout(timeout.current)
+        if(timeout.current) 
+            clearTimeout(timeout.current)
         timeout.current = setTimeout(loadMessages, 10)
-
         return () => timeout.current && clearTimeout(timeout.current)
     }, [unreadChats])
 
     useFocusEffect(
         useCallback(() => {
             const onBackPress = () => {
-                if (selectionMode.current) {
-                    selectionMode.current = false
+                if (selectionMode) {
+                    toggleSelectionMode(false)
                     selectedItems.current.clear()
                     return true 
                 }
@@ -109,17 +109,21 @@ const ConversationChat = ({ route }: StackScreenProps<any>) => {
     
     const deleteMessages = useCallback(async (onlyForMe: boolean) => {
         
+        toggleSelectionMode(false)
+        
         const events = Array.from(selectedItems.current)
 
         messageService.deleteMessages({ events, onlyForMe, user })
-        
+
         const event_ids = events.map(e => e.id) 
 
         messagesRef.current = [
             ...messagesRef.current.filter(e => !event_ids.includes(e.id))
         ]
 
-        selectionMode.current = false
+        if(!messagesRef.current.length)
+            removeChat(chat_id) 
+        
         selectedItems.current.clear()
     }, [user, selectedItems, selectionMode])
 
@@ -130,13 +134,13 @@ const ConversationChat = ({ route }: StackScreenProps<any>) => {
     const handleGroupAction = useCallback((option: MessageActionType) => {
         if(option == "delete") showDeleteOptions()
         if(option == "copy") {
+            toggleSelectionMode(false)
             copyToClipboard([...selectedItems.current].map(e => e.content).join("\n\n"))
-            selectionMode.current = false
             selectedItems.current.clear()
         }
         if(option == "foward") setShareVisible(true) 
         if(option == "cancel") {
-            selectionMode.current = false
+            toggleSelectionMode(false)
             selectedItems.current.clear()
         }
     }, [selectionMode, selectedItems])
@@ -150,7 +154,7 @@ const ConversationChat = ({ route }: StackScreenProps<any>) => {
 
             <ConversationHeader follow={follow} />
             
-            {selectionMode.current && 
+            {selectionMode && 
                 <MessageGroupAction handleAction={handleGroupAction}/>
             }
 
@@ -158,7 +162,6 @@ const ConversationChat = ({ route }: StackScreenProps<any>) => {
                 listRef={listRef} 
                 events={messagesRef.current} 
                 highLigthIndex={highLigthIndex}
-                selectionMode={selectionMode} 
                 selectedItems={selectedItems}
                 setReplyEvent={setReplyEvent}
             />
@@ -185,7 +188,7 @@ const ConversationChat = ({ route }: StackScreenProps<any>) => {
                             underlineColorAndroid={theme.colors.transparent}
                         />
                     </View> 
-                    <View style={{ width: "18%", alignItems: "center", justifyContent: "center" }}>
+                    <View style={styles.sendButtonContainer}>
                         <TouchableOpacity style={styles.sendButton} onPress={() => sendMessage(follow)} >
                             <Ionicons name="paper-plane" 
                                 size={24} color={theme.colors.white}
@@ -203,11 +206,13 @@ const ConversationChat = ({ route }: StackScreenProps<any>) => {
 }
 
 const styles = StyleSheet.create({
-    chatBoxContainer: { padding: 6, width: "100%", backgroundColor: theme.colors.transparent },
+    chatBoxContainer: { padding: 5, width: "96%", marginHorizontal: "2%", borderRadius: 10,
+        marginVertical: 4, backgroundColor: theme.input.backGround },
     chatInputContainer: { width: "82%", borderRadius: 10, paddingHorizontal: 14, 
         backgroundColor: theme.input.backGround },
-    chatInput: { color: theme.input.textColor, paddingVertical: 16, paddingHorizontal: 6 },
-    sendButton: { borderRadius: 50, padding: 12, backgroundColor: theme.colors.blue, 
+    chatInput: { color: theme.input.textColor, paddingVertical: 10, paddingHorizontal: 6 },
+    sendButtonContainer: { width: "18%", alignItems: "center", justifyContent: "center" },
+    sendButton: { borderRadius: 50, padding: 10, 
         transform: [{ rotate: "45deg" }]
     },
 })

@@ -11,6 +11,8 @@ interface ChatStore {
     chats: ChatUser[],
     unreadChats: string[],
     blackList: string[],
+    selectionMode: boolean,
+    toggleSelectionMode: (state: boolean) => void,
     addChat: (chat: ChatUser) => void,
     removeChat: (chat_id: string) => void,
     markAllRead: () => void,
@@ -22,6 +24,10 @@ const useChatStore = create<ChatStore>((set) => ({
     chats: [],
     unreadChats: [],
     blackList: [],
+    selectionMode: false,
+    toggleSelectionMode: (newer: boolean) => set({ 
+        selectionMode: newer 
+    }),
     addChat: (newer: ChatUser) => {
         newer.unreadCount = 1
         set((state) => {

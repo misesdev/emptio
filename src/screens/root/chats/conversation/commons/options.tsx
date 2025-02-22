@@ -35,11 +35,12 @@ const MessageGroupAction = ({ handleAction }: Props) => {
 }
 
 const styles = StyleSheet.create({
-    container: { position: "absolute", top: 58, zIndex: 999, width: "100%", backgroundColor: theme.colors.semitransparent,
-         flexDirection: "row-reverse" },
+    container: { position: "absolute", bottom: 100, zIndex: 99, width: "60%", marginHorizontal: "20%", 
+        borderRadius: 10, alignItems: "center", backgroundColor: theme.colors.semitransparent, 
+        flexDirection: "row-reverse", justifyContent: "center" },
     containerRow: { width: "100%", padding: 6, flexDirection: "row-reverse" },
-    section: { padding: 6, margin: 10, marginHorizontal: 5, borderRadius: 10, paddingHorizontal: 14,
-        backgroundColor: theme.colors.section },
+    section: { padding: 8, margin: 10, marginHorizontal: 5, borderRadius: 10, 
+        paddingHorizontal: 14, backgroundColor: theme.colors.section },
 })
 
 export default MessageGroupAction
