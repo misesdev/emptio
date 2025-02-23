@@ -176,6 +176,7 @@ export default {
     "chat.labels.you": "You",
     "chat.labels.message": "Message",
     "chat.labels.delete-conversations": "Delete Conversations",
+    "chat.labels.fowarded": "Forwarded",
     "chat.unread": "Unread",
     "chat.unknown": "Unknown",
     "chat.action.markread": "Mark as read",

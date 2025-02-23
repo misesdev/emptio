@@ -19,7 +19,6 @@ import { timeSeconds } from "@services/converter"
 
 interface VideoItemProps { item: NDKEvent, paused: boolean }
 const MemoizedFeedVideoViewer = memo(({ item, paused }: VideoItemProps) => {
-    console.log("render: ", item.pubkey)
     return <FeedVideoViewer event={item} paused={paused} />;
 }, (prevProps, nextProps) => {
     return prevProps.item.id === nextProps.item.id && prevProps.paused === nextProps.paused;
@@ -29,7 +28,7 @@ const VideosFeed = ({ navigation }: StackScreenProps<any>) => {
 
     const { ndk } = useNDKStore()
     const listRef = useRef<FlatList>(null)
-    const lastTimestamp = useRef<number>(timeSeconds.without(7))
+    const lastTimestamp = useRef<number>(timeSeconds.now())
     const isFetching = useRef<boolean>(false) 
     const { feedSettings, blackList } = useFeedVideosStore()
     const { useTranslate } = useTranslateService()
@@ -51,7 +50,7 @@ const VideosFeed = ({ navigation }: StackScreenProps<any>) => {
 
     useEffect(() => {
         setVideos([])
-        lastTimestamp.current = timeSeconds.without(7) 
+        lastTimestamp.current = timeSeconds.now() 
         setTimeout(fetchVideos, 10)
     }, [feedSettings])
 
@@ -61,7 +60,10 @@ const VideosFeed = ({ navigation }: StackScreenProps<any>) => {
         if(isFetching.current) return
         isFetching.current = true
         const filter: NDKFilter = {
-            since: lastTimestamp.current, "#t": feedSettings.filterTags, kinds: [1, 1063] 
+            until: lastTimestamp.current, 
+            "#t": feedSettings.filterTags,
+            limit: feedSettings.FETCH_LIMIT,
+            kinds: [1, 1063] 
         }
         const subscription = ndk.subscribe(filter, {
             cacheUsage: NDKSubscriptionCacheUsage.PARALLEL

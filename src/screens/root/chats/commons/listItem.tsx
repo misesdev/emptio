@@ -75,7 +75,7 @@ const ListItemChat = ({ item, user, filters,
             selected.current = !selected.current
             highlight.setValue(selected.current ? 1 : 0)
 
-            if(selected.current) { 
+            if(!selectedItems.current.has(item)) { 
                 selectedItems.current.add(item) 
             } else {
                 selectedItems.current.delete(item)

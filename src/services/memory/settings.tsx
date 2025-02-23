@@ -22,7 +22,7 @@ export const saveFeedVideoSettings = async (settings: FeedVideosSettings) => {
 }
 
 const defaultFeedSettings: FeedVideosSettings = { 
-    FETCH_LIMIT: 100,
+    FETCH_LIMIT: 500,
     VIDEOS_LIMIT: 50,
     filterTags: [
         "video", "meme", "memestr", "nostr", "news", "animalstr", "animal", "bitcoin"

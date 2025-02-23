@@ -19,6 +19,7 @@ import { copyToClipboard } from "@src/utils"
 import DeleteOptionsBox, { showDeleteOptions } from "./commons/delete"
 import { useFocusEffect } from "@react-navigation/native"
 import MessageShareBar from "./commons/share"
+import { timeSeconds } from "@/src/services/converter"
 
 const ConversationChat = ({ route }: StackScreenProps<any>) => {
     
@@ -86,9 +87,9 @@ const ConversationChat = ({ route }: StackScreenProps<any>) => {
             pubkey: user.pubkey??"",
             content: message,
             tags: messageTags,
-            created_at: Math.floor(Date.now() / 1000)
+            created_at: timeSeconds.now() 
         }) 
-        messageService.sendMessage(messageEvent)
+        setTimeout(() => messageService.sendMessage(messageEvent), 10)
         messagesRef.current.unshift(messageEvent)
         setReplyEvent(null)
         setMessage("")
@@ -111,24 +112,27 @@ const ConversationChat = ({ route }: StackScreenProps<any>) => {
         
         toggleSelectionMode(false)
         
-        const events = Array.from(selectedItems.current)
+        setTimeout(async () => {
+            const messages = Array.from(selectedItems.current)
+            await messageService.deleteMessages({ events: messages, onlyForMe, user })
+        })
 
-        messageService.deleteMessages({ events, onlyForMe, user })
-
-        const event_ids = events.map(e => e.id) 
+        const event_ids = Array.from(selectedItems.current).map(e => e.id) 
 
         messagesRef.current = [
             ...messagesRef.current.filter(e => !event_ids.includes(e.id))
         ]
 
-        if(!messagesRef.current.length)
-            removeChat(chat_id) 
+        if(!messagesRef.current.length) removeChat(chat_id) 
         
         selectedItems.current.clear()
     }, [user, selectedItems, selectionMode])
 
     const fowardMessages = (follow: User) => {
         console.log("send selected messages")
+
+        selectedItems.current.clear()
+        toggleSelectionMode(false)
     }
 
     const handleGroupAction = useCallback((option: MessageActionType) => {
@@ -143,7 +147,7 @@ const ConversationChat = ({ route }: StackScreenProps<any>) => {
             toggleSelectionMode(false)
             selectedItems.current.clear()
         }
-    }, [selectionMode, selectedItems])
+    }, [selectionMode, toggleSelectionMode, setShareVisible, copyToClipboard, selectedItems])
 
     return (
         <View style={{ flex: 1 }}>

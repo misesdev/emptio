@@ -19,8 +19,8 @@ import { NostrEventKinds } from "@/src/constants/Events";
 
 const LoginScreen = ({ navigation }: any) => {
 
-    const { setNdkSigner } = useNDKStore()
     const { addChat } = useChatStore()
+    const { setNdkSigner } = useNDKStore()
     const { setUser, setFollowsEvent } = useAuth()
     const { useTranslate } = useTranslateService()
     const [loading, setLoading] = useState(false)
@@ -29,8 +29,10 @@ const LoginScreen = ({ navigation }: any) => {
 
     useEffect(() => {
         checkClipboardContainsKey()
-
-        AppState.addEventListener("change", handleAppStateChange)
+        const listener = AppState.addEventListener("change", handleAppStateChange)
+        return () => {
+            listener.remove() 
+        }
     }, [])
 
     const setValidateSecretKey = (value: string) => {
@@ -45,8 +47,7 @@ const LoginScreen = ({ navigation }: any) => {
     }
 
     const handleAppStateChange = (appstate: any) => {
-        if (appstate === 'active')
-            checkClipboardContainsKey()
+        if (appstate === 'active') checkClipboardContainsKey()
     }
 
     const handlerClipboard = (key: string) => {

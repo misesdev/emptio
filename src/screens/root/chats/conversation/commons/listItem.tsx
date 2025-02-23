@@ -6,8 +6,8 @@ import { Vibration, View, Text, TouchableOpacity, StyleSheet, Animated } from "r
 import { GestureHandlerRootView, PanGestureHandler } from "react-native-gesture-handler";
 import ReplyTool from "./replyTool";
 import NoteViewer from "@components/nostr/event/NoteViewer";
+import useChatStore from "@services/zustand/chats";
 import theme from "@src/theme";
-import useChatStore from "@/src/services/zustand/chats";
 
 interface ListItemProps {
     item: NDKEvent;
@@ -79,7 +79,7 @@ const ListItemMessage = ({
             selected.current = !selected.current
             highlight.setValue(selected.current ? 1 : 0)
 
-            if(selectedItems.current.has(item)) 
+            if(!selectedItems.current.has(item)) 
                 selectedItems.current.add(item)
             else 
                 selectedItems.current.delete(item)
@@ -108,14 +108,14 @@ const ListItemMessage = ({
             toValue: 0,
             damping: 15,
             stiffness: 60,
-            useNativeDriver: true
+            useNativeDriver: false
         }).start()
     }
 
     const onGestureEvent = Animated.event(
         [{ nativeEvent: { translationX: translateX } }],
         { useNativeDriver: false }
-    );
+    )
 
     const onHandlerStateChange = (event: any) => {
         const { translationX, state } = event.nativeEvent

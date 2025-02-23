@@ -27,7 +27,7 @@ const ChatsScreen = ({ navigation }: StackScreenProps<any>) => {
     const filterChatsUsers = useRef<FilterChat[]>([])
     const [filteredChats, setFilteredChats] = useState(chats)
     const [filterSection, setFilterSection] = useState<ChatFilterType>("all")
-    const { selectionMode, toggleSelectionMode } = useChatStore()
+    const { selectionMode, toggleSelectionMode, removeChat } = useChatStore()
 
     useFocusEffect(
         useCallback(() => {
@@ -108,11 +108,11 @@ const ChatsScreen = ({ navigation }: StackScreenProps<any>) => {
                     label: useTranslate("commons.delete"),
                     onPress: () => {
                         toggleSelectionMode(false)
-                        selectedItems.current.clear()
                         const chat_ids = [...selectedItems.current].map(c => c.chat_id)
-                        setChats(chats.filter(c => !chat_ids.includes(c.chat_id)))
+                        //setChats(chats.filter(c => !chat_ids.includes(c.chat_id)))
                         setTimeout(async () => await messageService.deleteChats(chat_ids), 20)
-                        chat_ids.forEach(markReadChat)
+                        chat_ids.forEach(removeChat)
+                        selectedItems.current.clear()
                     }
                 }
             })
