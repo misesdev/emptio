@@ -15,11 +15,12 @@ import { useTranslateService } from "@src/providers/translateProvider"
 import ReplyBox from "./commons/reply"
 import useNDKStore from "@services/zustand/ndk"
 import MessageGroupAction, { MessageActionType } from "./commons/options"
-import { copyToClipboard } from "@src/utils"
+import { copyToClipboard, getUserName } from "@src/utils"
 import DeleteOptionsBox, { showDeleteOptions } from "./commons/delete"
 import { useFocusEffect } from "@react-navigation/native"
 import MessageShareBar from "./commons/share"
 import { timeSeconds } from "@/src/services/converter"
+import { pushMessage } from "@/src/services/notification"
 
 const ConversationChat = ({ route }: StackScreenProps<any>) => {
     
@@ -60,13 +61,13 @@ const ConversationChat = ({ route }: StackScreenProps<any>) => {
             const backHandler = BackHandler.addEventListener("hardwareBackPress", onBackPress)
 
             return () => backHandler.remove() 
-        }, [selectionMode, selectedItems])
+        }, [selectionMode, selectedItems.current])
     )
 
     const setReplyEvent = useCallback((event: NDKEvent|null, index: number|null=null) => {
         replyEvent.current = event
         replyIndex.current = index
-    }, [replyEvent])
+    }, [replyEvent.current])
 
     const loadMessages = useCallback(async () => {
         
@@ -97,7 +98,8 @@ const ConversationChat = ({ route }: StackScreenProps<any>) => {
 
     const focusEventOnList = useCallback((event: NDKEvent|null) => {
         try {
-            if(event) {
+            if(event) 
+            {
                 const index = messagesRef.current.findIndex(e => e.id == event.id)
                 if(index != -1) {
                     listRef.current?.scrollToIndex({ viewPosition: .5, animated: true, index })
@@ -106,7 +108,7 @@ const ConversationChat = ({ route }: StackScreenProps<any>) => {
                 }
             }
         } catch {}
-    }, [messagesRef, highLigthIndex, listRef])
+    }, [messagesRef.current, highLigthIndex.current, listRef.current])
     
     const deleteMessages = useCallback(async (onlyForMe: boolean) => {
         
@@ -115,6 +117,7 @@ const ConversationChat = ({ route }: StackScreenProps<any>) => {
         setTimeout(async () => {
             const messages = Array.from(selectedItems.current)
             await messageService.deleteMessages({ events: messages, onlyForMe, user })
+            selectedItems.current.clear()
         })
 
         const event_ids = Array.from(selectedItems.current).map(e => e.id) 
@@ -125,12 +128,19 @@ const ConversationChat = ({ route }: StackScreenProps<any>) => {
 
         if(!messagesRef.current.length) removeChat(chat_id) 
         
-        selectedItems.current.clear()
-    }, [user, selectedItems, selectionMode])
+    }, [user, selectedItems.current, selectionMode])
 
     const fowardMessages = (follow: User) => {
-        console.log("send selected messages")
-
+        setShareVisible(false)
+        selectedItems.current.forEach(event => {
+            messageService.sendMessage({ 
+                user, 
+                follow, 
+                message: event.content, 
+                forward: true 
+            })
+        })
+        pushMessage(`${useTranslate("feed.videos.shared-for")} ${getUserName(follow, 20)}`)
         selectedItems.current.clear()
         toggleSelectionMode(false)
     }
@@ -139,15 +149,16 @@ const ConversationChat = ({ route }: StackScreenProps<any>) => {
         if(option == "delete") showDeleteOptions()
         if(option == "copy") {
             toggleSelectionMode(false)
-            copyToClipboard([...selectedItems.current].map(e => e.content).join("\n\n"))
+            copyToClipboard([...selectedItems.current].map(e => e.content).reverse().join("\n\n"))
             selectedItems.current.clear()
         }
-        if(option == "foward") setShareVisible(true) 
+        if(option == "forward") setShareVisible(true) 
         if(option == "cancel") {
             toggleSelectionMode(false)
             selectedItems.current.clear()
         }
-    }, [selectionMode, toggleSelectionMode, setShareVisible, copyToClipboard, selectedItems])
+    }, [selectionMode, toggleSelectionMode, setShareVisible, 
+            copyToClipboard, selectedItems.current])
 
     return (
         <View style={{ flex: 1 }}>

@@ -146,7 +146,7 @@ const ListItemChat = ({ item, user, filters,
 }
 
 const styles = StyleSheet.create({
-    chatContainer: { width: "100%", padding: 10, marginVertical: 2, borderRadius: 10 },
+    chatContainer: { width: "100%", padding: 10, marginVertical: 2 },
     chatRow: { paddingVertical: 5, flexDirection: "row" },
     profile: { width: 50, height: 50, borderRadius: 50, borderWidth: 2, overflow: "hidden" },
     profileName: { fontSize: 16, fontWeight: "500", color: theme.colors.white, paddingHorizontal: 5 },

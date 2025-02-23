@@ -57,6 +57,7 @@ export type TranslateWords = "initial.message"
     | "commons.filters"
     | "commons.cancel"
     | "commons.details"
+    | "commons.invite"
 
     | "labels.all"
     | "labels.username"

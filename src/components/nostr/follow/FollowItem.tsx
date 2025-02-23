@@ -11,6 +11,7 @@ type UserItemProps = {
     follow: User,
     toOpen?: boolean,
     toSend?: boolean,
+    toInvite?: boolean,
     toView?: boolean,
     toFollow?: boolean,
     toManage?: boolean,
@@ -19,7 +20,8 @@ type UserItemProps = {
 }
 
 export const FollowItem = memo(({ follow, handleClickFollow, toSend=false, toView=false,
-    toFollow=false, isFriend=false, toOpen=false, toManage=false }: UserItemProps) => {
+    toFollow=false, isFriend=false, toOpen=false, toManage=false, toInvite=false
+}: UserItemProps) => {
 
     const { useTranslate } = useTranslateService()
 
@@ -40,7 +42,7 @@ export const FollowItem = memo(({ follow, handleClickFollow, toSend=false, toVie
                     </Text>
                 }
             </View>
-            <View style={{ width: "60%", minHeight: 70 }}>
+            <View style={{ width: "56%", minHeight: 70 }}>
                 <View style={{ width: "100%", flexDirection: "row" }}>
                     <Text style={styles.userName}>
                         {getUserName(follow, 22)}
@@ -52,14 +54,14 @@ export const FollowItem = memo(({ follow, handleClickFollow, toSend=false, toVie
                     </Text>
                 </View>
             </View>    
-            <View style={{ width: "24%", alignItems: "center", justifyContent: "center" }}>
+            <View style={{ width: "28%", alignItems: "center", paddingVertical: 10 }}>
                 <TouchableOpacity 
                     style={{ padding: 8, paddingHorizontal: 18, borderRadius: 10,
                         backgroundColor: theme.colors.section 
                     }}
                     onPress={() => handleClickFollow(follow)} 
                 >
-                    <Text style={{fontWeight: "500", color: theme.colors.white}}>
+                    <Text style={{ fontSize: 12, fontWeight: "500", color: theme.colors.white }}>
                         {(toManage && isFriend) && useTranslate("commons.remove")} 
                         {(toManage && !isFriend) && useTranslate("commons.add")} 
                         {(toFollow && isFriend) && useTranslate("commons.unfollow")} 
@@ -67,6 +69,7 @@ export const FollowItem = memo(({ follow, handleClickFollow, toSend=false, toVie
                         {toView && useTranslate("commons.details")} 
                         {toOpen && useTranslate("commons.open")} 
                         {toSend && useTranslate("commons.send")} 
+                        {toInvite && useTranslate("commons.invite")} 
                     </Text>
                 </TouchableOpacity> 
             </View>

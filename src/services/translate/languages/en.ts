@@ -53,6 +53,7 @@ export default {
     "commons.filters": "Filters",
     "commons.cancel": "Cancel",
     "commons.details": "Details",
+    "commons.invite": "Invite",
 
     "labels.all": "All",
     "labels.friends": "Friends",

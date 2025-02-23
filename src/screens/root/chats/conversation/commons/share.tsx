@@ -1,14 +1,9 @@
 
-import { NDKEvent } from "@nostr-dev-kit/ndk-mobile"
 import { Modal, StyleSheet, View, Text, TouchableOpacity } from "react-native"
-import { FollowList } from "@/src/components/nostr/follow/FollowList"
-import { User } from "@/src/services/memory/types"
-import { useTranslateService } from "@/src/providers/translateProvider"
-import { messageService } from "@/src/core/messageManager"
-import { useAuth } from "@/src/providers/userProvider"
-import { pushMessage } from "@/src/services/notification"
-import { getUserName } from "@/src/utils"
-import theme from "@/src/theme"
+import { FollowList } from "@components/nostr/follow/FollowList"
+import { useTranslateService } from "@src/providers/translateProvider"
+import { User } from "@services/memory/types"
+import theme from "@src/theme"
 
 type ChatProps = {
     visible: boolean,
@@ -34,12 +29,10 @@ const MessageShareBar = ({ visible, setVisible, sendMessages }: ChatProps) => {
                         </TouchableOpacity>
                     </View>
 
-                    {visible && 
-                        <FollowList searchable toSend 
-                            searchTimout={200}
-                            onPressFollow={sendMessages} 
-                        />
-                    }
+                    <FollowList searchable toSend 
+                        searchTimout={200}
+                        onPressFollow={sendMessages} 
+                    />
                 </View>
             </View>
         </Modal>
@@ -49,7 +42,7 @@ const MessageShareBar = ({ visible, setVisible, sendMessages }: ChatProps) => {
 const styles = StyleSheet.create({
     overlayer: { flex: 1, justifyContent: "flex-end", backgroundColor: theme.colors.transparent },
     modalContainer: {
-        height: "70%", // Ocupa 70% da tela
+        height: "85%",
         backgroundColor: theme.colors.semitransparentdark,
         borderTopLeftRadius: 10,
         borderTopRightRadius: 10,

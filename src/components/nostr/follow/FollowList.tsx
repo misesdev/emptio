@@ -1,7 +1,7 @@
 import { FlatList, View } from "react-native"
 import { useAuth } from "@src/providers/userProvider"
 import { User } from "@services/memory/types"
-import { memo, useCallback, useEffect, useMemo, useRef, useState } from "react"
+import { memo, useCallback, useMemo, useRef, useState } from "react"
 import { walletService } from "@src/core/walletManager"
 import { FollowItem } from "./FollowItem"
 import theme from "@src/theme"
@@ -13,6 +13,7 @@ type FriendListProps = {
     toSend?: boolean,
     toOpen?: boolean,
     toView?: boolean,
+    toInvite?: boolean,
     toFollow?: boolean,
     toPayment?: boolean,
     searchable?: boolean,
@@ -21,7 +22,8 @@ type FriendListProps = {
 }
 
 export const FollowList = ({ onPressFollow, toPayment=false, searchable, toView=false, 
-    searchTimout=200, toSend=false, toFollow=false, toOpen=false }: FriendListProps) => {
+    searchTimout=200, toSend=false, toFollow=false, toOpen=false, toInvite=false
+}: FriendListProps) => {
 
     const { follows } = useAuth()
     const listRef = useRef<FlatList>(null)
@@ -48,7 +50,8 @@ export const FollowList = ({ onPressFollow, toPayment=false, searchable, toView=
 
     const ListItem = memo(({ item }: { item: User }) => (
         <FollowItem isFriend follow={item} toFollow={toFollow} toView={toView}
-            toOpen={toOpen} toSend={toSend} handleClickFollow={handleClickFollow} 
+            toOpen={toOpen} toSend={toSend} toInvite={toInvite}
+            handleClickFollow={handleClickFollow} 
         />
     ))
 

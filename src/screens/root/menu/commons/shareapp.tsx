@@ -2,13 +2,12 @@
 import { Modal, StyleSheet, View, Text, TouchableOpacity } from "react-native"
 import { FollowList } from "@components/nostr/follow/FollowList"
 import { User } from "@services/memory/types"
-import { SearchBox } from "@components/form/SearchBox"
 import { useTranslateService } from "@src/providers/translateProvider"
-import { useAuth } from "@src/providers/userProvider"
 import { pushMessage } from "@services/notification"
 import { getUserName } from "@src/utils"
-import { useState } from "react"
 import theme from "@src/theme"
+import { messageService } from "@/src/core/messageManager"
+import { useAuth } from "@/src/providers/userProvider"
 
 type ChatProps = {
     visible: boolean,
@@ -16,6 +15,7 @@ type ChatProps = {
 }
 const AppShareBar = ({ visible, setVisible }: ChatProps) => {
 
+    const { user } = useAuth()
     const { useTranslate } = useTranslateService()
 
     const handleSend = (follow: User) => {
@@ -42,7 +42,7 @@ const AppShareBar = ({ visible, setVisible }: ChatProps) => {
                     </View>
 
                     {visible && 
-                        <FollowList searchable toSend 
+                        <FollowList searchable toInvite 
                             searchTimout={50}
                             onPressFollow={handleSend} 
                         />

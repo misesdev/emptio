@@ -116,13 +116,10 @@ const styles = StyleSheet.create({
     tagitem: { color:  theme.colors.white, fontWeight: "500" },
     tagicon: { margin: 4 },
 
-    closebutton: { position: "absolute", width: "100%", paddingHorizontal: 24, bottom: 10 },
-    header: {
-        flexDirection: "row",
-        justifyContent: "space-between",
-        alignItems: "center",
-        marginBottom: 10,
-        paddingHorizontal: 10
+    closebutton: { position: "absolute", width: "100%", alignItems: "center",
+        paddingHorizontal: 20, bottom: 10 },
+    header: { flexDirection: "row", justifyContent: "space-between", alignItems: "center",
+        marginBottom: 10, paddingHorizontal: 10
     },
     headerText: { fontSize: 18, fontWeight: "bold", color: theme.colors.white },
     closeButton: { fontSize: 22, color: "#555" },

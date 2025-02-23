@@ -6,7 +6,7 @@ import { User } from "@services/memory/types"
 import { getPubkeyFromTags } from "@services/nostr/events"
 import { ChatUser } from "@services/zustand/chats"
 import useNDKStore from "@services/zustand/ndk"
-import { NDKEvent } from "@nostr-dev-kit/ndk-mobile"
+import { NDKEvent, NDKTag } from "@nostr-dev-kit/ndk-mobile"
 import { nip04 } from "nostr-tools"
 
 const listMessages = async (chat_id: string) : Promise<NDKEvent[]> => {
@@ -76,10 +76,11 @@ const decryptMessage = async (user: User, event: NDKEvent) : Promise<NDKEvent> =
     return {...event} as NDKEvent
 }
 
-type MessageProps = {
+interface MessageProps {
     user: User, 
     follow: User,
-    message: string 
+    message: string,
+    forward?: boolean
 }
 
 const sendMessage = async (props: NDKEvent | MessageProps) : Promise<NDKEvent> => {
@@ -88,12 +89,16 @@ const sendMessage = async (props: NDKEvent | MessageProps) : Promise<NDKEvent> =
     const ndk = useNDKStore.getState().ndk
 
     if((props as MessageProps).message) {
-        const { user, follow, message } = props as MessageProps
+        const { user, follow, message, forward } = props as MessageProps
+
+        const tags: NDKTag[] = [["p", follow.pubkey ?? ""]]
+        if(forward) tags.push(["f", "forward"])
+
         event = await encryptMessage(user, follow, new NDKEvent(ndk, {
             kind: 4,
             pubkey: user.pubkey ?? "",
             content: message,
-            tags: [["p", follow.pubkey ?? ""]],
+            tags: tags,
             created_at: Math.floor(Date.now() / 1000)
         }))     
     }
