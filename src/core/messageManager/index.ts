@@ -8,6 +8,7 @@ import { ChatUser } from "@services/zustand/chats"
 import useNDKStore from "@services/zustand/ndk"
 import { NDKEvent, NDKTag } from "@nostr-dev-kit/ndk-mobile"
 import { nip04 } from "nostr-tools"
+import { timeSeconds } from "@/src/services/converter"
 
 const listMessages = async (chat_id: string) : Promise<NDKEvent[]> => {
 
@@ -99,14 +100,15 @@ const sendMessage = async (props: NDKEvent | MessageProps) : Promise<NDKEvent> =
             pubkey: user.pubkey ?? "",
             content: message,
             tags: tags,
-            created_at: Math.floor(Date.now() / 1000)
+            created_at: timeSeconds.now() 
         }))     
     }
     
-    if((props as NDKEvent).pubkey) {
+    if((props as NDKEvent).pubkey)
         event = props as NDKEvent
-    }
+    
     event?.publishReplaceable()
+
     return event
 }
 
@@ -155,15 +157,16 @@ const deleteMessages = async ({ user, events, onlyForMe = false }: DeleteEventsP
             promises.push(new Promise<void>(async (resolve) => {
                 try {
                     const deleteEvent = new NDKEvent(ndk, {
-                        pubkey: user.pubkey ?? "",
                         kind: 5,
+                        pubkey: user.pubkey ?? "",
                         content: "deleting event",
                         tags: [["e", event.id ?? ""]],
-                        created_at: Math.floor(Date.now() / 1000)
+                        created_at: timeSeconds.now()
                     })
                     await deleteEvent.publish()
                     resolve()
-                } catch { resolve() }
+                } 
+                catch { resolve() }
             }))
         })
     }

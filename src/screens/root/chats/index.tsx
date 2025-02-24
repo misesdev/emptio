@@ -47,7 +47,6 @@ const ChatsScreen = ({ navigation }: StackScreenProps<any>) => {
     )
 
     useEffect(() => {
-        console.log("removed chat")
         if(filterChatsUsers.current.length) {
             if(timeout.current) clearTimeout(timeout.current)
             timeout.current = setTimeout(() => handleFilter(filterSection), 10)

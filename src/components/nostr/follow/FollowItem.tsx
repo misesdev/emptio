@@ -50,7 +50,7 @@ export const FollowItem = memo(({ follow, handleClickFollow, toSend=false, toVie
                 </View>
                 <View style={{ flexDirection: "row", width: "100%" }}>
                     <Text style={styles.userAbout}>
-                        {getDisplayPubkey(follow.pubkey ?? "", 24)}
+                        {getDisplayPubkey(follow.pubkey ?? "", 20)}
                     </Text>
                 </View>
             </View>    

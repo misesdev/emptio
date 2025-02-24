@@ -11,7 +11,7 @@ interface OptionProps {
 const OptionGroup = ({ action, handleAction }: OptionProps) => {
     return (
         <TouchableOpacity style={styles.section} onPress={() => handleAction(action)}>
-            {action == "cancel" && <Ionicons name="arrow-undo" size={20} color={theme.colors.white}/>}
+            {action == "cancel" && <Ionicons name="close" size={20} color={theme.colors.white}/>}
             {action == "markread" && <Ionicons name="mail-open" size={20} color={theme.colors.white}/>}
             {action == "delete" && <Ionicons name="trash" size={20} color={theme.colors.white}/>}
         </TouchableOpacity>
@@ -36,7 +36,7 @@ const styles = StyleSheet.create({
     container: { width: "100%", paddingHorizontal: 14, flexDirection: "row-reverse", 
         maxHeight: 42, backgroundColor: theme.colors.semitransparent },
     section: { paddingHorizontal: 12, padding: 6, margin: 5, borderRadius: 10, 
-        backgroundColor: theme.colors.section },
+        backgroundColor: theme.colors.transparent },
 })
 
 export default ChatGroupAction

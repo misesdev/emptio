@@ -1,5 +1,5 @@
 import { Video, VideoRef } from 'react-native-video'
-import { memo, useEffect, useRef, useState } from "react"
+import { useCallback, useEffect, useRef, useState } from "react"
 import { View, StyleSheet, TouchableOpacity, Text, Dimensions } from 'react-native'
 import Ionicons from 'react-native-vector-icons/Ionicons'
 import Slider from '@react-native-community/slider'
@@ -8,6 +8,7 @@ import { NDKEvent } from '@nostr-dev-kit/ndk-mobile'
 import VideoFooter from './commons/footer'
 import theme from '@/src/theme'
 import { extractVideoUrl } from '@/src/utils'
+import { ActivityIndicator } from 'react-native-paper'
 
 type VideoProps = { 
     event: NDKEvent,
@@ -24,12 +25,17 @@ const FeedVideoViewer = ({ event, paused }: VideoProps) => {
     const [duration, setDuration] = useState<number>(0)
     const [currentTime, setCurrentTime] = useState<number>(0)
     const [error, setError] = useState<boolean>(false)
-    const [pausedVideo, setPausedVideo] = useState<boolean>(paused)
     const [mutedVideo, setMutedVideo] = useState<boolean>(false)
     const [showMuted, setShowMuted] = useState<boolean>(false)
+    const [loading, setLoading] = useState<boolean>(true)
+
+    useEffect(() => {
+        event.content = event.content.replace(url, "")
+    }, [])
 
     const onLoadVideo = (data: any) => {
         setDuration(data?.duration||0)
+        setLoading(false)
     }
 
     const onProgressVideo = (data: any) => {
@@ -43,19 +49,14 @@ const FeedVideoViewer = ({ event, paused }: VideoProps) => {
         timeout.current = setTimeout(() => {
             setShowMuted(false)
         }, 1000)
-        console.log("block:", event.pubkey)
     }
 
-    const handleSeek = (time: number) => {
+    const handleSeek = useCallback((time: number) => {
         if(videoRef.current) {
             videoRef.current.seek(time)
             setCurrentTime(time)
         }
-    }
-
-    const handleScreenShot = (state: boolean) => {
-        setPausedVideo(state)
-    }
+    }, [videoRef, setCurrentTime])
 
     return (
         <View style={[styles.contentVideo, { width: width, height: height }]}>
@@ -77,22 +78,21 @@ const FeedVideoViewer = ({ event, paused }: VideoProps) => {
                 onProgress={onProgressVideo}
             />
             <TouchableOpacity activeOpacity={1} onPress={handleMute}
-                onLongPress={() => handleScreenShot(true)}  
-                onPressOut={() => handleScreenShot(false)}
-                delayLongPress={100}
-                style={styles.controlsContainer}
+                delayLongPress={100} style={styles.controlsContainer}
             >
                 {error && 
                     <Text style={{ color: theme.colors.white }}>
                         {useTranslate("message.default_error")} 
                     </Text>
                 }
-                
+                {loading && 
+                    <ActivityIndicator size={20} color={theme.colors.white} />
+                }
                 {showMuted && 
-                    <TouchableOpacity onPress={handleMute}
-                        style={{ padding: 10, borderRadius: 10, backgroundColor: theme.colors.blueOpacity }}
-                    >
-                        <Ionicons name={mutedVideo ? "volume-mute":"volume-high"} size={34} color={theme.colors.white} />
+                    <TouchableOpacity onPress={handleMute} style={styles.mutedIndicator}>
+                        <Ionicons size={34} color={theme.colors.white}
+                            name={mutedVideo ? "volume-mute":"volume-high"}
+                        />
                     </TouchableOpacity>
                 }
 
@@ -103,7 +103,7 @@ const FeedVideoViewer = ({ event, paused }: VideoProps) => {
                         minimumValue={0}
                         value={currentTime}
                         maximumValue={duration}
-                        onSlidingComplete={handleSeek} // Busca no vídeo quando soltar o slider
+                        onSlidingComplete={handleSeek} 
                         minimumTrackTintColor={theme.colors.white}
                         maximumTrackTintColor={theme.colors.white}
                         thumbTintColor={theme.colors.white}
@@ -115,8 +115,9 @@ const FeedVideoViewer = ({ event, paused }: VideoProps) => {
 }
 
 const styles = StyleSheet.create({
-    contentVideo: { flex: 1, overflow: "hidden",  backgroundColor: theme.colors.black },
+    contentVideo: { flex: 1, backgroundColor: theme.colors.black },
     video: { flex: 1, backgroundColor: theme.colors.black },
+    mutedIndicator: { padding: 10, borderRadius: 10, backgroundColor: theme.colors.blueOpacity },
     controlsContainer: { position: "absolute", width: "100%", height: "100%", 
         alignItems: "center", justifyContent: "center" },
     controlsHeader: { position: "absolute", top: 0, padding: 10, width: "100%",

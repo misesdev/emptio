@@ -56,7 +56,6 @@ const VideoFooter = memo(({ event, url }: Props) => {
     }, [event.id, user.pubkey, ndk])
 
     const handleReact = useCallback(async () => {
-        console.log(event.pubkey)
         setReacted(prev => !prev)
         if(!reacted) {
             setTimeout(() => { 
@@ -104,33 +103,40 @@ const VideoFooter = memo(({ event, url }: Props) => {
                 </TouchableOpacity>
             </View>
             <View style={styles.profilebar}>
-                <View style={{ width: "15%", paddingHorizontal: 2 }}>
-                    <ProfilePicture user={profile} size={50} />
-                </View>
-                <View style={{ width: "52%", paddingHorizontal: 6 }}>
-                    <Text style={[styles.profileName, styles.shadow]}>
-                        {getUserName(profile, 24)}
-                    </Text>
-                    <TouchableOpacity activeOpacity={.7} 
-                        onPress={() => copyPubkey(event.pubkey)}
-                        style={{ flexDirection: "row" }}
-                    >
-                        <Text style={[styles.profilePubkey, styles.shadow]}>
-                            {getDisplayPubkey(event.pubkey ?? "", 18)}
-                        </Text>
-                        <Ionicons name="copy" size={10} style={{ padding: 5 }} color={theme.colors.white} />
-                    </TouchableOpacity>
-                </View>
-                <View style={{ width: "23%", alignItems: "flex-start" }}>
-                    {!isFriend && 
-                        <TouchableOpacity activeOpacity={.7} onPress={handleFollow} 
-                            style={styles.followbutton} 
-                        >
-                            <Text style={[{ color: theme.colors.white }, styles.shadow]}>
-                                {useTranslate("commons.follow")}
+                <View style={{ width: "90%" }}>
+                    <View style={{ width: "100%", flexDirection: "row" }}>
+                        <View style={{ width: "18%", paddingHorizontal: 2 }}>
+                            <ProfilePicture user={profile} size={50} />
+                        </View>
+                        <View style={{ width: "60%", paddingHorizontal: 6 }}>
+                            <Text style={[styles.profileName, styles.shadow]}>
+                                {getUserName(profile, 20)}
                             </Text>
-                        </TouchableOpacity>
-                    }
+                            <TouchableOpacity activeOpacity={.7} 
+                                onPress={() => copyPubkey(event.pubkey)}
+                                style={{ flexDirection: "row" }}
+                            >
+                                <Text style={[styles.profilePubkey, styles.shadow]}>
+                                    {getDisplayPubkey(event.pubkey ?? "", 18)}
+                                </Text>
+                                <Ionicons name="copy" size={10} style={{ padding: 5 }} color={theme.colors.white} />
+                            </TouchableOpacity>
+                        </View>
+                        <View style={{ width: "22%", alignItems: "flex-start" }}>
+                            {!isFriend && 
+                                <TouchableOpacity activeOpacity={.7} onPress={handleFollow} 
+                                    style={styles.followbutton} 
+                                >
+                                    <Text style={[{ color: theme.colors.white }, styles.shadow]}>
+                                        {useTranslate("commons.follow")}
+                                    </Text>
+                                </TouchableOpacity>
+                            }
+                        </View>
+                    </View>
+                    <View style={{ width: "100%" }}>
+                        <VideoDescription content={event.content} url={url} />
+                    </View>
                 </View>
                 <View style={{ width: "10%", alignItems: "center" }}>
                     <TouchableOpacity style={{ padding: 5 }}>
@@ -138,7 +144,6 @@ const VideoFooter = memo(({ event, url }: Props) => {
                     </TouchableOpacity>
                 </View>
             </View>
-            <VideoDescription content={event.content} url={url} />
             <VideoComments event={event}
                 visible={commentsVisible} 
                 setVisible={setCommentsVisible} 

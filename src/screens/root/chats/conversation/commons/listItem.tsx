@@ -148,26 +148,26 @@ const ListItemMessage = ({
 
     return (
         <GestureHandlerRootView>
-            <Animated.View 
-                style={[styles.messageContainer, { backgroundColor },
-                    { flexDirection: isUser ? "row-reverse" : "row" },
-                ]}
+            <TouchableOpacity 
+                activeOpacity={.7} 
+                onPress={handleOnPress}
+                delayLongPress={150} 
+                onLongPress={handleSelectionMode}
             >
-                <PanGestureHandler activeOffsetX={[-5,5]}
-                    onGestureEvent={onGestureEvent}
-                    onHandlerStateChange={onHandlerStateChange}
+                <Animated.View
+                    style={[styles.messageContainer, { backgroundColor },
+                        { flexDirection: isUser ? "row-reverse" : "row" },
+                    ]}
                 >
-                    <Animated.View style={[
-                        styles.contentMessage,
-                        isUser ? styles.messageSended : styles.messageReceived,
-                        { transform: [{ translateX }] } 
-                    ]}>
-                        <TouchableOpacity 
-                            activeOpacity={1} 
-                            onPress={handleOnPress}
-                            delayLongPress={150} 
-                            onLongPress={handleSelectionMode}
-                        >
+                    <PanGestureHandler activeOffsetX={[-5,5]}
+                        onGestureEvent={onGestureEvent}
+                        onHandlerStateChange={onHandlerStateChange}
+                    >
+                        <Animated.View style={[
+                            styles.contentMessage,
+                            isUser ? styles.messageSended : styles.messageReceived,
+                            { transform: [{ translateX }] } 
+                        ]}>
                             <ForwardMark event={item} label={useTranslate("chat.labels.fowarded")} />
                             <ReplyTool 
                                 user={user} 
@@ -182,10 +182,10 @@ const ListItemMessage = ({
                                     {new Date((event.created_at ?? 1) * 1000).toDateString()}
                                 </Text>
                             </View>
-                        </TouchableOpacity>
-                    </Animated.View>
-                </PanGestureHandler> 
-            </Animated.View>
+                        </Animated.View>
+                    </PanGestureHandler> 
+                </Animated.View>
+            </TouchableOpacity>
         </GestureHandlerRootView>
     )
 }

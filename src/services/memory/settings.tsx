@@ -57,7 +57,8 @@ const defaultBlackList: string[] = [
     "25646a322579d6bb264bab4481b1e302c0a7986648f96298983b459235a4c2b6",
     "d7c82cce3509f24287f8c100ba8824bcf012194f49f290f001b1cf88dd58bf19",
     "94d6e743e074937a044cfcb37c5c536c01ff17204087220d6c08cfd763e81524",
-    "c4c4def7ba88dbd0560797f4f8e2e81acab0fe5bd5380c94429ba763d46faae2"
+    "c4c4def7ba88dbd0560797f4f8e2e81acab0fe5bd5380c94429ba763d46faae2",
+    "25129977b8047f3ee1a27583449bcd0009ed513da78e75b4177ebdbb7c7695f9"
 ]
 
 export const getBlackListPubkeys = async (): Promise<Set<string>> => {
