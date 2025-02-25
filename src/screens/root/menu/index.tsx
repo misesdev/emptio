@@ -50,33 +50,36 @@ const UserMenuScreen = ({ navigation }: StackScreenProps<any>) => {
     }
 
     const handleDeleteAccount = async () => {
+        
+        const deleteAccount = async () => {
+            setLoading(true)
+            const result = await userService.signOut()
+
+            if (result.success) 
+            {
+                if(setUser) setUser({})
+                if(setWallets) setWallets([])
+                if(setFollows) setFollows([])
+                if(setFollowsEvent) setFollowsEvent({} as NostrEvent)
+                navigation.reset({ index: 0, routes: [{ name: "initial-stack" }] })
+            }
+            else if(result.message) 
+                pushMessage(result.message)
+            setLoading(false)
+        }
+
         showMessage({
             title: useTranslate("message.profile.wantleave"),
             message: useTranslate("message.profile.alertleave"),
             action: {
                 label: useTranslate("commons.exit"),
-                onPress: async () => {
-                    setLoading(true)
-                    const result = await userService.signOut()
-
-                    if (result.success) 
-                    {
-                        if(setUser) setUser({})
-                        if(setWallets) setWallets([])
-                        if(setFollows) setFollows([])
-                        if(setFollowsEvent) setFollowsEvent({} as NostrEvent)
-                        navigation.reset({ index: 0, routes: [{ name: "initial-stack" }] })
-                    }
-                    else if(result.message) 
-                        pushMessage(result.message)
-                    setLoading(false)
-                }
+                onPress: deleteAccount
             }
         })
     }
 
     if (loading)
-        return <SplashScreen message="deleting storage.." />
+        return <SplashScreen />
 
     return (
         <View style={{ flex: 1 }}>

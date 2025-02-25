@@ -13,9 +13,9 @@ import useChatStore from "@services/zustand/chats";
 import { subscribeUser } from "@services/nostr/pool";
 import Clipboard from "@react-native-clipboard/clipboard";
 import { AppState } from "react-native";
+import { getEvent } from "@services/nostr/events";
+import { NostrEventKinds } from "@src/constants/Events";
 import theme from "@src/theme";
-import { getEvent } from "@/src/services/nostr/events";
-import { NostrEventKinds } from "@/src/constants/Events";
 
 const LoginScreen = ({ navigation }: any) => {
 

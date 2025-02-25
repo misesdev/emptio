@@ -20,7 +20,7 @@ type Props = {
     url: string,
 }
 
-const VideoFooter = memo(({ event, url }: Props) => {
+const VideoFooter = ({ event, url }: Props) => {
 
     const { ndk } = useNDKStore()
     const { user, follows, followsEvent } = useAuth()
@@ -154,7 +154,7 @@ const VideoFooter = memo(({ event, url }: Props) => {
             />
         </View>
     )
-})
+}
 
 const styles = StyleSheet.create({
     controlsSliderContainer: { width: "95%", position: "absolute", paddingBottom: 4, 
@@ -176,4 +176,4 @@ const styles = StyleSheet.create({
         textShadowRadius: 6, textShadowColor: theme.colors.black, }
 })
 
-export default VideoFooter
+export default memo(VideoFooter)

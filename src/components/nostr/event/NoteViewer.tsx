@@ -1,4 +1,4 @@
-import theme from '@/src/theme';
+import theme from '@src/theme';
 import { View, StyleSheet, TouchableOpacity, Image, Text } from 'react-native';
 import ParsedText from 'react-native-parsed-text';
 import LinkPreview from './LinkPreview';
@@ -7,14 +7,14 @@ import ImagePreview from './ImagePreview';
 import EventViewer from './EventViewer';
 import { NDKEvent } from '@nostr-dev-kit/ndk-mobile';
 import Ionicons from "react-native-vector-icons/Ionicons"
-import { copyPubkey, getDisplayPubkey, getUserName, replaceContentEvent } from '@/src/utils';
+import { copyPubkey, getDisplayPubkey, getUserName, replaceContentEvent } from '@src/utils';
 import ProfileViewer from './ProfileViewer';
 import HashTagViewer from './HashTagViewer';
-import { User } from '@/src/services/memory/types';
+import { User } from '@services/memory/types';
 import { useEffect, useState } from 'react';
-import { userService } from '@/src/core/userManager';
+import { userService } from '@src/core/userManager';
 import { ProfilePicture } from '../user/ProfilePicture';
-import { useAuth } from '@/src/providers/userProvider';
+import { useAuth } from '@src/providers/userProvider';
 
 type Props = { 
     author?: User,
@@ -31,6 +31,7 @@ const NoteViewer = ({ author, showUser=true, note, videoMuted=true, videoPaused=
     const { user, follows } = useAuth()
     const [eventAuthor, setEventAutor] = useState<User>(author ?? {})
     const hashTagRegex = /#\w+/g
+    const seeMoreReex = /<seemore>/g
     const urlRegex = /(https?:\/\/[^\s]+)/g
     const nostrRegex = /(npub|nprofile|nevent|note|naddr)1[023456789acdefghjklmnpqrstuvwxyz]+/g
    

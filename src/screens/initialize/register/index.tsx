@@ -92,7 +92,8 @@ const RegisterScreen = ({ navigation }: any) => {
 const styles = StyleSheet.create({
     logo: { maxWidth: "90%", maxHeight: "26%", marginTop: -100 },
     title: { marginVertical: 10, color: theme.colors.gray, textAlign: "center", width: "85%" },
-    buttonArea: { width: '100%', position: 'absolute', justifyContent: 'center', marginBottom: 40, flexDirection: "row", bottom: 10 }
+    buttonArea: { width: '100%', position: 'absolute', justifyContent: 'center', marginBottom: 40, 
+        flexDirection: "row", bottom: 10 }
 })
 
 export default RegisterScreen

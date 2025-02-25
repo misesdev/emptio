@@ -1,6 +1,6 @@
 import NoteViewer from "@components/nostr/event/NoteViewer"
 import { NDKEvent, NDKFilter, NDKSubscriptionCacheUsage } from "@nostr-dev-kit/ndk-mobile"
-import { useCallback, useEffect, useMemo, useState } from "react"
+import { memo, useCallback, useEffect, useMemo, useState } from "react"
 import { Modal, StyleSheet, View, Text, TouchableOpacity, 
     TextInput, FlatList } from "react-native"
 import { RefreshControl } from "react-native-gesture-handler"
@@ -33,16 +33,17 @@ const VideoComments = ({ event, visible, setVisible }: ChatProps) => {
         if(visible) setTimeout(handleLoadComments, 10)
     }, [visible])
 
-    const handleLoadComments = async () => {
+    const handleLoadComments = useCallback(async () => {
         
         setRefreshing(true)
 
         const filter: NDKFilter = { 
-            kinds: [1], "#e": [event.id]
+            kinds: [1], "#e": [event.id], until: event.created_at
         }
 
         const subscription = ndk.subscribe(filter, {
-            cacheUsage: NDKSubscriptionCacheUsage.PARALLEL
+            cacheUsage: NDKSubscriptionCacheUsage.PARALLEL,
+            subId: user.pubkey,
         }) 
         
         subscription.on("event", event => { 
@@ -60,8 +61,8 @@ const VideoComments = ({ event, visible, setVisible }: ChatProps) => {
 
         setTimeout(() => {
             subscription.stop()
-        }, 500)
-    }
+        }, 300)
+    }, [user, ndk, event, setComments, setRefreshing])
 
     const handlePostComment = useCallback(async () => {
         if(!message.trim().length) return
@@ -85,8 +86,23 @@ const VideoComments = ({ event, visible, setVisible }: ChatProps) => {
 
     }, [message, user, event])
 
+    const handleReact = useCallback((event: NDKEvent) => {
+
+    }, [user])
+
     const renderItem = useCallback(({ item }: { item: NDKEvent }) => {
-        return <NoteViewer note={item} />
+        return (
+            <View style={{ width: "100%", flexDirection: "row", paddingVertical: 10 }}>
+                <View style={{ width: "90%" }}>
+                    <NoteViewer note={item} />
+                </View>
+                <View style={{ width: "10%", alignItems: "center" }}>
+                    <TouchableOpacity onPress={() => handleReact(item)}>
+                        <Ionicons name="heart" size={18} color={theme.colors.white} /> 
+                    </TouchableOpacity>
+                </View>
+            </View>
+        )
     }, [])
 
     const EmptyComponent = () => {
@@ -153,20 +169,10 @@ const VideoComments = ({ event, visible, setVisible }: ChatProps) => {
 
 const styles = StyleSheet.create({
     overlayer: { flex: 1, justifyContent: "flex-end", backgroundColor: theme.colors.transparent },
-    modalContainer: {
-        height: "70%",
-        backgroundColor: theme.colors.semitransparentdark,
-        borderTopLeftRadius: 10,
-        borderTopRightRadius: 10,
-        padding: 12,
-    },
-    header: {
-        flexDirection: "row",
-        justifyContent: "space-between",
-        alignItems: "center",
-        marginBottom: 10,
-        paddingHorizontal: 10
-    },
+    modalContainer: { height: "70%", backgroundColor: theme.colors.semitransparentdark,
+        borderTopLeftRadius: 10, borderTopRightRadius: 10, padding: 12 },
+    header: { flexDirection: "row", justifyContent: "space-between", alignItems: "center",
+        marginBottom: 10, paddingHorizontal: 10 },
     headerText: { fontSize: 18, fontWeight: "bold", color: theme.colors.white },
     closeButton: { fontSize: 22, color: "#555" },
     
@@ -182,4 +188,4 @@ const styles = StyleSheet.create({
     empty: { color: theme.colors.gray, marginTop: 200, textAlign: "center" }
 })
 
-export default VideoComments
+export default memo(VideoComments)

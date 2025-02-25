@@ -37,7 +37,7 @@ const AuthenticateScreen = ({ navigation }: any) => {
         navigation.reset({ index: 0, routes: [{ name: "core-stack" }] })
 
     if (loading)
-        return <SplashScreen message="" />
+        return <SplashScreen />
 
     return (
         <View style={theme.styles.container}>

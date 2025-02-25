@@ -29,10 +29,6 @@ const FeedVideoViewer = ({ event, paused }: VideoProps) => {
     const [showMuted, setShowMuted] = useState<boolean>(false)
     const [loading, setLoading] = useState<boolean>(true)
 
-    useEffect(() => {
-        event.content = event.content.replace(url, "")
-    }, [])
-
     const onLoadVideo = (data: any) => {
         setDuration(data?.duration||0)
         setLoading(false)

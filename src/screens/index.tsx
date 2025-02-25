@@ -69,7 +69,7 @@ const InitializeScreen = ({ navigation }: any) => {
     }
 
     if (loading)
-        return <SplashScreen message="" />
+        return <SplashScreen />
 
     return (
         <View style={theme.styles.container}>

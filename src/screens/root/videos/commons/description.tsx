@@ -3,26 +3,29 @@ import LinkPreview from "@components/nostr/event/LinkPreview"
 import ProfileViewer from "@components/nostr/event/ProfileViewer"
 import ImagePreview from "@components/nostr/event/ImagePreview"
 import { replaceContentEvent } from "@/src/utils"
-import { useCallback, useEffect, useState } from "react"
+import { memo, useCallback, useEffect, useState } from "react"
 import { StyleSheet, ScrollView, Text } from "react-native"
 import ParsedText from "react-native-parsed-text"
 import theme from "@/src/theme"
+import { useTranslateService } from "@/src/providers/translateProvider"
 
 type Props = { content: string, url: string }
 
 const VideoDescription = ({ content, url }: Props) => {
+    const seeMoreRegex = /<seemore>/g
     const urlRegex = /(https?:\/\/[^\s]+)/g
     const hashTagRegex = /#([\wáéíóúãõâêîôûäëïöüçñÀ-ÿ0-9_]+)/g
     const nostrRegex = /(npub|nprofile|nevent|note|naddr)1[023456789acdefghjklmnpqrstuvwxyz]+/g
    
+    const { useTranslate } = useTranslateService()
     const [fullcontent, setFullcontent] = useState(false)
     const [contentText, setContentText] = useState("")
     const [contentFullText, setContentFullText] = useState("")
 
     useEffect(() => {
         const text = content.replace(url,"").trim()
-        setContentText(`${text.substring(0, 30).replaceAll("\n"," ")}...`)
-        setContentFullText(text)
+        setContentText(`${text.substring(0, 30).replaceAll("\n"," ")}... <seemore>`)
+        setContentFullText(`${text} <seemore>`)
     },[])
 
     const handleSetText = useCallback(() => {
@@ -33,9 +36,9 @@ const VideoDescription = ({ content, url }: Props) => {
         return /\.(jpeg|jpg|gif|png|webp|svg)(\?.*)?$/.test(url.toLowerCase());
     }
 
-    // const isVideoUrl = (url: string): boolean => {
-    //     return /\.(mp4|webm|ogg|mov|avi|mkv|flv)(\?.*)?$/.test(url.toLowerCase());
-    // }
+    const isVideoUrl = (url: string): boolean => {
+        return /\.(mp4|webm|ogg|mov|avi|mkv|flv)(\?.*)?$/.test(url.toLowerCase());
+    }
 
     const renderLink = (matchingString: string, matches: string[]): any => {
         const url = matches[0]
@@ -58,6 +61,14 @@ const VideoDescription = ({ content, url }: Props) => {
         return <HashTagViewer hashtag={matches[0]} />
     }
 
+    const renderSeeButton = (matchingString: string, matches: string[]): any => {
+        return (
+            <Text onPress={handleSetText} style={styles.expandbutton}>
+                {fullcontent ? useTranslate("commons.seeless") : useTranslate("commons.seemore")}
+            </Text>
+        )
+    }
+
     const TextRenderComponent = ({ text }: { text: string}) => {
         return (
             <ParsedText 
@@ -67,25 +78,26 @@ const VideoDescription = ({ content, url }: Props) => {
                     pattern: nostrRegex,
                     renderText: renderNostr
                 }, {
-                        style: styles.link,
-                        pattern: hashTagRegex,
-                        renderText: renderHashTag
+                    style: styles.link,
+                    pattern: hashTagRegex,
+                    renderText: renderHashTag
                 }, {
-                        style: styles.link,
-                        pattern: urlRegex,
-                        renderText: renderLink
+                    style: styles.link,
+                    pattern: urlRegex,
+                    renderText: renderLink
+                }, {
+                    style: styles.link,
+                    pattern: seeMoreRegex,
+                    renderText: renderSeeButton
                 }]}
             >
-                {replaceContentEvent(text)}
-                <Text onPress={handleSetText} style={styles.expandbutton}>
-                    View more
-                </Text>
+                {replaceContentEvent(text)} 
             </ParsedText>
         )
     }
     
     return (
-        <ScrollView keyboardShouldPersistTaps="handled" style={styles.contentContainer}>
+        <ScrollView style={styles.contentContainer}>
             <TextRenderComponent text={fullcontent ? contentFullText:contentText} />
         </ScrollView>
     )
@@ -101,4 +113,4 @@ const styles = StyleSheet.create({
     expandbutton: { color: theme.colors.blue, paddingHorizontal: 10 }
 })
 
-export default VideoDescription
+export default memo(VideoDescription)

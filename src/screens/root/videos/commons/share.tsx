@@ -9,6 +9,7 @@ import { useAuth } from "@/src/providers/userProvider"
 import { pushMessage } from "@/src/services/notification"
 import { getUserName } from "@/src/utils"
 import theme from "@/src/theme"
+import { memo } from "react"
 
 type ChatProps = {
     event: NDKEvent,
@@ -46,12 +47,12 @@ const VideoShareBar = ({ event, visible, setVisible }: ChatProps) => {
                         </TouchableOpacity>
                     </View>
 
-                    {visible && 
+                    {/* {visible &&  */}
                         <FollowList searchable toSend 
                             searchTimout={200}
                             onPressFollow={handleSend} 
                         />
-                    }
+                    {/* } */}
                 </View>
             </View>
         </Modal>
@@ -86,4 +87,4 @@ const styles = StyleSheet.create({
     },
 })
 
-export default VideoShareBar
+export default memo(VideoShareBar)
