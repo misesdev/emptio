@@ -24,8 +24,8 @@ const WalletListItem = ({ wallet, reload, handleOpen, style }: Props) => {
     const [typeWallet, setTypeWallet] = useState<string>("")
 
     useEffect(() => { 
+        getDescriptionTypeWallet(wallet.type ?? "bitcoin").then(setTypeWallet)
         setTimeout(async () => {
-            getDescriptionTypeWallet(wallet.type ?? "bitcoin").then(setTypeWallet)
             await loadData() 
         }, 20)
     }, [reload])

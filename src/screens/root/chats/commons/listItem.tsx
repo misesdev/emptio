@@ -17,11 +17,12 @@ interface ListItemProps {
     item: ChatUser,
     filters: FilterChat[],
     selectedItems: MutableRefObject<Set<ChatUser>>,
-    handleOpenChat: (chat_id: string, user: User) => void
+    handleOpenChat: (chat_id: string, user: User) => void,
+    showProfile: (profile: User) => void
 }
 
 const ListItemChat = ({ item, user, filters,
-    selectedItems, handleOpenChat }: ListItemProps) => {
+    selectedItems, handleOpenChat, showProfile }: ListItemProps) => {
 
     const { follows } = useAuth()
     const selected = useRef(false);
@@ -111,7 +112,7 @@ const ListItemChat = ({ item, user, filters,
                 onPress={handleOnPress}
                 onLongPress={handleSelectionMode}
             >
-                <TouchableOpacity style={{ width: "15%" }}>
+                <TouchableOpacity onPress={() => showProfile(follow??{})} style={{ width: "15%" }}>
                     <ProfilePicture user={follow??{}} size={50} />
                 </TouchableOpacity>
                 <View style={{ width: "60%", overflow: "hidden" }}>

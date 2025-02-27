@@ -15,6 +15,7 @@ import ChatGroupAction, { ChatActionType } from "./commons/options"
 import { messageService } from "@/src/core/messageManager"
 import MessageBox, { showMessage } from "@/src/components/general/MessageBox"
 import { useFocusEffect } from "@react-navigation/native"
+import ProfileView, { ShowProfileView } from "./commons/profile"
 
 const ChatsScreen = ({ navigation }: StackScreenProps<any>) => {
    
@@ -108,7 +109,6 @@ const ChatsScreen = ({ navigation }: StackScreenProps<any>) => {
                     onPress: () => {
                         toggleSelectionMode(false)
                         const chat_ids = [...selectedItems.current].map(c => c.chat_id)
-                        //setChats(chats.filter(c => !chat_ids.includes(c.chat_id)))
                         setTimeout(async () => await messageService.deleteChats(chat_ids), 20)
                         chat_ids.forEach(removeChat)
                         selectedItems.current.clear()
@@ -121,6 +121,10 @@ const ChatsScreen = ({ navigation }: StackScreenProps<any>) => {
     const handleOpenChat = useCallback((chat_id: string, follow: User) => {
         navigation.navigate("conversation-chat-stack", { chat_id, follow })
     }, [navigation])
+
+    const showProfile = useCallback((profile: User) => {
+        ShowProfileView({ profile })
+    }, [])
 
     return (
         <View style={theme.styles.container}>
@@ -137,7 +141,7 @@ const ChatsScreen = ({ navigation }: StackScreenProps<any>) => {
 
             <ChatList chats={filteredChats} user={user} listRef={listRef}
                 filters={filterChatsUsers.current} handleOpenChat={handleOpenChat}
-                selectedItems={selectedItems} 
+                selectedItems={selectedItems} showProfile={showProfile} 
             />
 
             <View style={styles.rightButton}>
@@ -146,6 +150,7 @@ const ChatsScreen = ({ navigation }: StackScreenProps<any>) => {
                 </TouchableOpacity>
             </View>
             <MessageBox />
+            <ProfileView />
         </View>
     )
 }

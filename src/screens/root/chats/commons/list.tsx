@@ -20,11 +20,12 @@ type Props = {
     filters: FilterChat[],
     listRef: RefObject<FlatList>,
     selectedItems: MutableRefObject<Set<ChatUser>>,
-    handleOpenChat: (chat_id: string, user: User) => void
+    handleOpenChat: (chat_id: string, user: User) => void,
+    showProfile: (profile: User) => void
 }
 
 const ChatList = ({ user, chats, listRef, filters,
-    selectedItems, handleOpenChat }: Props) => {
+    selectedItems, handleOpenChat, showProfile }: Props) => {
   
     const { useTranslate } = useTranslateService()
     const memorizedChats = useMemo(() => chats, [chats])
@@ -40,9 +41,9 @@ const ChatList = ({ user, chats, listRef, filters,
     const renderItem = useCallback(({ item }: { item: ChatUser }) => {
         return <ListItemChat 
             item={item} user={user} filters={filters} handleOpenChat={handleOpenChat}
-            selectedItems={selectedItems} 
+            selectedItems={selectedItems} showProfile={showProfile} 
         />
-    }, [user, filters, handleOpenChat, selectedItems])
+    }, [user, filters, handleOpenChat, selectedItems, showProfile])
 
     return (
         <FlatList ref={listRef}

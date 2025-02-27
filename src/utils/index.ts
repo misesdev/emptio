@@ -46,6 +46,8 @@ export const replaceContentEvent = (content: string) => {
         .replaceAll("\nhttps", "\n\nhttps")
         .replaceAll("\nhttps", "\n\nhttps")
         .replaceAll(" https", " \n\nhttps")
+        .replaceAll(/\[([^\]]+)\]\(([^)]+)\)/g, "$1\n\n$2")
+        //.replaceAll(/\[([^\]]+)\]\((https?:\/\/[^\s)]+)\)/g, "$1\n\n$2")
 }
 
 export const getDescriptionTypeWallet = async (type: WalletType) => {
