@@ -2,9 +2,9 @@ import { SafeAreaView, TouchableOpacity, View, Text, StyleSheet, Dimensions } fr
 import { useTranslateService } from "@src/providers/translateProvider"
 import { Wallet } from "@services/memory/types"
 import WalletListItem from "./WalletListItem"
-import theme from "@src/theme"
 import { FlatList } from "react-native-gesture-handler"
-import { useEffect, useState } from "react"
+import { useCallback, useEffect, useState } from "react"
+import theme from "@src/theme"
 
 type Props = {
     wallets: Wallet[],
@@ -24,11 +24,11 @@ const WalletList = ({ wallets, navigation, reload }: Props) => {
         setWalletList([...wallets, { key: "create" }])
     }, [wallets])
 
-    const handleOpenWallet = (wallet: Wallet) => {
+    const handleOpenWallet = useCallback((wallet: Wallet) => {
         navigation.navigate("wallet-stack", { wallet })
-    }
+    }, [navigation])
 
-    const renderItem = ({ item }: { item: Wallet }) => {
+    const renderItem = useCallback(({ item }: { item: Wallet }) => {
         if(item.key === "create")
             return (
                  <View style={[styles.wallet, {width: itemWidth, marginRight: spacing, backgroundColor: theme.colors.section, padding: 5 }]}> 
@@ -46,7 +46,7 @@ const WalletList = ({ wallets, navigation, reload }: Props) => {
                 handleOpen={handleOpenWallet} 
             />
         )
-    }
+    }, [navigation, useTranslate, handleOpenWallet])
 
     return (
         <SafeAreaView style={{ width: "100%", height: 220 }}>
@@ -59,7 +59,7 @@ const WalletList = ({ wallets, navigation, reload }: Props) => {
                     paddingHorizontal: (width - itemWidth) / 2
                 }}
                 showsHorizontalScrollIndicator={false}
-                keyExtractor={(item) => item.key ?? ""}
+                keyExtractor={(item) => item.key ?? Math.random().toString()}
             />
         </SafeAreaView>
     )

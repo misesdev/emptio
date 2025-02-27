@@ -44,5 +44,6 @@ export const timeSeconds = {
     without: (days: number) => {
         return Math.floor(Date.now() / 1000) - (days * timeSeconds.day)
     },
-    now: () => Math.floor(Date.now() / 1000)
+    now: () => Math.floor(Date.now() / 1000),
+    toString: (timestamp: number) => new Date(timestamp * 1000).toLocaleString()
 }

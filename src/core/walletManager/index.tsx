@@ -13,6 +13,7 @@ import { clearDefaultWallets, deleteWallet, getWallet, getWallets,
 import { Response, trackException } from "@services/telemetry"
 import { userService } from "../userManager"
 import { Network } from "@services/bitcoin/types"
+import { timeSeconds } from "@/src/services/converter"
 
 type Props = {
     name: string,
@@ -134,8 +135,11 @@ const listTransactions = async (address: string, network: Network): Promise<Wall
     const response: WalletInfo = { balance: 0, sended: 0, received: 0, transactions: [] }
 
     const utxos: Tx[] = await getUtxos(address, network)
+    const confirmedLabel = await useTranslate("message.transaction.confirmed")
+    const notconfirmedLabel = await useTranslate("message.transaction.notconfirmed")
 
-    utxos.forEach(async (utxo) => {
+    for(let i = 0; i < utxos.length; i++) {
+        const utxo = utxos[i]
         let received = utxo.vout.reduce((acumulator, tx) => {
             if (tx.scriptpubkey_address == address)
                 return acumulator + tx.value
@@ -154,23 +158,20 @@ const listTransactions = async (address: string, network: Network): Promise<Wall
             txid: utxo.txid,
             fee: utxo.fee,
             confirmed: utxo.status.confirmed,
-            description: utxo.status.confirmed ? 
-                await useTranslate("message.transaction.confirmed") :
-                await useTranslate("message.transaction.notconfirmed"),
+            description: utxo.status.confirmed ? confirmedLabel : notconfirmedLabel,
             type: received > sended ? "received" : "sended",
             amount: received > sended ? received : sended,
-            date: utxo.status.confirmed ? 
-                new Date(utxo.status.block_time * 1000).toLocaleString() : 
-                await useTranslate("message.transaction.notconfirmed"),
-            timestamp: utxo.status.confirmed ? utxo.status.block_time : Date.now()
+            date: utxo.status.confirmed ? timeSeconds.toString(utxo.status.block_time) 
+                : notconfirmedLabel,
+            timestamp: utxo.status.confirmed ? utxo.status.block_time : timeSeconds.now() 
         }
 
         response.transactions.push(transaction)
+        response.balance += received - sended
         response.received += received
         response.sended += sended
-    })
+    }
 
-    response.balance = response.received - response.sended
     response.transactions.sort((a, b) => (b.timestamp ?? 1) - (a.timestamp ?? 1));
 
     return response

@@ -1,14 +1,14 @@
 import { walletService } from "@src/core/walletManager"
 import { formatSats, toBitcoin } from "@services/converter"
 import { Wallet } from "@services/memory/types"
-import { useTranslate } from "@services/translate"
 import { Network } from "@services/bitcoin/types"
 import { useEffect, useState } from "react"
 import { TouchableOpacity, View, Text, StyleSheet, 
     Image, ViewStyle } from "react-native"
 import { ActivityIndicator } from "react-native-paper"
-import { getDescriptionTypeWallet } from "@src/utils"
+import { getClipedContent, getDescriptionTypeWallet } from "@src/utils"
 import theme from "@src/theme"
+import { useTranslateService } from "@src/providers/translateProvider"
 
 type Props = {
     wallet: Wallet,
@@ -19,13 +19,12 @@ type Props = {
 
 const WalletListItem = ({ wallet, reload, handleOpen, style }: Props) => {
   
+    const { useTranslate } = useTranslateService()
     const [loading, setLoading] = useState<boolean>()
-    const [labelOpen, setLabelOpen] = useState<string>("")
     const [typeWallet, setTypeWallet] = useState<string>("")
 
     useEffect(() => { 
         setTimeout(async () => {
-            useTranslate("commons.open").then(setLabelOpen)
             getDescriptionTypeWallet(wallet.type ?? "bitcoin").then(setTypeWallet)
             await loadData() 
         }, 20)
@@ -49,9 +48,7 @@ const WalletListItem = ({ wallet, reload, handleOpen, style }: Props) => {
         })
     }
 
-    let balanceBTC = toBitcoin(wallet.lastBalance)
-    let balanceSats = formatSats(wallet.lastBalance)
-    let formatName = (!!wallet.name && wallet.name?.length >= 18) ? `${wallet.name?.substring(0, 17)}..` : wallet?.name
+    let formatName = getClipedContent(wallet.name??"", 18)
 
     return (
         <TouchableOpacity key={wallet.key} activeOpacity={.7} 
@@ -65,7 +62,7 @@ const WalletListItem = ({ wallet, reload, handleOpen, style }: Props) => {
             <Text style={styles.title}>{formatName}</Text>
             <View style={{ flexDirection: "row", width: "100%" }}>
                 <Text style={{ marginHorizontal: 10, marginVertical: 6, color: theme.colors.white, fontSize: 18, fontWeight: "bold" }}>
-                    {toBitcoin(wallet.lastBalance)} Sats
+                    {formatSats(wallet.lastBalance)} Sats
                 </Text>
                 { loading &&
                     <ActivityIndicator size={18} color={theme.colors.white} />    
@@ -77,17 +74,17 @@ const WalletListItem = ({ wallet, reload, handleOpen, style }: Props) => {
                 </Text>
             </View> 
             <TouchableOpacity activeOpacity={.7} 
-                style={[styles.button, { 
-                    backgroundColor: wallet.type == "bitcoin" ? theme.colors.orange : theme.colors.blue 
-                }]} onPress={() => handleOpen(wallet)}>
-                <Text style={styles.buttonText}> {labelOpen} </Text>
+                style={[styles.button, { backgroundColor: wallet.type == "bitcoin" ? 
+                    theme.colors.orange : theme.colors.blue 
+                }]} onPress={() => handleOpen(wallet)}
+            >
+                <Text style={styles.buttonText}> {useTranslate("commons.open")} </Text>
             </TouchableOpacity>
 
-            <Text style={{
-                backgroundColor:  wallet.type == "bitcoin" ? theme.colors.orange : theme.colors.blue,
-                color: theme.colors.white, margin: 10, borderRadius: 10,
-                fontSize: 10, fontWeight: "bold", paddingHorizontal: 10, paddingVertical: 4, position: "absolute", top: -18, right: 14,
-            }}>
+            <Text style={[styles.tagWallet, { backgroundColor:  wallet.type == "bitcoin" ? 
+                    theme.colors.orange : theme.colors.blue
+                }]}
+            >
                 {typeWallet}
             </Text>
         </TouchableOpacity>
@@ -102,6 +99,9 @@ const styles = StyleSheet.create({
     button: { margin: 10, maxWidth: 150, paddingVertical: 14, borderRadius: 10 },
     buttonText: { color: theme.colors.white, fontSize: 13, fontWeight: "bold", 
         textAlign: 'center', marginHorizontal: 28 },
+    tagWallet: { color: theme.colors.white, margin: 10, borderRadius: 10, fontSize: 10, 
+        fontWeight: "bold", paddingHorizontal: 10, paddingVertical: 4, position: "absolute", 
+        top: -18, right: 14 }
 })
 
 export default WalletListItem

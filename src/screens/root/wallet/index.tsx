@@ -7,12 +7,13 @@ import { walletService } from "@src/core/walletManager"
 import { useTranslateService } from "@src/providers/translateProvider"
 import { StackScreenProps } from "@react-navigation/stack"
 import { Network } from "@services/bitcoin/types"
-import { useEffect, useState } from "react"
+import { useCallback, useEffect, useState } from "react"
 import theme from "@src/theme"
+import { getWallet } from "@/src/services/memory/wallets"
 
 const WalletManagerScreen = ({ navigation, route }: StackScreenProps<any>) => {
 
-    const wallet = route?.params?.wallet as Wallet
+    const wallet = route.params?.wallet
     const { useTranslate } = useTranslateService()
     const [refreshing, setRefreshing] = useState(false)
     const [transactions, setTransactions] = useState<Transaction[]>([])
@@ -26,9 +27,7 @@ const WalletManagerScreen = ({ navigation, route }: StackScreenProps<any>) => {
                 </TouchableOpacity>
             )
         })
-        setTimeout(async () => {
-            await handleLoadTransactions()
-        }, 20)
+        setTimeout(handleLoadTransactions, 20)
     }, [])
 
     const handleLoadTransactions = async () => {
@@ -42,26 +41,27 @@ const WalletManagerScreen = ({ navigation, route }: StackScreenProps<any>) => {
             wallet.lastBalance = walletInfo.balance
             wallet.lastReceived = walletInfo.received
             wallet.lastSended = walletInfo.sended
-            setRefreshing(false)
-        }).catch(fail => {
-            console.log(fail)
+            
+            walletService.update(wallet)
+            console.log(walletInfo)
             setRefreshing(false)
         })
+        .catch(() => setRefreshing(false))
 
         await walletService.update(wallet)
     }
 
-    const openTransaction = (transaction: TransactionInfo) => {
+    const openTransaction = useCallback((transaction: TransactionInfo) => {
         navigation.navigate("wallet-transaction-stack", { wallet, transaction })
-    }
+    }, [wallet, navigation])
 
-    const showOptions = (wallet: Wallet) => {
+    const showOptions = useCallback(() => {
         navigation.navigate("wallet-settings-stack", { wallet })
-    }
+    }, [wallet, navigation])
 
     return (
         <View style={{ flex: 1 }}>
-            <WalletHeader wallet={wallet} showOptions={() => showOptions(wallet)} />
+            <WalletHeader wallet={wallet} showOptions={showOptions} />
 
             <SectionHeader
                 icon="repeat-outline"
