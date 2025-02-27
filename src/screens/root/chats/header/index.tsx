@@ -1,10 +1,10 @@
-import { StyleSheet, View, Text, TouchableOpacity, Image } from "react-native"
+import { StyleSheet, View, Text, TouchableOpacity } from "react-native"
 import { useTranslateService } from "@src/providers/translateProvider"
 import { StackNavigationProp } from "@react-navigation/stack"
-import { useAuth } from "@/src/providers/userProvider"
+import { ProfilePicture } from "@components/nostr/user/ProfilePicture"
+import { useAuth } from "@src/providers/userProvider"
 import Ionicons from "react-native-vector-icons/Ionicons"
-import theme from "@/src/theme"
-import { ProfilePicture } from "@/src/components/nostr/user/ProfilePicture"
+import theme from "@src/theme"
 
 type ScreenProps = { 
     navigation: StackNavigationProp<any> 

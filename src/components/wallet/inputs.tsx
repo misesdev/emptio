@@ -1,9 +1,8 @@
 import { StyleSheet, TextInput, View, Text, TouchableOpacity } from "react-native"
-import { useTranslate } from "@services/translate"
 import { formatSats, toNumber } from "@services/converter"
 import SelectWalletBox, { showSelectWallet } from "./WalletSelection"
+import { useTranslateService } from "@src/providers/translateProvider"
 import { Wallet } from "@services/memory/types"
-import { useEffect, useState } from "react"
 import theme from "@src/theme"
 
 type AmountBoxProps = {
@@ -18,13 +17,7 @@ type AmountBoxProps = {
 
 export const AmountBox = ({ value, placeholder, onChangeText, isValidHandle, wallet, setWallet, manageWallet = false }: AmountBoxProps) => {
 
-    const [walletTag, setWalletTag] = useState<string>("")
-    const [walletBalance, setWalletBalance] = useState<string>("")
-
-    useEffect(() => {
-        useTranslate("wallet.tag").then(setWalletTag)
-        useTranslate("wallet.subtitle.balance").then(setWalletBalance)
-    }, [])
+    const { useTranslate } = useTranslateService()
 
     const hadleValidateFormat = (text: string) => {
 
@@ -67,7 +60,7 @@ export const AmountBox = ({ value, placeholder, onChangeText, isValidHandle, wal
                 autoFocus
             />
             <Text style={styles.balance}>
-                {`${walletBalance}${formatSats(wallet.lastBalance)} sats.`}
+                {`${useTranslate("wallet.subtitle.balance")}${formatSats(wallet.lastBalance)} sats.`}
             </Text>
             
             {manageWallet &&
