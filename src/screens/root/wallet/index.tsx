@@ -5,15 +5,12 @@ import { View, ScrollView, RefreshControl, TouchableOpacity } from "react-native
 import Ionicons from 'react-native-vector-icons/Ionicons'
 import { walletService } from "@src/core/walletManager"
 import { useTranslateService } from "@src/providers/translateProvider"
+import { StackScreenProps } from "@react-navigation/stack"
 import { Network } from "@services/bitcoin/types"
 import { useEffect, useState } from "react"
 import theme from "@src/theme"
 
-type ScreenParams = {
-    params: { wallet: Wallet }
-}
-
-const WalletManagerScreen = ({ navigation, route }: any) => {
+const WalletManagerScreen = ({ navigation, route }: StackScreenProps<any>) => {
 
     const wallet = route?.params?.wallet as Wallet
     const { useTranslate } = useTranslateService()
