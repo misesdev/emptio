@@ -1,6 +1,5 @@
 import AsyncStorage from "@react-native-async-storage/async-storage"
 import { Wallet } from "./types"
-import { useTranslate } from "../translate"
 
 export const getWallets = async (): Promise<Wallet[]> => {
 
@@ -19,9 +18,6 @@ export const getWallet = async (key: string): Promise<Wallet> => {
     const wallets = await getWallets()
 
     const walletFiltered = wallets.find(x => x.key === key) ?? {}
-
-    if (!walletFiltered)
-        throw new Error(useTranslate("message.wallet.notfound"))
 
     return walletFiltered
 }

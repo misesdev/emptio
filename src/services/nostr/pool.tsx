@@ -36,6 +36,7 @@ export const pushUserData = async (user: User, pairKey: PairKey) => {
         banner: user.banner,
         zapService: user.zapService,
         website: user.website,
+        bitcoin_address: user.bitcoin_address
     }
 
     const event = { kind: 0, content: JSON.stringify(profile) }

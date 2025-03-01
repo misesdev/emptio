@@ -1,6 +1,5 @@
 import { deleteEventsByCondition, selecMessageChats, 
-    selecMessages, 
-    updateEventContent} from "@services/memory/database/events"
+    selecMessages, updateEventContent} from "@services/memory/database/events"
 import { getPairKey } from "@services/memory/pairkeys"
 import { User } from "@services/memory/types"
 import { getPubkeyFromTags } from "@services/nostr/events"
@@ -8,7 +7,7 @@ import { ChatUser } from "@services/zustand/chats"
 import useNDKStore from "@services/zustand/ndk"
 import { NDKEvent, NDKTag } from "@nostr-dev-kit/ndk-mobile"
 import { nip04 } from "nostr-tools"
-import { timeSeconds } from "@/src/services/converter"
+import { timeSeconds } from "@services/converter"
 
 const listMessages = async (chat_id: string) : Promise<NDKEvent[]> => {
 
@@ -115,7 +114,7 @@ const sendMessage = async (props: NDKEvent | MessageProps) : Promise<NDKEvent> =
 type DeleteEventProps = {
     user: User,
     event: NDKEvent,
-    onlyForMe?: boolean,
+    onlyForMe?: boolean
 }
 
 const deleteMessage = async ({ user, event, onlyForMe = false }: DeleteEventProps) => {

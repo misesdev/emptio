@@ -1,19 +1,16 @@
 import { getTransactionInfo, getUtxo, getUtxos } from "@services/bitcoin/mempool"
-import { getUser } from "@services/memory/user"
 import { useTranslate } from "@services/translate"
 import { Tx } from "@mempool/mempool.js/lib/interfaces/bitcoin/transactions"
 import { generateAddress, createTransaction, createWallet, ValidateAddress, 
     sendTransaction, importWallet, BaseWallet } from "@services/bitcoin"
 import { getRandomKey } from "@services/bitcoin/signature"
-import { deletePairKey, getPairKey, insertPairKey } from "@services/memory/pairkeys"
 import { PairKey, Transaction, TransactionInput, TransactionOutput, Wallet,
     WalletInfo, WalletType } from "@services/memory/types"
-import { clearDefaultWallets, deleteWallet, getWallet, getWallets, 
-    insertWallet, updateWallet } from "@services/memory/wallets"
 import { Response, trackException } from "@services/telemetry"
 import { userService } from "../userManager"
 import { Network } from "@services/bitcoin/types"
 import { timeSeconds } from "@/src/services/converter"
+import { storageService } from "@/src/services/memory"
 
 type Props = {
     name: string,
@@ -26,9 +23,9 @@ const create = async ({ name, type, password, wallets }: Props): Promise<Respons
     try {
         const network: Network = type == "bitcoin" ? "mainnet" : "testnet"
 
-        const walletData: BaseWallet = createWallet(password, network)
+        const base: BaseWallet = createWallet(password, network)
         
-        const bitcoinAddress = generateAddress(walletData.pairkey.publicKey, network)
+        const bitcoinAddress = generateAddress(base.pairkey.publicKey, network)
 
         const wallet: Wallet = {
             name: name,
@@ -36,19 +33,19 @@ const create = async ({ name, type, password, wallets }: Props): Promise<Respons
             lastBalance: 0,
             lastReceived: 0,
             lastSended: 0,
-            pairkey: walletData.pairkey.key,
+            pairkey: base.pairkey.key,
             key: getRandomKey(10),
             address: bitcoinAddress,
             default: wallets.length <= 0
         }
 
-        walletData.wallet = wallet
+        base.wallet = wallet
 
-        await insertPairKey(walletData.pairkey)
+        await storageService.pairkeys.add(base.pairkey)
 
-        await insertWallet(wallet)
+        await storageService.wallets.add(wallet)
 
-        return { success: true, message: "success", data: walletData }
+        return { success: true, message: "success", data: base }
     }
     catch (ex) { return trackException(ex) }
 }
@@ -82,9 +79,9 @@ const require = async ({ name, type = "bitcoin", mnemonic, password }: ImportPro
 
         base.wallet = wallet
 
-        await insertPairKey(base.pairkey)
+        await storageService.pairkeys.add(base.pairkey)
 
-        await insertWallet(wallet)
+        await storageService.wallets.add(wallet)
 
         return { success: true, message: "", data: base }
     }
@@ -96,19 +93,17 @@ const require = async ({ name, type = "bitcoin", mnemonic, password }: ImportPro
 const exclude = async (wallet: Wallet): Promise<Response<any>> => {
 
     try {
-        await deletePairKey(wallet.pairkey ?? "")
-
-        await deleteWallet(wallet.key ?? "")
-
+        storageService.pairkeys.delete(wallet.pairkey??"")
+        storageService.wallets.delete(wallet.key??"")
         if(wallet.default) 
         {
-            const wallets = await list()
+            const wallets = await storageService.wallets.list()
             if(wallets.length) 
             {
                 wallets[0].default = true
                 await update(wallets[0])
 
-                const user = await getUser()
+                const user = await storageService.user.get()
 
                 user.default_wallet = wallets[0].key
                 user.bitcoin_address = wallets[0].address
@@ -126,9 +121,9 @@ const exclude = async (wallet: Wallet): Promise<Response<any>> => {
 
 const update = async (wallet: Wallet) => {
     
-    if(wallet.default) await clearDefaults()
+    if(wallet.default) await storageService.wallets.clearDefault()
 
-    await updateWallet(wallet)
+    await storageService.wallets.update(wallet)
 }
 
 const listTransactions = async (address: string, network: Network): Promise<WalletInfo> => {
@@ -182,9 +177,9 @@ type TransactionProps = { amount: number, destination: string, walletKey: string
 const transaction = {
     get: async ({ amount, destination, walletKey }: TransactionProps): Promise<Response<any>> => {
 
-        const wallet = await getWallet(walletKey)
+        const wallet = await storageService.wallets.get(walletKey)
 
-        const pairkey = await getPairKey(wallet.pairkey ?? "")
+        const pairkey = await storageService.pairkeys.get(wallet.pairkey??"")
 
         const transaction = await createTransaction({
             amount,
@@ -204,10 +199,9 @@ const address = {
 }
 
 const clearDefaults = async () => {
-    await clearDefaultWallets()
+    await storageService.wallets.clearDefault()
 }
 
-const list = async (): Promise<Wallet[]> => await getWallets()
 
 export const walletService = {
     create,
@@ -216,7 +210,7 @@ export const walletService = {
     delete: exclude,
     clearDefaults,
     listTransactions,
-    list,
+    list: storageService.wallets.list,
     address,
     transaction
 }

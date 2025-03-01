@@ -1,17 +1,16 @@
-import { clearStorage } from "@services/memory"
+import { storageService } from "@services/memory"
 import { createPairKeys, getHexKeys } from "@services/nostr"
 import { getUserData, pushUserData } from "@services/nostr/pool"
 import { getEvent, listenerEvents, publishEvent, NostrEvent } from "@services/nostr/events"
 import { NDKEvent, NDKFilter, NDKSubscriptionCacheUsage } from "@nostr-dev-kit/ndk-mobile"
 import { Response, trackException } from "@services/telemetry"
-import { getUser, insertUpdateUser } from "@services/memory/user"
-import { getPairKey, insertPairKey } from "@services/memory/pairkeys"
 import { clearEvents } from "@services/memory/database/events"
 import { NostrEventKinds } from "@/src/constants/Events"
 import { PairKey, User } from "@services/memory/types"
 import useNDKStore from "@services/zustand/ndk"
 import { nip19 } from "nostr-tools"
-import useChatStore from "@/src/services/zustand/chats"
+import useChatStore from "@services/zustand/chats"
+import { timeSeconds } from "@/src/services/converter"
 
 type SignUpProps = { 
     userName: string, 
@@ -30,13 +29,13 @@ const signUp = async ({ userName, setUser }: SignUpProps): Promise<Response<User
             keychanges: pairKey.key,
         }
         
-        await insertPairKey(pairKey)
+        await storageService.pairkeys.add(pairKey)
         
         await useNDKStore.getState().setNdkSigner(profile)
        
         await pushUserData(profile, pairKey)
 
-        await insertUpdateUser(profile)
+        await storageService.user.save(profile)
         
         if (setUser) setUser(profile)
 
@@ -61,9 +60,9 @@ const signIn = async ({ secretKey, setUser }: SignProps) : Promise<Response<User
 
         userData.keychanges = pairKey.key
 
-        await insertUpdateUser(userData)
+        await storageService.user.save(userData)
 
-        await insertPairKey(pairKey)
+        await storageService.pairkeys.add(pairKey)
 
         if (setUser) setUser(userData)
         
@@ -102,7 +101,7 @@ const updateProfile = async ({ user, setUser, upNostr = false }: UpdateProfilePr
             user.bitcoin_address = userData?.bitcoin_address
         }
     } else {
-        const pairkey = await getPairKey(user.keychanges ?? "")
+        const pairkey = await storageService.pairkeys.get(user.keychanges ?? "")
         
         await publishEvent({ 
             kind: NostrEventKinds.metadata,
@@ -110,7 +109,7 @@ const updateProfile = async ({ user, setUser, upNostr = false }: UpdateProfilePr
         }, pairkey)
     }
 
-    await insertUpdateUser(user)
+    await storageService.user.save(user)
 
     if (setUser)
         setUser(user)
@@ -119,7 +118,7 @@ const updateProfile = async ({ user, setUser, upNostr = false }: UpdateProfilePr
 const signOut = async (): Promise<Response<any>> => {
     try {
         await clearEvents()
-        await clearStorage()
+        await storageService.clear()
         useChatStore.getState().setChats([])
         return { success: true }
     }
@@ -134,9 +133,9 @@ type loggedProps = {
 
 const isLogged = async ({ setUser }: loggedProps) : Promise<Response<User|null>> => {
     try {
-        const user: User = await getUser()
+        const user: User = await storageService.user.get()
 
-        const pairKey = await getPairKey(user.keychanges ?? "")
+        const pairKey = await storageService.pairkeys.get(user.keychanges ?? "")
 
         user.pubkey = pairKey.publicKey
 
@@ -180,7 +179,7 @@ type UpdateFollowsProps = {
 
 const updateFollows = async ({ user, follows } : UpdateFollowsProps) => {
     try {
-        const pairKey = await getPairKey(user.keychanges ?? "")
+        const pairKey = await storageService.pairkeys.get(user.keychanges ?? "")
 
         if(follows)
             await publishEvent(follows, pairKey, true)
@@ -196,7 +195,7 @@ export const createFollowEvent = (user: User, friends: [string[]]) : NostrEvent 
         pubkey: user.pubkey ?? "",
         kind: NostrEventKinds.followList,
         content: JSON.stringify(ndk.explicitRelayUrls),
-        created_at: Date.now(),
+        created_at: timeSeconds.now(),
         tags: friends
     }
 }
@@ -279,7 +278,7 @@ export const userService = {
     signIn,
     signOut,
     isLogged,
-    getUser: getUser,
+    getUser: storageService.user.get,
     getProfile,
     updateProfile,
     convertPubkey,
