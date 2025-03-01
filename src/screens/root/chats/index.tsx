@@ -124,7 +124,7 @@ const ChatsScreen = ({ navigation }: StackScreenProps<any>) => {
 
     const showProfile = useCallback((profile: User) => {
         ShowProfileView({ profile })
-    }, [])
+    }, [ShowProfileView])
 
     return (
         <View style={theme.styles.container}>

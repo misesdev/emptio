@@ -2,7 +2,7 @@ import { StyleSheet, FlatList } from "react-native"
 import { User } from "@services/memory/types"
 import { NDKEvent } from "@nostr-dev-kit/ndk"
 import { MutableRefObject, RefObject, useCallback, useMemo } from "react"
-import theme from "@/src/theme"
+import theme from "@src/theme"
 import ListItemMessage from "./listItem"
     
 type Props = {

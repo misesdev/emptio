@@ -23,7 +23,8 @@ const SendScreen = ({ navigation, route }: StackScreenProps<any>) => {
         navigation.setOptions({
             header: () => <HeaderScreen 
                 title={useTranslate("wallet.title.send")} 
-                onClose={() => navigation.goBack()} />
+                onClose={() => navigation.goBack()}
+            />
         })
     }, [])
 

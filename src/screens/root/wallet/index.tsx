@@ -1,6 +1,6 @@
 import { WalletButtons, WalletHeader, WalletTransactions } from "@components/wallet"
 import { SectionHeader } from "@components/general/section/headers"
-import { Transaction, TransactionInfo, Wallet } from "@services/memory/types"
+import { Transaction, TransactionInfo } from "@services/memory/types"
 import { View, ScrollView, RefreshControl, TouchableOpacity } from "react-native"
 import Ionicons from 'react-native-vector-icons/Ionicons'
 import { walletService } from "@src/core/walletManager"
@@ -9,7 +9,6 @@ import { StackScreenProps } from "@react-navigation/stack"
 import { Network } from "@services/bitcoin/types"
 import { useCallback, useEffect, useState } from "react"
 import theme from "@src/theme"
-import { getWallet } from "@/src/services/memory/wallets"
 
 const WalletManagerScreen = ({ navigation, route }: StackScreenProps<any>) => {
 
@@ -41,9 +40,7 @@ const WalletManagerScreen = ({ navigation, route }: StackScreenProps<any>) => {
             wallet.lastBalance = walletInfo.balance
             wallet.lastReceived = walletInfo.received
             wallet.lastSended = walletInfo.sended
-            
             walletService.update(wallet)
-            console.log(walletInfo)
             setRefreshing(false)
         })
         .catch(() => setRefreshing(false))

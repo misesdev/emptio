@@ -1,9 +1,11 @@
 import { StyleSheet, TextInput, View, Text, TouchableOpacity } from "react-native"
 import { formatSats, toNumber } from "@services/converter"
+import Ionicons from "react-native-vector-icons/Ionicons"
 import SelectWalletBox, { showSelectWallet } from "./WalletSelection"
 import { useTranslateService } from "@src/providers/translateProvider"
 import { Wallet } from "@services/memory/types"
 import theme from "@src/theme"
+import { getClipedContent } from "@/src/utils"
 
 type AmountBoxProps = {
     value?: string | "",
@@ -43,10 +45,6 @@ export const AmountBox = ({ value, placeholder, onChangeText, isValidHandle, wal
             isValidHandle(textNumbers >= (wallet?.lastBalance ?? 0))
     }
 
-    const walletName = () => {
-        return (!!wallet.name && wallet.name?.length >= 15) ? `${wallet.name?.substring(0, 13)}..` : wallet?.name
-    }
-
     return (
         <View style={styles.container}>
             <TextInput
@@ -66,10 +64,10 @@ export const AmountBox = ({ value, placeholder, onChangeText, isValidHandle, wal
             {manageWallet &&
                 <View style={{ width: "100%", flexDirection: "row" }}>
                     <TouchableOpacity style={styles.wallets} onPress={showSelectWallet}>
-                        <Text style={{ fontWeight: "500", color: theme.colors.white }}
-                        >
-                            {walletName()} 
+                        <Text style={{ fontSize: 16, fontWeight: "600", color: theme.colors.white }}>
+                            {getClipedContent(wallet.name??"", 15)}
                         </Text>
+                        <Ionicons style={{ marginHorizontal: 2 }} size={20} name="chevron-forward" color={theme.colors.white} />
                     </TouchableOpacity>
                 </View>
             }
@@ -85,6 +83,7 @@ const styles = StyleSheet.create({
         margin: 10 },
     amount: { padding: 10, fontSize: 32, fontWeight: "bold", borderBottomWidth: 1, 
         borderBottomColor: theme.colors.gray, color: theme.colors.white },
-    wallets: { borderRadius: 10, backgroundColor: theme.colors.transparent }, 
+    wallets: { borderRadius: 10, backgroundColor: theme.colors.transparent, 
+        flexDirection: "row" }, 
     balance: { fontSize: 14, marginVertical: 10, color: theme.colors.gray }
 })

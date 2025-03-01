@@ -7,9 +7,9 @@ import { User } from "@services/memory/types"
 import { copyPubkey, getDisplayPubkey, getUserName } from "@src/utils"
 import ContentViewer from "@components/nostr/event/ContentViewer"
 import { useAuth } from "@src/providers/userProvider"
-import theme from "@src/theme"
-import { useState } from "react"
+import { useCallback, useState } from "react"
 import { userService } from "@src/core/userManager"
+import theme from "@src/theme"
 
 interface ProfileViewProps { profile: User }
 
@@ -24,13 +24,13 @@ const ProfileView = () => {
     const [pictureError, setPictureError] = useState(false)
     const [isFriend, setIsFriend] = useState(false)
 
-    showProfileFunction = ({ profile }: ProfileViewProps) => {
+    showProfileFunction = useCallback(({ profile }: ProfileViewProps) => {
         setIsFriend(!!follows.find(f => f.pubkey == profile.pubkey))
         setProfile(profile)
         setVisible(true)
-    }
+    }, [follows, setIsFriend, setProfile, setVisible])
 
-    const handleFollow = async () => {
+    const handleFollow = useCallback(async () => {
         setIsFriend(prev => !prev)
         setTimeout(async () => {
             if(!follows.find(f => f.pubkey == profile.pubkey)) {    
@@ -47,7 +47,7 @@ const ProfileView = () => {
                 user
             })
         }, 20)
-    }
+    }, [profile, follows, followsEvent, setFollows, userService])
 
     return (
         <Modal visible={visible} transparent animationType="slide"

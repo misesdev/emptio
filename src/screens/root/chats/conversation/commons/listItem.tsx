@@ -199,5 +199,5 @@ const styles = StyleSheet.create({
 })
 
 export default memo(ListItemMessage, (prev, next) => {
-    return prev.item.id === next.item.id && prev.index !== next.focusIndex
+    return prev.item.id === next.item.id && prev.index === next.focusIndex
 })

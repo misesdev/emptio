@@ -1,11 +1,12 @@
 
-import { useState } from "react"
+import { useCallback, useState } from "react"
 import { Modal, StyleSheet, Text, TouchableOpacity, View } from "react-native"
 import Ionicons from 'react-native-vector-icons/Ionicons'
 import { Wallet } from "@services/memory/types"
 import { useAuth } from "@src/providers/userProvider"
 import { formatSats } from "@services/converter"
 import theme from "@src/theme"
+import { getClipedContent } from "@/src/utils"
 
 var showWalletsFunction: () => void
 
@@ -19,9 +20,9 @@ const SelectWalletBox = ({ wallet, setWallet }: Props) => {
     const { wallets } = useAuth()
     const [visible, setVisible] = useState(false)
 
-    showWalletsFunction = () => {
+    showWalletsFunction = useCallback(() => {
         setVisible(true)
-    }
+    }, [setVisible])
 
     const changeWallet = (item: Wallet) => {
         if (setWallet)
@@ -33,12 +34,10 @@ const SelectWalletBox = ({ wallet, setWallet }: Props) => {
 
         var selected = item.key == wallet.key
 
-        var formatName = (!!item.name && item.name?.length >= 15) ? `${item.name?.substring(0, 13)}..` : item?.name
-
         return (
             <TouchableOpacity key={key} onPress={() => changeWallet(item)} style={[styles.option]} >
                 <View style={{ width: "50%", height: "100%", alignItems: "center" }}>
-                    <Text style={styles.labelOption}>{formatName}</Text>
+                    <Text style={styles.labelOption}>{getClipedContent(item.name??"", 15)}</Text>
                 </View>
                 <View style={{ width: "40%", height: "100%", alignItems: "center" }}>
                     <Text style={styles.labelAmount}>{formatSats(item.lastBalance)} sats</Text>
