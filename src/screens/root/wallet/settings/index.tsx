@@ -1,22 +1,20 @@
 import { useAuth } from "@src/providers/userProvider"
 import { ScrollView, StyleSheet, View } from "react-native"
 import { ButtonLink, ButtonPrimary } from "@components/form/Buttons"
-import { walletService } from "@src/core/walletManager"
 import MessageBox, { showMessage } from "@components/general/MessageBox"
 import SplashScreen from "@components/general/SplashScreen"
-import { userService } from "@src/core/userManager"
 import { FormControl, FormControlSwitch } from "@components/form/FormControl"
 import { HeaderScreen } from "@components/general/HeaderScreen"
 import { pushMessage } from "@services/notification"
 import { useTranslateService } from "@src/providers/translateProvider"
 import { Wallet } from "@services/memory/types"
 import { useEffect, useState } from "react"
-import theme from "@src/theme"
 import { StackScreenProps } from "@react-navigation/stack"
+import { walletService } from "@services/wallet"
+import { userService } from "@services/user"
+import theme from "@src/theme"
 
-type ScreenParams = {
-    wallet: Wallet
-}
+interface ScreenParams { wallet: Wallet }
 
 const WalletSettings = ({ navigation, route }: StackScreenProps<any>) => {
 

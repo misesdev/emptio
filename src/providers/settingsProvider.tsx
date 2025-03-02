@@ -1,6 +1,6 @@
 import { ReactElement, ReactNode, createContext, useContext, useEffect, useState } from "react"
-import { getFeedVideoSettings, getSettings, saveFeedVideoSettings, saveSettings } from "@services/memory/settings"
-import { FeedVideosSettings, Settings } from "@services/memory/types"
+import { Settings } from "@services/memory/types"
+import { storageService } from "@services/memory"
 
 type SettingContextType = {
     settings: Settings,
@@ -16,11 +16,11 @@ const SettingsProvider = ({ children }: { children: ReactNode }): ReactElement =
     const [settings, setSettings] = useState<Settings>({})
 
     useEffect(() => {
-        getSettings().then(setSettings)
-    })
+        storageService.settings.get().then(setSettings)
+    }, [])
 
     const setSettingsOptions = (settings: Settings) => {
-        saveSettings(settings)
+        storageService.settings.save(settings)
         setSettings(settings)
     }
 

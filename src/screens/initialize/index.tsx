@@ -4,7 +4,7 @@ import { ButtonPrimary } from "@components/form/Buttons";
 import SplashScreen from "@components/general/SplashScreen";
 import { useSettings } from "@src/providers/settingsProvider";
 import { useTranslateService } from "@src/providers/translateProvider";
-import { authService } from "@src/core/authManager";
+import { authService } from "@services/auth";
 import theme from "@src/theme";
 
 const AuthenticateScreen = ({ navigation }: any) => {

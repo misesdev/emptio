@@ -1,4 +1,3 @@
-import { userService } from "@src/core/userManager"
 import { User } from "@services/memory/types"
 import Ionicons from 'react-native-vector-icons/Ionicons'
 import { copyPubkey, getDisplayPubkey, getUserName } from "@src/utils"
@@ -14,6 +13,7 @@ import VideoShareBar from "./share"
 import { noteService } from "@services/nostr/noteService"
 import useNDKStore from "@services/zustand/ndk"
 import theme from "@src/theme"
+import { userService } from "@services/user"
 
 type Props = { 
     event: NDKEvent, 

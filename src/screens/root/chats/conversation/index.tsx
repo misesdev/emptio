@@ -3,7 +3,6 @@ import { View, StyleSheet, TextInput, FlatList, Image,
     TouchableOpacity, BackHandler} from "react-native"
 import { NDKEvent } from "@nostr-dev-kit/ndk"
 import { useAuth } from "@src/providers/userProvider"
-import { messageService } from "@src/core/messageManager"
 import { User } from "@services/memory/types"
 import useChatStore from "@services/zustand/chats"
 import ConversationList from "./commons/list"
@@ -19,8 +18,9 @@ import { copyToClipboard, getUserName } from "@src/utils"
 import DeleteOptionsBox, { showDeleteOptions } from "./commons/delete"
 import { useFocusEffect } from "@react-navigation/native"
 import MessageShareBar from "./commons/share"
-import { timeSeconds } from "@/src/services/converter"
-import { pushMessage } from "@/src/services/notification"
+import { timeSeconds } from "@services/converter"
+import { pushMessage } from "@services/notification"
+import { messageService } from "@services/message"
 
 const ConversationChat = ({ route }: StackScreenProps<any>) => {
     
@@ -30,15 +30,14 @@ const ConversationChat = ({ route }: StackScreenProps<any>) => {
     const listRef = useRef<FlatList>(null)
     const selectedItems = useRef<Set<NDKEvent>>(new Set<NDKEvent>())
     const highLigthIndex = useRef<number|null>(null)
-    const replyIndex = useRef<number|null>(null)
-    const replyEvent = useRef<NDKEvent|null>(null)
+    const [replyEvent, setReplyEvent] = useState<NDKEvent|null>(null)
     const { useTranslate } = useTranslateService()
     const { markReadChat, unreadChats, removeChat } = useChatStore()
     const { follow, chat_id } = route.params as { chat_id: string, follow: User }
     const { selectionMode, toggleSelectionMode } = useChatStore()
     const [message, setMessage] = useState<string>("")
     const [shareVisible, setShareVisible] = useState(false)
-    const messagesRef = useRef<NDKEvent[]>([])
+    const [chatMessages, setChatMessages] = useState<NDKEvent[]>([])
 
     useEffect(() => {
         if(timeout.current) 
@@ -64,25 +63,20 @@ const ConversationChat = ({ route }: StackScreenProps<any>) => {
         }, [selectionMode, selectedItems.current])
     )
 
-    const setReplyEvent = useCallback((event: NDKEvent|null, index: number|null=null) => {
-        replyEvent.current = event
-        replyIndex.current = index
-    }, [replyEvent.current])
-
     const loadMessages = useCallback(async () => {
         
         if(unreadChats.filter(c => c == chat_id).length) 
             markReadChat(chat_id)
 
         const chatMessages = await messageService.listMessages(chat_id)
-        
-        messagesRef.current = chatMessages
+       
+        setChatMessages(chatMessages)
     }, [chat_id, unreadChats])
 
     const sendMessage = async (follow: User) => {
         if(!message.trim().length) return
         const messageTags: string[][] = [["p", follow.pubkey??""]]
-        if(replyEvent.current) messageTags.push(["e", replyEvent.current.id])
+        if(replyEvent) messageTags.push(["e", replyEvent.id])
         const messageEvent: NDKEvent = new NDKEvent(ndk, {
             kind: 4,
             pubkey: user.pubkey??"",
@@ -91,7 +85,7 @@ const ConversationChat = ({ route }: StackScreenProps<any>) => {
             created_at: timeSeconds.now() 
         }) 
         setTimeout(() => messageService.sendMessage(messageEvent), 10)
-        messagesRef.current.unshift(messageEvent)
+        setChatMessages(prev => [...prev, messageEvent])
         setReplyEvent(null)
         setMessage("")
     }
@@ -100,7 +94,7 @@ const ConversationChat = ({ route }: StackScreenProps<any>) => {
         try {
             if(event) 
             {
-                const index = messagesRef.current.findIndex(e => e.id == event.id)
+                const index = chatMessages.findIndex(e => e.id == event.id)
                 if(index != -1) {
                     listRef.current?.scrollToIndex({ viewPosition: .5, animated: true, index })
                     highLigthIndex.current = index
@@ -108,7 +102,7 @@ const ConversationChat = ({ route }: StackScreenProps<any>) => {
                 }
             }
         } catch {}
-    }, [messagesRef.current, highLigthIndex.current, listRef.current])
+    }, [chatMessages, highLigthIndex.current, listRef.current])
     
     const deleteMessages = useCallback(async (onlyForMe: boolean) => {
         
@@ -122,11 +116,13 @@ const ConversationChat = ({ route }: StackScreenProps<any>) => {
 
         const event_ids = Array.from(selectedItems.current).map(e => e.id) 
 
-        messagesRef.current = [
-            ...messagesRef.current.filter(e => !event_ids.includes(e.id))
-        ]
+        setChatMessages(prev => [
+            ...prev.filter(e => !event_ids.includes(e.id))
+        ])
 
-        if(!messagesRef.current.length) removeChat(chat_id) 
+        setTimeout(() => {
+            if(!chatMessages.length) removeChat(chat_id)
+        }, 20)
         
     }, [user, selectedItems.current, selectionMode])
 
@@ -175,7 +171,7 @@ const ConversationChat = ({ route }: StackScreenProps<any>) => {
 
             <ConversationList user={user} follow={follow} 
                 listRef={listRef} 
-                events={messagesRef.current} 
+                events={chatMessages} 
                 highLigthIndex={highLigthIndex}
                 selectedItems={selectedItems}
                 setReplyEvent={setReplyEvent}
@@ -184,10 +180,10 @@ const ConversationChat = ({ route }: StackScreenProps<any>) => {
             {/* Chat Box */}
             <View style={styles.chatBoxContainer}>
                 {/* Reply Box */}
-                {replyEvent.current && 
+                {replyEvent && 
                     <ReplyBox user={user} follow={follow} 
                         focusEventOnList={focusEventOnList} 
-                        reply={replyEvent.current} setReply={setReplyEvent} 
+                        reply={replyEvent} setReply={setReplyEvent} 
                     />
                 }
                 <View style={{ flexDirection: "row" }}>
@@ -227,9 +223,7 @@ const styles = StyleSheet.create({
         backgroundColor: theme.input.backGround },
     chatInput: { color: theme.input.textColor, paddingVertical: 10, paddingHorizontal: 6 },
     sendButtonContainer: { width: "18%", alignItems: "center", justifyContent: "center" },
-    sendButton: { borderRadius: 50, padding: 10, 
-        transform: [{ rotate: "45deg" }]
-    },
+    sendButton: { borderRadius: 50, padding: 10, transform: [{ rotate: "45deg" }] },
 })
 
 export default ConversationChat

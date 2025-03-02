@@ -12,9 +12,9 @@ import ProfileViewer from './ProfileViewer';
 import HashTagViewer from './HashTagViewer';
 import { User } from '@services/memory/types';
 import { useEffect, useState } from 'react';
-import { userService } from '@src/core/userManager';
 import { ProfilePicture } from '../user/ProfilePicture';
 import { useAuth } from '@src/providers/userProvider';
+import { userService } from '@services/user';
 
 type Props = { 
     author?: User,

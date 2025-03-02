@@ -4,15 +4,15 @@ import { HeaderScreen } from "@components/general/HeaderScreen"
 import MessageBox, { showMessage } from "@components/general/MessageBox"
 import { ButtonPrimary } from "@components/form/Buttons"
 import { RelayList } from "@components/nostr/relays/RelayList"
-import { deleteRelay, getRelays, insertRelay } from "@services/memory/relays"
 import { pushMessage } from "@services/notification"
 import { useTranslateService } from "@src/providers/translateProvider"
-import useNDKStore from "@/src/services/zustand/ndk"
+import useNDKStore from "@services/zustand/ndk"
 import { useCallback, useEffect, useState } from "react"
+import { StackScreenProps } from "@react-navigation/stack"
 import theme from "@src/theme"
 import AddRelay from "./add"
 import axios from "axios"
-import { StackScreenProps } from "@react-navigation/stack"
+import { storageService } from "@/src/services/memory"
 
 const ManageRelaysScreen = ({ navigation }: StackScreenProps<any>) => {
 
@@ -29,7 +29,7 @@ const ManageRelaysScreen = ({ navigation }: StackScreenProps<any>) => {
 
     const loadDataRelays = async () => { 
 
-        const relayList = await getRelays()
+        const relayList = await storageService.relays.list()
 
         setRelays(relayList)
     }
@@ -49,7 +49,7 @@ const ManageRelaysScreen = ({ navigation }: StackScreenProps<any>) => {
 
             ndk.addExplicitRelay(relay, undefined, true)
 
-            await insertRelay(relay)
+            await storageService.relays.add(relay)
 
             setRelays(relayList)
         } 
@@ -68,7 +68,7 @@ const ManageRelaysScreen = ({ navigation }: StackScreenProps<any>) => {
                 label: useTranslate("commons.delete"),
                 onPress: async () => {       
 
-                    await deleteRelay(relay)
+                    await storageService.relays.delete(relay)
                     
                     setRelays(prevItems => prevItems.filter(item => item != relay))
 

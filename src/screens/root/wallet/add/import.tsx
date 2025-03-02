@@ -2,14 +2,14 @@ import { HeaderScreen } from "@components/general/HeaderScreen"
 import { StyleSheet, View, Text } from "react-native"
 import { FormControl } from "@components/form/FormControl"
 import { ButtonPrimary } from "@components/form/Buttons"
-import { walletService } from "@src/core/walletManager"
 import { pushMessage } from "@services/notification"
 import { useTranslateService } from "@src/providers/translateProvider"
 import { useAuth } from "@src/providers/userProvider"
 import { WalletType } from "@services/memory/types"
 import { useEffect, useState } from "react"
-import theme from "@src/theme"
 import { StackScreenProps } from "@react-navigation/stack"
+import { walletService } from "@services/wallet"
+import theme from "@src/theme"
 
 const ImportWalletScreen = ({ navigation, route }: StackScreenProps<any>) => {
 
@@ -50,14 +50,6 @@ const ImportWalletScreen = ({ navigation, route }: StackScreenProps<any>) => {
 
     const handleImport = async () => {
 
-        // var words = seedPhrase?.trim().split(" ")
-
-        // if (!walletName)
-        //     return pushMessage(useTranslate("message.wallet.nameempty"))
-
-        // if (words && words?.length < 12 || words.length > 12)
-        //     return pushMessage(`${useTranslate("message.wallet.invalidseed")} ${words.length}.`)
-        
         setLoading(true)
         setDisabled(true)
 

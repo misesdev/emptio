@@ -3,8 +3,8 @@ import { useAuth } from "@src/providers/userProvider"
 import { TouchableOpacity, View, StyleSheet } from "react-native"
 import Ionicons from 'react-native-vector-icons/Ionicons'
 import { useTranslateService } from "@src/providers/translateProvider"
+import { ProfilePicture } from "@components/nostr/user/ProfilePicture"
 import theme from "@src/theme"
-import { ProfilePicture } from "@/src/components/nostr/user/ProfilePicture"
 
 export const HeaderFeed = ({ navigation }: any) => {
 

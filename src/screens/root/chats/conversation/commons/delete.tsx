@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useRef, useState } from "react"
+import { useCallback, useState } from "react"
 import { Modal, StyleSheet, Text, TouchableOpacity, View } from "react-native"
 import { useTranslateService } from "@src/providers/translateProvider"
 import Ionicons from 'react-native-vector-icons/Ionicons'

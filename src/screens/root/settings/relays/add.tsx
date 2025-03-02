@@ -13,6 +13,7 @@ type ButtonProps = {
 const ButtonLight = ({ label, onPress }: ButtonProps) => {
 
     const [backColor, setBackColor] = useState(theme.colors.transparent)
+
     return (
         <TouchableOpacity onPress={onPress}
             onPressIn={() => setBackColor("rgba(255, 255, 255, .2)")}

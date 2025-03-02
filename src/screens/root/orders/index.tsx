@@ -8,12 +8,12 @@ import { memo, useEffect, useState } from "react"
 import { useTranslateService } from "@/src/providers/translateProvider"
 import Ionicons from 'react-native-vector-icons/Ionicons'
 import { RefreshControl } from "react-native-gesture-handler"
+import { StackScreenProps } from "@react-navigation/stack"
 import { pushMessage } from "@services/notification"
 import { NostrEvent } from "@services/nostr/events"
 import { User } from "@services/memory/types"
 import { HeaderFeed } from "./header"
 import theme from "@src/theme"
-import { StackScreenProps } from "@react-navigation/stack"
 
 const FeedOrdersScreen = ({ navigation }: StackScreenProps<any>) => {
 
@@ -24,14 +24,15 @@ const FeedOrdersScreen = ({ navigation }: StackScreenProps<any>) => {
 
     useEffect(() => {
         navigation.setOptions({ header: () => <HeaderFeed navigation={navigation} /> })
+        setTimeout(handleData, 10)
     }, [])
 
     const handleData = async () => {
         setLoading(true)
         
-        if(follows?.tags?.length) 
+        if(follows?.length) 
         {
-            const friends = follows.tags?.filter(tag => tag[0] == "p").map(e => e[1]);
+            const friends = follows.map(u => u.pubkey) as string[]
 
             listenerEvents({ 
                 limit: friends?.length, 

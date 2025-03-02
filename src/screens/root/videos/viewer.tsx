@@ -81,7 +81,7 @@ const FeedVideoViewer = ({ event, paused }: VideoProps) => {
                         {useTranslate("message.default_error")} 
                     </Text>
                 }
-                {loading && 
+                {loading && !error && 
                     <ActivityIndicator size={20} color={theme.colors.white} />
                 }
                 {showMuted && 

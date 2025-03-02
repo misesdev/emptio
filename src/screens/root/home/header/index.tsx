@@ -5,8 +5,8 @@ import { useTranslateService } from "@src/providers/translateProvider"
 import { pushMessage } from "@services/notification"
 import { Wallet } from "@services/memory/types"
 import { StackNavigationProp } from "@react-navigation/stack"
+import { ProfilePicture } from "@components/nostr/user/ProfilePicture"
 import theme from "@src/theme"
-import { ProfilePicture } from "@/src/components/nostr/user/ProfilePicture"
 
 type Props = {
     navigation: StackNavigationProp<any>

@@ -3,7 +3,6 @@ import { Image, StyleSheet, Text, View } from "react-native";
 import { QRCodeTextBox } from "@components/form/TextBoxs";
 import { ButtonPrimary } from "@components/form/Buttons";
 import { validatePrivateKey } from "@services/nostr";
-import { userService } from "@src/core/userManager";
 import { useAuth } from "@src/providers/userProvider";
 import { useEffect, useState } from "react";
 import { useTranslateService } from "@src/providers/translateProvider";
@@ -15,6 +14,7 @@ import Clipboard from "@react-native-clipboard/clipboard";
 import { AppState } from "react-native";
 import { getEvent } from "@services/nostr/events";
 import { NostrEventKinds } from "@src/constants/Events";
+import { userService } from "@services/user";
 import theme from "@src/theme";
 
 const LoginScreen = ({ navigation }: any) => {

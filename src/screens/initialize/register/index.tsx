@@ -2,14 +2,14 @@ import { useState } from "react";
 import { Image, StyleSheet, Text, View } from "react-native";
 import { ButtonPrimary } from "@components/form/Buttons";
 import MessageBox, { showMessage } from "@components/general/MessageBox";
-import { createFollowEvent, userService } from "@src/core/userManager";
 import { useAuth } from "@src/providers/userProvider";
 import { useTranslateService } from "@src/providers/translateProvider";
 import useChatStore from "@services/zustand/chats";
 import { pushUserFollows, subscribeUser } from "@services/nostr/pool";
 import { FormControl } from "@components/form/FormControl";
+import { createFollowEvent, userService } from "@services/user";
+import { storageService } from "@services/memory";
 import theme from "@src/theme";
-import { getPairKey } from "@/src/services/memory/pairkeys";
 
 const RegisterScreen = ({ navigation }: any) => {
 
@@ -21,7 +21,7 @@ const RegisterScreen = ({ navigation }: any) => {
     const [disabled, setDisabled] = useState(true)
 
     const setValidateUserName = (value: string) => {
-        setDisabled(value.length < 5)
+        setDisabled(value.length < 3)
         setUserName(value)
     }
 
@@ -37,7 +37,7 @@ const RegisterScreen = ({ navigation }: any) => {
                 {
                     subscribeUser({ user: result.data, addChat })
 
-                    const pairKey = await getPairKey(result.data.keychanges??"")
+                    const pairKey = await storageService.pairkeys.get(result.data.keychanges??"")
                     
                     const followsEvent = createFollowEvent(result.data ?? {}, [
                         ["p", result.data.pubkey??""]

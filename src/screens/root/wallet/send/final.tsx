@@ -2,7 +2,6 @@ import { View, Text, StyleSheet } from "react-native"
 import { ButtonDefault } from "@components/form/Buttons"
 import SplashScreen from "@components/general/SplashScreen"
 import { toNumber } from "@services/converter"
-import { walletService } from "@src/core/walletManager"
 import { HeaderScreen } from "@components/general/HeaderScreen"
 import { pushMessage } from "@services/notification"
 import { useTranslateService } from "@src/providers/translateProvider"
@@ -10,6 +9,7 @@ import { Wallet } from "@services/memory/types"
 import { Network } from "@services/bitcoin/types"
 import { useEffect, useState } from "react"
 import theme from "@src/theme"
+import { walletService } from "@services/wallet"
 
 const SendFinalScreen = ({ navigation, route }: any) => {
 

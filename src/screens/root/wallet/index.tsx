@@ -3,12 +3,12 @@ import { SectionHeader } from "@components/general/section/headers"
 import { Transaction, TransactionInfo } from "@services/memory/types"
 import { View, ScrollView, RefreshControl, TouchableOpacity } from "react-native"
 import Ionicons from 'react-native-vector-icons/Ionicons'
-import { walletService } from "@src/core/walletManager"
 import { useTranslateService } from "@src/providers/translateProvider"
 import { StackScreenProps } from "@react-navigation/stack"
 import { Network } from "@services/bitcoin/types"
 import { useCallback, useEffect, useState } from "react"
 import theme from "@src/theme"
+import { walletService } from "@services/wallet"
 
 const WalletManagerScreen = ({ navigation, route }: StackScreenProps<any>) => {
 

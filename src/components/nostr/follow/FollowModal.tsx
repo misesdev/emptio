@@ -2,7 +2,6 @@ import { useEffect, useState } from "react"
 import { Modal, StyleSheet, Text, TouchableOpacity, View, Image } from "react-native"
 import { useTranslateService } from "@src/providers/translateProvider"
 import { User } from "@services/memory/types"
-import { userService } from "@src/core/userManager"
 import { NoteList } from "../user/NoteList"
 import { ActivityIndicator } from "react-native-paper"
 import Ionicons from "react-native-vector-icons/Ionicons"
@@ -10,6 +9,7 @@ import { copyPubkey, getDisplayPubkey, getUserName } from "@src/utils"
 import { NDKEvent } from "@nostr-dev-kit/ndk-mobile"
 import theme from "@src/theme"
 import { ProfilePicture } from "../user/ProfilePicture"
+import { userService } from "@services/user"
 
 type followModalProps = {
     user: User,

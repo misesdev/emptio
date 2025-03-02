@@ -13,12 +13,14 @@ type Props = {
 export default function QRCodeReaderModal({ visible, setValue, runClose }: Props) {
 
     useEffect(() => {
-        (async () => {
-            try {
-                await Camera.requestCameraPermissionsAsync()            
-            } catch { runClose(false) }
-        })()
-    }, [])
+        if(visible) checkCameraPermission()
+    }, [visible])
+
+    const checkCameraPermission = async () => {
+        try {
+            await Camera.requestCameraPermissionsAsync()            
+        } catch { runClose(false) }
+    }
 
     const handleBarCodeScanned = ({ type, data }: any) => {
         runClose(false)

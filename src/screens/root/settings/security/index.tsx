@@ -1,15 +1,15 @@
 
-import { StyleSheet, ScrollView, View } from "react-native"
+import { ScrollView, View } from "react-native"
 import { HeaderScreen } from "@components/general/HeaderScreen"
 import { FormControlSwitch } from "@components/form/FormControl"
 import { useState } from "react"
-import { authService } from "@src/core/authManager"
 import { pushMessage } from "@services/notification"
-import { getSettings, saveSettings } from "@services/memory/settings"
 import { useTranslateService } from "@src/providers/translateProvider"
 import { useSettings } from "@src/providers/settingsProvider"
 import theme from "@src/theme"
 import { StackScreenProps } from "@react-navigation/stack"
+import { authService } from "@services/auth"
+import { storageService } from "@services/memory"
 
 const ManageSecurityScreen = ({ navigation }: StackScreenProps<any>) => {
 
@@ -28,7 +28,7 @@ const ManageSecurityScreen = ({ navigation }: StackScreenProps<any>) => {
         setUseBiometrics(value)
         settings.useBiometrics = value
         if(setSettings) setSettings(settings)
-        saveSettings(settings)
+        storageService.settings.save(settings)
     }
 
     return (
@@ -42,9 +42,5 @@ const ManageSecurityScreen = ({ navigation }: StackScreenProps<any>) => {
         </View>
     )
 }
-
-const styles = StyleSheet.create({
-
-})
 
 export default ManageSecurityScreen

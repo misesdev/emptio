@@ -1,12 +1,12 @@
 import { User } from "@services/memory/types";
 import { NDKEvent } from "@nostr-dev-kit/ndk-mobile";
 import { MutableRefObject, memo, useCallback, useEffect, useRef, useState } from "react";
-import { messageService } from "@src/core/messageManager";
 import { Vibration, View, Text, TouchableOpacity, StyleSheet, Animated } from "react-native";
 import { GestureHandlerRootView, PanGestureHandler } from "react-native-gesture-handler";
 import { useTranslateService } from "@src/providers/translateProvider";
 import Ionicons from "react-native-vector-icons/Ionicons"
 import NoteViewer from "@components/nostr/event/NoteViewer";
+import { messageService } from "@services/message";
 import useChatStore from "@services/zustand/chats";
 import ReplyTool from "./replyTool";
 import theme from "@src/theme";

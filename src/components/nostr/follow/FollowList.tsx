@@ -2,12 +2,12 @@ import { FlatList, View } from "react-native"
 import { useAuth } from "@src/providers/userProvider"
 import { User } from "@services/memory/types"
 import { memo, useCallback, useMemo, useRef, useState } from "react"
-import { walletService } from "@src/core/walletManager"
 import { FollowItem } from "./FollowItem"
 import theme from "@src/theme"
 import { getUserName } from "@src/utils"
 import { SearchBox } from "../../form/SearchBox"
-import { useTranslateService } from "@/src/providers/translateProvider"
+import { useTranslateService } from "@src/providers/translateProvider"
+import { walletService } from "@services/wallet"
 
 type FriendListProps = {
     toSend?: boolean,

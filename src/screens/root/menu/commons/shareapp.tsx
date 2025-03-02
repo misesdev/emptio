@@ -6,8 +6,7 @@ import { useTranslateService } from "@src/providers/translateProvider"
 import { pushMessage } from "@services/notification"
 import { getUserName } from "@src/utils"
 import theme from "@src/theme"
-import { messageService } from "@/src/core/messageManager"
-import { useAuth } from "@/src/providers/userProvider"
+import { useAuth } from "@src/providers/userProvider"
 
 type ChatProps = {
     visible: boolean,

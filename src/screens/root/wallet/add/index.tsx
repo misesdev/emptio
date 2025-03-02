@@ -2,13 +2,10 @@
 import { StyleSheet, View, Text, TouchableOpacity } from "react-native"
 import { ButtonLink, ButtonPrimary } from "@components/form/Buttons"
 import Ionicons from 'react-native-vector-icons/Ionicons'
-import SplashScreen from "@components/general/SplashScreen"
-import { walletService } from "@src/core/walletManager"
 import { HeaderScreen } from "@components/general/HeaderScreen"
 import { FormControl } from "@components/form/FormControl"
 import { pushMessage } from "@services/notification"
 import { useAuth } from "@src/providers/userProvider"
-import { userService } from "@src/core/userManager"
 import { useTranslateService } from "@src/providers/translateProvider"
 import { WalletType } from "@services/memory/types"
 import { getWallets } from "@services/memory/wallets"
@@ -17,6 +14,8 @@ import { useEffect, useState } from "react"
 import { StackScreenProps } from "@react-navigation/stack"
 import theme from "@src/theme"
 import { ScrollView } from "react-native-gesture-handler"
+import { walletService } from "@services/wallet"
+import { userService } from "@services/user"
 
 
 const AddWalletScreen = ({ navigation }: StackScreenProps<any>) => {

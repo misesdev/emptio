@@ -3,7 +3,6 @@ import { NDKEvent, NDKSubscriptionCacheUsage } from "@nostr-dev-kit/ndk-mobile"
 import { StyleSheet, TouchableOpacity, View, Image, Text } from "react-native"
 import { useEffect, useState } from "react"
 import useNDKStore from "@services/zustand/ndk"
-import { userService } from "@src/core/userManager"
 import { getUserName, replaceContentEvent } from "@src/utils"
 import theme from "@src/theme"
 import { nip19 } from "nostr-tools"
@@ -13,6 +12,7 @@ import ImagePreview from "./ImagePreview"
 import VideoViewer from "./VideoViewer"
 import ProfileViewer from "./ProfileViewer"
 import HashTagViewer from "./HashTagViewer"
+import { userService } from "@/src/services/user"
 
 type ScreenProps = {
     event?: NDKEvent | null,

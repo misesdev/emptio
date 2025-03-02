@@ -3,13 +3,8 @@ import { LinkSection, SectionContainer } from "@components/general/section"
 import { getPairKey } from "@services/memory/pairkeys"
 import SplashScreen from "@components/general/SplashScreen"
 import { useAuth } from "@src/providers/userProvider"
-import { userService } from "@src/core/userManager"
 import { hexToBytes } from "@noble/hashes/utils"
-import { useState } from "react"
-import { nip19 } from "nostr-tools";
-import theme from "@src/theme"
 import Ionicons from 'react-native-vector-icons/Ionicons'
-import { authService } from "@src/core/authManager";
 import MessageBox, { showMessage } from "@components/general/MessageBox"
 import SelectLanguageBox, { showSelectLanguage } from "@components/modal/SelectLanguageBox"
 import { pushMessage } from "@services/notification"
@@ -20,6 +15,11 @@ import DeviceInfo from 'react-native-device-info'
 import { StackScreenProps } from "@react-navigation/stack"
 import AppShareBar from "./commons/shareapp"
 import { ProfilePicture } from "@components/nostr/user/ProfilePicture"
+import { authService } from "@services/auth"
+import { useState } from "react"
+import { nip19 } from "nostr-tools";
+import theme from "@src/theme"
+import { userService } from "@/src/services/user"
 
 const UserMenuScreen = ({ navigation }: StackScreenProps<any>) => {
 

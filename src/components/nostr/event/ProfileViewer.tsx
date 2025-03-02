@@ -4,7 +4,7 @@ import { getUserName } from "@/src/utils"
 import { useEffect, useState } from "react"
 import theme from "@/src/theme"
 import { nip19 } from "nostr-tools"
-import { userService } from "@/src/core/userManager"
+import { userService } from "@services/user"
 
 type ScreenProps = {
     nprofile?: string,

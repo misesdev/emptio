@@ -6,7 +6,7 @@ import { Wallet } from "@services/memory/types"
 import { useAuth } from "@src/providers/userProvider"
 import { formatSats } from "@services/converter"
 import theme from "@src/theme"
-import { getClipedContent } from "@/src/utils"
+import { getClipedContent } from "@src/utils"
 
 var showWalletsFunction: () => void
 

@@ -8,10 +8,10 @@ import { User } from "@services/memory/types"
 import { memo, useCallback, useState } from "react"
 import { FollowItem } from "@components/nostr/follow/FollowItem"
 import { SearchBox } from "@components/form/SearchBox"
-import { walletService } from "@src/core/walletManager"
 import { getUserName } from "@src/utils"
+import { walletService } from "@services/wallet"
+import { userService } from "@services/user"
 import theme from "@src/theme"
-import { userService } from "@/src/core/userManager"
 
 const ManageFriendsScreen = ({ navigation }: StackScreenProps<any>) => {
 
@@ -83,7 +83,7 @@ const ManageFriendsScreen = ({ navigation }: StackScreenProps<any>) => {
 }
 
 const styles = StyleSheet.create({
-    addperson: { padding: 10, borderRadius: 10 }
+    addperson: { padding: 10, paddingVertical: 5, borderRadius: 10 }
 })
 
 export default ManageFriendsScreen

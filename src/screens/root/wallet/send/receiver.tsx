@@ -3,13 +3,13 @@ import { FollowList } from "@components/nostr/follow/FollowList"
 import { ButtonScanQRCode } from "@components/wallet/buttons"
 import { TextBox } from "@components/form/TextBoxs"
 import SplashScreen from "@components/general/SplashScreen"
-import { walletService } from "@src/core/walletManager"
 import Ionicons from 'react-native-vector-icons/Ionicons'
 import { useEffect, useState } from "react"
 import { SectionHeader } from "@components/general/section/headers"
 import { HeaderScreen } from "@components/general/HeaderScreen"
 import { useTranslateService } from "@src/providers/translateProvider"
 import theme from "@src/theme"
+import { walletService } from "@services/wallet"
 
 const SendReceiverScreen = ({ navigation, route }: any) => {
 
@@ -71,7 +71,7 @@ const SendReceiverScreen = ({ navigation, route }: any) => {
 
             <SectionHeader label={useTranslate("labels.friends")} icon="people" />
 
-            <FollowList searchable searchTerm={address} onPressFollow={user => { console.log(user) }} />
+            <FollowList toSend onPressFollow={user => { console.log(user) }} />
 
             <View style={{ position: "absolute", bottom: 30, padding: 10, width: "100%", flexDirection: "row-reverse" }}>
                 <TouchableOpacity activeOpacity={.7} onPress={handleSendToFee} disabled={nextDisabled}

@@ -1,10 +1,10 @@
-import { User } from "@/src/services/memory/types"
-import theme from "@/src/theme"
+import { User } from "@services/memory/types"
+import theme from "@src/theme"
 import { getClipedContent, getUserName } from "@/src/utils"
 import { NDKEvent } from "@nostr-dev-kit/ndk-mobile"
 import Ionicons from 'react-native-vector-icons/Ionicons'
 import { StyleSheet, View, Text, TouchableOpacity } from "react-native"
-import { useTranslateService } from "@/src/providers/translateProvider"
+import { useTranslateService } from "@src/providers/translateProvider"
 
 interface ReplyProps {
     user: User,

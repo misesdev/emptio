@@ -7,10 +7,10 @@ import { getRandomKey } from "@services/bitcoin/signature"
 import { PairKey, Transaction, TransactionInput, TransactionOutput, Wallet,
     WalletInfo, WalletType } from "@services/memory/types"
 import { Response, trackException } from "@services/telemetry"
-import { userService } from "../userManager"
 import { Network } from "@services/bitcoin/types"
-import { timeSeconds } from "@/src/services/converter"
-import { storageService } from "@/src/services/memory"
+import { timeSeconds } from "@services/converter"
+import { storageService } from "@services/memory"
+import { userService } from "../user"
 
 type Props = {
     name: string,

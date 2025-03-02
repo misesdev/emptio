@@ -5,7 +5,6 @@ import { HeaderScreen } from "@components/general/HeaderScreen"
 import { useEffect, useState } from "react"
 import { Linking, ScrollView, StyleSheet, Text, View } from "react-native"
 import Ionicons from 'react-native-vector-icons/Ionicons'
-import { walletService } from "@src/core/walletManager"
 import { SectionHeader } from "@components/general/section/headers"
 import { ActivityIndicator } from "react-native-paper"
 import { SectionContainer } from "@components/general/section"
@@ -14,6 +13,7 @@ import { useTranslateService } from "@src/providers/translateProvider"
 import { Network } from "@services/bitcoin/types"
 import theme from "@src/theme"
 import { StackScreenProps } from "@react-navigation/stack"
+import { walletService } from "@/src/services/wallet"
 
 const TransactionIcon = ({ type, confirmed }: TransactionInfo) => {
     let color = theme.colors.red

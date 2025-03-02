@@ -1,10 +1,10 @@
 import { ActivityIndicator, FlatList, View } from "react-native"
-import { userService } from "@src/core/userManager"
+import { userService } from "@services/user"
 import { useTranslate } from "@services/translate"
 import { useAuth } from "@src/providers/userProvider"
 import { User } from "@services/memory/types"
 import { useCallback, useEffect, useState } from "react"
-import { walletService } from "@src/core/walletManager"
+import { walletService } from "@services/wallet"
 import { SectionHeader } from "../general/section/headers"
 import { FollowItem } from "./follow/FollowItem"
 import theme from "@src/theme"
@@ -21,7 +21,7 @@ type FriendListProps = {
 export const FriendList = ({ searchTerm, onPressFollow, loadCombo=20, 
     toFollow=false, toPayment=false, searchable }: FriendListProps) => {
 
-    const { user, follows } = useAuth()
+    const { user, followsEvent } = useAuth()
     const [listCounter, setListCounter] = useState(loadCombo)
     const [refreshing, setRefreshing] = useState(true)
     const [followList, setFollowList] = useState<User[]>([])
@@ -54,7 +54,7 @@ export const FriendList = ({ searchTerm, onPressFollow, loadCombo=20,
     const handleListFollows = async () => {
         setRefreshing(true)
 
-        var friends = await userService.listFollows(user, follows)
+        var friends = await userService.listFollows(user, followsEvent)
 
         setFollowList(friends.slice(0, loadCombo))
 

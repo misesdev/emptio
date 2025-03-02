@@ -2,12 +2,12 @@ import HashTagViewer from "@components/nostr/event/HashTagViewer"
 import LinkPreview from "@components/nostr/event/LinkPreview"
 import ProfileViewer from "@components/nostr/event/ProfileViewer"
 import ImagePreview from "@components/nostr/event/ImagePreview"
-import { replaceContentEvent } from "@/src/utils"
+import { replaceContentEvent } from "@src/utils"
 import { memo, useCallback, useEffect, useState } from "react"
 import { StyleSheet, ScrollView, Text } from "react-native"
 import ParsedText from "react-native-parsed-text"
-import theme from "@/src/theme"
-import { useTranslateService } from "@/src/providers/translateProvider"
+import { useTranslateService } from "@src/providers/translateProvider"
+import theme from "@src/theme"
 
 type Props = { content: string, url: string }
 

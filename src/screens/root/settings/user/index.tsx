@@ -6,15 +6,15 @@ import { ButtonPrimary } from "@components/form/Buttons"
 import { FormControl } from "@components/form/FormControl"
 import { ScrollView } from "react-native-gesture-handler"
 import Ionicons from 'react-native-vector-icons/Ionicons'
-import { userService } from "@src/core/userManager"
 import SplashScreen from "@components/general/SplashScreen"
 import { uploadImage } from "@services/blob"
 import { pushMessage } from "@services/notification"
 import { useTranslateService } from "@src/providers/translateProvider"
 import { useEffect, useState } from "react"
-import theme from "@src/theme"
 import { StackScreenProps } from "@react-navigation/stack"
 import { getColorFromPubkey } from "@/src/utils"
+import { userService } from "@services/user"
+import theme from "@src/theme"
 
 const UserEditScreen = ({ navigation }: StackScreenProps<any>) => {
 

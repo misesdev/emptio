@@ -12,10 +12,10 @@ import { StackScreenProps } from "@react-navigation/stack"
 import ChatFilters, { ChatFilterType } from "./commons/filters"
 import ChatList, { FilterChat } from "./commons/list"
 import ChatGroupAction, { ChatActionType } from "./commons/options"
-import { messageService } from "@/src/core/messageManager"
-import MessageBox, { showMessage } from "@/src/components/general/MessageBox"
+import MessageBox, { showMessage } from "@components/general/MessageBox"
 import { useFocusEffect } from "@react-navigation/native"
 import ProfileView, { ShowProfileView } from "./commons/profile"
+import { messageService } from "@services/message"
 
 const ChatsScreen = ({ navigation }: StackScreenProps<any>) => {
    
@@ -58,10 +58,12 @@ const ChatsScreen = ({ navigation }: StackScreenProps<any>) => {
       
         const cleanSearchTerm = searchTerm.trim().toLowerCase()
 
-        if(!cleanSearchTerm.length) return setFilteredChats(chats)
+        if(!cleanSearchTerm.length) 
+            return handleFilter(filterSection)
 
-        const chat_ids = filterChatsUsers.current.filter(f => 
-            f.user_name.toLowerCase().includes(cleanSearchTerm))
+        const chat_ids = filterChatsUsers.current
+            .filter(f => filteredChats.map(c => c.chat_id).includes(f.chat_id))
+            .filter(f => f.user_name.toLowerCase().includes(cleanSearchTerm))
             .map(f => f.chat_id)
 
         setFilteredChats(chats.filter(c => chat_ids.includes(c.chat_id)))

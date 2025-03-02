@@ -8,7 +8,7 @@ import { copyPubkey, getDisplayPubkey, getUserName } from "@src/utils"
 import ContentViewer from "@components/nostr/event/ContentViewer"
 import { useAuth } from "@src/providers/userProvider"
 import { useCallback, useState } from "react"
-import { userService } from "@src/core/userManager"
+import { userService } from "@services/user"
 import theme from "@src/theme"
 
 interface ProfileViewProps { profile: User }

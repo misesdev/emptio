@@ -1,4 +1,4 @@
-import { walletService } from "@src/core/walletManager"
+import { walletService } from "@services/wallet"
 import { formatSats, toBitcoin } from "@services/converter"
 import { Wallet } from "@services/memory/types"
 import { Network } from "@services/bitcoin/types"

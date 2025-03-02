@@ -2,19 +2,18 @@ import { ButtonDefault, ButtonSuccess } from "@components/form/Buttons"
 import { Image, StyleSheet, Text, View } from "react-native"
 import SplashScreen from "@components/general/SplashScreen"
 import { getEvent } from "@services/nostr/events"
-import { userService } from "@src/core/userManager"
 import { useEffect, useState } from "react"
 import { useAuth } from "../providers/userProvider"
 import { useTranslateService } from "../providers/translateProvider"
-import { walletService } from "../core/walletManager"
 import { getNostrInstance, subscribeUser } from "@services/nostr/pool"
 import { getNotificationPermission } from "@services/permissions"
 import { initDatabase } from "@services/memory/database/events"
-import { messageService } from "../core/messageManager"
 import useChatStore from "@services/zustand/chats"
 import useNDKStore from "@services/zustand/ndk"
 import { NostrEventKinds } from "../constants/Events"
 import { useFeedVideosStore } from "@services/zustand/feedVideos"
+import { messageService } from "@services/message"
+import { userService } from "@services/user"
 import theme from "@src/theme"
 
 const InitializeScreen = ({ navigation }: any) => {
@@ -22,7 +21,7 @@ const InitializeScreen = ({ navigation }: any) => {
     const { initialize } = useFeedVideosStore()
     const { setNDK, setNdkSigner } = useNDKStore()
     const { setChats, addChat } = useChatStore()
-    const { setUser, setWallets, setFollowsEvent } = useAuth()
+    const { setUser, setFollowsEvent } = useAuth()
     const [loading, setLoading] = useState(true)
     const { useTranslate } = useTranslateService()
 
@@ -39,11 +38,7 @@ const InitializeScreen = ({ navigation }: any) => {
         
         await getNotificationPermission() 
         
-        const wallets = await walletService.list()
-
-        if(wallets && setWallets) setWallets(wallets)
-
-        const result = await userService.isLogged({ setUser })
+        const result = await userService.isLogged()
         if (result.success && result.data) 
         {
             setNdkSigner(result.data)

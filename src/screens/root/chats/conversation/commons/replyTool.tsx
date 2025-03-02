@@ -1,11 +1,11 @@
-import { messageService } from "@/src/core/messageManager"
 import { useTranslateService } from "@/src/providers/translateProvider"
-import { User } from "@/src/services/memory/types"
+import { User } from "@services/memory/types"
 import theme from "@/src/theme"
 import { getClipedContent, getUserName } from "@/src/utils"
 import { NDKEvent } from "@nostr-dev-kit/ndk-mobile"
 import { useEffect } from "react"
 import { TouchableOpacity, View, Text, StyleSheet } from "react-native"
+import { messageService } from "@services/message"
 
 interface ReplyToolProps {
     event: NDKEvent

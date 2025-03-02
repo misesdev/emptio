@@ -1,6 +1,6 @@
 import { create } from "zustand"
 import { FeedVideosSettings } from "../memory/types"
-import { getBlackListPubkeys, getFeedVideoSettings } from "../memory/settings"
+import { storageService } from "../memory"
 
 interface FeedVideoStore {
     feedSettings: FeedVideosSettings,
@@ -31,8 +31,8 @@ export const useFeedVideosStore = create<FeedVideoStore>((set) => ({
         }))
     },
     initialize: async () => {
-        const blackList = await getBlackListPubkeys()
-        const settings = await getFeedVideoSettings()
+        const blackList = await storageService.settings.blackList.get()
+        const settings = await storageService.settings.feedVideos.get()
         set(() => ({
             blackList: blackList,
             feedSettings: settings

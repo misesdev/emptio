@@ -7,7 +7,7 @@ import { StackScreenProps } from "@react-navigation/stack"
 import { Wallet } from "@services/memory/types"
 import theme from "@src/theme"
 
-type SeedParams = {
+interface SeedParams {
     wallet: Wallet,
     mnemonic: string[]
 }

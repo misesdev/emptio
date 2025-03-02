@@ -1,5 +1,4 @@
-import { messageService } from "@/src/core/messageManager"
-import { userService } from "@/src/core/userManager"
+import { userService } from "@services/user"
 import { useAuth } from "@/src/providers/userProvider"
 import { NDKEvent } from "@nostr-dev-kit/ndk-mobile"
 import { User } from "@services/memory/types"
@@ -11,6 +10,7 @@ import { Vibration, View, Text, TouchableOpacity, StyleSheet, Animated } from "r
 import { ProfilePicture } from "@components/nostr/user/ProfilePicture"
 import theme from "@/src/theme"
 import { getClipedContent } from "@src/utils"
+import { messageService } from "@/src/services/message"
 
 interface ListItemProps {
     user: User,

@@ -10,7 +10,7 @@ import { PairKey, User } from "@services/memory/types"
 import useNDKStore from "@services/zustand/ndk"
 import { nip19 } from "nostr-tools"
 import useChatStore from "@services/zustand/chats"
-import { timeSeconds } from "@/src/services/converter"
+import { timeSeconds } from "@services/converter"
 
 type SignUpProps = { 
     userName: string, 
@@ -127,20 +127,14 @@ const signOut = async (): Promise<Response<any>> => {
     }
 }
 
-type loggedProps = {
-    setUser?: (user: User) => void
-}
 
-const isLogged = async ({ setUser }: loggedProps) : Promise<Response<User|null>> => {
+const isLogged = async () : Promise<Response<User|null>> => {
     try {
         const user: User = await storageService.user.get()
 
         const pairKey = await storageService.pairkeys.get(user.keychanges ?? "")
 
         user.pubkey = pairKey.publicKey
-
-        if (setUser && !!pairKey.privateKey)
-            setUser(user)
 
         return { success: !!pairKey.privateKey, data: user }
     } 

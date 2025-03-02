@@ -4,9 +4,9 @@ import { AmountBox } from "@components/wallet/inputs"
 import Ionicons from 'react-native-vector-icons/Ionicons'
 import { useTranslateService } from "@src/providers/translateProvider"
 import { useEffect, useState } from "react"
-import theme from "@src/theme"
 import { StackScreenProps } from "@react-navigation/stack"
-import { Wallet } from "@/src/services/memory/types"
+import { Wallet } from "@services/memory/types"
+import theme from "@src/theme"
 
 type ScreenParams = {
     wallet: Wallet

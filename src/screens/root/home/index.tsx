@@ -5,10 +5,10 @@ import { useAuth } from "@src/providers/userProvider"
 import WalletList from "@components/wallet/WalletList"
 import { useEffect, useState } from "react"
 import { pushMessage } from "@services/notification"
-import { walletService } from "@src/core/walletManager"
 import { HeaderHome } from "./header"
 import { StackScreenProps } from "@react-navigation/stack"
 import theme from "@src/theme"
+import { walletService } from "@/src/services/wallet"
 
 const HomeScreen = ({ navigation }: StackScreenProps<any>) => {
 
