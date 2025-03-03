@@ -1,7 +1,7 @@
 import { StyleSheet, FlatList } from "react-native"
 import { User } from "@services/memory/types"
 import { NDKEvent } from "@nostr-dev-kit/ndk"
-import { MutableRefObject, RefObject, useCallback, useMemo } from "react"
+import { MutableRefObject, RefObject, useCallback } from "react"
 import theme from "@src/theme"
 import ListItemMessage from "./listItem"
     
@@ -10,30 +10,29 @@ type Props = {
     follow: User,
     events: NDKEvent[],
     listRef: RefObject<FlatList>,
-    highLigthIndex: MutableRefObject<number|null>,
+    highLigthIndex: number|null,
+    setHighlightIndex: (index: number|null) => void,
     selectedItems: MutableRefObject<Set<NDKEvent>>,
-    setReplyEvent: (event: NDKEvent|null, index: number|null) => void,
+    setReplyEvent: (event: NDKEvent|null) => void,
 }
 
 const ConversationList = ({ user, follow, listRef, events, highLigthIndex, 
-    selectedItems, setReplyEvent }: Props) => {
+    selectedItems, setHighlightIndex, setReplyEvent }: Props) => {
   
-    const memorizedEvents = useMemo(() => events, [events])
-
     const focusEvent = useCallback((index: number) => {
         try {
             if(index != -1) {
                 listRef.current?.scrollToIndex({ viewPosition: .5, animated: true, index })
-                highLigthIndex.current = index
-                setTimeout(() => highLigthIndex.current = null, 350)
+                setHighlightIndex(index)
+                // setTimeout(() => setHighlightIndex(null), 350)
             }
         } catch {}
-    }, [highLigthIndex, listRef])  
+    }, [highLigthIndex, setHighlightIndex, listRef])  
 
     const renderItem = useCallback(({ item, index }: { item: NDKEvent; index: number }) => (
             <ListItemMessage 
                 item={item} index={index} 
-                focusIndex={highLigthIndex.current} items={events} 
+                focusIndex={highLigthIndex} items={events} 
                 user={user} follow={follow} selectedItems={selectedItems} 
                 setReplyEvent={setReplyEvent} focusReply={focusEvent}
             />
@@ -45,7 +44,7 @@ const ConversationList = ({ user, follow, listRef, events, highLigthIndex,
     return (
         <FlatList inverted
             ref={listRef} 
-            data={memorizedEvents}
+            data={events}
             style={styles.scrollContainer}
             showsVerticalScrollIndicator 
             renderItem={renderItem} 

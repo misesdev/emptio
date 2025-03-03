@@ -88,20 +88,6 @@ const VideoFooter = ({ event, url }: Props) => {
 
     return (
         <View style={styles.controlsSliderContainer}>
-            <View style={styles.reactionControls}>
-                <TouchableOpacity onPress={handleReact} style={styles.reactionButton}>
-                    <Ionicons style={styles.shadow} 
-                        name={reacted ? "heart" : "heart-outline"} 
-                        size={32} color={theme.colors.white} 
-                    />
-                </TouchableOpacity>
-                <TouchableOpacity onPress={() => setCommentsVisible(true)} style={styles.reactionButton}>
-                    <Ionicons style={styles.shadow} name="chatbubble-outline" size={32} color={theme.colors.white} />
-                </TouchableOpacity>
-                <TouchableOpacity onPress={() => setShareVisible(true)} style={styles.reactionButton}>
-                    <Ionicons style={styles.shadow} name="paper-plane-outline" size={32} color={theme.colors.white} />
-                </TouchableOpacity>
-            </View>
             <View style={styles.profilebar}>
                 <View style={{ width: "90%" }}>
                     <View style={{ width: "100%", flexDirection: "row" }}>
@@ -139,17 +125,30 @@ const VideoFooter = ({ event, url }: Props) => {
                     </View>
                 </View>
                 <View style={{ width: "10%", alignItems: "center" }}>
-                    <TouchableOpacity style={{ padding: 5 }}>
-                        <Ionicons style={styles.shadow} name="ellipsis-vertical" size={24} color={theme.colors.white} />
-                    </TouchableOpacity>
+                    <View style={styles.reactionControls}>
+                        <TouchableOpacity onPress={handleReact} style={styles.reactionButton}>
+                            <Ionicons style={styles.shadow} 
+                                name={reacted ? "heart" : "heart-outline"} 
+                                size={32} color={theme.colors.white} 
+                            />
+                        </TouchableOpacity>
+                        <TouchableOpacity onPress={() => setCommentsVisible(true)} style={styles.reactionButton}>
+                            <Ionicons style={styles.shadow} name="chatbubble-outline" size={32} color={theme.colors.white} />
+                        </TouchableOpacity>
+                        <TouchableOpacity onPress={() => setShareVisible(true)} style={styles.reactionButton}>
+                            <Ionicons style={styles.shadow} name="paper-plane-outline" size={32} color={theme.colors.white} />
+                        </TouchableOpacity>
+                        <View style={{ height: 20 }}></View>
+                        <TouchableOpacity style={styles.reactionButton}>
+                            <Ionicons style={styles.shadow} name="ellipsis-vertical" size={24} color={theme.colors.white} />
+                        </TouchableOpacity>
+                    </View>
                 </View>
             </View>
-            <VideoComments event={event}
-                visible={commentsVisible} 
+            <VideoComments event={event} visible={commentsVisible} 
                 setVisible={setCommentsVisible} 
             />
-            <VideoShareBar event={event} 
-                visible={shareVisible} 
+            <VideoShareBar event={event} visible={shareVisible} 
                 setVisible={setShareVisible} 
             />
         </View>
@@ -157,7 +156,7 @@ const VideoFooter = ({ event, url }: Props) => {
 }
 
 const styles = StyleSheet.create({
-    controlsSliderContainer: { width: "95%", position: "absolute", paddingBottom: 4, 
+    controlsSliderContainer: { width: "96%", position: "absolute", paddingBottom: 4, 
         borderRadius: 5, bottom: 20 },
     controlsSlider: { width: "100%" },
 
@@ -168,7 +167,7 @@ const styles = StyleSheet.create({
         borderWidth: 1, borderColor: theme.colors.white, 
         backgroundColor: theme.colors.transparent },
 
-    reactionControls: { position: "absolute", right: 0, bottom: 200 },
+    reactionControls: { position: "absolute", right: 0, bottom: 65 },
     reactionButton: { padding: 6, marginVertical: 4, borderRadius: 10,
         backgroundColor: theme.colors.transparent },
 

@@ -38,7 +38,7 @@ interface ListItemProps {
     user: User;
     follow: User;
     selectedItems: MutableRefObject<Set<NDKEvent>>;
-    setReplyEvent: (event: NDKEvent|null, index: number) => void;
+    setReplyEvent: (event: NDKEvent|null) => void;
     focusReply: (index: number) => void;
 }
 
@@ -77,7 +77,7 @@ const ListItemMessage = ({
     useEffect(() => { decryptMessage() }, [decryptMessage])
     
     const replyMessage = () => {
-        setReplyEvent(item, index)
+        setReplyEvent(item)
         Vibration.vibrate(35)
     }
 
@@ -199,5 +199,5 @@ const styles = StyleSheet.create({
 })
 
 export default memo(ListItemMessage, (prev, next) => {
-    return prev.item.id === next.item.id && prev.index === next.focusIndex
+    return prev.item.id === next.item.id && prev.index !== next.focusIndex
 })

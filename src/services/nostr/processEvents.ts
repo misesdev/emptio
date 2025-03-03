@@ -2,7 +2,7 @@ import { NDKEvent } from "@nostr-dev-kit/ndk-mobile"
 import { dbEventProps, insertEventsInBatch } from "../memory/database/events"
 import { User } from "../memory/types"
 import { ChatUser } from "../zustand/chats"
-import { messageService } from "@/src/core/messageManager"
+import { messageService } from "@services/message"
 import { getPubkeyFromTags } from "./events"
 
 var batchTimer: NodeJS.Timeout|null = null

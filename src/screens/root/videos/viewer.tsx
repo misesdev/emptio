@@ -1,14 +1,14 @@
 import { Video, VideoRef } from 'react-native-video'
-import { useCallback, useEffect, useRef, useState } from "react"
+import { memo, useCallback, useRef, useState } from "react"
 import { View, StyleSheet, TouchableOpacity, Text, Dimensions } from 'react-native'
 import Ionicons from 'react-native-vector-icons/Ionicons'
 import Slider from '@react-native-community/slider'
-import { useTranslateService } from '@/src/providers/translateProvider'
+import { useTranslateService } from '@src/providers/translateProvider'
 import { NDKEvent } from '@nostr-dev-kit/ndk-mobile'
-import VideoFooter from './commons/footer'
-import theme from '@/src/theme'
-import { extractVideoUrl } from '@/src/utils'
 import { ActivityIndicator } from 'react-native-paper'
+import VideoFooter from './commons/footer'
+import { extractVideoUrl } from '@src/utils'
+import theme from '@src/theme'
 
 type VideoProps = { 
     event: NDKEvent,
@@ -17,11 +17,11 @@ type VideoProps = {
 
 const FeedVideoViewer = ({ event, paused }: VideoProps) => {
 
-    const url = extractVideoUrl(event.content) ?? ""
     const timeout: any = useRef(null)
+    const videoRef = useRef<VideoRef>(null)
+    const url = extractVideoUrl(event.content) ?? ""
     const { useTranslate } = useTranslateService()
     const { width, height } = Dimensions.get("window")
-    const videoRef = useRef<VideoRef>(null)
     const [duration, setDuration] = useState<number>(0)
     const [currentTime, setCurrentTime] = useState<number>(0)
     const [error, setError] = useState<boolean>(false)
@@ -73,8 +73,7 @@ const FeedVideoViewer = ({ event, paused }: VideoProps) => {
                 onLoad={onLoadVideo}
                 onProgress={onProgressVideo}
             />
-            <TouchableOpacity activeOpacity={1} onPress={handleMute}
-                delayLongPress={100} style={styles.controlsContainer}
+            <View style={styles.controlsContainer}
             >
                 {error && 
                     <Text style={{ color: theme.colors.white }}>
@@ -105,7 +104,7 @@ const FeedVideoViewer = ({ event, paused }: VideoProps) => {
                         thumbTintColor={theme.colors.white}
                     />
                 </View>
-            </TouchableOpacity>
+            </View>
         </View>
     )
 }
@@ -125,4 +124,6 @@ const styles = StyleSheet.create({
     controlsSlider: { width: "100%" },
 })
 
-export default FeedVideoViewer
+export default memo(FeedVideoViewer, (prev, next) => {
+    return prev.event.id === next.event.id && prev.paused === next.paused;
+})

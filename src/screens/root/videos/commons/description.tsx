@@ -57,7 +57,6 @@ const VideoDescription = ({ content, url }: Props) => {
     }
     
     const renderHashTag = (matchingString: string, matches: string[]): any => {
-        console.log(matchingString)
         return <HashTagViewer hashtag={matches[0]} />
     }
 
@@ -97,20 +96,20 @@ const VideoDescription = ({ content, url }: Props) => {
     }
     
     return (
-        <ScrollView style={styles.contentContainer}>
+        <ScrollView nestedScrollEnabled style={styles.contentContainer}>
             <TextRenderComponent text={fullcontent ? contentFullText:contentText} />
         </ScrollView>
     )
 }
 
 const styles = StyleSheet.create({
-    contentContainer: { width: "100%", marginBottom: 20, maxHeight: 200, 
-        paddingHorizontal: 10 },
+    contentContainer: { flex: 1, marginBottom: 20, maxHeight: 200, 
+        paddingHorizontal: 10, zIndex: 999 },
     shadow: { textShadowOffset: { width: 1, height: 1 }, textShadowRadius: 6, 
         textShadowColor: theme.colors.semitransparentdark },
     text: { color: theme.colors.white, paddingVertical: 8 },
     link: { color: theme.colors.blue, textDecorationLine: 'underline' },
-    expandbutton: { color: theme.colors.blue, paddingHorizontal: 10 }
+    expandbutton: { color: theme.colors.green, paddingHorizontal: 10 }
 })
 
 export default memo(VideoDescription)

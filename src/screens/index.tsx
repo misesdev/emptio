@@ -21,7 +21,7 @@ const InitializeScreen = ({ navigation }: any) => {
     const { initialize } = useFeedVideosStore()
     const { setNDK, setNdkSigner } = useNDKStore()
     const { setChats, addChat } = useChatStore()
-    const { setUser, setFollowsEvent } = useAuth()
+    const { setFollowsEvent } = useAuth()
     const [loading, setLoading] = useState(true)
     const { useTranslate } = useTranslateService()
 

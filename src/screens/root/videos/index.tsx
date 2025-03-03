@@ -17,13 +17,6 @@ import useNDKStore from "@services/zustand/ndk"
 import theme from "@src/theme"
 import { timeSeconds } from "@services/converter"
 
-interface VideoItemProps { item: NDKEvent, paused: boolean }
-const MemoizedFeedVideoViewer = memo(({ item, paused }: VideoItemProps) => {
-    return <FeedVideoViewer event={item} paused={paused} />;
-}, (prevProps, nextProps) => {
-    return prevProps.item.id === nextProps.item.id && prevProps.paused === nextProps.paused;
-})
-
 const VideosFeed = ({ navigation }: StackScreenProps<any>) => {
 
     const { ndk } = useNDKStore()
@@ -38,7 +31,6 @@ const VideosFeed = ({ navigation }: StackScreenProps<any>) => {
     const [downloading, setDownloading] = useState<boolean>(false)
     const [downloadProgress, setDownloadProgress] = useState<number>(0)
     const [filtersVisible, setFiltersVisible] = useState<boolean>(false)
-    const memorizedVideos = useMemo(() => videos, [videos])
 
     useEffect(() => {
         const unsubscribe = navigation.addListener("blur", () => {
@@ -105,7 +97,7 @@ const VideosFeed = ({ navigation }: StackScreenProps<any>) => {
     }, [])
 
     const renderItem = useCallback(({ item, index }:{ item: NDKEvent, index: number }) => {
-        return <MemoizedFeedVideoViewer item={item} paused={index !== playingIndex || paused} />
+        return <FeedVideoViewer event={item} paused={index !== playingIndex || paused} />
     }, [playingIndex, paused])
 
     const handleDownload = async () => {
@@ -130,7 +122,7 @@ const VideosFeed = ({ navigation }: StackScreenProps<any>) => {
     return (
         <SafeAreaView style={theme.styles.container}>
             <FlatList ref={listRef} pagingEnabled
-                data={memorizedVideos}
+                data={videos}
                 style={{ flex: 1 }}
                 renderItem={renderItem}
                 keyExtractor={(item: NDKEvent) => item.id}
@@ -146,6 +138,7 @@ const VideosFeed = ({ navigation }: StackScreenProps<any>) => {
                 snapToAlignment="center"
                 decelerationRate="fast"
                 ListFooterComponent={<EndLoader />}
+                keyboardShouldPersistTaps="handled"
             />
 
             <VideosHeader 

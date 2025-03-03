@@ -29,7 +29,7 @@ const ConversationChat = ({ route }: StackScreenProps<any>) => {
     const timeout:any = useRef(null)
     const listRef = useRef<FlatList>(null)
     const selectedItems = useRef<Set<NDKEvent>>(new Set<NDKEvent>())
-    const highLigthIndex = useRef<number|null>(null)
+    const [highLigthIndex, setHighlightIndex] = useState<number|null>(null)
     const [replyEvent, setReplyEvent] = useState<NDKEvent|null>(null)
     const { useTranslate } = useTranslateService()
     const { markReadChat, unreadChats, removeChat } = useChatStore()
@@ -97,12 +97,12 @@ const ConversationChat = ({ route }: StackScreenProps<any>) => {
                 const index = chatMessages.findIndex(e => e.id == event.id)
                 if(index != -1) {
                     listRef.current?.scrollToIndex({ viewPosition: .5, animated: true, index })
-                    highLigthIndex.current = index
-                    setTimeout(() => highLigthIndex.current = null, 350)
+                    setHighlightIndex(index)
+                    //setTimeout(() => setHighlightIndex(null), 350)
                 }
             }
         } catch {}
-    }, [chatMessages, highLigthIndex.current, listRef.current])
+    }, [chatMessages, highLigthIndex, listRef.current])
     
     const deleteMessages = useCallback(async (onlyForMe: boolean) => {
         
@@ -173,6 +173,7 @@ const ConversationChat = ({ route }: StackScreenProps<any>) => {
                 listRef={listRef} 
                 events={chatMessages} 
                 highLigthIndex={highLigthIndex}
+                setHighlightIndex={setHighlightIndex}
                 selectedItems={selectedItems}
                 setReplyEvent={setReplyEvent}
             />

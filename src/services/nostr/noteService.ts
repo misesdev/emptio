@@ -1,7 +1,6 @@
 import { NDKEvent, NDKFilter, NDKSubscriptionCacheUsage } from "@nostr-dev-kit/ndk-mobile"
 import { FeedVideosSettings, User } from "../memory/types"
 import useNDKStore from "../zustand/ndk"
-import { useFeedVideosStore } from "../zustand/feedVideos"
 import { extractVideoUrl } from "@/src/utils"
 import { pushMessage } from "../notification"
 

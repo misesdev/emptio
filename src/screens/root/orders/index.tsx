@@ -23,8 +23,9 @@ const FeedOrdersScreen = ({ navigation }: StackScreenProps<any>) => {
     const [posts, setPosts] = useState<NostrEvent[]>([])
 
     useEffect(() => {
-        navigation.setOptions({ header: () => <HeaderFeed navigation={navigation} /> })
         setTimeout(handleData, 10)
+        if(!wallets.length)
+            pushMessage(useTranslate("message.wallet.alertcreate"))    
     }, [])
 
     const handleData = async () => {
@@ -34,15 +35,14 @@ const FeedOrdersScreen = ({ navigation }: StackScreenProps<any>) => {
         {
             const friends = follows.map(u => u.pubkey) as string[]
 
-            listenerEvents({ 
+            const posts = await listenerEvents({ 
                 limit: friends?.length, 
                 kinds: [NostrEventKinds.metadata],
                 authors: friends 
-            }).then(setPosts)
-        }
+            })
 
-        if(!wallets.length)
-            pushMessage(useTranslate("message.wallet.alertcreate"))    
+            setPosts(posts)
+        }
 
         setLoading(false)
     }
@@ -76,8 +76,8 @@ const FeedOrdersScreen = ({ navigation }: StackScreenProps<any>) => {
     }
 
     return (
-        <View style={{ flex: 1 }}>
-
+        <View style={{ flex: 1, backgroundColor: theme.colors.black }}>
+            <HeaderFeed navigation={navigation} />
             <FlatList
                 data={posts}
                 renderItem={({ item }) => <ListItem item={item}/>}

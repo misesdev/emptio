@@ -1,10 +1,11 @@
 import { generateSecretKey, getPublicKey, nip19 } from "nostr-tools"
 import { bytesToHex } from "@noble/hashes/utils"
 import { PairKey } from '../memory/types'
+import { getRandomKey } from "../bitcoin/signature"
 
 export const createPairKeys = (): PairKey => {
 
-    const key = (Math.random() * 9999).toFixed(0).toString()
+    const key = getRandomKey(10) 
 
     const secreteKey = generateSecretKey()
 
