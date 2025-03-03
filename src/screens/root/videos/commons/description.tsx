@@ -24,8 +24,9 @@ const VideoDescription = ({ content, url }: Props) => {
 
     useEffect(() => {
         const text = content.replace(url,"").trim()
-        setContentText(`${text.substring(0, 30).replaceAll("\n"," ")}... <seemore>`)
-        setContentFullText(`${text} <seemore>`)
+        if(text.length <= 30) return setContentText(text)
+        setContentText(`${text.substring(0, 30).replaceAll("\n"," ")} ..<seemore>`)
+        setContentFullText(`${text} ..<seemore>\n `)
     },[])
 
     const handleSetText = useCallback(() => {
@@ -103,13 +104,14 @@ const VideoDescription = ({ content, url }: Props) => {
 }
 
 const styles = StyleSheet.create({
-    contentContainer: { flex: 1, marginBottom: 20, maxHeight: 200, 
+    contentContainer: { flex: 1, marginBottom: 20, maxHeight: 230, 
         paddingHorizontal: 10, zIndex: 999 },
     shadow: { textShadowOffset: { width: 1, height: 1 }, textShadowRadius: 6, 
         textShadowColor: theme.colors.semitransparentdark },
     text: { color: theme.colors.white, paddingVertical: 8 },
     link: { color: theme.colors.blue, textDecorationLine: 'underline' },
-    expandbutton: { color: theme.colors.green, paddingHorizontal: 10 }
+    expandbutton: { color: theme.colors.white, fontWeight: "500", 
+        textDecorationLine: "none" }
 })
 
 export default memo(VideoDescription)

@@ -1,21 +1,20 @@
-import { StyleSheet, TouchableOpacity, Text } from "react-native"
-import theme from "@/src/theme"
+import { StyleSheet, Text } from "react-native"
+import theme from "@src/theme"
 
-type ScreenProps = {
-    hashtag?: string
+interface ScreenProps {
+    hashtag?: string,
+    onPress?: (hashtag: string) => void
 }
-const HashTagViewer = ({ hashtag }: ScreenProps) => {
+
+const HashTagViewer = ({ hashtag, onPress }: ScreenProps) => {
     
-    // return (
-    //     <TouchableOpacity>
-    //         <Text style={styles.profile}>{hashtag}</Text>
-    //     </TouchableOpacity>
-    // )
-    return <Text style={styles.profile}>{hashtag}</Text>
+    const handlePress = () => onPress && hashtag && onPress(hashtag)
+
+    return <Text onPress={handlePress} style={styles.hashtag}>{hashtag}</Text>
 }
 
 const styles = StyleSheet.create({
-    profile: { color: theme.colors.blue }
+    hashtag: { color: theme.colors.white, fontWeight: "500", textDecorationLine: "none" }
 })
 
 export default HashTagViewer
