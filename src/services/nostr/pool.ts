@@ -2,13 +2,12 @@ import NDK, { NDKCacheAdapterSqlite, NDKFilter, NDKPrivateKeySigner,
     NDKSubscriptionCacheUsage } from "@nostr-dev-kit/ndk-mobile"
 import { PairKey, User } from "../memory/types"
 import { publishEvent, NostrEvent, getEvent } from "./events"
-import { getRelays } from "../memory/relays"
-import { getPairKey } from "../memory/pairkeys"
 import { AppState } from "react-native"
 import { ChatUser } from "../zustand/chats"
 import useNDKStore from "../zustand/ndk"
 import { NostrEventKinds } from "@/src/constants/Events"
 import { processEventMessage } from "./processEvents"
+import { storageService } from "../memory"
 
 export const getUserData = async (publicKey: string): Promise<User> => {
 
@@ -45,7 +44,6 @@ export const pushUserData = async (user: User, pairKey: PairKey) => {
 }
 
 export const pushUserFollows = async (event: NostrEvent, pairKey: PairKey) => {
-    
     await publishEvent(event, pairKey, true)
 }
 
@@ -53,17 +51,17 @@ type NostrInstanceProps = { user?: User }
 
 export const getNostrInstance = async ({ user }: NostrInstanceProps): Promise<NDK> => {
 
-    const relays = await getRelays()
+    const relays = await storageService.relays.list()
        
     const ndk = new NDK({ 
         explicitRelayUrls: relays, 
         cacheAdapter: new NDKCacheAdapterSqlite("nevents"),
-        clientName: "emptio_p2p",        
+        clientName: "emptio_p2p",  
     })
 
     if(user?.keychanges) 
     {
-        const pairKey = await getPairKey(user.keychanges ?? "")
+        const pairKey = await storageService.pairkeys.get(user.keychanges ?? "")
 
         ndk.signer = new NDKPrivateKeySigner(pairKey.privateKey)
     }

@@ -1,8 +1,8 @@
-import { User } from "@/src/services/memory/types"
-import theme from "@/src/theme"
-import { getColorFromPubkey } from "@/src/utils"
+import { User } from "@services/memory/types"
+import { getColorFromPubkey } from "@src/utils"
 import { useEffect, useState } from "react"
 import { StyleSheet, Image } from "react-native"
+import theme from "@src/theme"
 
 interface PictureProps {
     user: User,
@@ -22,7 +22,7 @@ export const ProfilePicture = ({ user, size, withBorder=true }: PictureProps) =>
 
     return (
         <Image onError={() => setProfileError(true)}
-            style={[styles.profile, { width: size, height: size, borderColor:profileColor}]}
+            style={[styles.profile, { width: size, height: size, borderColor: profileColor }]}
             source={(profileError || !user.picture) ? require("@assets/images/defaultProfile.png")
                 : { uri: user.picture }
             } 
@@ -33,3 +33,4 @@ export const ProfilePicture = ({ user, size, withBorder=true }: PictureProps) =>
 const styles = StyleSheet.create({
     profile: { borderRadius: 50, borderWidth: 2, overflow: "hidden" } 
 })
+

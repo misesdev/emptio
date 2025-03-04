@@ -1,5 +1,5 @@
 import { Video, VideoRef } from 'react-native-video'
-import { memo, useCallback, useRef, useState } from "react"
+import { memo, useCallback, useEffect, useRef, useState } from "react"
 import { View, StyleSheet, TouchableOpacity, Text, Dimensions } from 'react-native'
 import Ionicons from 'react-native-vector-icons/Ionicons'
 import Slider from '@react-native-community/slider'
@@ -10,16 +10,15 @@ import VideoFooter from './commons/footer'
 import { extractVideoUrl } from '@src/utils'
 import theme from '@src/theme'
 
-type VideoProps = { 
+interface VideoProps { 
     event: NDKEvent,
     paused: boolean
 }
 
 const FeedVideoViewer = ({ event, paused }: VideoProps) => {
 
-    const timeout: any = useRef(null)
+    const timeout = useRef<any>(null)
     const videoRef = useRef<VideoRef>(null)
-    const url = extractVideoUrl(event.content) ?? ""
     const { useTranslate } = useTranslateService()
     const { width, height } = Dimensions.get("window")
     const [duration, setDuration] = useState<number>(0)
@@ -28,6 +27,7 @@ const FeedVideoViewer = ({ event, paused }: VideoProps) => {
     const [mutedVideo, setMutedVideo] = useState<boolean>(false)
     const [showMuted, setShowMuted] = useState<boolean>(false)
     const [loading, setLoading] = useState<boolean>(true)
+    const url = extractVideoUrl(event.content)??""
 
     const onLoadVideo = (data: any) => {
         setDuration(data?.duration||0)
@@ -60,13 +60,6 @@ const FeedVideoViewer = ({ event, paused }: VideoProps) => {
                 ref={videoRef} repeat paused={paused} muted={mutedVideo}
                 playInBackground={false}
                 fullscreenOrientation='portrait'
-                controlsStyles={{ 
-                    hideNext: true, 
-                    hideForward: true,
-                    hidePrevious: true,
-                    hideRewind: true, 
-                    hideFullscreen: true
-                }}    
                 source={{ uri: url }}                
                 style={styles.video}
                 resizeMode="contain"

@@ -11,11 +11,15 @@ import { useCallback, useState } from "react"
 import { userService } from "@services/user"
 import theme from "@src/theme"
 
-interface ProfileViewProps { profile: User }
+interface ProfileFunctionProps { profile: User }
 
-var showProfileFunction: ({ profile }: ProfileViewProps) => void
+var showProfileFunction: ({ profile }: ProfileFunctionProps) => void
 
-const ProfileView = () => {
+interface ProfileViewProps {
+    onHandleFriend: (profile: User, isFriend: boolean) => void
+}
+
+const ProfileView = ({ onHandleFriend }: ProfileViewProps) => {
 
     const { user, follows, setFollows, followsEvent, setFollowsEvent } = useAuth()
     const [visible, setVisible] = useState(false)
@@ -24,7 +28,7 @@ const ProfileView = () => {
     const [pictureError, setPictureError] = useState(false)
     const [isFriend, setIsFriend] = useState(false)
 
-    showProfileFunction = useCallback(({ profile }: ProfileViewProps) => {
+    showProfileFunction = useCallback(({ profile }: ProfileFunctionProps) => {
         setIsFriend(!!follows.find(f => f.pubkey == profile.pubkey))
         setProfile(profile)
         setVisible(true)
@@ -36,10 +40,12 @@ const ProfileView = () => {
             if(!follows.find(f => f.pubkey == profile.pubkey)) {    
                 followsEvent?.tags?.push(["p", profile.pubkey ?? ""])
                 if(setFollows && follows) setFollows([profile,...follows])
+                onHandleFriend(profile, true)
             } else {
                 followsEvent!.tags = followsEvent?.tags?.filter(t => t[0] == "p" && t[1] != profile.pubkey) ?? []
                 if(setFollows && follows) 
                     setFollows([...follows.filter(f => f.pubkey != profile.pubkey)])
+                onHandleFriend(profile, false)
             }
             //if(setFollowsEvent && followsEvent) setFollowsEvent(followsEvent)
             await userService.updateFollows({ 
@@ -120,7 +126,7 @@ const ProfileView = () => {
     )
 }
 
-export const ShowProfileView = (props: ProfileViewProps) => {
+export const ShowProfileView = (props: ProfileFunctionProps) => {
     setTimeout(() => showProfileFunction(props), 10)
 }
 

@@ -1,5 +1,5 @@
 import theme from '@src/theme';
-import { View, StyleSheet, TouchableOpacity, Image, Text } from 'react-native';
+import { View, StyleSheet, TouchableOpacity, Text } from 'react-native';
 import ParsedText from 'react-native-parsed-text';
 import LinkPreview from './LinkPreview';
 import VideoViewer from './VideoViewer';
@@ -162,7 +162,7 @@ const styles = StyleSheet.create({
     link: { color: theme.colors.blue, textDecorationLine: 'underline' },
     webview: { padding: 0, overflow: "hidden" },
     header: { width: "100%", flexDirection: "row", paddingVertical: 4 },
-    profileName: { fontSize: 16, fontWeight: "500", color: theme.colors.white },
+    profileName: { fontSize: 14, fontWeight: "500", color: theme.colors.white },
 });
 
 export default NoteViewer;

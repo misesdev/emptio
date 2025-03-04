@@ -1,9 +1,8 @@
 import NoteViewer from "@components/nostr/event/NoteViewer"
-import { NDKEvent, NDKFilter, NDKSubscriptionCacheUsage } from "@nostr-dev-kit/ndk-mobile"
-import { memo, useCallback, useEffect, useMemo, useState } from "react"
+import { NDKEvent } from "@nostr-dev-kit/ndk-mobile"
+import { useCallback, useMemo, useState } from "react"
 import { Modal, StyleSheet, View, Text, TouchableOpacity, 
     TextInput, FlatList } from "react-native"
-import { RefreshControl } from "react-native-gesture-handler"
 import Ionicons from 'react-native-vector-icons/Ionicons'
 import { useTranslateService } from "@src/providers/translateProvider"
 import useNDKStore from "@services/zustand/ndk"
@@ -11,66 +10,31 @@ import { useAuth } from "@src/providers/userProvider"
 import { timeSeconds } from "@services/converter"
 import theme from "@src/theme"
 
-interface ChatProps {
+interface VideoCommentsProps {
     event: NDKEvent,
+    comments: NDKEvent[],
     visible: boolean,
     setVisible: (state: boolean) => void
 }
-const VideoComments = ({ event, visible, setVisible }: ChatProps) => {
+
+const VideoComments = ({ event, visible, comments, setVisible }: VideoCommentsProps) => {
 
     const { user } = useAuth()
     const { ndk } = useNDKStore()
     const { useTranslate } = useTranslateService()
-    const [message, setMessage] = useState<string>("")
-    const [comments, setComments] = useState<NDKEvent[]>([])
-    const [refreshing, setRefreshing] = useState<boolean>(false)
+    const [comment, setComment] = useState<string>("")
     
     const memorizedComments = useMemo(() => {
         return comments.sort((a,b) => (a.created_at??1)-(b.created_at??1))
     }, [comments])
 
-    useEffect(() => {
-        if(visible) setTimeout(handleLoadComments, 10)
-    }, [visible])
-
-    const handleLoadComments = useCallback(async () => {
-        
-        setRefreshing(true)
-
-        const filter: NDKFilter = { 
-            kinds: [1], "#e": [event.id], until: event.created_at
-        }
-
-        const subscription = ndk.subscribe(filter, {
-            cacheUsage: NDKSubscriptionCacheUsage.PARALLEL,
-            subId: user.pubkey,
-        }) 
-        
-        subscription.on("event", event => { 
-            if(event.tags.find(t => t[0] == "e" && t[3] == "root")) {
-                setComments(prev => [event, ...prev])
-            }
-        })
-
-        const finish = () => setRefreshing(false)
-
-        subscription.on("close", finish)
-        subscription.on("eose", finish)
-
-        subscription.start()
-
-        setTimeout(() => {
-            subscription.stop()
-        }, 300)
-    }, [user, ndk, event, setComments, setRefreshing])
-
     const handlePostComment = useCallback(async () => {
-        if(!message.trim().length) return
+        if(!comment.trim().length) return
 
-        const comment = new NDKEvent(ndk, {
+        const myComment = new NDKEvent(ndk, {
             kind: 1,
             pubkey: user.pubkey??"",
-            content: message.trim(),
+            content: comment.trim(),
             tags: [
                 ["e", event.id, "", "root"],
                 ["p", event.pubkey]
@@ -78,13 +42,13 @@ const VideoComments = ({ event, visible, setVisible }: ChatProps) => {
             created_at: timeSeconds.now()
         })
 
-        await comment.sign()
+        await myComment.sign()
         // comment.publishReplaceable()
 
-        setComments(prev => [...prev, comment])
-        setMessage("")
+        //setComments(prev => [...prev, myComment])
+        setComment("")
 
-    }, [message, user, event])
+    }, [comment, user, event])
 
     const handleReact = useCallback((event: NDKEvent) => {
 
@@ -92,13 +56,29 @@ const VideoComments = ({ event, visible, setVisible }: ChatProps) => {
 
     const renderItem = useCallback(({ item }: { item: NDKEvent }) => {
         return (
-            <View style={{ width: "100%", flexDirection: "row", paddingVertical: 10 }}>
-                <View style={{ width: "90%" }}>
-                    <NoteViewer note={item} />
+            <View style={{ width: "100%", paddingVertical: 10 }}>
+                <View style={{ width: "100%", flexDirection: "row" }}>
+                    <View style={{ width: "90%" }}>
+                        <NoteViewer note={item} />
+                    </View>
+                    <View style={{ width: "10%", alignItems: "center" }}>
+                        <TouchableOpacity onPress={() => handleReact(item)}>
+                            <Ionicons name="heart" size={20} color={theme.colors.white} /> 
+                        </TouchableOpacity>
+                    </View>
                 </View>
-                <View style={{ width: "10%", alignItems: "center" }}>
-                    <TouchableOpacity onPress={() => handleReact(item)}>
-                        <Ionicons name="heart" size={18} color={theme.colors.white} /> 
+                <View style={{ width: "100%", paddingTop: 10, flexDirection: "row" }}>
+                    <TouchableOpacity activeOpacity={.7} style={{ marginHorizontal: 10, flexDirection: "row" }}>
+                        <Text style={{ color: theme.colors.gray }}>
+                            Responder
+                        </Text>
+                        <Ionicons style={{ margin: 2 }} name="chevron-forward" size={16} color={theme.colors.gray} />
+                    </TouchableOpacity>
+                    <TouchableOpacity activeOpacity={.7} style={{ marginHorizontal: 10, flexDirection: "row" }}>
+                        <Text style={{ color: theme.colors.gray }}>
+                            Ver mais (115) respostas
+                        </Text>
+                        <Ionicons style={{ margin: 2 }} name="chevron-forward" size={16} color={theme.colors.gray} />
                     </TouchableOpacity>
                 </View>
             </View>
@@ -132,17 +112,15 @@ const VideoComments = ({ event, visible, setVisible }: ChatProps) => {
                         renderItem={renderItem}
                         style={{ flex: 1 }}
                         contentContainerStyle={styles.listComments}
-                        initialNumToRender={10}
                         ListEmptyComponent={<EmptyComponent />}
-                        refreshControl={<RefreshControl refreshing={refreshing}/>}
                     />
                     {/* Chat Box */}
                     <View style={styles.chatBoxContainer}>
                         <View style={{ flexDirection: "row" }}>
                             <View style={styles.chatInputContainer}>
                                 <TextInput style={styles.chatInput} 
-                                    value={message} 
-                                    onChangeText={setMessage} 
+                                    value={comment} 
+                                    onChangeText={setComment} 
                                     multiline
                                     numberOfLines={5}
                                     textContentType="none"
@@ -188,4 +166,4 @@ const styles = StyleSheet.create({
     empty: { color: theme.colors.gray, marginTop: 200, textAlign: "center" }
 })
 
-export default memo(VideoComments)
+export default VideoComments

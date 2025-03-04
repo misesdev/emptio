@@ -1,6 +1,6 @@
 import { NDKEvent, NDKFilter, NDKSubscriptionCacheUsage } from "@nostr-dev-kit/ndk-mobile"
 import { StackScreenProps } from "@react-navigation/stack"
-import { memo, useCallback, useEffect, useMemo, useRef, useState } from "react"
+import { useCallback, useEffect, useMemo, useRef, useState } from "react"
 import { View, FlatList, SafeAreaView, Text, StyleSheet } from "react-native"
 import { extractVideoUrl } from "@src/utils"
 import Ionicons from 'react-native-vector-icons/Ionicons'
@@ -54,19 +54,17 @@ const VideosFeed = ({ navigation }: StackScreenProps<any>) => {
         const filter: NDKFilter = {
             until: lastTimestamp.current, 
             "#t": feedSettings.filterTags,
-            limit: feedSettings.FETCH_LIMIT,
+            //limit: feedSettings.FETCH_LIMIT,
             kinds: [1, 1063] 
         }
         const subscription = ndk.subscribe(filter, {
-            cacheUsage: NDKSubscriptionCacheUsage.PARALLEL
+            cacheUsage: NDKSubscriptionCacheUsage.ONLY_RELAY
         })
 
         var founds: number = 0
         subscription.on("event", event => {
-            if(founds >= feedSettings.VIDEOS_LIMIT) {
-                return subscription.stop()
-            }
             if(event.created_at) lastTimestamp.current = event.created_at
+            if(founds >= feedSettings.VIDEOS_LIMIT) return subscription.stop()
 
             const url = extractVideoUrl(event.content)
             if(url && !videos.find(v => v.id == event.id) && !blackList.has(event.pubkey)) 
@@ -78,8 +76,9 @@ const VideosFeed = ({ navigation }: StackScreenProps<any>) => {
         
         const finish = () => {
             setTimeout(() => isFetching.current = false, 20)
+            subscription.removeAllListeners()
         }
-
+        
         subscription.on("eose", finish)
         subscription.on("close", finish)
         subscription.start()
@@ -91,10 +90,8 @@ const VideosFeed = ({ navigation }: StackScreenProps<any>) => {
     }
 
     const onViewableItemsChanged = useCallback(({ viewableItems }: any) => {
-        if(viewableItems.length > 0) { 
-            setPlayingIndex(viewableItems[0].index)
-        }
-    }, [])
+        if(viewableItems.length > 0) setPlayingIndex(viewableItems[0].index)
+    }, [setPlayingIndex])
 
     const renderItem = useCallback(({ item, index }:{ item: NDKEvent, index: number }) => {
         return <FeedVideoViewer event={item} paused={index !== playingIndex || paused} />
@@ -115,7 +112,7 @@ const VideosFeed = ({ navigation }: StackScreenProps<any>) => {
 
     const EndLoader = () => (
         <View style={{ paddingVertical: 20 }}>
-            <ActivityIndicator size={30} color={theme.colors.white} />
+            <ActivityIndicator size={24} color={theme.colors.white} />
         </View>
     )
 
@@ -127,12 +124,12 @@ const VideosFeed = ({ navigation }: StackScreenProps<any>) => {
                 renderItem={renderItem}
                 keyExtractor={(item: NDKEvent) => item.id}
                 showsVerticalScrollIndicator={false}
-                viewabilityConfig={{ itemVisiblePercentThreshold: 50 }}
+                viewabilityConfig={{ itemVisiblePercentThreshold: 70 }}
                 onViewableItemsChanged={onViewableItemsChanged}
                 onEndReached={fetchVideos}
                 onEndReachedThreshold={.3}
-                removeClippedSubviews // risk of bugs, do not use please
-                maxToRenderPerBatch={3}
+                removeClippedSubviews
+                maxToRenderPerBatch={2}
                 initialNumToRender={3} 
                 windowSize={3}
                 snapToAlignment="center"

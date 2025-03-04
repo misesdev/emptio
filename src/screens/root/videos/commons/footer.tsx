@@ -15,12 +15,12 @@ import useNDKStore from "@services/zustand/ndk"
 import theme from "@src/theme"
 import { userService } from "@services/user"
 
-type Props = { 
+interface FooterVideoProps { 
     event: NDKEvent, 
     url: string,
 }
 
-const VideoFooter = ({ event, url }: Props) => {
+const VideoFooter = ({ event, url }: FooterVideoProps) => {
 
     const { ndk } = useNDKStore()
     const { user, follows, followsEvent } = useAuth()
@@ -30,50 +30,58 @@ const VideoFooter = ({ event, url }: Props) => {
     const [shareVisible, setShareVisible] = useState<boolean>(false)
     const [reacted, setReacted] = useState<boolean>(false)
     const [reactions, setReactions] = useState<NDKEvent[]>([])
+    const [comments, setComments] = useState<NDKEvent[]>([])
 
     const isFriend = useMemo(() => !!follows?.some(f => f.pubkey === event.pubkey), [follows, event.pubkey])
     
     useEffect(() => { 
         const fetchData = async () => {
             const filters: NDKFilter[] = [
+                { kinds: [1], "#e": [event.id] }, // comments
                 { kinds: [0], authors:[event.pubkey], limit: 1 }, // profile
                 { kinds: [7], authors:[user.pubkey??""], "#e": [event.id], limit: 1 }, // reaction
             ]
-                       
-            const events = await ndk.fetchEvents(filters, {
-                cacheUsage: NDKSubscriptionCacheUsage.PARALLEL
+                   
+            const subscription = ndk.subscribe(filters, {
+                cacheUsage: NDKSubscriptionCacheUsage.ONLY_RELAY
             })
 
-            events.forEach(note => {
-                if(note.kind == 0) setProfile(JSON.parse(note.content) as User)
-                if(note.kind == 7) {
-                    setReactions(prev => [...prev, note])
+            subscription.on("event", event => {
+                if(event.kind == 1) setComments(prev => [...prev, event])
+                if(event.kind == 0) setProfile(JSON.parse(event.content) as User)
+                if(event.kind == 7) {
+                    setReactions(prev => [...prev, event])
                     setReacted(true)
                 }
             })
+
+            const finish = () => subscription.removeAllListeners()
+
+            subscription.on("eose", finish)
+            subscription.on("close", finish)
+
+            setTimeout(() => subscription.stop(), 500)
         }
-        fetchData()
-    }, [event.id, user.pubkey, ndk])
+        setTimeout(fetchData, 10)
+    }, [])
 
     const handleReact = useCallback(async () => {
         setReacted(prev => !prev)
-        if(!reacted) {
-            setTimeout(() => { 
+        setTimeout(() => {
+            if(!reacted) {
                 noteService.reactNote({ note: event, reaction:"❣️" }).then(reaction => {
                     setReactions(prev => [...prev, reaction])
                 })
-            }, 20)
-        }
-        if(reacted) {
-            setTimeout(() => {
+            }
+            if(reacted) {
                 if(reactions[0]) {
                     noteService.deleteReact(reactions[0]).then(reaction => {
                         setReactions(prev => [...prev.filter(r => r.id != reaction.id)])
                     })
                 }
-            }, 20)
-        }
-    }, [event, reactions])
+            }
+        }, 20)
+    }, [event, reacted, reactions, setReacted, setReactions, noteService])
 
     const handleFollow = useCallback(async () => {
         setTimeout(async () => {
@@ -89,7 +97,7 @@ const VideoFooter = ({ event, url }: Props) => {
     return (
         <View style={styles.controlsSliderContainer}>
             <View style={styles.profilebar}>
-                <View style={{ width: "90%" }}>
+                <View style={{ width: "88%" }}>
                     <View style={{ width: "100%", flexDirection: "row" }}>
                         <View style={{ width: "18%", paddingHorizontal: 2 }}>
                             <ProfilePicture user={profile} size={50} />
@@ -124,7 +132,7 @@ const VideoFooter = ({ event, url }: Props) => {
                         <VideoDescription content={event.content} url={url} />
                     </View>
                 </View>
-                <View style={{ width: "10%", alignItems: "center" }}>
+                <View style={{ width: "12%", alignItems: "center" }}>
                     <View style={styles.reactionControls}>
                         <TouchableOpacity onPress={handleReact} style={styles.reactionButton}>
                             <Ionicons style={styles.shadow} 
@@ -134,6 +142,9 @@ const VideoFooter = ({ event, url }: Props) => {
                         </TouchableOpacity>
                         <TouchableOpacity onPress={() => setCommentsVisible(true)} style={styles.reactionButton}>
                             <Ionicons style={styles.shadow} name="chatbubble-outline" size={32} color={theme.colors.white} />
+                            <Text style={[styles.reactionLabel, styles.shadow]}>
+                                {comments.length}
+                            </Text>
                         </TouchableOpacity>
                         <TouchableOpacity onPress={() => setShareVisible(true)} style={styles.reactionButton}>
                             <Ionicons style={styles.shadow} name="paper-plane-outline" size={32} color={theme.colors.white} />
@@ -145,7 +156,7 @@ const VideoFooter = ({ event, url }: Props) => {
                     </View>
                 </View>
             </View>
-            <VideoComments event={event} visible={commentsVisible} 
+            <VideoComments event={event} comments={comments} visible={commentsVisible} 
                 setVisible={setCommentsVisible} 
             />
             <VideoShareBar event={event} visible={shareVisible} 
@@ -156,7 +167,7 @@ const VideoFooter = ({ event, url }: Props) => {
 }
 
 const styles = StyleSheet.create({
-    controlsSliderContainer: { width: "96%", position: "absolute", paddingBottom: 4, 
+    controlsSliderContainer: { width: "98%", position: "absolute", paddingBottom: 4, 
         borderRadius: 5, bottom: 20 },
     controlsSlider: { width: "100%" },
 
@@ -167,12 +178,15 @@ const styles = StyleSheet.create({
         borderWidth: 1, borderColor: theme.colors.white, 
         backgroundColor: theme.colors.transparent },
 
-    reactionControls: { position: "absolute", right: 0, bottom: 65 },
-    reactionButton: { padding: 6, marginVertical: 4, borderRadius: 10,
-        backgroundColor: theme.colors.transparent },
+    reactionControls: { width: "100%", alignItems: "center", position: "absolute", 
+        right: 0, bottom: 68 },
+    reactionButton: { padding: 6, marginVertical: 4, borderRadius: 10, alignItems: "center" },
+    reactionLabel: { color: theme.colors.white, fontSize: 12, paddingHorizontal: 2 },
 
     shadow: { textShadowOffset: { width: 1, height: 1 },
         textShadowRadius: 6, textShadowColor: theme.colors.black, }
 })
 
-export default memo(VideoFooter)
+export default memo(VideoFooter, (prev, next) => {
+    return prev.url === next.url && prev.event.id === next.event.id
+})

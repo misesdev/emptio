@@ -1,13 +1,13 @@
-import theme from "@/src/theme"
+import theme from "@src/theme"
 import { StyleSheet, View, TouchableOpacity } from "react-native"
 import Ionicons from 'react-native-vector-icons/Ionicons'
 
-type Props = {
+interface VideosHeaderProps {
     downloading: boolean,
     handleDownload: () => Promise<void>,
     handleManageFilters: () => void
 }
-const VideosHeader = ({ downloading, handleDownload, handleManageFilters }: Props) => {
+const VideosHeader = ({ downloading, handleDownload, handleManageFilters }: VideosHeaderProps) => {
     return (
         <View style={styles.controlsHeader}>
             <View style={{ width: "14%", alignItems: "center" }}>

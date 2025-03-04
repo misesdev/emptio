@@ -31,14 +31,14 @@ const deleteReact = async (note: NDKEvent): Promise<NDKEvent> => {
     return await note.delete()
 }
 
-const listComments = async (event: NDKEvent, timeout: number=500) :Promise<NDKEvent[]> => {
+const listComments = async (event: NDKEvent, timeout: number=500) : Promise<NDKEvent[]> => {
 
-    return new Promise((resolve) => {
+    return new Promise<NDKEvent[]>((resolve) => {
         try {
             const events: NDKEvent[] = []
         
             const filter: NDKFilter = { 
-                kinds: [1], "#p": [event.pubkey], "#e": [event.id], since: event.created_at 
+                kinds: [1], "#p": [event.pubkey], "#e": [event.id] 
             }
             
             const subscription = ndk.subscribe(filter, { 
@@ -82,8 +82,6 @@ const videoControlls : VideoControlsProps = {
 const subscriptionVideos = async ({ videos, feedSettings }: SubscriptionVideosProps) : Promise<Set<NDKEvent>> => {
 
     return new Promise((resolve) => {
-        console.log("fetching events", feedSettings.VIDEOS_LIMIT)
-
         var timeout: any = null
 
         const filter: NDKFilter = {
@@ -93,8 +91,6 @@ const subscriptionVideos = async ({ videos, feedSettings }: SubscriptionVideosPr
 
         const subscription = ndk.subscribe(filter, { 
             cacheUsage: NDKSubscriptionCacheUsage.CACHE_FIRST,
-            closeOnEose: true,
-            groupable: false
         })
 
         const newerEvents: Set<NDKEvent> = new Set()
@@ -116,7 +112,6 @@ const subscriptionVideos = async ({ videos, feedSettings }: SubscriptionVideosPr
         const finish = () => {
             if(newerEvents.size <= 0) pushMessage("nenhum vídeo novo encotrado")
             if(timeout) clearTimeout(timeout)
-            console.log("finish")
             resolve(newerEvents)
         }
         
@@ -136,6 +131,5 @@ export const noteService = {
     deleteReact,
     listReactions,
     listComments,
-
     subscriptionVideos
 }

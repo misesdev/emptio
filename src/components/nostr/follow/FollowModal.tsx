@@ -1,5 +1,5 @@
-import { useEffect, useState } from "react"
-import { Modal, StyleSheet, Text, TouchableOpacity, View, Image } from "react-native"
+import { useCallback, useState } from "react"
+import { Modal, StyleSheet, Text, TouchableOpacity, View } from "react-native"
 import { useTranslateService } from "@src/providers/translateProvider"
 import { User } from "@services/memory/types"
 import { NoteList } from "../user/NoteList"
@@ -7,15 +7,15 @@ import { ActivityIndicator } from "react-native-paper"
 import Ionicons from "react-native-vector-icons/Ionicons"
 import { copyPubkey, getDisplayPubkey, getUserName } from "@src/utils"
 import { NDKEvent } from "@nostr-dev-kit/ndk-mobile"
-import theme from "@src/theme"
 import { ProfilePicture } from "../user/ProfilePicture"
 import { userService } from "@services/user"
+import theme from "@src/theme"
 
-type followModalProps = {
-    user: User,
+interface followModalProps {
+    user: User
 }
 
-type ButtonProps = {
+interface ButtonProps {
     label: string,
     onPress: () => void,
 }
@@ -35,33 +35,30 @@ const ButtonLight = ({ label, onPress }: ButtonProps) => {
     )
 }
 
-type FollowProps = {
+interface FollowProps {
     handleAddFollow: (user: User) => Promise<void>
 }
 
 const FollowModal = ({ handleAddFollow }: FollowProps) => {
 
+    const { useTranslate } = useTranslateService()
     const [user, setUser] = useState<User>({})
-    const [notes, setNotes] = useState<NDKEvent[]>([])
     const [visible, setVisible] = useState(false)
     const [loading, setloading] = useState(false)
-    const { useTranslate } = useTranslateService()
+    const [notes, setNotes] = useState<NDKEvent[]>([])
 
-    useEffect(() => {
-        if(visible) 
-        {
-            setloading(true)
-            setTimeout(async () => {
-                setNotes(await userService.lastNotes(user, 6))
-                setloading(false)
-            }, 20)
-        }
-    }, [visible])
+    const handleLoadData = useCallback(async (user: User) => {
+        setloading(true)
+        const latestNotes = await userService.lastNotes(user, 10)
+        setNotes(latestNotes)
+        setloading(false)
+    }, [setNotes, setloading, userService])
 
-    showFollowModalFunction = async ({ user }: followModalProps) => {
+    showFollowModalFunction = useCallback(async ({ user }: followModalProps) => {
         setUser(user)
         setVisible(true)
-    }
+        setTimeout(() => handleLoadData(user), 100)
+    }, [setUser, setVisible, handleLoadData])
 
     const handleClose = () => {
         setVisible(false)

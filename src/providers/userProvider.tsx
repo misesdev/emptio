@@ -2,7 +2,7 @@ import { ReactElement, ReactNode, createContext, useContext, useEffect, useState
 import { User, Wallet } from "@services/memory/types"
 import { NostrEvent } from "@services/nostr/events";
 import { userService } from "@services/user";
-import { walletService } from "../services/wallet";
+import { walletService } from "@services/wallet";
 
 type AuthContextType = {
     user: User,

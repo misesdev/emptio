@@ -4,12 +4,12 @@ import { Modal, StyleSheet, View, Text, TouchableOpacity } from "react-native"
 import { FollowList } from "@components/nostr/follow/FollowList"
 import { User } from "@services/memory/types"
 import { useTranslateService } from "@/src/providers/translateProvider"
-import { useAuth } from "@/src/providers/userProvider"
+import { messageService } from "@services/message"
+import { useAuth } from "@src/providers/userProvider"
 import { pushMessage } from "@services/notification"
-import { getUserName } from "@/src/utils"
-import theme from "@/src/theme"
+import { getUserName } from "@src/utils"
+import theme from "@src/theme"
 import { memo } from "react"
-import { messageService } from "@/src/services/message"
 
 type ChatProps = {
     event: NDKEvent,
@@ -87,4 +87,4 @@ const styles = StyleSheet.create({
     },
 })
 
-export default memo(VideoShareBar)
+export default VideoShareBar

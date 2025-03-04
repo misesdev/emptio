@@ -54,8 +54,8 @@ export default {
     "commons.cancel": "Cancel",
     "commons.details": "Details",
     "commons.invite": "Invite",
-    "commons.seemore": "More",
-    "commons.seeless": "Less",
+    "commons.seemore": "See more",
+    "commons.seeless": "See less",
 
     "labels.all": "All",
     "labels.friends": "Friends",

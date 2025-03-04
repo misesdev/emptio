@@ -1,5 +1,5 @@
 import { User } from "@/src/services/memory/types"
-import { StyleSheet, TouchableOpacity, Text } from "react-native"
+import { StyleSheet, Text } from "react-native"
 import { getUserName } from "@/src/utils"
 import { useEffect, useState } from "react"
 import theme from "@/src/theme"

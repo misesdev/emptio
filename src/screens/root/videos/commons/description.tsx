@@ -27,7 +27,7 @@ const VideoDescription = ({ content, url }: Props) => {
         if(text.length <= 30) return setContentText(text)
         setContentText(`${text.substring(0, 30).replaceAll("\n"," ")} ..<seemore>`)
         setContentFullText(`${text} ..<seemore>\n `)
-    },[])
+    }, [])
 
     const handleSetText = useCallback(() => {
         setFullcontent(prev => !prev)
@@ -114,4 +114,6 @@ const styles = StyleSheet.create({
         textDecorationLine: "none" }
 })
 
-export default memo(VideoDescription)
+export default memo(VideoDescription, (prev, next) => {
+    return prev.url === next.url && prev.content === next.content
+})

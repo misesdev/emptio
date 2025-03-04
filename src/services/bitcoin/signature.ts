@@ -1,6 +1,7 @@
 import { secp256k1 } from "@noble/curves/secp256k1"
 import { Network, Signer } from "bitcoinjs-lib"
 import { PairKey } from "../memory/types"
+import { timeSeconds } from "../converter"
 
 export const signHex = (txHex: string, privKeyHex: string): string => {
 
@@ -39,23 +40,17 @@ export const getSigner = ({ network, pairkey }: SignerProps): Signer => {
 export const getRandomKey = (length: number): string => {
 
     var hash = ""
-    const characters = []
-    // Adicionando letras maiúsculas
-    for (let i = 65; i <= 90; i++)
-        characters.push(String.fromCharCode(i))
+    const timestamp = timeSeconds.now().toFixed(0)
+    const characters = "qwertyuiopasdfghjklzxcvbnm1234567890QWERTYUIOPASDFGHJKLZXCVBNM"
 
-    // Adicionando letras minúsculas
-    for (let i = 97; i <= 122; i++)
-        characters.push(String.fromCharCode(i))
+    hash += timestamp.substring(timestamp.length/2)
 
-    // Adicionando números
-    for (let i = 0; i <= 9; i++)
-        characters.push(i.toString())
+    while (hash.length < length) {
+        const randomIndex = Math.floor(Math.random() * characters.length)
+        hash += characters[randomIndex]
+    }
 
-    for (let i = 0; i <= length; i++)
-        hash += characters[parseInt((Math.random() * characters.length).toFixed(0))]
-
-    return hash
+    return hash.slice(0, length)
 }
 
 

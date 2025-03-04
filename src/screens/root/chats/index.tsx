@@ -70,7 +70,7 @@ const ChatsScreen = ({ navigation }: StackScreenProps<any>) => {
     }
 
     const handleFilter = useCallback((section: ChatFilterType) => {
-       
+      
         setFilterSection(section)
         
         if(section == "all") setFilteredChats(chats)
@@ -128,6 +128,13 @@ const ChatsScreen = ({ navigation }: StackScreenProps<any>) => {
         ShowProfileView({ profile })
     }, [ShowProfileView])
 
+    const handleFriend = useCallback((profile: User, isFriend: boolean) => {
+        filterChatsUsers.current.forEach(item => {
+            if(item.profile.pubkey == profile.pubkey) item.is_friend = isFriend
+        })
+        handleFilter(filterSection)
+    }, [filterChatsUsers, handleFilter, filterSection])
+
     return (
         <View style={theme.styles.container}>
             <HeaderChats navigation={navigation} />
@@ -152,7 +159,7 @@ const ChatsScreen = ({ navigation }: StackScreenProps<any>) => {
                 </TouchableOpacity>
             </View>
             <MessageBox />
-            <ProfileView />
+            <ProfileView onHandleFriend={handleFriend} />
         </View>
     )
 }
