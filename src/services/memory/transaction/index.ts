@@ -1,5 +1,5 @@
 import AsyncStorage from "@react-native-async-storage/async-storage"
-import { Transaction } from "./types"
+import { Transaction } from "../types"
 
 export const getTransactions = async (): Promise<Transaction[]> => {
 

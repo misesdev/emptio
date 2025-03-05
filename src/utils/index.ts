@@ -85,4 +85,16 @@ export const getColorFromPubkey = (pubkey: string): string => {
                   `${((hash >> 8) & 0xFF).toString(16).padStart(2, "0")}`;
 
     return color;
-};
+}
+
+export function distinctBy<T>(keySelector: (item: T) => string | number): (items: T[]) => T[] {
+    return (items: T[]) => {
+        const seen = new Set<string | number>()
+        return items.filter(item => {
+            const key = keySelector(item)
+            if (seen.has(key)) return false
+            seen.add(key)
+            return true
+        })
+    }
+}

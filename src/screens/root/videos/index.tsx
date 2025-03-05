@@ -1,4 +1,4 @@
-import { NDKEvent, NDKFilter, NDKSubscriptionCacheUsage } from "@nostr-dev-kit/ndk-mobile"
+import { NDKEvent, NDKFilter, NDKKind, NDKSubscriptionCacheUsage } from "@nostr-dev-kit/ndk-mobile"
 import { StackScreenProps } from "@react-navigation/stack"
 import { useCallback, useEffect, useMemo, useRef, useState } from "react"
 import { View, FlatList, SafeAreaView, Text, StyleSheet } from "react-native"
@@ -20,7 +20,8 @@ import { timeSeconds } from "@services/converter"
 const VideosFeed = ({ navigation }: StackScreenProps<any>) => {
 
     const { ndk } = useNDKStore()
-    const listRef = useRef<FlatList>(null)
+    const timeout = useRef<any>()
+    const events = useRef(new Set())
     const lastTimestamp = useRef<number>(timeSeconds.now())
     const isFetching = useRef<boolean>(false) 
     const { feedSettings, blackList } = useFeedVideosStore()
@@ -32,30 +33,33 @@ const VideosFeed = ({ navigation }: StackScreenProps<any>) => {
     const [downloadProgress, setDownloadProgress] = useState<number>(0)
     const [filtersVisible, setFiltersVisible] = useState<boolean>(false)
 
+    const memorizedVideos = useMemo(() => videos, [videos])
+
     useEffect(() => {
+        loadResetFeed()
         const unsubscribe = navigation.addListener("blur", () => {
             isFetching.current = false
             setPaused(true)
         })
         return unsubscribe
-    }, [])
-
-    useEffect(() => {
-        setVideos([])
-        lastTimestamp.current = timeSeconds.now() 
-        setTimeout(fetchVideos, 10)
     }, [feedSettings])
+
+    const loadResetFeed = () => {
+        setVideos([])
+        events.current.clear()
+        lastTimestamp.current = timeSeconds.now() 
+        setTimeout(fetchVideos, 20)
+    }
 
     useFocusEffect(() => { setPaused(false) })
 
-    const fetchVideos = async () => {
+    const fetchVideos = () => {
         if(isFetching.current) return
         isFetching.current = true
         const filter: NDKFilter = {
             until: lastTimestamp.current, 
             "#t": feedSettings.filterTags,
-            //limit: feedSettings.FETCH_LIMIT,
-            kinds: [1, 1063] 
+            kinds: [NDKKind.Text, NDKKind.Media] 
         }
         const subscription = ndk.subscribe(filter, {
             cacheUsage: NDKSubscriptionCacheUsage.ONLY_RELAY
@@ -63,42 +67,46 @@ const VideosFeed = ({ navigation }: StackScreenProps<any>) => {
 
         var founds: number = 0
         subscription.on("event", event => {
-            if(event.created_at) lastTimestamp.current = event.created_at
-            if(founds >= feedSettings.VIDEOS_LIMIT) return subscription.stop()
-
-            const url = extractVideoUrl(event.content)
-            if(url && !videos.find(v => v.id == event.id) && !blackList.has(event.pubkey)) 
-            {
-                setVideos(prev => [...prev, event])
-                founds++
+            if(!events.current.has(event.id) && !blackList.has(event.pubkey)) 
+            { 
+                if(event.created_at) lastTimestamp.current = event.created_at
+                if(founds >= feedSettings.VIDEOS_LIMIT) return subscription.stop()
+                if(extractVideoUrl(event.content)) 
+                {
+                    setVideos(prev => [...prev, event])
+                    events.current.add(event.id)
+                    founds ++
+                }
             }
         })
         
-        const finish = () => {
+        const finishFetch = () => {
+            clearTimeout(timeout.current)
             setTimeout(() => isFetching.current = false, 20)
             subscription.removeAllListeners()
         }
         
-        subscription.on("eose", finish)
-        subscription.on("close", finish)
-        subscription.start()
+        subscription.on("eose", finishFetch)
+        subscription.on("close", finishFetch)
 
-        setTimeout(() => {
-            if(founds <= 0) pushMessage(useTranslate("feed.videos.notfound"))
+        timeout.current = setTimeout(() => {
+            if(founds === 0) pushMessage(useTranslate("feed.videos.notfound"))
             subscription.stop()
         }, 5000)
     }
 
     const onViewableItemsChanged = useCallback(({ viewableItems }: any) => {
-        if(viewableItems.length > 0) setPlayingIndex(viewableItems[0].index)
-    }, [setPlayingIndex])
+        if(viewableItems.length > 0 && viewableItems[0].index != null) {
+            setPlayingIndex(viewableItems[0].index)
+        }
+    }, [])
 
     const renderItem = useCallback(({ item, index }:{ item: NDKEvent, index: number }) => {
         return <FeedVideoViewer event={item} paused={index !== playingIndex || paused} />
     }, [playingIndex, paused])
 
     const handleDownload = async () => {
-        if(videos.length <= 0) return
+        if(!videos[playingIndex]) return
         const event = videos[playingIndex]
         const url = extractVideoUrl(event.content)
         if(url) {
@@ -118,8 +126,8 @@ const VideosFeed = ({ navigation }: StackScreenProps<any>) => {
 
     return (
         <SafeAreaView style={theme.styles.container}>
-            <FlatList ref={listRef} pagingEnabled
-                data={videos}
+            <FlatList pagingEnabled
+                data={memorizedVideos}
                 style={{ flex: 1 }}
                 renderItem={renderItem}
                 keyExtractor={(item: NDKEvent) => item.id}
@@ -127,15 +135,14 @@ const VideosFeed = ({ navigation }: StackScreenProps<any>) => {
                 viewabilityConfig={{ itemVisiblePercentThreshold: 70 }}
                 onViewableItemsChanged={onViewableItemsChanged}
                 onEndReached={fetchVideos}
-                onEndReachedThreshold={.3}
-                removeClippedSubviews
+                onEndReachedThreshold={.2}
                 maxToRenderPerBatch={2}
-                initialNumToRender={3} 
+                initialNumToRender={3}
                 windowSize={3}
                 snapToAlignment="center"
                 decelerationRate="fast"
+                legacyImplementation
                 ListFooterComponent={<EndLoader />}
-                keyboardShouldPersistTaps="handled"
             />
 
             <VideosHeader 

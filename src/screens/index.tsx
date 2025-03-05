@@ -25,7 +25,7 @@ const InitializeScreen = ({ navigation }: any) => {
     const [loading, setLoading] = useState(true)
     const { useTranslate } = useTranslateService()
 
-    useEffect(() => { 
+    useEffect(() => {  
         handleVerifyLogon()
         initialize()
     }, [])

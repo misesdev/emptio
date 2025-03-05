@@ -1,11 +1,10 @@
 import { Video, VideoRef } from 'react-native-video';
 import { useEffect, useRef, useState } from "react"
 import { View, StyleSheet, TouchableOpacity, Text, Dimensions } from 'react-native';
-import { useTranslateService } from '@/src/providers/translateProvider';
 import Ionicons from 'react-native-vector-icons/Ionicons'
 import Slider from '@react-native-community/slider';
 import { blobService } from '@/src/services/blob';
-import theme from '@/src/theme';
+import theme from '@src/theme';
 import LinkError from './LinkError';
 
 type VideoProps = { 
@@ -84,7 +83,7 @@ const VideoViewer = ({ url, redute=180, fullScreen=false, hideFullscreen=false, 
         <View style={[styles.contentVideo, { 
             height: fullScreen ? height-redute : videoHeight, 
         }]}>
-            <Video onError={() => setError(true)} 
+            <Video onError={() => setError(true)}                
                 ref={videoRef} repeat paused={pausedVideo} muted={mutedVideo}
                 playInBackground={false}
                 fullscreenOrientation='portrait'
@@ -101,6 +100,8 @@ const VideoViewer = ({ url, redute=180, fullScreen=false, hideFullscreen=false, 
                 onLoad={onLoadVideo}
                 onProgress={onProgressVideo}
                 disableFocus
+                removeClippedSubviews
+                renderLoader
             >
             </Video>
             <TouchableOpacity activeOpacity={1} onPress={showUpControls}

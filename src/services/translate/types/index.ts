@@ -60,6 +60,8 @@ export type TranslateWords = "initial.message"
     | "commons.invite"
     | "commons.seemore"
     | "commons.seeless"
+    | "commons.replie"
+    | "commons.replies"
 
     | "labels.all"
     | "labels.username"

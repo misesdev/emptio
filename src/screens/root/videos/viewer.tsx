@@ -1,7 +1,6 @@
 import { Video, VideoRef } from 'react-native-video'
-import { memo, useCallback, useEffect, useRef, useState } from "react"
-import { View, StyleSheet, TouchableOpacity, Text, Dimensions } from 'react-native'
-import Ionicons from 'react-native-vector-icons/Ionicons'
+import { memo, useRef, useState } from "react"
+import { View, StyleSheet, Text, Dimensions } from 'react-native'
 import Slider from '@react-native-community/slider'
 import { useTranslateService } from '@src/providers/translateProvider'
 import { NDKEvent } from '@nostr-dev-kit/ndk-mobile'
@@ -17,71 +16,49 @@ interface VideoProps {
 
 const FeedVideoViewer = ({ event, paused }: VideoProps) => {
 
-    const timeout = useRef<any>(null)
     const videoRef = useRef<VideoRef>(null)
     const { useTranslate } = useTranslateService()
     const { width, height } = Dimensions.get("window")
     const [duration, setDuration] = useState<number>(0)
     const [currentTime, setCurrentTime] = useState<number>(0)
     const [error, setError] = useState<boolean>(false)
-    const [mutedVideo, setMutedVideo] = useState<boolean>(false)
-    const [showMuted, setShowMuted] = useState<boolean>(false)
     const [loading, setLoading] = useState<boolean>(true)
-    const url = extractVideoUrl(event.content)??""
+    const url = useRef(extractVideoUrl(event.content)??"").current
 
     const onLoadVideo = (data: any) => {
         setDuration(data?.duration||0)
         setLoading(false)
     }
 
-    const onProgressVideo = (data: any) => {
+    const onProgressVideo = (data: any) => { 
         setCurrentTime(data?.currentTime||0)
     }
 
-    const handleMute = () => {
-        setShowMuted(true)
-        setMutedVideo(prev => !prev)
-        if(timeout.current) clearTimeout(timeout.current)
-        timeout.current = setTimeout(() => {
-            setShowMuted(false)
-        }, 1000)
-    }
-
-    const handleSeek = useCallback((time: number) => {
+    const handleSeek = (time: number) => {
         if(videoRef.current) {
             videoRef.current.seek(time)
             setCurrentTime(time)
         }
-    }, [videoRef, setCurrentTime])
+    }
 
     return (
         <View style={[styles.contentVideo, { width: width, height: height }]}>
             <Video onError={() => setError(true)} 
-                ref={videoRef} repeat paused={paused} muted={mutedVideo}
-                playInBackground={false}
-                fullscreenOrientation='portrait'
+                ref={videoRef} repeat paused={paused} 
                 source={{ uri: url }}                
                 style={styles.video}
-                resizeMode="contain"
+                resizeMode="none"
                 onLoad={onLoadVideo}
                 onProgress={onProgressVideo}
             />
-            <View style={styles.controlsContainer}
-            >
+            <View style={styles.controlsContainer}>
                 {error && 
-                    <Text style={{ color: theme.colors.white }}>
+                    <Text style={styles.shadow}>
                         {useTranslate("message.default_error")} 
                     </Text>
                 }
                 {loading && !error && 
                     <ActivityIndicator size={20} color={theme.colors.white} />
-                }
-                {showMuted && 
-                    <TouchableOpacity onPress={handleMute} style={styles.mutedIndicator}>
-                        <Ionicons size={34} color={theme.colors.white}
-                            name={mutedVideo ? "volume-mute":"volume-high"}
-                        />
-                    </TouchableOpacity>
                 }
 
                 <VideoFooter event={event} url={url} /> 
@@ -115,8 +92,9 @@ const styles = StyleSheet.create({
     controlsSliderContainer: { width: "100%", position: "absolute", paddingVertical: 2, 
         borderRadius: 5, bottom: 22 },
     controlsSlider: { width: "100%" },
+
+    shadow: { color: theme.colors.white, textShadowOffset: { width: 1, height: 1 },
+        textShadowRadius: 6, textShadowColor: theme.colors.semitransparentdark, }
 })
 
-export default memo(FeedVideoViewer, (prev, next) => {
-    return prev.event.id === next.event.id && prev.paused === next.paused;
-})
+export default memo(FeedVideoViewer)

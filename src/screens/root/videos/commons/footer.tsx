@@ -1,7 +1,7 @@
 import { User } from "@services/memory/types"
 import Ionicons from 'react-native-vector-icons/Ionicons'
 import { copyPubkey, getDisplayPubkey, getUserName } from "@src/utils"
-import { NDKEvent, NDKFilter, NDKSubscriptionCacheUsage } from "@nostr-dev-kit/ndk-mobile"
+import { NDKEvent, NDKFilter, NDKKind, NDKSubscriptionCacheUsage } from "@nostr-dev-kit/ndk-mobile"
 import { useEffect, useState, useCallback, useMemo, memo } from "react"
 import { StyleSheet, View, Text, TouchableOpacity } from "react-native"
 import VideoDescription from "./description"
@@ -14,6 +14,10 @@ import { noteService } from "@services/nostr/noteService"
 import useNDKStore from "@services/zustand/ndk"
 import theme from "@src/theme"
 import { userService } from "@services/user"
+
+const isComment = (event: NDKEvent) => {
+    return event.tags.some(t => t[0] == "e" && t[1] == event.id && t[3] == "root")
+}
 
 interface FooterVideoProps { 
     event: NDKEvent, 
@@ -34,51 +38,60 @@ const VideoFooter = ({ event, url }: FooterVideoProps) => {
 
     const isFriend = useMemo(() => !!follows?.some(f => f.pubkey === event.pubkey), [follows, event.pubkey])
     
-    useEffect(() => { 
-        const fetchData = async () => {
-            const filters: NDKFilter[] = [
-                { kinds: [1], "#e": [event.id] }, // comments
-                { kinds: [0], authors:[event.pubkey], limit: 1 }, // profile
-                { kinds: [7], authors:[user.pubkey??""], "#e": [event.id], limit: 1 }, // reaction
-            ]
-                   
-            const subscription = ndk.subscribe(filters, {
-                cacheUsage: NDKSubscriptionCacheUsage.ONLY_RELAY
-            })
+    useEffect(() => { setTimeout(fetchData, 20) }, [])
+    
+    const isComment = useCallback((note: NDKEvent) => {
+        return note.tags.some(t => t[0] == "e" && t[1] == event.id && t[3] == "root")
+    }, [event])
 
-            subscription.on("event", event => {
-                if(event.kind == 1) setComments(prev => [...prev, event])
-                if(event.kind == 0) setProfile(JSON.parse(event.content) as User)
-                if(event.kind == 7) {
-                    setReactions(prev => [...prev, event])
-                    setReacted(true)
-                }
-            })
+    const fetchData = () => {
+        const filters: NDKFilter[] = [
+            { kinds: [1], "#e": [event.id] }, // comments
+            { kinds: [7], "#e": [event.id] }, // reactions
+            { kinds: [0], authors:[event.pubkey], limit: 1 }, // profile
+        ]
+               
+        const subscription = ndk.subscribe(filters, {
+            cacheUsage: NDKSubscriptionCacheUsage.ONLY_RELAY
+        })
 
-            const finish = () => subscription.removeAllListeners()
+        subscription.on("event", note => {
+            if(note.kind == NDKKind.Metadata) 
+                setProfile(JSON.parse(note.content) as User)
+            if(note.kind == NDKKind.Text && isComment(note)) 
+                setComments(prev => [...prev, note])
+            if(note.kind == NDKKind.Reaction) 
+                setReactions(prev => [...prev, note])
+        })
 
-            subscription.on("eose", finish)
-            subscription.on("close", finish)
-
-            setTimeout(() => subscription.stop(), 500)
+        const finish = () => {
+            subscription.removeAllListeners()
+            setTimeout(() => {
+                setReacted(reactions.some(r => r.pubkey == user.pubkey))
+            }, 20)
         }
-        setTimeout(fetchData, 10)
-    }, [])
+
+        subscription.on("eose", finish)
+        subscription.on("close", finish)
+
+        setTimeout(() => {
+            subscription.stop()
+        }, 1000)
+    }
 
     const handleReact = useCallback(async () => {
         setReacted(prev => !prev)
         setTimeout(() => {
-            if(!reacted) {
+            const reaction = reactions.find(r => r.pubkey == user.pubkey)
+            if(!reaction) {
+                setReactions(prev => [...prev, user as NDKEvent])
                 noteService.reactNote({ note: event, reaction:"❣️" }).then(reaction => {
-                    setReactions(prev => [...prev, reaction])
+                    setReactions(prev => [...prev.filter(r => r.pubkey != user.pubkey), reaction])
                 })
             }
-            if(reacted) {
-                if(reactions[0]) {
-                    noteService.deleteReact(reactions[0]).then(reaction => {
-                        setReactions(prev => [...prev.filter(r => r.id != reaction.id)])
-                    })
-                }
+            if(reaction) {
+                setReactions(prev => [...prev.filter(r => r.id != reaction.id)])
+                noteService.deleteReact(reaction)
             }
         }, 20)
     }, [event, reacted, reactions, setReacted, setReactions, noteService])
@@ -135,16 +148,20 @@ const VideoFooter = ({ event, url }: FooterVideoProps) => {
                 <View style={{ width: "12%", alignItems: "center" }}>
                     <View style={styles.reactionControls}>
                         <TouchableOpacity onPress={handleReact} style={styles.reactionButton}>
-                            <Ionicons style={styles.shadow} 
-                                name={reacted ? "heart" : "heart-outline"} 
-                                size={32} color={theme.colors.white} 
-                            />
+                            <Ionicons style={styles.shadow} name={reacted ? "heart" : "heart-outline"} size={32} color={theme.colors.white} />
+                            {!!reactions.length &&
+                                <Text style={[styles.reactionLabel, styles.shadow]}>
+                                    {reactions.length}
+                                </Text>
+                            }
                         </TouchableOpacity>
                         <TouchableOpacity onPress={() => setCommentsVisible(true)} style={styles.reactionButton}>
                             <Ionicons style={styles.shadow} name="chatbubble-outline" size={32} color={theme.colors.white} />
-                            <Text style={[styles.reactionLabel, styles.shadow]}>
-                                {comments.length}
-                            </Text>
+                            {!!comments.length &&
+                                <Text style={[styles.reactionLabel, styles.shadow]}>
+                                    {comments.length}
+                                </Text>
+                            }
                         </TouchableOpacity>
                         <TouchableOpacity onPress={() => setShareVisible(true)} style={styles.reactionButton}>
                             <Ionicons style={styles.shadow} name="paper-plane-outline" size={32} color={theme.colors.white} />
@@ -181,10 +198,11 @@ const styles = StyleSheet.create({
     reactionControls: { width: "100%", alignItems: "center", position: "absolute", 
         right: 0, bottom: 68 },
     reactionButton: { padding: 6, marginVertical: 4, borderRadius: 10, alignItems: "center" },
-    reactionLabel: { color: theme.colors.white, fontSize: 12, paddingHorizontal: 2 },
+    reactionLabel: { minWidth: 34, textAlign: "center", color: theme.colors.white, 
+        fontSize: 10, paddingHorizontal: 2 },
 
     shadow: { textShadowOffset: { width: 1, height: 1 },
-        textShadowRadius: 6, textShadowColor: theme.colors.black, }
+        textShadowRadius: 6, textShadowColor: theme.colors.semitransparentdark, }
 })
 
 export default memo(VideoFooter, (prev, next) => {

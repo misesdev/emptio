@@ -1,5 +1,5 @@
 import EncryptedStorage from "react-native-encrypted-storage"
-import { PairKey } from "./types"
+import { PairKey } from "../types"
 
 export const getPairKeys = async () : Promise<PairKey[]> => {
     

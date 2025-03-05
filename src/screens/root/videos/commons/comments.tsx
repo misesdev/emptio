@@ -1,4 +1,3 @@
-import NoteViewer from "@components/nostr/event/NoteViewer"
 import { NDKEvent } from "@nostr-dev-kit/ndk-mobile"
 import { useCallback, useMemo, useState } from "react"
 import { Modal, StyleSheet, View, Text, TouchableOpacity, 
@@ -9,6 +8,7 @@ import useNDKStore from "@services/zustand/ndk"
 import { useAuth } from "@src/providers/userProvider"
 import { timeSeconds } from "@services/converter"
 import theme from "@src/theme"
+import CommentItem from "./comment"
 
 interface VideoCommentsProps {
     event: NDKEvent,
@@ -23,9 +23,11 @@ const VideoComments = ({ event, visible, comments, setVisible }: VideoCommentsPr
     const { ndk } = useNDKStore()
     const { useTranslate } = useTranslateService()
     const [comment, setComment] = useState<string>("")
-    
+   
+    // Get only principal comments
     const memorizedComments = useMemo(() => {
-        return comments.sort((a,b) => (a.created_at??1)-(b.created_at??1))
+        return comments//.filter(comment => comment.tags.filter(t => t[0] == "e").length == 1)
+            .sort((a,b) => (a.created_at??1)-(b.created_at??1))
     }, [comments])
 
     const handlePostComment = useCallback(async () => {
@@ -45,45 +47,19 @@ const VideoComments = ({ event, visible, comments, setVisible }: VideoCommentsPr
         await myComment.sign()
         // comment.publishReplaceable()
 
-        //setComments(prev => [...prev, myComment])
         setComment("")
 
     }, [comment, user, event])
 
-    const handleReact = useCallback((event: NDKEvent) => {
-
-    }, [user])
+    const getReplies = useCallback((event: NDKEvent) => {
+        return comments.filter(comment => {
+            return comment.tags.some(t => t[0] == "e" && t[1] == event.id)
+        })
+    }, [comments])
 
     const renderItem = useCallback(({ item }: { item: NDKEvent }) => {
-        return (
-            <View style={{ width: "100%", paddingVertical: 10 }}>
-                <View style={{ width: "100%", flexDirection: "row" }}>
-                    <View style={{ width: "90%" }}>
-                        <NoteViewer note={item} />
-                    </View>
-                    <View style={{ width: "10%", alignItems: "center" }}>
-                        <TouchableOpacity onPress={() => handleReact(item)}>
-                            <Ionicons name="heart" size={20} color={theme.colors.white} /> 
-                        </TouchableOpacity>
-                    </View>
-                </View>
-                <View style={{ width: "100%", paddingTop: 10, flexDirection: "row" }}>
-                    <TouchableOpacity activeOpacity={.7} style={{ marginHorizontal: 10, flexDirection: "row" }}>
-                        <Text style={{ color: theme.colors.gray }}>
-                            Responder
-                        </Text>
-                        <Ionicons style={{ margin: 2 }} name="chevron-forward" size={16} color={theme.colors.gray} />
-                    </TouchableOpacity>
-                    <TouchableOpacity activeOpacity={.7} style={{ marginHorizontal: 10, flexDirection: "row" }}>
-                        <Text style={{ color: theme.colors.gray }}>
-                            Ver mais (115) respostas
-                        </Text>
-                        <Ionicons style={{ margin: 2 }} name="chevron-forward" size={16} color={theme.colors.gray} />
-                    </TouchableOpacity>
-                </View>
-            </View>
-        )
-    }, [])
+        return <CommentItem event={item} replies={getReplies(item)} />
+    }, [getReplies])
 
     const EmptyComponent = () => {
         return (
@@ -95,7 +71,7 @@ const VideoComments = ({ event, visible, comments, setVisible }: VideoCommentsPr
 
     return (
         <Modal visible={visible} transparent animationType="slide"
-            onRequestClose={() => setVisible(false)}>
+            onRequestClose={() => setVisible(false)} >
             <View style={styles.overlayer}>
                 <View style={styles.modalContainer}>
                     <View style={styles.header}>
@@ -146,8 +122,9 @@ const VideoComments = ({ event, visible, comments, setVisible }: VideoCommentsPr
 }
 
 const styles = StyleSheet.create({
-    overlayer: { flex: 1, justifyContent: "flex-end", backgroundColor: theme.colors.transparent },
-    modalContainer: { height: "70%", backgroundColor: theme.colors.semitransparentdark,
+    overlayer: { flex: 1, justifyContent: "flex-end", overflow: "hidden",
+        backgroundColor: theme.colors.transparent },
+    modalContainer: { height: "76%", backgroundColor: theme.colors.semitransparentdark,
         borderTopLeftRadius: 10, borderTopRightRadius: 10, padding: 12 },
     header: { flexDirection: "row", justifyContent: "space-between", alignItems: "center",
         marginBottom: 10, paddingHorizontal: 10 },

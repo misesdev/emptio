@@ -1,7 +1,7 @@
 import { NDKEvent } from '@nostr-dev-kit/ndk';
 import * as SQLite from 'expo-sqlite';
-import { TypeCategory } from '../../notification/application';
-import { ChatUser } from '../../zustand/chats';
+import { TypeCategory } from '@services/notification/application';
+import { ChatUser } from '@services/zustand/chats';
 
 let database: SQLite.SQLiteDatabase
 

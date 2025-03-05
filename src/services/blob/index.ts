@@ -42,7 +42,9 @@ const downloadVideo = async ({ url, setDownloading, setDownloadProgress  }: Down
     setDownloading(true)
     setDownloadProgress(0)
 
-    const filePath = `${FileSystem.ExternalDirectoryPath}${url.substring(url.lastIndexOf("/"))}`
+    const fileName = url.substring(url.lastIndexOf("/"))
+    const filePath = `${FileSystem.ExternalDirectoryPath}${fileName}`
+
     await FileSystem.downloadFile({
         fromUrl: url,
         toFile: filePath,
@@ -53,7 +55,7 @@ const downloadVideo = async ({ url, setDownloading, setDownloadProgress  }: Down
     }).promise.then(() => {
         setDownloading(false)
         setDownloadProgress(0)
-        CameraRoll.saveAsset(filePath, { type: "video" })
+        CameraRoll.saveAsset(filePath, { type: "video", album: process.env.APP_NAME })
         useTranslate("message.download.successfully").then(pushMessage)
     }).catch(() => { 
         setDownloading(false)
@@ -66,13 +68,14 @@ const downloadImage = async ({ url, setDownloading }: DownloadProps) => {
     if(!(await getGaleryPermission())) return
 
     setDownloading(true)
-    const filePath = `${FileSystem.ExternalDirectoryPath}${url.substring(url.lastIndexOf("/"))}`
+    const fileName = url.substring(url.lastIndexOf("/"))
+    const filePath = `${FileSystem.ExternalDirectoryPath}${fileName}`
     await FileSystem.downloadFile({
         fromUrl: url,
         toFile: filePath,
     }).promise.then(() => {
         setDownloading(false)
-        CameraRoll.saveAsset(filePath, { type: "photo" })
+        CameraRoll.saveAsset(filePath, { type: "photo", album: process.env.APP_NAME })
         useTranslate("message.download.successfully").then(pushMessage)
     }).catch(() => { 
         setDownloading(false)

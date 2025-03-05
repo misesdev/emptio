@@ -56,6 +56,8 @@ export default {
     "commons.invite": "Invite",
     "commons.seemore": "See more",
     "commons.seeless": "See less",
+    "commons.replie": "Replie",
+    "commons.replies": "See replies",
 
     "labels.all": "All",
     "labels.friends": "Friends",

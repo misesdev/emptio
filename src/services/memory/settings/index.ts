@@ -1,5 +1,5 @@
 import AsyncStorage from "@react-native-async-storage/async-storage"
-import { FeedVideosSettings, Settings } from "./types";
+import { FeedVideosSettings, Settings } from "../types";
 
 export const saveSettings = async (settings: Settings) => {
     await AsyncStorage.setItem("settings", JSON.stringify(settings))
@@ -23,7 +23,7 @@ export const saveFeedVideoSettings = async (settings: FeedVideosSettings) => {
 
 const defaultFeedSettings: FeedVideosSettings = { 
     FETCH_LIMIT: 500,
-    VIDEOS_LIMIT: 50,
+    VIDEOS_LIMIT: 20,
     filterTags: [
         "video", "meme", "memestr", "nostr", "news", "animalstr", "animal", "bitcoin"
     ]

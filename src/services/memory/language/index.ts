@@ -1,5 +1,5 @@
 import AsyncStorage from "@react-native-async-storage/async-storage"
-import { Language } from "../translate/types"
+import { Language } from "@services/translate/types"
 
 export const saveLanguage = async (language: Language) => { 
     await AsyncStorage.setItem("language", JSON.stringify(language))
