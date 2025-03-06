@@ -1,4 +1,5 @@
-import { NDKEvent, NDKFilter, NDKKind, NDKSubscriptionCacheUsage } from "@nostr-dev-kit/ndk-mobile"
+import { NDKEvent, NDKFilter, NDKKind, NDKSubscription, 
+    NDKSubscriptionCacheUsage } from "@nostr-dev-kit/ndk-mobile"
 import { StackScreenProps } from "@react-navigation/stack"
 import { useCallback, useEffect, useMemo, useRef, useState } from "react"
 import { View, FlatList, SafeAreaView, Text, StyleSheet } from "react-native"
@@ -22,6 +23,7 @@ const VideosFeed = ({ navigation }: StackScreenProps<any>) => {
     const { ndk } = useNDKStore()
     const timeout = useRef<any>()
     const events = useRef(new Set())
+    const subscription = useRef<NDKSubscription>()
     const lastTimestamp = useRef<number>(timeSeconds.now())
     const isFetching = useRef<boolean>(false) 
     const { feedSettings, blackList } = useFeedVideosStore()
@@ -29,9 +31,6 @@ const VideosFeed = ({ navigation }: StackScreenProps<any>) => {
     const [videos, setVideos] = useState<NDKEvent[]>([])
     const [paused, setPaused] = useState<boolean>(false)
     const [playingIndex, setPlayingIndex] = useState<number>(0) 
-    const [downloading, setDownloading] = useState<boolean>(false)
-    const [downloadProgress, setDownloadProgress] = useState<number>(0)
-    const [filtersVisible, setFiltersVisible] = useState<boolean>(false)
 
     const memorizedVideos = useMemo(() => videos, [videos])
 
@@ -42,7 +41,7 @@ const VideosFeed = ({ navigation }: StackScreenProps<any>) => {
             setPaused(true)
         })
         return unsubscribe
-    }, [feedSettings])
+    }, [feedSettings.filterTags])
 
     const loadResetFeed = () => {
         setVideos([])
@@ -54,23 +53,26 @@ const VideosFeed = ({ navigation }: StackScreenProps<any>) => {
     useFocusEffect(() => { setPaused(false) })
 
     const fetchVideos = () => {
-        if(isFetching.current) return
+        if(isFetching.current) return;
+
         isFetching.current = true
+
         const filter: NDKFilter = {
             until: lastTimestamp.current, 
             "#t": feedSettings.filterTags,
             kinds: [NDKKind.Text, NDKKind.Media] 
         }
-        const subscription = ndk.subscribe(filter, {
+
+        subscription.current = ndk.subscribe(filter, {
             cacheUsage: NDKSubscriptionCacheUsage.ONLY_RELAY
         })
 
         var founds: number = 0
-        subscription.on("event", event => {
+        subscription.current.on("event", event => {
             if(!events.current.has(event.id) && !blackList.has(event.pubkey)) 
             { 
                 if(event.created_at) lastTimestamp.current = event.created_at
-                if(founds >= feedSettings.VIDEOS_LIMIT) return subscription.stop()
+                if(founds >= feedSettings.VIDEOS_LIMIT) return subscription.current?.stop()
                 if(extractVideoUrl(event.content)) 
                 {
                     setVideos(prev => [...prev, event])
@@ -83,15 +85,17 @@ const VideosFeed = ({ navigation }: StackScreenProps<any>) => {
         const finishFetch = () => {
             clearTimeout(timeout.current)
             setTimeout(() => isFetching.current = false, 20)
-            subscription.removeAllListeners()
+            subscription.current?.stop()
+            subscription.current?.removeAllListeners()
+            subscription.current = undefined
         }
         
-        subscription.on("eose", finishFetch)
-        subscription.on("close", finishFetch)
+        subscription.current.on("eose", finishFetch)
+        subscription.current.on("close", finishFetch)
 
         timeout.current = setTimeout(() => {
             if(founds === 0) pushMessage(useTranslate("feed.videos.notfound"))
-            subscription.stop()
+            subscription.current?.stop()
         }, 5000)
     }
 
@@ -105,18 +109,18 @@ const VideosFeed = ({ navigation }: StackScreenProps<any>) => {
         return <FeedVideoViewer event={item} paused={index !== playingIndex || paused} />
     }, [playingIndex, paused])
 
-    const handleDownload = async () => {
-        if(!videos[playingIndex]) return
-        const event = videos[playingIndex]
-        const url = extractVideoUrl(event.content)
-        if(url) {
-            await blobService.downloadVideo({ 
-                url, 
-                setDownloading, 
-                setDownloadProgress 
-            })
-        }
-    }
+    // const handleDownload = async () => {
+    //     if(!videos[playingIndex]) return
+    //     const event = videos[playingIndex]
+    //     const url = extractVideoUrl(event.content)
+    //     if(url) {
+    //         await blobService.downloadVideo({ 
+    //             url, 
+    //             setDownloading, 
+    //             setDownloadProgress 
+    //         })
+    //     }
+    // }
 
     const EndLoader = () => (
         <View style={{ paddingVertical: 20 }}>
@@ -136,30 +140,16 @@ const VideosFeed = ({ navigation }: StackScreenProps<any>) => {
                 onViewableItemsChanged={onViewableItemsChanged}
                 onEndReached={fetchVideos}
                 onEndReachedThreshold={.2}
-                maxToRenderPerBatch={2}
+                maxToRenderPerBatch={3}
                 initialNumToRender={3}
                 windowSize={3}
                 snapToAlignment="center"
                 decelerationRate="fast"
                 legacyImplementation
                 ListFooterComponent={<EndLoader />}
+                disableVirtualization={false}
+                removeClippedSubviews // experimental
             />
-
-            <VideosHeader 
-                downloading={downloading} 
-                handleDownload={handleDownload}
-                handleManageFilters={() => setFiltersVisible(true)}
-            />
-
-            {downloading &&
-                <View style={styles.downloadProgressContent}>
-                    <Ionicons name={"cloud-download"} size={18} color={theme.colors.white} />
-                    <Text style={{ fontSize: 16, color: theme.colors.white }}>
-                        {downloadProgress.toFixed(0)}%
-                    </Text>
-                </View>
-            }
-            <VideosFilters visible={filtersVisible} setVisible={setFiltersVisible} />
         </SafeAreaView>
     )
 }

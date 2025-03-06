@@ -19,7 +19,7 @@ const theme = {
         chat_sended: "#033333",
         transparent: "transparent",
         semitransparent: "rgba(0,0,0,.6)",
-        semitransparentdark: "rgba(0,0,0,.88)",
+        semitransparentdark: "rgba(0,0,0,.9)",
         link: "#0940e3",
         disabled: "#26292e"
     },
@@ -56,6 +56,10 @@ const theme = {
             height: 0,
             overflow: 'hidden',
         },
+        row: {
+            width: "100%",
+            flexDirection: "row"
+        }
     })
 };
 

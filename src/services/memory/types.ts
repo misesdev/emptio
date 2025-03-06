@@ -1,3 +1,4 @@
+import { NDKEvent } from "@nostr-dev-kit/ndk-mobile"
 import { Relay } from "nostr-tools"
 
 export type PairKey = {
@@ -98,7 +99,7 @@ export type User = {
 export type FeedVideosSettings = {
     VIDEOS_LIMIT: number,
     FETCH_LIMIT: number,
-    filterTags: string[]
+    filterTags: string[],
 }
 
 export type Settings = {

@@ -1,11 +1,13 @@
 import { create } from "zustand"
 import { FeedVideosSettings } from "../memory/types"
 import { storageService } from "../memory"
+import { NDKEvent } from "@nostr-dev-kit/ndk-mobile"
 
 interface FeedVideoStore {
     feedSettings: FeedVideosSettings,
     setFeedSettings: (settings: FeedVideosSettings) => void,
     blackList: Set<string>,
+    savedEvents: Set<NDKEvent>,
     addOnBlackList: (pubkey: string) => void,
     initialize: () => Promise<void>
 }
@@ -13,11 +15,12 @@ interface FeedVideoStore {
 export const useFeedVideosStore = create<FeedVideoStore>((set) => ({
     feedSettings: { 
         FETCH_LIMIT: 500,
-        VIDEOS_LIMIT: 20,
+        VIDEOS_LIMIT: 30,
         filterTags: [
             "video", "meme", "memestr", "nostr", "news", "animalstr", "animal", "bitcoin"
-        ]
+        ],
     },
+    savedEvents: new Set<NDKEvent>([]),
     blackList: new Set<string>([]),
     addOnBlackList: (pubkey: string) => {
         set(state => {
@@ -32,10 +35,12 @@ export const useFeedVideosStore = create<FeedVideoStore>((set) => ({
     },
     initialize: async () => {
         const blackList = await storageService.settings.blackList.get()
-        const settings = await storageService.settings.feedVideos.get()
+        const feedSettings = await storageService.settings.feedVideos.get()
+        const savedEvents = await storageService.database.events.list("videos")
         set(() => ({
-            blackList: blackList,
-            feedSettings: settings
+            blackList,
+            feedSettings,
+            savedEvents: new Set(savedEvents) 
         }))
     }
 }))

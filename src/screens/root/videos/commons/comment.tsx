@@ -1,11 +1,11 @@
 import NoteViewer from "@components/nostr/event/NoteViewer"
-import { NDKEvent, NDKFilter, NDKKind, NDKSubscriptionCacheUsage } from "@nostr-dev-kit/ndk-mobile"
+import { NDKEvent, NDKFilter, NDKKind, NDKSubscription, NDKSubscriptionCacheUsage } from "@nostr-dev-kit/ndk-mobile"
 import { TouchableOpacity, View, Text, StyleSheet } from "react-native"
 import Ionicons from "react-native-vector-icons/Ionicons"
 import theme from "@src/theme"
 import { useTranslateService } from "@src/providers/translateProvider"
 import useNDKStore from "@services/zustand/ndk"
-import { useEffect, useState } from "react"
+import { useEffect, useRef, useState } from "react"
 import { useAuth } from "@src/providers/userProvider"
 import { noteService } from "@services/nostr/noteService"
 
@@ -18,32 +18,40 @@ const CommentItem = ({ event, replies }: CommentItemProps) => {
    
     const { user } = useAuth()
     const { ndk } = useNDKStore()
+    const timeout = useRef<any>(null)
+    const subscription = useRef<NDKSubscription>()
     const { useTranslate } = useTranslateService()
     const [showReplies, setShowReplies] = useState(false)
     const [reacted, setReacted] = useState<boolean>(false)
     const [reactions, setReactions] = useState<NDKEvent[]>([])
 
-    useEffect(() => { setTimeout(fetchReactions, 20) }, [])
+    useEffect(() => { 
+        setTimeout(fetchReactions, 20)
+        const unsubscribe = () => {
+            if(timeout.current) clearTimeout(timeout.current)
+            if(subscription.current) {
+                subscription.current.stop()
+                subscription.current.removeAllListeners()
+                subscription.current = undefined
+            }
+        }
+        return unsubscribe
+    }, [])
         
     const fetchReactions = async () => {
+        
         const filter: NDKFilter = { kinds: [NDKKind.Reaction], "#e": [event.id] }
-        const subscription = ndk.subscribe(filter, {
+        subscription.current = ndk.subscribe(filter, {
             cacheUsage: NDKSubscriptionCacheUsage.ONLY_RELAY
-        })        
-        subscription.on("event", event => setReactions(prev => [...prev, event]))
+        })  
 
-        const finish = () => { 
-            subscription.removeAllListeners()
-            setTimeout(() => {
-                setReacted(reactions.some(r => r.pubkey == user.pubkey))
-            }, 20)
-        }
+        subscription.current.on("event", event => setReactions(prev => [...prev, event]))
 
-        subscription.on("close", finish)
-        subscription.on("eose", finish)
-
-        setTimeout(() => {
-            subscription.stop()
+        timeout.current = setTimeout(() => {
+            subscription.current?.stop()
+            subscription.current?.removeAllListeners()
+            subscription.current = undefined
+            setReacted(reactions.some(r => r.pubkey == user.pubkey))
         }, 1000)
     }
 

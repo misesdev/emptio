@@ -3,15 +3,15 @@ import LinkPreview from "@components/nostr/event/LinkPreview"
 import ProfileViewer from "@components/nostr/event/ProfileViewer"
 import ImagePreview from "@components/nostr/event/ImagePreview"
 import { replaceContentEvent } from "@src/utils"
-import { memo, useCallback, useEffect, useState } from "react"
+import { memo, useEffect, useState } from "react"
 import { StyleSheet, ScrollView, Text } from "react-native"
 import ParsedText from "react-native-parsed-text"
 import { useTranslateService } from "@src/providers/translateProvider"
 import theme from "@src/theme"
 
-type Props = { content: string, url: string }
+interface DescriptionProps { content: string, url: string }
 
-const VideoDescription = ({ content, url }: Props) => {
+const VideoDescription = ({ content, url }: DescriptionProps) => {
     const seeMoreRegex = /<seemore>/g
     const urlRegex = /(https?:\/\/[^\s]+)/g
     const hashTagRegex = /#([\wáéíóúãõâêîôûäëïöüçñÀ-ÿ0-9_]+)/g
@@ -26,26 +26,20 @@ const VideoDescription = ({ content, url }: Props) => {
         const text = content.replace(url,"").trim()
         if(text.length <= 30) return setContentText(text)
         setContentText(`${text.substring(0, 30).replaceAll("\n"," ")} ..<seemore>`)
-        setContentFullText(`${text} ..<seemore>\n `)
+        setContentFullText(`${text} \n..<seemore>\n `)
     }, [])
 
-    const handleSetText = useCallback(() => {
+    const handleSetText = () => {
         setFullcontent(prev => !prev)
-    }, [setFullcontent])
+    }
 
     const isImageUrl = (url: string): boolean => {
         return /\.(jpeg|jpg|gif|png|webp|svg)(\?.*)?$/.test(url.toLowerCase());
     }
 
-    const isVideoUrl = (url: string): boolean => {
-        return /\.(mp4|webm|ogg|mov|avi|mkv|flv)(\?.*)?$/.test(url.toLowerCase());
-    }
-
     const renderLink = (matchingString: string, matches: string[]): any => {
         const url = matches[0]
         if (isImageUrl(url)) return <ImagePreview url={url} />
-        // } else if(isVideoUrl(url)) {
-        // } else 
         return <LinkPreview link={url} />
     }
 
@@ -53,7 +47,7 @@ const VideoDescription = ({ content, url }: Props) => {
         const nostr = matches[0]
         if(nostr.includes("npub")) return <ProfileViewer npub={nostr} />
         else if(nostr.includes("nprofile")) return <ProfileViewer nprofile={nostr} />
-        else if(nostr.includes("naddr")) return "@addr"
+        //else if(nostr.includes("naddr")) return "@addr"
         return ""
     }
     
@@ -69,7 +63,7 @@ const VideoDescription = ({ content, url }: Props) => {
         )
     }
 
-    const TextRenderComponent = ({ text }: { text: string}) => {
+    const TextRenderComponent = memo(({ text }: { text: string}) => {
         return (
             <ParsedText 
                 style={[styles.text, styles.shadow]}
@@ -94,7 +88,7 @@ const VideoDescription = ({ content, url }: Props) => {
                 {replaceContentEvent(text)} 
             </ParsedText>
         )
-    }
+    })
     
     return (
         <ScrollView nestedScrollEnabled style={styles.contentContainer}>
@@ -114,6 +108,4 @@ const styles = StyleSheet.create({
         textDecorationLine: "none" }
 })
 
-export default memo(VideoDescription, (prev, next) => {
-    return prev.url === next.url && prev.content === next.content
-})
+export default VideoDescription

@@ -9,6 +9,7 @@ import { getUser, insertUpdateUser, deleteUser } from "./user"
 import { clearDefaultWallets, deleteWallet, deleteWallets, getWallet, getWallets, 
     insertWallet, updateWallet } from "./wallets"
 import { deletePaymentKey, getPaymentKey, getPaymentKeys, savePaymentKey } from "./payments"
+import { deleteEvent, insertEvent, listEventsByCategory } from "./database/events"
 
 const clearStorage = async () => {
     await AsyncStorage.clear()
@@ -71,6 +72,14 @@ const paymentkeys = {
     delete: deletePaymentKey 
 }
 
+const database = {
+    events: {
+        add: insertEvent,
+        delete: deleteEvent,
+        list: listEventsByCategory
+    }
+}
+
 export const storageService = {
     settings,
     language,
@@ -79,5 +88,6 @@ export const storageService = {
     relays,
     user,
     wallets,
+    database,
     clear: clearStorage
 }

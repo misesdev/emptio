@@ -1,6 +1,6 @@
 import { User } from "@services/memory/types"
 import { getColorFromPubkey } from "@src/utils"
-import { useEffect, useState } from "react"
+import { memo, useEffect, useState } from "react"
 import { StyleSheet, Image } from "react-native"
 import theme from "@src/theme"
 

@@ -1,8 +1,8 @@
 import { User } from "@services/memory/types"
 import Ionicons from 'react-native-vector-icons/Ionicons'
 import { copyPubkey, getDisplayPubkey, getUserName } from "@src/utils"
-import { NDKEvent, NDKFilter, NDKKind, NDKSubscriptionCacheUsage } from "@nostr-dev-kit/ndk-mobile"
-import { useEffect, useState, useCallback, useMemo, memo } from "react"
+import { NDKEvent, NDKFilter, NDKKind, NDKSubscription, NDKSubscriptionCacheUsage } from "@nostr-dev-kit/ndk-mobile"
+import { useEffect, useState, useCallback, useMemo, useRef } from "react"
 import { StyleSheet, View, Text, TouchableOpacity } from "react-native"
 import VideoDescription from "./description"
 import { useTranslateService } from "@src/providers/translateProvider"
@@ -14,10 +14,8 @@ import { noteService } from "@services/nostr/noteService"
 import useNDKStore from "@services/zustand/ndk"
 import theme from "@src/theme"
 import { userService } from "@services/user"
-
-const isComment = (event: NDKEvent) => {
-    return event.tags.some(t => t[0] == "e" && t[1] == event.id && t[3] == "root")
-}
+import VideoOptionsBar, { showVideoOptions } from "./options"
+import VideosFilters from "./filters"
 
 interface FooterVideoProps { 
     event: NDKEvent, 
@@ -27,6 +25,8 @@ interface FooterVideoProps {
 const VideoFooter = ({ event, url }: FooterVideoProps) => {
 
     const { ndk } = useNDKStore()
+    const timeout = useRef<any>(null)
+    const subscription = useRef<NDKSubscription>()
     const { user, follows, followsEvent } = useAuth()
     const { useTranslate } = useTranslateService()
     const [profile, setProfile] = useState<User>({})
@@ -36,9 +36,20 @@ const VideoFooter = ({ event, url }: FooterVideoProps) => {
     const [reactions, setReactions] = useState<NDKEvent[]>([])
     const [comments, setComments] = useState<NDKEvent[]>([])
 
-    const isFriend = useMemo(() => !!follows?.some(f => f.pubkey === event.pubkey), [follows, event.pubkey])
+    const isFriend = useMemo(() => follows?.some(f => f.pubkey == event.pubkey), [follows, event.pubkey])
     
-    useEffect(() => { setTimeout(fetchData, 20) }, [])
+    useEffect(() => {
+        setTimeout(fetchData, 20) 
+        const unsubscribe = () => {
+            if(timeout.current) clearTimeout(timeout.current)
+            if(subscription.current) {
+                subscription.current.stop()
+                subscription.current.removeAllListeners()
+                subscription.current = undefined
+            }
+        }
+        return unsubscribe
+    }, [])
     
     const isComment = useCallback((note: NDKEvent) => {
         return note.tags.some(t => t[0] == "e" && t[1] == event.id && t[3] == "root")
@@ -51,11 +62,11 @@ const VideoFooter = ({ event, url }: FooterVideoProps) => {
             { kinds: [0], authors:[event.pubkey], limit: 1 }, // profile
         ]
                
-        const subscription = ndk.subscribe(filters, {
+        subscription.current = ndk.subscribe(filters, {
             cacheUsage: NDKSubscriptionCacheUsage.ONLY_RELAY
         })
 
-        subscription.on("event", note => {
+        subscription.current.on("event", note => {
             if(note.kind == NDKKind.Metadata) 
                 setProfile(JSON.parse(note.content) as User)
             if(note.kind == NDKKind.Text && isComment(note)) 
@@ -64,48 +75,34 @@ const VideoFooter = ({ event, url }: FooterVideoProps) => {
                 setReactions(prev => [...prev, note])
         })
 
-        const finish = () => {
-            subscription.removeAllListeners()
-            setTimeout(() => {
-                setReacted(reactions.some(r => r.pubkey == user.pubkey))
-            }, 20)
-        }
-
-        subscription.on("eose", finish)
-        subscription.on("close", finish)
-
-        setTimeout(() => {
-            subscription.stop()
+        timeout.current = setTimeout(() => {
+            subscription.current?.stop()
+            subscription.current?.removeAllListeners()
+            subscription.current = undefined
+            setReacted(reactions.some(r => r.pubkey == user.pubkey))
         }, 1000)
     }
 
-    const handleReact = useCallback(async () => {
+    const handleReact = () => {
         setReacted(prev => !prev)
-        setTimeout(() => {
-            const reaction = reactions.find(r => r.pubkey == user.pubkey)
-            if(!reaction) {
-                setReactions(prev => [...prev, user as NDKEvent])
-                noteService.reactNote({ note: event, reaction:"❣️" }).then(reaction => {
-                    setReactions(prev => [...prev.filter(r => r.pubkey != user.pubkey), reaction])
-                })
-            }
-            if(reaction) {
-                setReactions(prev => [...prev.filter(r => r.id != reaction.id)])
-                noteService.deleteReact(reaction)
-            }
-        }, 20)
-    }, [event, reacted, reactions, setReacted, setReactions, noteService])
+        const reaction = reactions.find(r => r.pubkey == user.pubkey)
+        if(!reaction) {
+            setReactions(prev => [...prev, user as NDKEvent])
+            noteService.reactNote({ note: event, reaction:"❣️" }).then(reaction => {
+                setReactions(prev => [...prev.filter(r => r.pubkey != user.pubkey), reaction])
+            })
+        }
+        if(reaction) {
+            setReactions(prev => [...prev.filter(r => r.id != reaction.id)])
+            noteService.deleteReact(reaction)
+        }
+    }
 
-    const handleFollow = useCallback(async () => {
-        setTimeout(async () => {
-            if(isFriend) 
-                followsEvent!.tags = followsEvent!.tags?.filter(t => t[0] == "p" && t[1] != event.pubkey)
-            if(!isFriend)
-                followsEvent?.tags?.push(["p", event.pubkey])
-
-            await userService.updateFollows({ user, follows: followsEvent })
-        }, 20)
-    }, [isFriend, followsEvent, event.pubkey, user])
+    const handleFollow = () => {
+        follows.push(profile)
+        followsEvent?.tags?.push(["p", event.pubkey])
+        userService.updateFollows({ user, follows: followsEvent })
+    }
 
     return (
         <View style={styles.controlsSliderContainer}>
@@ -167,7 +164,7 @@ const VideoFooter = ({ event, url }: FooterVideoProps) => {
                             <Ionicons style={styles.shadow} name="paper-plane-outline" size={32} color={theme.colors.white} />
                         </TouchableOpacity>
                         <View style={{ height: 20 }}></View>
-                        <TouchableOpacity style={styles.reactionButton}>
+                        <TouchableOpacity onPress={showVideoOptions} style={styles.reactionButton}>
                             <Ionicons style={styles.shadow} name="ellipsis-vertical" size={24} color={theme.colors.white} />
                         </TouchableOpacity>
                     </View>
@@ -179,6 +176,8 @@ const VideoFooter = ({ event, url }: FooterVideoProps) => {
             <VideoShareBar event={event} visible={shareVisible} 
                 setVisible={setShareVisible} 
             />
+            <VideoOptionsBar event={event} profile={profile} />
+            <VideosFilters />
         </View>
     )
 }
@@ -205,6 +204,4 @@ const styles = StyleSheet.create({
         textShadowRadius: 6, textShadowColor: theme.colors.semitransparentdark, }
 })
 
-export default memo(VideoFooter, (prev, next) => {
-    return prev.url === next.url && prev.event.id === next.event.id
-})
+export default VideoFooter

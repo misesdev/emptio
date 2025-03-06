@@ -1,7 +1,7 @@
 import { User } from "@/src/services/memory/types"
 import { StyleSheet, Text } from "react-native"
 import { getUserName } from "@/src/utils"
-import { useEffect, useState } from "react"
+import { memo, useEffect, useState } from "react"
 import theme from "@/src/theme"
 import { nip19 } from "nostr-tools"
 import { userService } from "@services/user"
@@ -15,7 +15,7 @@ const ProfileViewer = ({ npub, nprofile }: ScreenProps) => {
     const [user, setUser] = useState<User>({})
 
     useEffect(() => {
-        loadUserData()
+        setTimeout(loadUserData, 10)
     }, [])
 
     const loadUserData = async () => {
@@ -33,7 +33,7 @@ const ProfileViewer = ({ npub, nprofile }: ScreenProps) => {
     }
 
     if(!user.pubkey) 
-        return <Text style={styles.profile}></Text>
+        return <Text style={styles.profile}>{nprofile??npub??"@"}</Text>
 
     return <Text style={styles.profile}>@{getUserName(user)}</Text>
 }
@@ -42,4 +42,4 @@ const styles = StyleSheet.create({
     profile: { color: theme.colors.blue }
 })
 
-export default ProfileViewer
+export default memo(ProfileViewer)

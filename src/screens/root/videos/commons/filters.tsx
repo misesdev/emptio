@@ -8,6 +8,8 @@ import { saveFeedVideoSettings } from "@services/memory/settings"
 import { memo, useCallback, useState } from "react"
 import theme from "@src/theme"
 
+var showFiltersFunction: () => void
+
 interface TagItemProps { tag: string, handlePress: (tag: string) => void }
 const TagItem = memo(({ tag, handlePress }: TagItemProps) => {
     return (
@@ -22,14 +24,15 @@ const TagItem = memo(({ tag, handlePress }: TagItemProps) => {
     )
 })
 
-interface FilterProps { visible: boolean, setVisible: (state: boolean) => void }
-
-const VideosFilters = ({ visible, setVisible }: FilterProps) => {
+const VideosFilters = () => {
     
     const { feedSettings, setFeedSettings } = useFeedVideosStore()
     const { useTranslate } = useTranslateService()
     const [tagNameText, setTagNameText] = useState<string>("")
     const [filterTags, setFilterTags] = useState<string[]>(feedSettings.filterTags)
+    const [visible, setVisible] = useState<boolean>(false)
+
+    showFiltersFunction = () => setVisible(true)
 
     const handleAddTagfilter = useCallback(() => {
         if(!tagNameText) return;
@@ -40,7 +43,7 @@ const VideosFilters = ({ visible, setVisible }: FilterProps) => {
     }, [tagNameText, filterTags])
 
     const handleRemoveTag = useCallback((tag: string) => {
-        if(filterTags.length <= 1) return
+        if(!filterTags.length) return
         setFilterTags(prev => [...prev.filter(t => t != tag)])
     }, [filterTags, setFilterTags])
 
@@ -89,12 +92,22 @@ const VideosFilters = ({ visible, setVisible }: FilterProps) => {
                         numColumns={3}
                     />
                     <View style={styles.closebutton}>
-                        <ButtonPrimary label={useTranslate("commons.save")} onPress={handleSave} />
+                        <ButtonPrimary disabled={!filterTags.length}
+                            style={{ backgroundColor: !filterTags.length ? theme.colors.disabled
+                                : theme.colors.blue
+                            }}
+                            label={useTranslate("commons.save")}
+                            onPress={handleSave} 
+                        />
                     </View>
                 </View>
             </View>
         </Modal>
     )
+}
+
+export const showVideoFilters = () => {
+    setTimeout(showFiltersFunction, 20)
 }
 
 const styles = StyleSheet.create({

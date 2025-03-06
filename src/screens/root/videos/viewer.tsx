@@ -1,5 +1,5 @@
-import { Video, VideoRef } from 'react-native-video'
-import { memo, useRef, useState } from "react"
+import { Video } from 'react-native-video'
+import { memo, useEffect, useRef, useState } from "react"
 import { View, StyleSheet, Text, Dimensions } from 'react-native'
 import Slider from '@react-native-community/slider'
 import { useTranslateService } from '@src/providers/translateProvider'
@@ -16,7 +16,7 @@ interface VideoProps {
 
 const FeedVideoViewer = ({ event, paused }: VideoProps) => {
 
-    const videoRef = useRef<VideoRef>(null)
+    const videoRef = useRef<any>(null)
     const { useTranslate } = useTranslateService()
     const { width, height } = Dimensions.get("window")
     const [duration, setDuration] = useState<number>(0)
@@ -24,6 +24,16 @@ const FeedVideoViewer = ({ event, paused }: VideoProps) => {
     const [error, setError] = useState<boolean>(false)
     const [loading, setLoading] = useState<boolean>(true)
     const url = useRef(extractVideoUrl(event.content)??"").current
+
+    useEffect(() => {
+        const unsubscribe = () => {
+            if(videoRef.current) {
+                videoRef.current?.seek(0)
+                videoRef.current = null 
+            }
+        }
+        return unsubscribe
+    }, [])
 
     const onLoadVideo = (data: any) => {
         setDuration(data?.duration||0)
@@ -44,12 +54,13 @@ const FeedVideoViewer = ({ event, paused }: VideoProps) => {
     return (
         <View style={[styles.contentVideo, { width: width, height: height }]}>
             <Video onError={() => setError(true)} 
-                ref={videoRef} repeat paused={paused} 
+                ref={videoRef} repeat paused={paused} muted 
                 source={{ uri: url }}                
                 style={styles.video}
                 resizeMode="none"
                 onLoad={onLoadVideo}
                 onProgress={onProgressVideo}
+                playInBackground={false}
             />
             <View style={styles.controlsContainer}>
                 {error && 
@@ -80,7 +91,7 @@ const FeedVideoViewer = ({ event, paused }: VideoProps) => {
 }
 
 const styles = StyleSheet.create({
-    contentVideo: { flex: 1, backgroundColor: theme.colors.black },
+    contentVideo: { flex: 1, borderRadius: 10, backgroundColor: theme.colors.black },
     video: { flex: 1, backgroundColor: theme.colors.black },
     mutedIndicator: { padding: 10, borderRadius: 10, backgroundColor: theme.colors.blueOpacity },
     controlsContainer: { position: "absolute", width: "100%", height: "100%", 

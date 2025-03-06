@@ -29,7 +29,7 @@ export const uploadImage = async (localUri: string) => {
 
 interface DownloadProps {
     url: string,
-    setDownloading: (state: boolean) => void,
+    setDownloading?: (state: boolean) => void,
 }
 interface DownVideoProps extends DownloadProps {
     setDownloadProgress: (state: number) => void
@@ -39,7 +39,7 @@ const downloadVideo = async ({ url, setDownloading, setDownloadProgress  }: Down
 
     if(!(await getGaleryPermission())) return
 
-    setDownloading(true)
+    if(setDownloading) setDownloading(true)
     setDownloadProgress(0)
 
     const fileName = url.substring(url.lastIndexOf("/"))
@@ -53,12 +53,12 @@ const downloadVideo = async ({ url, setDownloading, setDownloadProgress  }: Down
             setDownloadProgress(percentage)
         }
     }).promise.then(() => {
-        setDownloading(false)
+        if(setDownloading) setDownloading(true)
         setDownloadProgress(0)
         CameraRoll.saveAsset(filePath, { type: "video", album: process.env.APP_NAME })
         useTranslate("message.download.successfully").then(pushMessage)
     }).catch(() => { 
-        setDownloading(false)
+        if(setDownloading) setDownloading(false)
         setDownloadProgress(0)
         useTranslate("message.default_error").then(pushMessage)
     })
@@ -67,18 +67,18 @@ const downloadImage = async ({ url, setDownloading }: DownloadProps) => {
 
     if(!(await getGaleryPermission())) return
 
-    setDownloading(true)
+    if(setDownloading) setDownloading(true)
     const fileName = url.substring(url.lastIndexOf("/"))
     const filePath = `${FileSystem.ExternalDirectoryPath}${fileName}`
     await FileSystem.downloadFile({
         fromUrl: url,
         toFile: filePath,
     }).promise.then(() => {
-        setDownloading(false)
+        if(setDownloading) setDownloading(false)
         CameraRoll.saveAsset(filePath, { type: "photo", album: process.env.APP_NAME })
         useTranslate("message.download.successfully").then(pushMessage)
     }).catch(() => { 
-        setDownloading(false)
+        if(setDownloading) setDownloading(false)
         useTranslate("message.default_error").then(pushMessage)
     })
 }

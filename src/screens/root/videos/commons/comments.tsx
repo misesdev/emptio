@@ -1,5 +1,5 @@
 import { NDKEvent } from "@nostr-dev-kit/ndk-mobile"
-import { useCallback, useMemo, useState } from "react"
+import { memo, useCallback, useMemo, useState } from "react"
 import { Modal, StyleSheet, View, Text, TouchableOpacity, 
     TextInput, FlatList } from "react-native"
 import Ionicons from 'react-native-vector-icons/Ionicons'
@@ -82,14 +82,16 @@ const VideoComments = ({ event, visible, comments, setVisible }: VideoCommentsPr
                             <Text style={styles.closeButton}>✕</Text>
                         </TouchableOpacity>
                     </View>
-                    <FlatList 
-                        data={memorizedComments}
-                        keyExtractor={event => event.id}
-                        renderItem={renderItem}
-                        style={{ flex: 1 }}
-                        contentContainerStyle={styles.listComments}
-                        ListEmptyComponent={<EmptyComponent />}
-                    />
+                    {visible &&
+                        <FlatList 
+                            data={memorizedComments}
+                            keyExtractor={event => event.id}
+                            renderItem={renderItem}
+                            style={{ flex: 1 }}
+                            contentContainerStyle={styles.listComments}
+                            ListEmptyComponent={<EmptyComponent />}
+                        />
+                    }
                     {/* Chat Box */}
                     <View style={styles.chatBoxContainer}>
                         <View style={{ flexDirection: "row" }}>
@@ -143,4 +145,4 @@ const styles = StyleSheet.create({
     empty: { color: theme.colors.gray, marginTop: 200, textAlign: "center" }
 })
 
-export default VideoComments
+export default memo(VideoComments)

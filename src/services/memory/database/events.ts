@@ -134,9 +134,9 @@ export const listEventsByCategory = async (category: TypeCategory, limit = 50): 
             created_at: event.created_at
         } as NDKEvent
     })
+
 }
 
-// Deletar eventos por uma condição
 export const deleteEventsByCondition = async (condition: string, args: any[]) => {
     const db = await getDatabaseConnection()
 
@@ -144,6 +144,15 @@ export const deleteEventsByCondition = async (condition: string, args: any[]) =>
         UPDATE events SET deleted = 1 WHERE ${condition};  
     `, args)
 }
+
+export const deleteEvent = async (id: string) => {
+    const db = await getDatabaseConnection()
+
+    await db.runAsync(`
+        DELETE FROM events WHERE id = ?;  
+    `, [id])
+}
+
 
 export const selecMessageChats = async (): Promise<ChatUser[]> => {
     const db = await getDatabaseConnection()

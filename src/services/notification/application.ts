@@ -1,5 +1,5 @@
 
-export type TypeCategory = "message" | "home" | "orders" | "feed"
+export type TypeCategory = "message" | "home" | "orders" | "feed" | "videos"
 
 export type NotificationApp = {
     type: TypeCategory,
