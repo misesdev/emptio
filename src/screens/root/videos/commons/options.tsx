@@ -3,29 +3,26 @@ import { NDKEvent } from "@nostr-dev-kit/ndk-mobile"
 import { Modal, StyleSheet, View, Text, TouchableOpacity, Animated } from "react-native"
 import Ionicons from "react-native-vector-icons/Ionicons"
 import { useTranslateService } from "@/src/providers/translateProvider"
-import { useEffect, useState } from "react"
+import { memo, useEffect, useState } from "react"
 import { ScrollView } from "react-native-gesture-handler"
-import { User } from "@services/memory/types"
 import { storageService } from "@services/memory"
 import { useFeedVideosStore } from "@services/zustand/feedVideos"
-import theme from "@src/theme"
 import { showVideoFilters } from "./filters"
-import { blobService } from "@/src/services/blob"
-import { extractVideoUrl } from "@/src/utils"
+import { blobService } from "@services/blob"
+import { extractVideoUrl } from "@src/utils"
+import theme from "@src/theme"
 
 var showOptionsFunction: () => void
 
 interface VideoOptionProps {
-    profile: User;
     event: NDKEvent;
 }
 
-const VideoOptionsBar = ({ event, profile }: VideoOptionProps) => {
+const VideoOptionsBar = ({ event }: VideoOptionProps) => {
 
     const { useTranslate } = useTranslateService()
     const [visible, setVisible] = useState(false)
     const [hasSaved, setHasSaved] = useState(false)
-    const [downloading, setDownloading] = useState(false)
     const [downloadProgress, setDownloadProgress] = useState(0)
     const { savedEvents, blackList } = useFeedVideosStore()
     const animatedProgress = new Animated.Value(downloadProgress)
@@ -39,7 +36,7 @@ const VideoOptionsBar = ({ event, profile }: VideoOptionProps) => {
     }, [downloadProgress])
 
     showOptionsFunction = () => {
-        setHasSaved(savedEvents.has(event))
+        setHasSaved(Array.from(savedEvents).some(e => e.id == event.id))
         setVisible(true)
     }
 
@@ -67,7 +64,9 @@ const VideoOptionsBar = ({ event, profile }: VideoOptionProps) => {
     
     const handleDownload = () => {
         const url = extractVideoUrl(event.content)
-        if(url) blobService.downloadVideo({ url, setDownloadProgress })
+        if(url) { 
+            blobService.downloadVideo({ url, setDownloadProgress })
+        }
     }
 
     const progressHeight = animatedProgress.interpolate({
@@ -150,5 +149,5 @@ const styles = StyleSheet.create({
         backgroundColor: theme.colors.green, width: "100%" }
 })
 
-export default VideoOptionsBar
+export default memo(VideoOptionsBar)
 

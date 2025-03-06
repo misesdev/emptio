@@ -124,8 +124,8 @@ const CommentItem = ({ event, replies }: CommentItemProps) => {
 }
 
 const styles = StyleSheet.create({
-    textButton: { color: theme.colors.gray, fontWeight: "bold", fontSize: 13 },
-    iconButton: { margin: 2, fontWeight: "bold" }
+    textButton: { color: theme.colors.gray, fontWeight: "400", fontSize: 13 },
+    iconButton: { marginVertical: 3 }
 })
 
 export default CommentItem

@@ -2,21 +2,18 @@ import { NDKEvent, NDKFilter, NDKKind, NDKSubscription,
     NDKSubscriptionCacheUsage } from "@nostr-dev-kit/ndk-mobile"
 import { StackScreenProps } from "@react-navigation/stack"
 import { useCallback, useEffect, useMemo, useRef, useState } from "react"
-import { View, FlatList, SafeAreaView, Text, StyleSheet } from "react-native"
+import { View, FlatList, SafeAreaView } from "react-native"
 import { extractVideoUrl } from "@src/utils"
-import Ionicons from 'react-native-vector-icons/Ionicons'
 import { useFeedVideosStore } from "@services/zustand/feedVideos"
 import { useFocusEffect } from "@react-navigation/native"
 import { ActivityIndicator } from "react-native-paper"
-import VideosHeader from "./commons/header"
-import VideosFilters from "./commons/filters"
-import { blobService } from "@services/blob"
 import { pushMessage } from "@services/notification"
 import { useTranslateService } from "@src/providers/translateProvider"
 import FeedVideoViewer from "./viewer"
 import useNDKStore from "@services/zustand/ndk"
 import theme from "@src/theme"
 import { timeSeconds } from "@services/converter"
+import VideosHeader, { VideoSource } from "./commons/header"
 
 const VideosFeed = ({ navigation }: StackScreenProps<any>) => {
 
@@ -26,11 +23,12 @@ const VideosFeed = ({ navigation }: StackScreenProps<any>) => {
     const subscription = useRef<NDKSubscription>()
     const lastTimestamp = useRef<number>(timeSeconds.now())
     const isFetching = useRef<boolean>(false) 
-    const { feedSettings, blackList } = useFeedVideosStore()
+    const { feedSettings, savedEvents, blackList } = useFeedVideosStore()
     const { useTranslate } = useTranslateService()
     const [videos, setVideos] = useState<NDKEvent[]>([])
     const [paused, setPaused] = useState<boolean>(false)
-    const [playingIndex, setPlayingIndex] = useState<number>(0) 
+    const [playingIndex, setPlayingIndex] = useState<number>(0)
+    const [source, setSource] = useState<VideoSource>("relays")
 
     const memorizedVideos = useMemo(() => videos, [videos])
 
@@ -41,7 +39,7 @@ const VideosFeed = ({ navigation }: StackScreenProps<any>) => {
             setPaused(true)
         })
         return unsubscribe
-    }, [feedSettings.filterTags])
+    }, [feedSettings.filterTags, source])
 
     const loadResetFeed = () => {
         setVideos([])
@@ -54,6 +52,11 @@ const VideosFeed = ({ navigation }: StackScreenProps<any>) => {
 
     const fetchVideos = () => {
         if(isFetching.current) return;
+        if(source == "saved") {
+            if(videos.length == savedEvents.size)
+                return pushMessage(useTranslate("feed.videos.notfound"))
+            return setVideos(Array.from(savedEvents))
+        }
 
         isFetching.current = true
 
@@ -85,9 +88,7 @@ const VideosFeed = ({ navigation }: StackScreenProps<any>) => {
         const finishFetch = () => {
             clearTimeout(timeout.current)
             setTimeout(() => isFetching.current = false, 20)
-            subscription.current?.stop()
             subscription.current?.removeAllListeners()
-            subscription.current = undefined
         }
         
         subscription.current.on("eose", finishFetch)
@@ -106,21 +107,9 @@ const VideosFeed = ({ navigation }: StackScreenProps<any>) => {
     }, [])
 
     const renderItem = useCallback(({ item, index }:{ item: NDKEvent, index: number }) => {
+        console.log("render item")
         return <FeedVideoViewer event={item} paused={index !== playingIndex || paused} />
     }, [playingIndex, paused])
-
-    // const handleDownload = async () => {
-    //     if(!videos[playingIndex]) return
-    //     const event = videos[playingIndex]
-    //     const url = extractVideoUrl(event.content)
-    //     if(url) {
-    //         await blobService.downloadVideo({ 
-    //             url, 
-    //             setDownloading, 
-    //             setDownloadProgress 
-    //         })
-    //     }
-    // }
 
     const EndLoader = () => (
         <View style={{ paddingVertical: 20 }}>
@@ -145,19 +134,12 @@ const VideosFeed = ({ navigation }: StackScreenProps<any>) => {
                 windowSize={3}
                 snapToAlignment="center"
                 decelerationRate="fast"
-                legacyImplementation
                 ListFooterComponent={<EndLoader />}
-                disableVirtualization={false}
                 removeClippedSubviews // experimental
             />
+            <VideosHeader onChangeSource={setSource} />
         </SafeAreaView>
     )
 }
-
-const styles = StyleSheet.create({
-    downloadProgressContent: { position: "absolute", top: 300, alignItems: "center", 
-        minWidth: 100, padding: 5, borderRadius: 10, backgroundColor: theme.colors.blueOpacity },
-
-})
 
 export default VideosFeed

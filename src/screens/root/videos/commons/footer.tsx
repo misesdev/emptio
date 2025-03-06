@@ -176,7 +176,7 @@ const VideoFooter = ({ event, url }: FooterVideoProps) => {
             <VideoShareBar event={event} visible={shareVisible} 
                 setVisible={setShareVisible} 
             />
-            <VideoOptionsBar event={event} profile={profile} />
+            <VideoOptionsBar event={event} />
             <VideosFilters />
         </View>
     )

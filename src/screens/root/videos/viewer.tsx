@@ -54,7 +54,7 @@ const FeedVideoViewer = ({ event, paused }: VideoProps) => {
     return (
         <View style={[styles.contentVideo, { width: width, height: height }]}>
             <Video onError={() => setError(true)} 
-                ref={videoRef} repeat paused={paused} muted 
+                ref={videoRef} repeat paused={paused} 
                 source={{ uri: url }}                
                 style={styles.video}
                 resizeMode="none"
@@ -108,4 +108,4 @@ const styles = StyleSheet.create({
         textShadowRadius: 6, textShadowColor: theme.colors.semitransparentdark, }
 })
 
-export default memo(FeedVideoViewer)
+export default FeedVideoViewer

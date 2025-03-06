@@ -1,41 +1,63 @@
+import { useTranslateService } from "@/src/providers/translateProvider"
 import theme from "@src/theme"
-import { StyleSheet, View, TouchableOpacity } from "react-native"
+import { useState } from "react"
+import { StyleSheet, View, TouchableOpacity, Text } from "react-native"
 import Ionicons from 'react-native-vector-icons/Ionicons'
 
+export type VideoSource = "relays" | "saved"
+
 interface VideosHeaderProps {
-    downloading: boolean,
-    handleDownload: () => Promise<void>,
-    handleManageFilters: () => void
+    onChangeSource: (source: VideoSource) => void
 }
-const VideosHeader = ({ downloading, handleDownload, handleManageFilters }: VideosHeaderProps) => {
+
+const VideosHeader = ({ onChangeSource }: VideosHeaderProps) => {
+    
+    const [source, setSource] = useState<VideoSource>("relays")
+
+    const handleSource = (source: VideoSource) => {
+        onChangeSource(source)
+        setSource(source)
+    }
+
     return (
-        <View style={styles.controlsHeader}>
-            <View style={{ width: "14%", alignItems: "center" }}>
-                {!downloading &&
-                    <TouchableOpacity style={styles.controlsHeaderButton}
-                        onPress={handleDownload}
+        <View style={styles.header}>
+            <View style={styles.controls}>
+                <View style={{ width: "50%" }}>
+                    <TouchableOpacity style={[styles.controlsButton, {
+                            backgroundColor: source == "relays" ? theme.colors.semitransparent
+                                : theme.colors.transparent
+                        }]}
+                        onPress={() => handleSource("relays")} 
                     >
-                        <Ionicons name={"cloud-download-outline"} size={24} color={theme.colors.white} />
+                        <Ionicons name="funnel" size={18} color={
+                            source == "relays" ? theme.colors.white : theme.colors.gray
+                        } />
                     </TouchableOpacity>
-                }
-            </View>
-            <View style={{ width: "72%" }}></View>
-            <View style={{ width: "14%", alignItems: "center" }}>
-                <TouchableOpacity style={styles.controlsHeaderButton}
-                    onPress={handleManageFilters}
-                >
-                    <Ionicons name={"filter"} size={24} color={theme.colors.white} />
-                </TouchableOpacity>
+                </View>
+                <View style={{ width: "50%" }}>
+                    <TouchableOpacity style={[styles.controlsButton, {
+                            backgroundColor: source == "saved" ? theme.colors.semitransparent 
+                                : theme.colors.transparent
+                        }]}
+                        onPress={() => handleSource("saved")} 
+                    >
+                        <Ionicons name="bookmarks" size={18} color={
+                            source == "saved" ? theme.colors.white : theme.colors.gray
+                        }/>
+                    </TouchableOpacity>
+                </View>
             </View>
         </View>
     )
 }
 
 const styles = StyleSheet.create({
-    controlsHeader: { position: "absolute", top: 0, padding: 10, width: "100%",
-        paddingTop: 30, flexDirection: "row-reverse" },
-    controlsHeaderButton: { padding: 6, borderRadius: 10, margin: 4,
-        backgroundColor: theme.colors.blueOpacity },
+    header: { position: "absolute", top: 10, padding: 10, width: "100%",
+        justifyContent: "center", flexDirection: "row" },
+    controls: { width: "34%", borderRadius: 10, overflow: "hidden", flexDirection: "row",
+       borderWidth: 1, borderColor: theme.colors.blue }, 
+    controlsButton: { width: "100%", padding: 10, justifyContent: "center", flexDirection: "row" },
+    buttonLabel: { color: theme.colors.white, fontWeight: "bold", textAlign: "center" }
 })
 
 export default VideosHeader
