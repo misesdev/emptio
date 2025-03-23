@@ -1,36 +1,35 @@
-# Sistema de reputação 
+# Reputation System  
 
-### Descrição 
+### Description  
 
-O processo de compra e venda de bitcoin no app não possui restrições, 
-sistemas de retenção de saldos, ou qualquer tipo de sistema que garante que você receberá 
-os satoshis que comprou em uma ordem de venda. Ao invéz de implementar
-um sistema de retenção de saldos, foi esolhido o sistema natural do captalismo 'Reputação'.
+The process of buying and selling Bitcoin in the app has no restrictions, balance 
+retention systems, or any mechanism that guarantees you will receive the satoshis 
+you purchased in a sell order. Instead of implementing a balance retention system, 
+the natural system of capitalism—Reputation—was chosen.  
 
-`Reputação é basicamente as pessoas conhecerem oque você já fez em sua história`
+`Reputation is basically people knowing what you have done in your history.`  
 
-Então, foi pensado um sistema em que, quando um usuário compra bitcoin em uma ordem sua,
-todos os usuários na rede conectados aos mesmos relays ou a pelo menos um dos relays, poderá
-ver todos os detalhes. De modo que se houver algum problema, ou você não enviar os sats que 
-vendeu, todos poderão ver e não comprar mais de você, de modo que os incentívos para crescer como
-vendedor P2P seja somente aumentando a sua reputação.
+A system was designed in which, when a user buys Bitcoin from one of your orders, 
+all users on the network connected to the same relays or at least one of them can see 
+all the details. If any issue arises, or if you fail to send the sats you sold, everyone
+will be able to see it and avoid buying from you in the future. This way, the incentives 
+for growing as a P2P seller are solely tied to increasing your reputation.  
 
-### Implementação
+### Implementation  
 
-Para implementar tal sistema são utilizados eventos de [https://github.com/nostr-protocol/nips/blob/master/51.md).
-Todos os usuários que realizam compras adicionam os detalhes a um evento de lista, no evento
-deve ser adicionada a tag **s**: "emptio_p2p", para o app listar esses eventos mais tarde, deve
-conter também uma tag **r**: "reputation", para indicar que se trata de uma lista com 
-dados de reputação.
+To implement this system, events from [https://github.com/nostr-protocol/nips/blob/master/51.md] are used.  
+All users who make purchases add the details to a list event. The event must include the 
+tag **s**: "emptio_p2p" so that the app can list these events later. It must also 
+contain the tag **r**: "reputation" to indicate that it is a list containing reputation data.  
 
-O usuário poderá criar quantas listas quiser, porém, essas listas devem estar aninhadas, contendo
-uma tag **e** com o id da lista anterior.
+A user can create as many lists as they want, but these lists must be nested, containing 
+an **e** tag with the ID of the previous list.  
 
-A lista deve também conter a tag **p**: ["fdf46f77...", ..], que deve conter as chaves públicas 
-dos usuários citados, de modo que, para verificar a reputação de um usuário vendedor específico
-possam ser listados os eventos de reputação que o mencionam.
+The list must also include the tag **p**: ["fdf46f77...", ..], which should contain the 
+public keys of the referenced users. This allows reputation events mentioning a specific 
+seller to be listed when verifying their reputation.  
 
-**Exemplo**:
+**Example**:  
 
 `
     {
