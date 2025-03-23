@@ -1,16 +1,15 @@
-import { getTransactionInfo, getUtxo, getUtxos } from "@services/bitcoin/mempool"
+import { getTransactionInfo, getUtxos } from "@services/bitcoin/mempool"
 import { useTranslate } from "@services/translate"
 import { Tx } from "@mempool/mempool.js/lib/interfaces/bitcoin/transactions"
 import { generateAddress, createTransaction, createWallet, ValidateAddress, 
     sendTransaction, importWallet, BaseWallet } from "@services/bitcoin"
 import { getRandomKey } from "@services/bitcoin/signature"
-import { PairKey, Transaction, TransactionInput, TransactionOutput, Wallet,
-    WalletInfo, WalletType } from "@services/memory/types"
+import { Transaction, Wallet, WalletInfo, WalletType } from "@services/memory/types"
 import { Response, trackException } from "@services/telemetry"
-import { Network } from "@services/bitcoin/types"
 import { timeSeconds } from "@services/converter"
 import { storageService } from "@services/memory"
 import { userService } from "../user"
+import { BNetwork } from "bitcoin-tx-lib"
 
 type Props = {
     name: string,
@@ -21,7 +20,7 @@ type Props = {
 
 const create = async ({ name, type, password, wallets }: Props): Promise<Response<BaseWallet>> => {
     try {
-        const network: Network = type == "bitcoin" ? "mainnet" : "testnet"
+        const network: BNetwork = type == "bitcoin" ? "mainnet" : "testnet"
 
         const base: BaseWallet = createWallet(password, network)
         
@@ -60,7 +59,7 @@ type ImportProps = {
 const require = async ({ name, type = "bitcoin", mnemonic, password }: ImportProps): Promise<Response<BaseWallet>> => {
 
     try {
-        const network: Network = type == "bitcoin" ? "mainnet" : "testnet"
+        const network: BNetwork = type == "bitcoin" ? "mainnet" : "testnet"
 
         const base = await importWallet(mnemonic, password, network)
         
@@ -126,7 +125,7 @@ const update = async (wallet: Wallet) => {
     await storageService.wallets.update(wallet)
 }
 
-const listTransactions = async (address: string, network: Network): Promise<WalletInfo> => {
+const listTransactions = async (address: string, network: BNetwork): Promise<WalletInfo> => {
     const response: WalletInfo = { balance: 0, sended: 0, received: 0, transactions: [] }
 
     const utxos: Tx[] = await getUtxos(address, network)
@@ -190,8 +189,8 @@ const transaction = {
 
         return transaction
     },
-    send: async (txHex: string, network: Network): Promise<Response<any>> => sendTransaction(txHex, network),
-    details: async (txid: string, network: Network) => await getTransactionInfo(txid, network)
+    send: async (txHex: string, network: BNetwork): Promise<Response<any>> => sendTransaction(txHex, network),
+    details: async (txid: string, network: BNetwork) => await getTransactionInfo(txid, network)
 }
 
 const address = {

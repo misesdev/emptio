@@ -5,10 +5,10 @@ import { View, ScrollView, RefreshControl, TouchableOpacity } from "react-native
 import Ionicons from 'react-native-vector-icons/Ionicons'
 import { useTranslateService } from "@src/providers/translateProvider"
 import { StackScreenProps } from "@react-navigation/stack"
-import { Network } from "@services/bitcoin/types"
 import { useCallback, useEffect, useState } from "react"
 import theme from "@src/theme"
 import { walletService } from "@services/wallet"
+import { BNetwork } from "bitcoin-tx-lib"
 
 const WalletManagerScreen = ({ navigation, route }: StackScreenProps<any>) => {
 
@@ -33,7 +33,7 @@ const WalletManagerScreen = ({ navigation, route }: StackScreenProps<any>) => {
         setRefreshing(true)
 
         const address = wallet.address ?? ""
-        const network: Network = wallet.type == "bitcoin" ? "mainnet" : "testnet"
+        const network: BNetwork = wallet.type == "bitcoin" ? "mainnet" : "testnet"
         // search transactions and update wallet lastBalance
         walletService.listTransactions(address, network).then(walletInfo => {
             setTransactions(walletInfo.transactions)

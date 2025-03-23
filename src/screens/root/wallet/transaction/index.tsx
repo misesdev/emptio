@@ -10,10 +10,10 @@ import { ActivityIndicator } from "react-native-paper"
 import { SectionContainer } from "@components/general/section"
 import { ButtonPrimary } from "@components/form/Buttons"
 import { useTranslateService } from "@src/providers/translateProvider"
-import { Network } from "@services/bitcoin/types"
 import theme from "@src/theme"
 import { StackScreenProps } from "@react-navigation/stack"
 import { walletService } from "@/src/services/wallet"
+import { BNetwork } from "bitcoin-tx-lib"
 
 const TransactionIcon = ({ type, confirmed }: TransactionInfo) => {
     let color = theme.colors.red
@@ -37,7 +37,7 @@ const TransactionScreen = ({ navigation, route }: StackScreenProps<any>) => {
 
     const loadData = async () => {
         
-        const network: Network = wallet.type == "bitcoin" ? "mainnet" : "testnet"
+        const network: BNetwork = wallet.type == "bitcoin" ? "mainnet" : "testnet"
 
         const transactionDetails = await walletService.transaction.details(transaction.txid ?? "", network)
 

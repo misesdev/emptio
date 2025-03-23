@@ -1,7 +1,6 @@
 import { walletService } from "@services/wallet"
 import { formatSats, toBitcoin } from "@services/converter"
 import { Wallet } from "@services/memory/types"
-import { Network } from "@services/bitcoin/types"
 import { useEffect, useState } from "react"
 import { TouchableOpacity, View, Text, StyleSheet, 
     Image, ViewStyle } from "react-native"
@@ -9,6 +8,7 @@ import { ActivityIndicator } from "react-native-paper"
 import { getClipedContent, getDescriptionTypeWallet } from "@src/utils"
 import theme from "@src/theme"
 import { useTranslateService } from "@src/providers/translateProvider"
+import { BNetwork } from "bitcoin-tx-lib"
 
 type Props = {
     wallet: Wallet,
@@ -33,7 +33,7 @@ const WalletListItem = ({ wallet, reload, handleOpen, style }: Props) => {
     const loadData = async () => {
         setLoading(true)
         const address = wallet.address ?? ""
-        const network: Network = wallet.type == "bitcoin" ? "mainnet" : "testnet"
+        const network: BNetwork = wallet.type == "bitcoin" ? "mainnet" : "testnet"
         walletService.listTransactions(address, network).then(async (walletInfo) => {
             if(wallet.lastBalance != walletInfo.balance)
             {

@@ -1,12 +1,11 @@
 import { getPublicKey } from "@noble/secp256k1"
 import { bytesToHex } from "@noble/hashes/utils"
 import { generateMnemonic, mnemonicToSeedSync } from "bip39"
-import { payments, Psbt, networks, address } from "bitcoinjs-lib"
 import { PairKey, Wallet } from "../memory/types"
-import { getRandomKey, getSigner, signBuffer, verifySign } from "./signature"
-import { getTxsUtxos, getUtxo, sendUtxo } from "./mempool"
+import { getRandomKey } from "./signature"
+import { getTxsUtxos, sendUtxo } from "./mempool"
 import { Response, trackException } from "../telemetry"
-import { Network } from "./types"
+import { Address, BNetwork, ECPairKey, Transaction } from "bitcoin-tx-lib"
 import { HDKey } from "@scure/bip32"
 
 export type BaseWallet = {
@@ -15,7 +14,7 @@ export type BaseWallet = {
     wallet: Wallet
 }
 
-export const createWallet = (password: string = "", network: Network = "mainnet"): BaseWallet => {
+export const createWallet = (password: string = "", network: BNetwork = "mainnet"): BaseWallet => {
 
     const key = getRandomKey(10)
 
@@ -36,7 +35,7 @@ export const createWallet = (password: string = "", network: Network = "mainnet"
     return { pairkey, mnemonic, wallet: {} }
 }
 
-export const importWallet = async (mnemonic: string, password?: string, network: Network = "mainnet"): Promise<BaseWallet> => {
+export const importWallet = async (mnemonic: string, password?: string, network: BNetwork = "mainnet"): Promise<BaseWallet> => {
     
     const key = getRandomKey(10)
 
@@ -61,19 +60,15 @@ export type SeedProps = {
     passPhrase: string // password with a 
 }
 
-export const generateAddress = (publicKey: string, net: Network = "mainnet"): string => {
+export const generateAddress = (publicKey: string, net: BNetwork = "mainnet"): string => {
 
-    const network =  net == "testnet" ? networks.testnet : networks.bitcoin
-
-    const { address } = payments.p2wpkh({ pubkey: Buffer.from(publicKey, "hex"), network })
-
-    return address ?? ""
+    return Address.fromPubkey({ pubkey:  publicKey, network: net })
 }
 
-export const ValidateAddress = (btcAddress: string, net: Network = "mainnet") => {
+export const ValidateAddress = (btcAddress: string, net: BNetwork = "mainnet") => {
     try {
-        const network =  net == "testnet" ? networks.testnet : networks.bitcoin
-        address.toOutputScript(btcAddress, network)
+        // const network =  net == "testnet" ? networks.testnet : networks.bitcoin
+        // address.toOutputScript(btcAddress, network)
         return true
     } catch { return false }
 }
@@ -88,54 +83,48 @@ type TransactionProps = {
 export const createTransaction = async ({ amount, destination, wallet, pairkey }: TransactionProps): Promise<Response<any>> => {
     try 
     {
-        var utxoAmount = 0
+        var utxoAmount = 0, fee = 0, averageRate = 1
 
-        const net: Network = wallet.type == "bitcoin" ? "mainnet" : "testnet"
+        const network: BNetwork = wallet.type == "bitcoin" ? "mainnet" : "testnet"
 
-        const network = wallet.type == "bitcoin" ? networks.bitcoin : networks.testnet
+        const ecPair = ECPairKey.fromHex({ privateKey: pairkey.privateKey, network })
 
-        const transaction = new Psbt({ network })
-        const signer = getSigner({ network, pairkey }) 
+        const transaction = new Transaction(ecPair)
 
-        const utxos = await getTxsUtxos(wallet.address ?? "", net)
+        const utxos = await getTxsUtxos(wallet.address ?? "", network)
 
         // ordenate for include all minimal value utxo of wallet
         const ordenedUtxos = utxos.sort((a, b) => a.value - b.value)
 
-        for (var utxo of ordenedUtxos) {
-            if (utxoAmount < amount) {
+        // add destination address transaction -> buffer
+        transaction.addOutput({ address: destination, amount: amount })
+
+        // add the change recipient
+        if (utxoAmount > amount) {
+            transaction.addOutput({ 
+                address: wallet.address ?? "",
+                amount: utxoAmount - amount 
+            })
+        }
+
+        for (let utxo of ordenedUtxos) {
+            if (utxoAmount <= amount+fee) {
                 utxoAmount += utxo.value
-                var index = ordenedUtxos.indexOf(utxo)
-                var completeUtxo = await getUtxo(utxo.txid, net)
-                var scripPubkeys = completeUtxo.vout.filter(x => x.scriptpubkey_address == wallet.address).map(tx => tx.scriptpubkey)
-                // define the utxo entered -> buffer
+                let scriptPubKey = Address.getScriptPubkey(wallet.address??"")
                 transaction.addInput({
-                    index,
-                    hash: utxo.txid,
-                    witnessUtxo: {
-                        script: Buffer.from(scripPubkeys[0], "hex"),
-                        value: utxo.value
-                    }
+                    vout: utxo.vout,
+                    txid: utxo.txid,
+                    value: utxo.value,
+                    scriptPubKey
                 })
+
+                fee += averageRate * transaction.vBytes()
             } 
             else
                 break
         }
 
-        // add destination address transaction -> buffer
-        transaction.addOutput({ address: destination, value: amount })
-
-        // add the change recipient
-        if (utxoAmount > amount)
-            transaction.addOutput({ address: wallet.address ?? "", value: utxoAmount - amount })
-
-        transaction.signAllInputs(signer)
-        
-        transaction.validateSignaturesOfAllInputs(verifySign)
-        
-        transaction.finalizeAllInputs()
-
-        const txHex = transaction.extractTransaction().toHex()
+        const txHex = transaction.build()
 
         return { success: true, message: "", data: txHex }
     }
@@ -144,7 +133,7 @@ export const createTransaction = async ({ amount, destination, wallet, pairkey }
     }
 }
 
-export const sendTransaction = async (transactionHex: string, network: Network): Promise<Response<any>> => {
+export const sendTransaction = async (transactionHex: string, network: BNetwork): Promise<Response<any>> => {
 
     try {
         const txid = await sendUtxo(transactionHex, network)

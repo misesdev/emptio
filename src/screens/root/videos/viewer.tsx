@@ -69,7 +69,7 @@ const FeedVideoViewer = ({ event, paused }: VideoProps) => {
                     </Text>
                 }
                 {loading && !error && 
-                    <ActivityIndicator size={20} color={theme.colors.white} />
+                    <ActivityIndicator style={{ marginVertical: 100 }} size={20} color={theme.colors.white} />
                 }
 
                 <VideoFooter event={event} url={url} /> 

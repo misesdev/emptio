@@ -2,10 +2,10 @@ import mempool from "@mempool/mempool.js"
 import { Tx } from "@mempool/mempool.js/lib/interfaces/bitcoin/transactions"
 import { Transaction, TransactionInput, TransactionOutput } from "../memory/types"
 import { useTranslate } from "../translate"
-import { Network } from "./types"
+import { BNetwork } from "bitcoin-tx-lib"
 
 // post a transaction
-export const sendUtxo = async (txhex: string, network: Network) => { 
+export const sendUtxo = async (txhex: string, network: BNetwork) => { 
     const { bitcoin: { transactions } } = mempool({
         hostname: process.env.MEMPOOL_API_URL,
         network: network
@@ -15,7 +15,7 @@ export const sendUtxo = async (txhex: string, network: Network) => {
 }
 
 // find all utxos
-export const getUtxos = async (address: string, network: Network) => { 
+export const getUtxos = async (address: string, network: BNetwork) => { 
     const { bitcoin: { addresses } } = mempool({
         hostname: process.env.MEMPOOL_API_URL,
         network: network
@@ -25,9 +25,8 @@ export const getUtxos = async (address: string, network: Network) => {
 }
 
 // find unspent cash
-export const getTxsUtxos = async (address: string, network: Network) => {
+export const getTxsUtxos = async (address: string, network: BNetwork) => {
 
-    console.log("instancing mempoll")
     const { bitcoin: { addresses } } = mempool({
         hostname: process.env.MEMPOOL_API_URL,
         network: network
@@ -37,7 +36,7 @@ export const getTxsUtxos = async (address: string, network: Network) => {
 }
 
 // find specific utxo
-export const getUtxo = async (txid: string, network: Network) => { 
+export const getTx = async (txid: string, network: BNetwork) => { 
     const { bitcoin: { transactions } } = mempool({
         hostname: process.env.MEMPOOL_API_URL,
         network: network
@@ -47,7 +46,7 @@ export const getUtxo = async (txid: string, network: Network) => {
 }
 
 // Find current transaction rates
-export const getFee = async (network: Network) => {
+export const getFee = async (network: BNetwork) => {
     const { bitcoin: { fees } } = mempool({
         hostname: process.env.MEMPOOL_API_URL,
         network: network
@@ -56,9 +55,9 @@ export const getFee = async (network: Network) => {
     return await fees.getFeesRecommended()
 }
 
-export const getTransactionInfo = async (txid: string, network: Network) => {
+export const getTransactionInfo = async (txid: string, network: BNetwork) => {
 
-    const utxo : Tx = await getUtxo(txid, network)
+    const utxo : Tx = await getTx(txid, network)
 
     var amount: number = 0
     utxo.vout.forEach(tx => amount += tx.value)

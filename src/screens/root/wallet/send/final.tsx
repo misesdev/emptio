@@ -6,10 +6,10 @@ import { HeaderScreen } from "@components/general/HeaderScreen"
 import { pushMessage } from "@services/notification"
 import { useTranslateService } from "@src/providers/translateProvider"
 import { Wallet } from "@services/memory/types"
-import { Network } from "@services/bitcoin/types"
 import { useEffect, useState } from "react"
 import theme from "@src/theme"
 import { walletService } from "@services/wallet"
+import { BNetwork } from "bitcoin-tx-lib"
 
 const SendFinalScreen = ({ navigation, route }: any) => {
 
@@ -34,7 +34,7 @@ const SendFinalScreen = ({ navigation, route }: any) => {
         const result = await walletService.transaction.get({ amount: toNumber(amount), destination: address, walletKey: wallet.key ?? "" })
 
         if (result.success) {
-            const network: Network = wallet.type == "bitcoin" ? "mainnet" : "testnet"
+            const network: BNetwork = wallet.type == "bitcoin" ? "mainnet" : "testnet"
             await walletService.transaction.send(result.data, network)
         }
 
