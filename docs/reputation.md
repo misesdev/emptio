@@ -17,7 +17,7 @@ for growing as a P2P seller are solely tied to increasing your reputation.
 
 ### Implementation  
 
-To implement this system, events from [https://github.com/nostr-protocol/nips/blob/master/51.md] are used.  
+To implement this system, events from [public lists](https://github.com/nostr-protocol/nips/blob/master/51.md) are used.  
 All users who make purchases add the details to a list event. The event must include the 
 tag **s**: "emptio_p2p" so that the app can list these events later. It must also 
 contain the tag **r**: "reputation" to indicate that it is a list containing reputation data.  
