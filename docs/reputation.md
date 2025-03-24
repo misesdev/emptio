@@ -1,71 +1,76 @@
-# Sistema de reputação 
+# Reputation System  
 
-### Descrição 
+    Draft
 
-O processo de compra e venda de bitcoin no app não possui restrições, 
-sistemas de retenção de saldos, ou qualquer tipo de sistema que garante que você receberá 
-os satoshis que comprou em uma ordem de venda, ao invéz de implementar
-um sistema de retenção de saldos, foi esolhido o sistema natural do capitalismo: 'Reputação'.
+### Description  
 
-`Reputação é basicamente as pessoas conhecerem oque você já fez em sua história`
+The process of buying and selling Bitcoin in the app has no restrictions,  
+balance retention systems, or any system that guarantees you will receive  
+the satoshis you purchased in a sell order. Instead of implementing  
+a balance retention system, the natural system of capitalism was chosen: **Reputation**.  
 
-Então, foi pensado um sistema em que, quando um usuário compra bitcoin em uma ordem sua,
-todos os usuários na rede conectados aos mesmos relays ou a pelo menos um dos relays, poderá
-ver se o comprador recebeu ou não. De modo que se houver algum problema, ou você não enviar 
-os sats que vendeu, todos poderão ver e não comprar mais de você, definindo os incentívos 
-para crescer como vendedor P2P seja somente através de uma boa reputação.
+    Reputation is basically people knowing what you have done in your history.  
 
-![diagram](sources/reputation.png)
+Thus, a system was designed where, when a user buys Bitcoin from one of your orders,  
+all users on the network connected to the same relays or at least one of the relays  
+can see whether the buyer received the funds or not. If there is any issue,  
+or if you do not send the sats you sold, everyone will see it and stop buying from you.  
+This defines the incentives for growing as a P2P seller purely through a good reputation.  
 
-O diagrama acima descreve o processo em que Alice, antes de realizar uma compra de uma ordem 
-do Bob, consulta a sua reputação com seus compradores passados (user 1, user 2, user 3 e user 4).
-Note que 3 deles consideram Bob um verndedor seguro, e um considera Bob um verndedor inseguro,
-por tanto, pode-se calcular um ponto percentual da reputação de Bob:
+![diagram](sources/reputation.png)  
+
+The diagram above describes the process in which Alice, before purchasing from Bob’s order,  
+checks his reputation with past buyers (User 1, User 2, User 3, and User 4).  
+Note that three of them consider Bob a safe seller, while one considers him unsafe.  
+Thus, Bob's reputation percentage can be calculated as follows:  
 
 ```math
     R = (100 / F) * S 
 ```
 
-A formula simples acima calcula o percentual de compradores que consideram Bob inseguro
-do total de compradores, onde **F** é a quantidade total de pessoas que já compraram de Bob, 
-**S** é a quantidade decompradores que consideram Bob inseguro e **R** é o percentual de 
-compradores que consideram Bob seguro dentre todas as pessoas que já compraram dele.
+The simple formula above calculates the percentage of buyers who consider Bob unsafe  
+out of the total number of buyers, where **F** is the total number of people who have bought from Bob,  
+**S** is the number of buyers who consider Bob unsafe, and **R** is the percentage of buyers  
+who consider Bob safe among all those who have bought from him.  
 
-Executando a fórmula acima utilizando os dados de Bob, onde **F**=4 e **S**=3 temos como 
-resultado a taxa de reputação de 75, então **Alice** poderá escolher comprar ou não de **Bob**
-considerando sua taxa de comfiabilidade de 75%. Note que **User 1** possui **F**=4 e **S**=4,
-então a sua taxa de confiabilidade é 100%, ou seja, todos os compradores o consideram seguro,
-então **Alice** poderá escolher comprar de **User 1**.
+Applying the formula to Bob's data, where **F**=4 and **S**=3, we get a reputation score of 75.  
+This means **Alice** can decide whether to buy from **Bob** based on his **75% trust rate**.  
+Note that **User 1** has **F**=4 and **S**=4, resulting in a trust rate of **100%**,  
+meaning all buyers consider him safe. So **Alice** may choose to buy from **User 1** instead.  
 
-**O sistema de reputação pode ser aplicado também para compradores, para assim oferecer segurança
-para ambas as partes.**
+**The reputation system can also be applied to buyers, ensuring security for both parties.**  
 
-#### Utilizando a TimeChain para validar reputação
+#### Using the TimeChain to Validate Reputation  
 
-Para garantir que não haja má conduta de nenhuma das partes, a informação que indica se o vendedor 
-é seguro ou não, não é adicionada pelo próprio usuário, ela é adicionada automaticamente quando
-o comprador receber o saldo em sua carteira. Para isso, é utilizado o último bloco minerado.
-Quando o comprador realiza o pagamento, o sistema salva o último bloco minerado e aguarda 
-a mineração do pŕoximo bloco, quando o próximo bloco é minerado, então o sistema verifica se
-nele existe uma transação que envia o saldo da **ordem de venda** para o comprador, caso
-exista a transação, ou seja, o comprador recebeu o saldo, então é adicionado a lista de reputação
-do usuário comprador, a informação de que o vendedor é seguro.
+To ensure no misconduct by either party, the information indicating whether  
+the seller is safe or not is **not** added by the user themselves.  
+Instead, it is **automatically added when the buyer receives the balance in their wallet**.  
+To achieve this, the last mined block is used.  
 
-Para o vendedor, o mesmo será feito utilizando o seu processador de pagamento, assim que recebido
-o saldo da **ordem de venda**, o sistema automaticamente adiciona a lista de reputação do 
-usuário vendedor, a informação de que o comprador é seguro.
+When the buyer makes the payment, the system saves the **last mined block**  
+and waits for the next block to be mined. Once the next block is mined,  
+the system checks if it contains a transaction that sends the **sale order** balance to the buyer.  
+If the transaction exists—meaning the buyer received the balance—  
+the system adds the information to the **buyer’s reputation list**,  
+stating that the seller is safe.  
 
-Além da verificação de que o vendedor é seguro ou não, o usuário poderá adicionar uma avaliação, 
-o mesmo ocorre para o comprador.
+For sellers, the same process applies using their payment processor.  
+Once the balance from the **sale order** is received,  
+the system **automatically adds the information** to the **seller’s reputation list**,  
+indicating that the buyer is safe.  
 
-### Implementação
+Beyond verifying whether the seller is safe, the user can also leave a review.  
+The same applies to the buyer.  
 
-Para implementar tal sistema são utilizados eventos de [listas públicas NIP 51](https://github.com/nostr-protocol/nips/blob/master/51.md).
-Todos os usuários que realizam compras adicionam os detalhes a um evento de lista, no evento
-deve ser adicionada a tag **r**: "reputation", para indicar que a lista contem dados de reputação.
+### Implementation  
 
-Além da tag **r**, deve ser adicionada a tag **reputation** que deve conter uma lista de objetos
-serializados dos dados de reputação por exemplo:
+To implement this system, [NIP 51 public lists](https://github.com/nostr-protocol/nips/blob/master/51.md) events are used.  
+All users who make purchases add the details to a list event.  
+The event must include the **r** tag: `"reputation"`,  
+to indicate that the list contains reputation data.  
+
+In addition to the **r** tag, an **reputation** tag must be added,  
+which contains a list of serialized reputation data objects. Example:  
 
 ```json
     {
@@ -77,7 +82,7 @@ serializados dos dados de reputação por exemplo:
     }    
 ```
 
-Os dados de reputação devem conter o seguinte formato:
+The reputation data should follow this format:  
 
 ```json
     {
@@ -87,11 +92,11 @@ Os dados de reputação devem conter o seguinte formato:
     } 
 ```
 
-A lista deve também conter a tag **p**: ["fdf46f77...", ..], que deve conter as chaves públicas 
-dos usuários citados, de modo que, para verificar a reputação de um vendedor específico
-possam ser listados os eventos de reputação que o mencionam.
+The list must also include the **p** tag: `["fdf46f77...", ..]`,  
+which should contain the public keys of the mentioned users.  
+This allows querying reputation events that reference a specific seller.  
 
-**Exemplo**:  
+**Example:**  
 
 ```json
     {
@@ -108,6 +113,3 @@ possam ser listados os eventos de reputação que o mencionam.
       "id": "..."
     }
 ```
-
-
-
