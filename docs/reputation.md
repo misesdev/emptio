@@ -65,18 +65,19 @@ The same applies to the buyer.
 ### Implementation  
 
 To implement this system, [NIP 51 public lists](https://github.com/nostr-protocol/nips/blob/master/51.md) events are used.  
-All users who make purchases add the details to a list event.  
-The event must include the **r** tag: `"reputation"`,  
-to indicate that the list contains reputation data.  
+All users who make purchases add the details to a list event. The event must include the 
+`o` tag with value `reputation`, to indicate that the list contains reputation data.  
 
-In addition to the **r** tag, an **reputation** tag must be added,  
-which contains a list of serialized reputation data objects. Example:  
+In addition to the `o` tag, an `reputation` tag must be added, which contains a list 
+of serialized reputation data objects. 
+
+**Example**:  
 
 ```json
     {
         ...,
         tags: [
-            ["r", "reputation"],
+            ["o", "reputation"],
             ["reputation", "[{ \"pubkey\": \"fdf46f77...\"... }","{...}]"]
         ]
     }    
@@ -92,9 +93,9 @@ The reputation data should follow this format:
     } 
 ```
 
-The list must also include the **p** tag: `["fdf46f77...", ..]`,  
-which should contain the public keys of the mentioned users.  
-This allows querying reputation events that reference a specific seller.  
+The list must also include the `p` tag: `["fdf46f77...", ..]`, which should contain the 
+public keys of the mentioned users. This allows querying reputation events that reference 
+a specific seller.  
 
 **Example:**  
 
@@ -104,7 +105,7 @@ This allows querying reputation events that reference a specific seller.
       "created_at": 1675642635,
       "content": "arbitrary data",
       "tags": [
-            ["r", "reputation"],
+            ["o", "reputation"],
             ["reputation", "[{ \"pubkey\": \"fdf46f77...\"... }","{...}]"]
             ["p", "fdf46f77..."],
             ["e","b3e392b11f...", "wss://relay.example.com"],
