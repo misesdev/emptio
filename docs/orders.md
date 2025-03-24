@@ -1,58 +1,56 @@
-# Sistema de ordens de venda
+# Sell Order System
 
 `draft`
 
-Um usuário pode criar quantas ordens quiser, excluir e editar, para isso não podem ser utilizados 
-eventos comuns, devem ser utilizados eventos replaceable, no caso foi ecolhido o evento de 
-kind: 10002, onde cada vez que é publicado sobrescreve o anterior. Esse evento de kind 10002
-normalmente é utilizado para [relay list NIP 61](https://github.com/nostr-protocol/nips/blob/master/65.md), mas podemos utilizar suas
-tags para adicionar ordens de venda. `pode ser melhorado depois`.
+A user can create as many orders as they want, delete, and edit them. For this, common events
+cannot be used; replaceable events must be used. In this case, the chosen event is of 
+kind: `10002`, where each time it is published, it overwrites the previous one. This kind `10002`
+event is typically used for [relay list NIP 61](https://github.com/nostr-protocol/nips/blob/master/65.md), but we can use its tags to add
+sell orders. `This can be improved later.`
 
-Uma ordem deve ter o seguinte formato:
+An order should have the following format:
 
 ```json
     {
         "currency": "USD"
         "price": 123456,
         "satoshis": 50000,
-        "term": 1675642635,
+        "term": 1675642635
     }
 ```
 
-* `currency` Deve conter o código da moeda local em que está precificado os satoshis.
+* `currency` Must contain the code of the local currency in which the satoshis are priced.
 
-* `price` Deve conter o preço na moeda local, formatado sem casas decimais. No app 
-os preços seram tratados sempre com duas casas decimais, por tanto, para eliminar as 
-casas decimais, o preço é multiplicado por 100 e truncado.
+* `price` Must contain the price in the local currency, formatted without decimal places. In the app,  
+prices will always be handled with two decimal places, so to eliminate decimal places,  
+the price is multiplied by 100 and truncated.
 
-* `satoshis` Deve conter a quantidade de satoshis a venda sem formatação
+* `satoshis` Must contain the amount of satoshis for sale without formatting.
 
-* `term` Deve conter o prazo de validade da ordem de venda em timestamp de segundos, assim
-como é o campo created_at de todo evento.
+* `term` Must contain the expiration date of the sell order in timestamp format (seconds),  
+just like the `created_at` field in every event.
 
+The event must contain the `o` tag with the value `order`, to indicate that it is an event containing  
+sell orders and can be listed by the app. It must also contain in `content` a list of serialized objects  
+containing the sell orders.
 
-O evento deve conter a tag `o` com o valor `order`, para indicar que é um evento que possui ordens 
-de venda, e poder ser listado pelo app. Deve também conter no `content` uma lista de objetos
-serializados contendo as ordens de venda.
-
-**Exemplo**:
+**Example**:
 
 ```json
     {
         ...,
         "tags": [
-            ["o", "order"],
+            ["o", "order"]
         ],
         "content": "[{\"currency\": \"USD\", ...}, {...}]"
     }
 ```
 
-O evento naturalmente deve conter a tag `r` que contem os relays que são o propósito da existencia
-desse tipo de evento, e isso pode ser aproveitado para melhor comunicação entre vendedor e 
-comprador, visto que uma vez com acesso a uma ordem de venda, você tem acesso aos relays de 
-escrita e leitura do criador da ordem.
+The event must naturally contain the `r` tag, which holds the relays that are the purpose of  
+this type of event. This can be leveraged for better communication between seller and buyer,  
+since once you have access to a sell order, you also have access to the creator's read and write relays.
 
-Exemplo com o evento completo:
+Example with the complete event:
 
 ```json
     {
