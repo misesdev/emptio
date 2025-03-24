@@ -1,35 +1,51 @@
-# Reputation System  
+# Sistema de reputação 
 
-### Description  
+### Descrição 
 
-The process of buying and selling Bitcoin in the app has no restrictions, balance 
-retention systems, or any mechanism that guarantees you will receive the satoshis 
-you purchased in a sell order. Instead of implementing a balance retention system, 
-the natural system of capitalism—Reputation—was chosen.  
+O processo de compra e venda de bitcoin no app não possui restrições, 
+sistemas de retenção de saldos, ou qualquer tipo de sistema que garante que você receberá 
+os satoshis que comprou em uma ordem de venda, ao invéz de implementar
+um sistema de retenção de saldos, foi esolhido o sistema natural do capitalismo: 'Reputação'.
 
-`Reputation is basically people knowing what you have done in your history.`  
+`Reputação é basicamente as pessoas conhecerem oque você já fez em sua história`
 
-A system was designed in which, when a user buys Bitcoin from one of your orders, 
-all users on the network connected to the same relays or at least one of them can see 
-all the details. If any issue arises, or if you fail to send the sats you sold, everyone
-will be able to see it and avoid buying from you in the future. This way, the incentives 
-for growing as a P2P seller are solely tied to increasing your reputation.  
+Então, foi pensado um sistema em que, quando um usuário compra bitcoin em uma ordem sua,
+todos os usuários na rede conectados aos mesmos relays ou a pelo menos um dos relays, poderá
+ver se o comprador recebeu ou não. De modo que se houver algum problema, ou você não enviar 
+os sats que vendeu, todos poderão ver e não comprar mais de você, definindo os incentívos 
+para crescer como vendedor P2P seja somente através de uma boa reputação.
 
-### Implementation  
+![exemplo](/sources/reputation.png)
 
-To implement this system, events from [public lists](https://github.com/nostr-protocol/nips/blob/master/51.md) are used.  
-All users who make purchases add the details to a list event. The event must include the 
-tag **s**: "emptio_p2p" so that the app can list these events later. It must also 
-contain the tag **r**: "reputation" to indicate that it is a list containing reputation data.  
+O diagrama acima descreve o processo em que Alice, antes de realizar uma compra de uma ordem 
+do Bob, consulta a sua reputação com seus compradores passados (user 1, user 2, user 3 e user 4).
+Note que 3 deles consideram Bob um verndedor seguro, e um considera Bob um verndedor inseguro,
+por tanto, pode-se calcular um ponto percentual da reputação de Bob:
 
-A user can create as many lists as they want, but these lists must be nested, containing 
-an **e** tag with the ID of the previous list.  
+    R = (100 / F) * S 
 
-The list must also include the tag **p**: ["fdf46f77...", ..], which should contain the 
-public keys of the referenced users. This allows reputation events mentioning a specific 
-seller to be listed when verifying their reputation.  
+A formula simples acima calcula o percentual de compradores que consideram Bob inseguro
+do total de compradores, onde **F** é a quantidade total de pessoas que já compraram de Bob, 
+**S** é a quantidade decompradores que consideram Bob inseguro e **R** é o percentual de 
+compradores que consideram Bob seguro dentre todas as pessoas que já compraram dele.
 
-**Example**:  
+
+
+### Implementação
+
+Para implementar tal sistema são utilizados eventos de [listas públicas](https://github.com/nostr-protocol/nips/blob/master/51.md).
+Todos os usuários que realizam compras adicionam os detalhes a um evento de lista, no evento
+deve ser adicionada a tag **r**: "reputation", para indicar que se trata de uma lista com 
+dados de reputação.
+
+O usuário poderá criar quantas listas quiser, porém, essas listas devem estar aninhadas, contendo
+uma tag **e** com o id da lista anterior.
+
+A lista deve também conter a tag **p**: ["fdf46f77...", ..], que deve conter as chaves públicas 
+dos usuários citados, de modo que, para verificar a reputação de um usuário vendedor específico
+possam ser listados os eventos de reputação que o mencionam.
+
+**Exemplo**:  
 
 `
     {
@@ -37,7 +53,6 @@ seller to be listed when verifying their reputation.
       "created_at": 1675642635,
       "content": "arbitrary data",
       "tags": [
-            ["s", "emptio_p2p"],
             ["r", "reputation"],
             ["p", "fdf46f77..."],
             ["e","b3e392b11f...", "wss://relay.example.com"],
