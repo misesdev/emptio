@@ -1,6 +1,6 @@
 # Reputation System  
 
-    Draft
+`draft`
 
 ### Description  
 
@@ -9,7 +9,7 @@ balance retention systems, or any system that guarantees you will receive
 the satoshis you purchased in a sell order. Instead of implementing  
 a balance retention system, the natural system of capitalism was chosen: **Reputation**.  
 
-    Reputation is basically people knowing what you have done in your history.  
+`Reputation is basically people knowing what you have done in your history.`  
 
 Thus, a system was designed where, when a user buys Bitcoin from one of your orders,  
 all users on the network connected to the same relays or at least one of the relays  
