@@ -32,7 +32,7 @@ como é o campo created_at de todo evento.
 
 
 O evento deve conter a tag `o` com o valor `order`, para indicar que é um evento que possui ordens 
-de venda, e poder ser listada pelo app. Deve também conter a tag `orders` com uma lista de objetos
+de venda, e poder ser listado pelo app. Deve também conter no `content` uma lista de objetos
 serializados contendo as ordens de venda.
 
 **Exemplo**:
@@ -40,10 +40,10 @@ serializados contendo as ordens de venda.
 ```json
     {
         ...,
-        tags: [
+        "tags": [
             ["o", "order"],
-            ["orders", "{\"currency\": \"USD\", ...}", "{...}", ...]
-        ]
+        ],
+        "content": "[{\"currency\": \"USD\", ...}, {...}]"
     }
 ```
 
@@ -59,13 +59,12 @@ Exemplo com o evento completo:
         "kind": 10002,
         "tags": [
             ["o", "order"],
-            ["orders", "{\"currency\": \"USD\", ...}", "{...}", ...]
             ["r", "wss://alicerelay.example.com"],
             ["r", "wss://expensive-relay.example2.com", "write"],
             ["r", "wss://nostr-relay.example.com", "read"],
             ...
         ],
-        "content": "",
+        "content": "[{\"currency\": \"USD\", ...}, {...}]"
         // other fields...
     }
 ```
