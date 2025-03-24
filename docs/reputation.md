@@ -45,7 +45,7 @@ para ambas as partes.**
 Para garantir que não haja má conduta de nenhuma das partes, a informação que indica se o vendedor 
 é seguro ou não, não é adicionada pelo próprio usuário, ela é adicionada automaticamente quando
 o comprador receber o saldo em sua carteira. Para isso, é utilizado o último bloco minerado.
-Quando o comprador realiza o pagamento, então o sistema salva o último bloco minerado e aguarda 
+Quando o comprador realiza o pagamento, o sistema salva o último bloco minerado e aguarda 
 a mineração do pŕoximo bloco, quando o próximo bloco é minerado, então o sistema verifica se
 nele existe uma transação que envia o saldo da **ordem de venda** para o comprador, caso
 exista a transação, ou seja, o comprador recebeu o saldo, então é adicionado a lista de reputação
