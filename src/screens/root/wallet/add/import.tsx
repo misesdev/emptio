@@ -22,15 +22,6 @@ const ImportWalletScreen = ({ navigation, route }: StackScreenProps<any>) => {
     const [passPhrase, setPassPhrase] = useState<string>()
     const { useTranslate } = useTranslateService()
 
-    useEffect(() => {
-        navigation.setOptions({
-            header: () => <HeaderScreen
-                title={useTranslate("screen.title.importwallet")}
-                onClose={() => navigation.goBack()}
-            />
-        })
-    })
-
     const handleSetName = (value: string) => {
         setWalletName(value)
         setTimeout(Validate, 20)
@@ -74,7 +65,14 @@ const ImportWalletScreen = ({ navigation, route }: StackScreenProps<any>) => {
     }
 
     return (
-        <View style={theme.styles.container}>
+        <View style={styles.container}>
+            <HeaderScreen style={{ marginBottom: 10 }}
+                title={useTranslate("screen.title.addwallet")}
+                onClose={() => navigation.goBack()}
+            />
+
+            <View style={{ height: 75 }}></View>
+
             <Text style={styles.title}>{useTranslate("wallet.title.import")}</Text>
 
             <View style={{ alignItems: "center", marginVertical: 26 }}>
@@ -123,6 +121,7 @@ const ImportWalletScreen = ({ navigation, route }: StackScreenProps<any>) => {
 }
 
 const styles = StyleSheet.create({
+    container: { flex: 1, alignItems: 'center', backgroundColor: theme.colors.black },
     title: { fontSize: 25, fontWeight: "bold", textAlign: "center", color: theme.colors.white, marginVertical: 20 },
     buttonArea: { width: '100%', justifyContent: 'center', marginVertical: 10, flexDirection: "row", marginTop: 50 }
 })

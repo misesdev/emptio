@@ -17,14 +17,6 @@ const DonateScreen = ({ navigation, route }: StackScreenProps<any>) => {
     const { useTranslate } = useTranslateService()
     const [wallet, setWallet] = useState<Wallet>(route?.params?.wallet as Wallet)
 
-    useEffect(() => {
-        navigation.setOptions({
-            headerShown: true,
-            header: () => <HeaderScreen title={useTranslate("screen.title.donate")} onClose={() => navigation.navigate("core-stack")} />
-        })
-        // handleLoadData()
-    }, [])
-
     const selecteWallet = (wallet: Wallet) => {
         setWallet(wallet)
         
@@ -35,8 +27,13 @@ const DonateScreen = ({ navigation, route }: StackScreenProps<any>) => {
     }
 
     return (
-        <View style={theme.styles.container} >
-            {/* Body */}
+        <View style={styles.container} >
+            <HeaderScreen
+                style={{ marginBottom: 25 }}
+                title={useTranslate("screen.title.donate")} 
+                onClose={() => navigation.goBack()} 
+            />
+            
             <Text style={styles.title}>{useTranslate("wallet.title.sendvalue")}</Text>
 
             <AmountBox wallet={wallet} setWallet={setWallet} manageWallet={wallets.length > 1} value={amount} onChangeText={setAmount} isValidHandle={(valid) => setDisabled(!valid)} />
@@ -61,6 +58,7 @@ const DonateScreen = ({ navigation, route }: StackScreenProps<any>) => {
 }
 
 const styles = StyleSheet.create({
+    container: { flex: 1, alignItems: 'center', backgroundColor: theme.colors.black },
     title: { fontSize: 25, maxWidth: "90%", fontWeight: "bold", textAlign: "center", color: theme.colors.white },
     sectionBottom: { position: "absolute", bottom: 30, padding: 10, width: "100%", alignItems: "center" },
     sendButtonText: { fontSize: 13, fontWeight: "500", textAlign: 'center', marginHorizontal: 10, },

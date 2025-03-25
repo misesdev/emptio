@@ -2,76 +2,67 @@ import { View, Text, StyleSheet, TouchableOpacity } from "react-native"
 import { FollowList } from "@components/nostr/follow/FollowList"
 import { ButtonScanQRCode } from "@components/wallet/buttons"
 import { TextBox } from "@components/form/TextBoxs"
-import SplashScreen from "@components/general/SplashScreen"
 import Ionicons from 'react-native-vector-icons/Ionicons'
-import { useEffect, useState } from "react"
 import { SectionHeader } from "@components/general/section/headers"
 import { HeaderScreen } from "@components/general/HeaderScreen"
 import { useTranslateService } from "@src/providers/translateProvider"
+import { User } from "@services/memory/types"
+import { pushMessage } from "@services/notification"
+import { getUserName } from "@src/utils"
+import { Address } from "bitcoin-tx-lib"
+import { useState } from "react"
 import theme from "@src/theme"
-import { walletService } from "@services/wallet"
 
 const SendReceiverScreen = ({ navigation, route }: any) => {
 
-    const { wallet } = route.params
+    const { wallet, amount } = route.params
     const { useTranslate } = useTranslateService()
-    const [loading, setLoading] = useState(true)
-    // const [searching, setSearching] = useState(false)
     const [nextDisabled, setNextDisabled] = useState(true)
-    const [amount, setAmount] = useState<string>("")
     const [address, setAddress] = useState<string>("")
 
-    useEffect(() => {
-        setAmount(route.params?.amount)
-        setLoading(false)
-    }, [])
-
     const handleRead = (value: string) => {
+        setNextDisabled(!Address.isValid(value))
         setAddress(value)
-        setNextDisabled(!walletService.address.validate(value))
     }
 
     const onChangeText = (value: string) => {
+        setNextDisabled(!Address.isValid(value))
         setAddress(value)
-        setNextDisabled(!walletService.address.validate(value))
     }
 
-    const handleSendToFee = async () => navigation.navigate("wallet-send-final-stack", { amount, address, wallet })
+    const handleSelectUser = (user: User) => {
+        if(!Address.isValid(user.bitcoin_address??"")) 
+            return pushMessage(`${getUserName(user)} não possui carteira no app.`)
+       
+        navigation.navigate("wallet-send-final-stack", {
+            address: user.bitcoin_address, 
+            amount, wallet 
+        })
+    }
 
-    if (loading)
-        return <SplashScreen />
+    const handleSendToFee = () => { 
+        navigation.navigate("wallet-send-final-stack", { amount, address, wallet })
+    }
 
     return (
-        <View style={{
-            flex: 1,
-            alignItems: 'center',
-            backgroundColor: theme.colors.black
-        }}>
-            {/* Header */}
+        <View style={styles.container}>
             <HeaderScreen
                 title={useTranslate("wallet.title.sendfor")}
-                onClose={() => navigation.navigate("wallet-send-stack", { wallet })}
+                onClose={() => navigation.goBack()}
             />
 
-            {/* Body */}
-            {/* <Hidable visible={!searching}> */}
             <Text style={styles.title}>{`${useTranslate("wallet.title.sendreceiver")}${route.params?.amount} sats?`}</Text>
-            {/* </Hidable> */}
 
             <TextBox value={address}
                 onChangeText={onChangeText}
-                // onFocus={() => setSearching(true)}
-                // onBlur={() => setSearching(false)}
                 placeholder={useTranslate("wallet.placeholder.addressuser")}
             />
 
-            {/* <Hidable visible={!searching}> */}
             <ButtonScanQRCode label={useTranslate("commons.scan")} onChangeText={handleRead} />
-            {/* </Hidable> */}
 
             <SectionHeader label={useTranslate("labels.friends")} icon="people" />
 
-            <FollowList toSend onPressFollow={user => { console.log(user) }} />
+            <FollowList searchable toPayment onPressFollow={handleSelectUser} />
 
             <View style={{ position: "absolute", bottom: 30, padding: 10, width: "100%", flexDirection: "row-reverse" }}>
                 <TouchableOpacity activeOpacity={.7} onPress={handleSendToFee} disabled={nextDisabled}
@@ -85,7 +76,9 @@ const SendReceiverScreen = ({ navigation, route }: any) => {
 }
 
 const styles = StyleSheet.create({
-    title: { fontSize: 24, maxWidth: "90%", fontWeight: "bold", textAlign: "center", marginVertical: 10, color: theme.colors.white }
+    container: { flex: 1, alignItems: 'center', backgroundColor: theme.colors.black },
+    title: { fontSize: 24, maxWidth: "90%", fontWeight: "bold", textAlign: "center", 
+        marginVertical: 10, color: theme.colors.white }
 })
 
 export default SendReceiverScreen

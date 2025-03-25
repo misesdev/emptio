@@ -1,4 +1,4 @@
-import { createWallet,  generateAddress, importWallet } from "@src/services/bitcoin";
+import { createWallet,  generateAddress, importWallet } from "./index";
 
 describe("wallets bitcoin functions", () => {
     it("create wallet", () => {

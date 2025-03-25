@@ -33,7 +33,7 @@ const create = async ({ name, type, password, wallets }: Props): Promise<Respons
             lastReceived: 0,
             lastSended: 0,
             pairkey: base.pairkey.key,
-            key: getRandomKey(10),
+            key: getRandomKey(15),
             address: bitcoinAddress,
             default: wallets.length <= 0
         }
@@ -72,7 +72,7 @@ const require = async ({ name, type = "bitcoin", mnemonic, password }: ImportPro
             lastReceived: 0,
             lastSended: 0,
             pairkey: base.pairkey.key,
-            key: getRandomKey(10),
+            key: getRandomKey(15),
             address: bitcoinAddress
         }
 
@@ -186,6 +186,8 @@ const transaction = {
             wallet,
             pairkey
         })
+
+        console.log(transaction)
 
         return transaction
     },

@@ -1,6 +1,6 @@
 import { WalletButtons, WalletHeader, WalletTransactions } from "@components/wallet"
 import { SectionHeader } from "@components/general/section/headers"
-import { Transaction, TransactionInfo } from "@services/memory/types"
+import { Transaction, TransactionInfo, Wallet } from "@services/memory/types"
 import { View, ScrollView, RefreshControl, TouchableOpacity } from "react-native"
 import Ionicons from 'react-native-vector-icons/Ionicons'
 import { useTranslateService } from "@src/providers/translateProvider"
@@ -12,10 +12,10 @@ import { BNetwork } from "bitcoin-tx-lib"
 
 const WalletManagerScreen = ({ navigation, route }: StackScreenProps<any>) => {
 
-    const wallet = route.params?.wallet
     const { useTranslate } = useTranslateService()
     const [refreshing, setRefreshing] = useState(false)
     const [transactions, setTransactions] = useState<Transaction[]>([])
+    const [wallet, setWallet] = useState<Wallet>(route.params?.wallet)
 
     useEffect(() => {
         // add to header menu wallet options 
@@ -31,19 +31,24 @@ const WalletManagerScreen = ({ navigation, route }: StackScreenProps<any>) => {
 
     const handleLoadTransactions = async () => {
         setRefreshing(true)
-
         const address = wallet.address ?? ""
         const network: BNetwork = wallet.type == "bitcoin" ? "mainnet" : "testnet"
         // search transactions and update wallet lastBalance
         walletService.listTransactions(address, network).then(walletInfo => {
             setTransactions(walletInfo.transactions)
-            wallet.lastBalance = walletInfo.balance
-            wallet.lastReceived = walletInfo.received
-            wallet.lastSended = walletInfo.sended
+            setWallet((prev: Wallet) => ({
+                ...prev,
+                lastBalance: walletInfo.balance,
+                lastReceived: walletInfo.received,
+                lastSended: walletInfo.sended
+            }))
             walletService.update(wallet)
             setRefreshing(false)
         })
-        .catch(() => setRefreshing(false))
+        .catch((fail) => { 
+            setRefreshing(false)
+            console.log(fail)    
+        })
 
         await walletService.update(wallet)
     }

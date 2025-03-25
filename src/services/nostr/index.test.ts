@@ -1,4 +1,4 @@
-import { createPairKeys, derivatePublicKey, validatePrivateKey, getHexKeys } from "@src/services/nostr"
+import { createPairKeys, derivatePublicKey, validatePrivateKey, getHexKeys } from "./index"
 import { hexToBytes } from "@noble/hashes/utils"
 import { nip19 } from "nostr-tools";
 
@@ -45,9 +45,6 @@ describe("Pair Keys Nostr", () => {
         expect(pairKeyHex.publicKey).toHaveLength(64)
     })
 
-    it("list folow", () => {
-        const pubkey = "npub124rja8qp7dartasr9wdh3kk78phxunzhmq8ar5ryd2anj2qwtcnsz3tuhs"
-    })
 })
 
 

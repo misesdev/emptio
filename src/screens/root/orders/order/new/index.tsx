@@ -26,18 +26,12 @@ const NewOrderScreen = ({ navigation }: StackScreenProps<any>) => {
     } 
 
     return (
-        <View style={{
-            flex: 1,
-            alignItems: 'center',
-            backgroundColor: theme.colors.black
-        }}>
-            {/* Hader */}
-            <HeaderScreen 
+        <View style={styles.container}>
+            <HeaderScreen style={{ marginBottom: 25 }}
                 title={useTranslate("order.new.title")} 
                 onClose={() => navigation.goBack()} 
             />
 
-            {/* Body */}
             <Text style={styles.title}>{useTranslate("order.new.amount-title")}</Text>
 
             <AmountBox wallet={wallet} 
@@ -61,8 +55,11 @@ const NewOrderScreen = ({ navigation }: StackScreenProps<any>) => {
 }
 
 const styles = StyleSheet.create({
-    title: { fontSize: 25, maxWidth: "90%", fontWeight: "bold", textAlign: "center", color: theme.colors.white },
-    buttonArea: { position: "absolute", bottom: 30, padding: 10, width: "100%", flexDirection: "row-reverse" }
+    container: { flex: 1, alignItems: 'center', backgroundColor: theme.colors.black },
+    title: { fontSize: 25, maxWidth: "90%", fontWeight: "bold", textAlign: "center",
+        color: theme.colors.white },
+    buttonArea: { position: "absolute", bottom: 30, padding: 10, width: "100%", 
+        flexDirection: "row-reverse" }
 })
 
 export default NewOrderScreen

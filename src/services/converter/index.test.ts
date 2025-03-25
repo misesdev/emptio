@@ -1,4 +1,4 @@
-import { formatSats, toBitcoin, toNumber, toSats } from "@/src/services/converter"
+import { formatSats, toBitcoin, toNumber, toSats } from "./index"
 
 describe("Converters functions", () => {
     it("Number to bitcoin amount", () => {

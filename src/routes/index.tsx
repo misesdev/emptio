@@ -64,11 +64,11 @@ const AppRoutes = () => {
                 <Stack.Screen name="about-stack" component={AboutScreen} options={ScreenCardOptions} />
 
                 <Stack.Screen name="wallet-stack" component={WalletManagerScreen} options={{ headerShown: true }} />
-                <Stack.Screen name="add-wallet-stack" component={AddWalletScreen} options={{...ScreenCardOptions, headerShown: true }} />
+                <Stack.Screen name="add-wallet-stack" component={AddWalletScreen} options={ScreenCardOptions} />
                 <Stack.Screen name="seed-wallet-stack" component={CreatedSeedScren} options={{...ScreenCardOptions, headerShown: true }} />
-                <Stack.Screen name="import-wallet-stack" component={ImportWalletScreen} options={{...ScreenCardOptions, headerShown: true }} />
+                <Stack.Screen name="import-wallet-stack" component={ImportWalletScreen} options={ScreenCardOptions} />
                 <Stack.Screen name="add-wallet-receive-stack" component={WalletReceiveScreen} options={ScreenCardOptions} />
-                <Stack.Screen name="wallet-send-stack" component={SendScreen} options={{...ScreenCardOptions, headerShown: true }} />
+                <Stack.Screen name="wallet-send-stack" component={SendScreen} options={ScreenCardOptions} />
                 <Stack.Screen name="wallet-send-receiver-stack" component={SendReceiverScreen} options={ScreenCardOptions} />
                 <Stack.Screen name="wallet-send-final-stack" component={SendFinalScreen} options={ScreenCardOptions} />
                 <Stack.Screen name="wallet-settings-stack" component={WalletSettings} options={{...ScreenCardOptions, headerShown: true }} />

@@ -18,6 +18,7 @@ type FriendListProps = {
     toPayment?: boolean,
     searchable?: boolean,
     searchTimout?: number,
+    showButton?: boolean,
     onPressFollow?: (user: User) => void,
 }
 
@@ -50,7 +51,7 @@ export const FollowList = ({ onPressFollow, toPayment=false, searchable, toView=
 
     const ListItem = memo(({ item }: { item: User }) => (
         <FollowItem isFriend follow={item} toFollow={toFollow} toView={toView}
-            toOpen={toOpen} toSend={toSend} toInvite={toInvite}
+            toOpen={toOpen} toSend={toSend} toInvite={toInvite} toPayment={toPayment}
             handleClickFollow={handleClickFollow} 
         />
     ))

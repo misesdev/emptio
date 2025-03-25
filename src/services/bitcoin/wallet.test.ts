@@ -1,4 +1,4 @@
-import { createWallet, importWallet } from "@/src/services/bitcoin";
+import { createWallet, importWallet } from "./index";
 
 describe("bitcoin wallet", () => {
     it("import wallet from seedphrase with passphrase", async () => {

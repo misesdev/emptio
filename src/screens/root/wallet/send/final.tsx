@@ -24,6 +24,7 @@ const SendFinalScreen = ({ navigation, route }: any) => {
     useEffect(() => {        
         setAmount(route.params?.amount)
         setAddress(route.params?.address)
+        console.log(route.params?.address)
         setLoading(false)
     }, [])
 

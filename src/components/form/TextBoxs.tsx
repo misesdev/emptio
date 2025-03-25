@@ -71,7 +71,7 @@ const styles = StyleSheet.create({
         color: theme.colors.white,
         backgroundColor: theme.input.backGround,
         paddingHorizontal: 24,
-        paddingVertical: 15,
+        paddingVertical: 10,
         borderRadius: 10,
         margin: 10
     },

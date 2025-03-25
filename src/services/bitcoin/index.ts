@@ -1,9 +1,8 @@
-import { getPublicKey } from "@noble/secp256k1"
 import { bytesToHex } from "@noble/hashes/utils"
 import { generateMnemonic, mnemonicToSeedSync } from "bip39"
 import { PairKey, Wallet } from "../memory/types"
 import { getRandomKey } from "./signature"
-import { getTxsUtxos, sendUtxo } from "./mempool"
+import { getFee, getTxsUtxos, sendUtxo } from "./mempool"
 import { Response, trackException } from "../telemetry"
 import { Address, BNetwork, ECPairKey, Transaction } from "bitcoin-tx-lib"
 import { HDKey } from "@scure/bip32"
@@ -26,11 +25,9 @@ export const createWallet = (password: string = "", network: BNetwork = "mainnet
 
     const privateKey = bytesToHex(root.privateKey as Uint8Array)
 
-    const publicbytes = getPublicKey(privateKey)
+    const ecPairkey = ECPairKey.fromHex({ privateKey, network })
 
-    const publicKey = bytesToHex(publicbytes)
-
-    const pairkey =  { key, privateKey, publicKey }
+    const pairkey =  { key, privateKey, publicKey: ecPairkey.getPublicKeyCompressed("hex") }
 
     return { pairkey, mnemonic, wallet: {} }
 }
@@ -45,11 +42,9 @@ export const importWallet = async (mnemonic: string, password?: string, network:
 
     const privateKey = bytesToHex(root.privateKey as Uint8Array)
 
-    const publicbytes = getPublicKey(privateKey)
+    const ecPairkey = ECPairKey.fromHex({ privateKey, network })
 
-    const publicKey = bytesToHex(publicbytes)
-
-    const pairkey =  { key, privateKey, publicKey }
+    const pairkey =  { key, privateKey, publicKey: ecPairkey.getPublicKeyCompressed("hex") }
 
     return { pairkey, mnemonic, wallet: {} }
 }
@@ -61,17 +56,10 @@ export type SeedProps = {
 }
 
 export const generateAddress = (publicKey: string, net: BNetwork = "mainnet"): string => {
-
     return Address.fromPubkey({ pubkey:  publicKey, network: net })
 }
 
-export const ValidateAddress = (btcAddress: string, net: BNetwork = "mainnet") => {
-    try {
-        // const network =  net == "testnet" ? networks.testnet : networks.bitcoin
-        // address.toOutputScript(btcAddress, network)
-        return true
-    } catch { return false }
-}
+export const ValidateAddress = (btcAddress: string) => Address.isValid(btcAddress) 
 
 type TransactionProps = {
     amount: number,
@@ -83,13 +71,15 @@ type TransactionProps = {
 export const createTransaction = async ({ amount, destination, wallet, pairkey }: TransactionProps): Promise<Response<any>> => {
     try 
     {
-        var utxoAmount = 0, fee = 0, averageRate = 1
+        var utxoAmount = 0, fee = 30 // bytes of output has change 
 
         const network: BNetwork = wallet.type == "bitcoin" ? "mainnet" : "testnet"
 
         const ecPair = ECPairKey.fromHex({ privateKey: pairkey.privateKey, network })
 
         const transaction = new Transaction(ecPair)
+
+        const recomendedFee = await getFee(network)
 
         const utxos = await getTxsUtxos(wallet.address ?? "", network)
 
@@ -98,14 +88,6 @@ export const createTransaction = async ({ amount, destination, wallet, pairkey }
 
         // add destination address transaction -> buffer
         transaction.addOutput({ address: destination, amount: amount })
-
-        // add the change recipient
-        if (utxoAmount > amount) {
-            transaction.addOutput({ 
-                address: wallet.address ?? "",
-                amount: utxoAmount - amount 
-            })
-        }
 
         for (let utxo of ordenedUtxos) {
             if (utxoAmount <= amount+fee) {
@@ -117,11 +99,20 @@ export const createTransaction = async ({ amount, destination, wallet, pairkey }
                     value: utxo.value,
                     scriptPubKey
                 })
-
-                fee += averageRate * transaction.vBytes()
+                // bytes to output of change
+                fee = recomendedFee.hourFee * (transaction.vBytes() + 30) 
             } 
             else
                 break
+        }
+        
+        // add the change recipient
+        if (utxoAmount > amount+fee) 
+        {
+            transaction.addOutput({ 
+                address: wallet.address ?? "",
+                amount: utxoAmount - (amount+fee) 
+            })
         }
 
         const txHex = transaction.build()

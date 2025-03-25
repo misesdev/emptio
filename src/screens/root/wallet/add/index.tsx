@@ -28,15 +28,6 @@ const AddWalletScreen = ({ navigation }: StackScreenProps<any>) => {
     const [walletPassword, setWalletPassword] = useState<string>("")
     const [walletType, setWalletType] = useState<WalletType>("bitcoin")
 
-    useEffect(() => {
-        navigation.setOptions({ 
-            header: () => <HeaderScreen
-                title={useTranslate("screen.title.addwallet")}
-                onClose={() => navigation.goBack()}
-            /> 
-        })
-    }, [])
-
     const handleWalletType = (type: WalletType) => {
         setWalletType(type)
     }
@@ -94,7 +85,14 @@ const AddWalletScreen = ({ navigation }: StackScreenProps<any>) => {
     }
 
     return (
-        <ScrollView contentContainerStyle={theme.styles.container}>
+        <ScrollView contentContainerStyle={styles.container}>
+            <HeaderScreen style={{ marginBottom: 10 }}
+                title={useTranslate("screen.title.addwallet")}
+                onClose={() => navigation.goBack()}
+            />
+
+            <View style={{ height: 75 }}></View>
+
             <View style={{ width: "100%" }}>
                 <FormControl label={useTranslate("labels.wallet.name")} 
                     value={walletName} onChangeText={handleSetName} 
@@ -177,14 +175,14 @@ const AddWalletScreen = ({ navigation }: StackScreenProps<any>) => {
 }
 
 const styles = StyleSheet.create({
+    container: { flex: 1, alignItems: 'center', backgroundColor: theme.colors.black },
     title: { top: 50, fontSize: 22, fontWeight: 'bold', position: "absolute", 
         color: theme.colors.white },
     selection: { width: "90%", minHeight: 20, maxHeight: 100, borderRadius: 10, 
         marginVertical: 10, flexDirection: "row", borderWidth: 1 },
     typeTitle: { fontSize: 16, fontWeight: "bold", marginTop: 15, color: theme.colors.white },
     typeDescription: { marginBottom: 15, color: theme.colors.gray },
-    buttonArea: { width: '100%', position: 'absolute', justifyContent: 'center', 
-        marginBottom: 25, flexDirection: "row", bottom: 10 }
+    buttonArea: { width: '100%', justifyContent: 'center', marginVertical: 25, flexDirection: "row" }
 })
 
 export default AddWalletScreen
