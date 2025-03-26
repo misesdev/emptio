@@ -27,6 +27,12 @@ export const getClipedContent = (content: string, limit: number=50) => {
     return content
 }
 
+export function shortenString(value: string, size: number) : string {
+    let length = size / 2;
+    
+    return `${value.substring(0, length)}...${value.substring(length, size)}`
+}
+
 export const getDisplayPubkey = (pubkey: string, maxSize: number = 20) => {
     const npub = hexToNpub(pubkey)
     return `${npub.substring(0, maxSize)}...${npub.substring(58)}`

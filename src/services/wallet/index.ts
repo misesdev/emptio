@@ -171,10 +171,15 @@ const listTransactions = async (address: string, network: BNetwork): Promise<Wal
     return response
 }
 
-type TransactionProps = { amount: number, destination: string, walletKey: string }
+interface TransactionProps {
+    amount: number,
+    destination: string, 
+    walletKey: string,
+    recomendedFee: number
+}
 
 const transaction = {
-    get: async ({ amount, destination, walletKey }: TransactionProps): Promise<Response<any>> => {
+    build: async ({ amount, destination, walletKey, recomendedFee }: TransactionProps): Promise<Response<any>> => {
 
         const wallet = await storageService.wallets.get(walletKey)
 
@@ -183,6 +188,7 @@ const transaction = {
         const transaction = await createTransaction({
             amount,
             destination,
+            recomendedFee,
             wallet,
             pairkey
         })

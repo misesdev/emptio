@@ -64,11 +64,13 @@ export const ValidateAddress = (btcAddress: string) => Address.isValid(btcAddres
 type TransactionProps = {
     amount: number,
     destination: string,
+    recomendedFee: number,
     wallet: Wallet,
     pairkey: PairKey
 }
 
-export const createTransaction = async ({ amount, destination, wallet, pairkey }: TransactionProps): Promise<Response<any>> => {
+export const createTransaction = async ({ amount, destination, recomendedFee,
+    wallet, pairkey }: TransactionProps): Promise<Response<any>> => {
     try 
     {
         var utxoAmount = 0, fee = 30 // bytes of output has change 
@@ -78,8 +80,6 @@ export const createTransaction = async ({ amount, destination, wallet, pairkey }
         const ecPair = ECPairKey.fromHex({ privateKey: pairkey.privateKey, network })
 
         const transaction = new Transaction(ecPair)
-
-        const recomendedFee = await getFee(network)
 
         const utxos = await getTxsUtxos(wallet.address ?? "", network)
 
@@ -100,7 +100,7 @@ export const createTransaction = async ({ amount, destination, wallet, pairkey }
                     scriptPubKey
                 })
                 // bytes to output of change
-                fee = recomendedFee.hourFee * (transaction.vBytes() + 30) 
+                fee = recomendedFee * (transaction.vBytes() + 30) 
             } 
             else
                 break
