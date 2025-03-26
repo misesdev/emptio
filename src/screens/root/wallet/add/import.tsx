@@ -110,9 +110,6 @@ const ImportWalletScreen = ({ navigation, route }: StackScreenProps<any>) => {
             <View style={styles.buttonArea}>
                 <ButtonPrimary disabled={disabled} loading={loading}
                     label={useTranslate("commons.import")} 
-                    style={{ backgroundColor: disabled ? theme.colors.disabled 
-                        : theme.colors.blue 
-                    }}
                     onPress={() => handleImport()} 
                 />
             </View>

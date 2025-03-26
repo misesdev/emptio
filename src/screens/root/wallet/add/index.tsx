@@ -165,9 +165,6 @@ const AddWalletScreen = ({ navigation }: StackScreenProps<any>) => {
             <View style={styles.buttonArea}>
                 <ButtonPrimary label={useTranslate("commons.create")} 
                     onPress={() => handleCreate()} disabled={disabled} loading={loading}
-                    style={{ backgroundColor: disabled ? theme.colors.disabled 
-                        : theme.colors.blue 
-                    }}
                 />
             </View>
         </ScrollView>

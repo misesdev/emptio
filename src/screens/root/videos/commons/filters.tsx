@@ -93,9 +93,6 @@ const VideosFilters = () => {
                     />
                     <View style={styles.closebutton}>
                         <ButtonPrimary disabled={!filterTags.length}
-                            style={{ backgroundColor: !filterTags.length ? theme.colors.disabled
-                                : theme.colors.blue
-                            }}
                             label={useTranslate("commons.save")}
                             onPress={handleSave} 
                         />
