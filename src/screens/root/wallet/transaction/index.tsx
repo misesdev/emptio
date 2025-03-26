@@ -10,10 +10,10 @@ import { ActivityIndicator } from "react-native-paper"
 import { SectionContainer } from "@components/general/section"
 import { ButtonPrimary } from "@components/form/Buttons"
 import { useTranslateService } from "@src/providers/translateProvider"
-import theme from "@src/theme"
 import { StackScreenProps } from "@react-navigation/stack"
-import { walletService } from "@/src/services/wallet"
+import { walletService } from "@services/wallet"
 import { BNetwork } from "bitcoin-tx-lib"
+import theme from "@src/theme"
 
 const TransactionIcon = ({ type, confirmed }: TransactionInfo) => {
     let color = theme.colors.red

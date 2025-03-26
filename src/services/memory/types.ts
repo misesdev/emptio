@@ -30,14 +30,14 @@ export type Sales = {
     title?: string
 }
 
-export type WalletInfo = {
+export interface WalletInfo {
     balance: number,
     received: number,
     sended: number,
     transactions: Transaction[]
 }
 
-export type TransactionInfo = {
+export interface TransactionInfo {
     type?: "sended" | "received",
     amount?: number,
     date?: string,
@@ -47,19 +47,19 @@ export type TransactionInfo = {
     outputs?: TransactionOutput[]
 }
 
-export type TransactionInput = {
+export interface TransactionInput {
     amount?: number,
     address?: string,
     scriptPubkey?: string
 }
 
-export type TransactionOutput = {
+export interface TransactionOutput {
     amount?: number,
     address?: string,
     scriptPubkey?: string
 }
 
-export type Transaction = {
+export interface Transaction {
     type?: "sended" | "received",
     description?: string,
     amount?: number,
@@ -74,7 +74,7 @@ export type Transaction = {
     outputs?: TransactionOutput[]
 }
 
-export type User = {
+export interface User {
     name?: string,
     pubkey?: string,
     displayName?: string,
@@ -96,7 +96,7 @@ export type User = {
     friend?: boolean
 }
 
-export type FeedVideosSettings = {
+export interface FeedVideosSettings {
     VIDEOS_LIMIT: number,
     FETCH_LIMIT: number,
     filterTags: string[],

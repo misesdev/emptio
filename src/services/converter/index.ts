@@ -3,7 +3,6 @@ import { bech32 } from "bech32"
 
 export const bitcoinParts = 100000000
 
-
 export const toBitcoin = (bitcoinBalance: number | undefined) => {
     
     const value = bitcoinBalance ? (bitcoinBalance / bitcoinParts).toFixed(8) : 0

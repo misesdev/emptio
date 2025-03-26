@@ -10,7 +10,7 @@ import { getClipedContent } from "@src/utils"
 
 var showWalletsFunction: () => void
 
-type Props = {
+interface Props {
     wallet: Wallet,
     setWallet: (wallet:Wallet) => void,
 }

@@ -1,38 +1,35 @@
 import { View, Text, StyleSheet } from "react-native"
-import { ButtonDefault } from "@components/form/Buttons"
+import { ButtonDefault, ButtonPrimary } from "@components/form/Buttons"
 import SplashScreen from "@components/general/SplashScreen"
-import { toNumber } from "@services/converter"
+import { formatSats, toNumber } from "@services/converter"
 import { HeaderScreen } from "@components/general/HeaderScreen"
 import { pushMessage } from "@services/notification"
 import { useTranslateService } from "@src/providers/translateProvider"
-import { Wallet } from "@services/memory/types"
+import { User, Wallet } from "@services/memory/types"
 import { useEffect, useState } from "react"
 import theme from "@src/theme"
 import { walletService } from "@services/wallet"
 import { BNetwork } from "bitcoin-tx-lib"
+import { ProfilePicture } from "@/src/components/nostr/user/ProfilePicture"
+import { getUserName } from "@/src/utils"
 
 const SendFinalScreen = ({ navigation, route }: any) => {
 
-    const wallet = route.params.wallet as Wallet
+    const { wallet, amount, address, user } = route.params
     const { useTranslate } = useTranslateService()
     const [loading, setLoading] = useState(true)
     const [searching, setSearching] = useState(false)
     const [nextDisabled, setNextDisabled] = useState(true)
-    const [amount, setAmount] = useState<string>("")
-    const [address, setAddress] = useState<string>("")
-
-    useEffect(() => {        
-        setAmount(route.params?.amount)
-        setAddress(route.params?.address)
-        console.log(route.params?.address)
-        setLoading(false)
-    }, [])
-
+    console.log("amount", amount)
     const handleSend = async () => {
 
         setLoading(true)
 
-        const result = await walletService.transaction.get({ amount: toNumber(amount), destination: address, walletKey: wallet.key ?? "" })
+        const result = await walletService.transaction.get({ 
+            amount: toNumber(amount), 
+            destination: address, 
+            walletKey: wallet.key ?? ""
+        })
 
         if (result.success) {
             const network: BNetwork = wallet.type == "bitcoin" ? "mainnet" : "testnet"
@@ -44,13 +41,8 @@ const SendFinalScreen = ({ navigation, route }: any) => {
             return pushMessage(result.message)
         }
 
-        console.log("sign transaction: ", result.data)
-
         setLoading(false)
     }
-
-    if (loading)
-        return <SplashScreen />
 
     return (
         <View style={{
@@ -58,25 +50,42 @@ const SendFinalScreen = ({ navigation, route }: any) => {
             alignItems: 'center',
             backgroundColor: theme.colors.black
         }}>
-            {/* Header */}
             <HeaderScreen
-                title={useTranslate("wallet.title.sendfor")}
-                onClose={() => navigation.navigate("wallet-send-stack")}
-            />
+                title={"Escolha a taxa de rede"}
+                onClose={() => navigation.goBack()}
+            />  
 
-            {/* Body */}
-            <Text style={[styles.title, { display: searching ? "none" : "flex" }]}>{`${useTranslate("wallet.title.sendreceiver")}${route.params?.amount} sats?`}</Text>
+            <View style={{ flexDirection: "column", alignItems: "center", marginVertical: 10 }}>
+                <ProfilePicture size={100} withBorder user={user} />
+                <View>
+                    <Text style={styles.title}>{getUserName(user)}</Text>
+                </View>
+            </View>
 
-            {/* Footer */}
-            <View style={{ position: "absolute", bottom: 0, width: "100%", justifyContent: "center", alignItems: "center" }}>
-                <ButtonDefault label={useTranslate("commons.send")} rightIcon="exit" onPress={handleSend} />
+            <Text style={[styles.title, { fontSize: 14, fontWeight: "400" }]}>
+                {amount} to {address} of {getUserName(user)}
+            </Text>
+
+            <Text style={styles.title}>
+                Qual a taxa de rede deseja pagar? 
+            </Text>
+
+            
+
+            <View style={styles.buttonArea}>
+                <ButtonPrimary 
+                    disabled={nextDisabled}
+                    label={useTranslate("commons.send")}
+                    onPress={handleSend}
+                />
             </View>
         </View>
     )
 }
 
 const styles = StyleSheet.create({
-    title: { fontSize: 24, maxWidth: "90%", fontWeight: "bold", textAlign: "center", marginVertical: 10, color: theme.colors.white }
+    title: { fontSize: 24, maxWidth: "80%", fontWeight: "bold", textAlign: "center", marginVertical: 10, color: theme.colors.white },
+    buttonArea: { width: "100%", justifyContent: "center", alignItems: "center" }
 })
 
 export default SendFinalScreen

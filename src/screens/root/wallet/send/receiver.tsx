@@ -36,7 +36,7 @@ const SendReceiverScreen = ({ navigation, route }: any) => {
        
         navigation.navigate("wallet-send-final-stack", {
             address: user.bitcoin_address, 
-            amount, wallet 
+            amount, wallet, user 
         })
     }
 

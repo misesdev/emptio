@@ -10,7 +10,7 @@ import theme from "@src/theme"
 import { useTranslateService } from "@src/providers/translateProvider"
 import { BNetwork } from "bitcoin-tx-lib"
 
-type Props = {
+interface Props {
     wallet: Wallet,
     reload: boolean,
     style: ViewStyle,
@@ -22,12 +22,11 @@ const WalletListItem = ({ wallet, reload, handleOpen, style }: Props) => {
     const { useTranslate } = useTranslateService()
     const [loading, setLoading] = useState<boolean>()
     const [typeWallet, setTypeWallet] = useState<string>("")
+    const [walletData, setWalletData] = useState(wallet)
 
     useEffect(() => { 
         getDescriptionTypeWallet(wallet.type ?? "bitcoin").then(setTypeWallet)
-        setTimeout(async () => {
-            await loadData() 
-        }, 20)
+        setTimeout(loadData, 20)
     }, [reload])
 
     const loadData = async () => {
@@ -35,34 +34,38 @@ const WalletListItem = ({ wallet, reload, handleOpen, style }: Props) => {
         const address = wallet.address ?? ""
         const network: BNetwork = wallet.type == "bitcoin" ? "mainnet" : "testnet"
         walletService.listTransactions(address, network).then(async (walletInfo) => {
-            if(wallet.lastBalance != walletInfo.balance)
+            if(walletData.lastBalance != walletInfo.balance)
             {
-                wallet.lastBalance = walletInfo.balance
-                wallet.lastSended = walletInfo.sended
-                wallet.lastReceived = walletInfo.received
-                await walletService.update(wallet)
+                setWalletData(prev => ({
+                    ...prev,
+                    lastBalance: walletInfo.balance,
+                    lastSended: walletInfo.sended,
+                    lastReceived: walletInfo.received
+                }))
+
+                setTimeout(async () => { 
+                    await walletService.update(walletData)
+                }, 20)
             }
             setLoading(false)
-        }).catch(() => {
-            setLoading(false)
-        })
+        }).catch(() => setLoading(false))
     }
 
-    let formatName = getClipedContent(wallet.name??"", 18)
+    let formatName = getClipedContent(walletData.name??"", 18)
 
     return (
         <TouchableOpacity key={wallet.key} activeOpacity={.7} 
-            style={[styles.wallet,style]} onPress={() => handleOpen(wallet)}
+            style={[styles.wallet,style]} onPress={() => handleOpen(walletData)}
         >
-            {wallet!.type === "bitcoin" && <Image source={require("@assets/images/bitcoin-wallet-header3.jpg")} style={{ position: "absolute", borderRadius: 18, width: "100%", height: "100%" }} />}
-            {wallet!.type === "testnet" && <Image source={require("@assets/images/bitcoin-wallet-header.jpg")} style={{ position: "absolute", borderRadius: 18, width: "100%", height: "100%" }} />}
-            {wallet!.type === "lightning" && <Image source={require("@assets/images/lightning-wallet-header.png")} style={{ position: "absolute", borderRadius: 18, width: "100%", height: "100%" }} />}
+            {walletData!.type === "bitcoin" && <Image source={require("@assets/images/bitcoin-wallet-header3.jpg")} style={{ position: "absolute", borderRadius: 18, width: "100%", height: "100%" }} />}
+            {walletData!.type === "testnet" && <Image source={require("@assets/images/bitcoin-wallet-header.jpg")} style={{ position: "absolute", borderRadius: 18, width: "100%", height: "100%" }} />}
+            {walletData!.type === "lightning" && <Image source={require("@assets/images/lightning-wallet-header.png")} style={{ position: "absolute", borderRadius: 18, width: "100%", height: "100%" }} />}
             <View style={{ position: "absolute", width: "100%", height: "100%", borderRadius: 18, backgroundColor: "rgba(0,55,55,.7)" }}></View>
 
             <Text style={styles.title}>{formatName}</Text>
             <View style={{ flexDirection: "row", width: "100%" }}>
                 <Text style={{ marginHorizontal: 10, marginVertical: 6, color: theme.colors.white, fontSize: 18, fontWeight: "bold" }}>
-                    {formatSats(wallet.lastBalance)} Sats
+                    {formatSats(walletData.lastBalance)} Sats
                 </Text>
                 { loading &&
                     <ActivityIndicator size={18} color={theme.colors.white} />    
@@ -70,25 +73,25 @@ const WalletListItem = ({ wallet, reload, handleOpen, style }: Props) => {
             </View>
             <View style={{ flexDirection: "row", width: "100%" }}>
                 <Text style={[styles.description, { color: theme.colors.white }]}>
-                        {toBitcoin(wallet.lastBalance)} BTC
+                        {toBitcoin(walletData.lastBalance)} BTC
                 </Text>
             </View> 
             <TouchableOpacity activeOpacity={.7} 
-                style={[styles.button, { backgroundColor: wallet.type == "bitcoin" ? 
+                style={[styles.button, { backgroundColor: walletData.type == "bitcoin" ? 
                     theme.colors.orange : theme.colors.blue 
-                }]} onPress={() => handleOpen(wallet)}
+                }]} onPress={() => handleOpen(walletData)}
             >
                 <Text style={styles.buttonText}> {useTranslate("commons.open")} </Text>
             </TouchableOpacity>
 
-            <Text style={[styles.tagWallet, { backgroundColor:  wallet.type == "bitcoin" ? 
+            <Text style={[styles.tagWallet, { backgroundColor:  walletData.type == "bitcoin" ? 
                     theme.colors.orange : theme.colors.blue
                 }]}
             >
                 {typeWallet}
             </Text>
         </TouchableOpacity>
-    );
+    )
 }
 
 const styles = StyleSheet.create({

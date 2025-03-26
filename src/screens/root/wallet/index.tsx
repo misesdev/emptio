@@ -6,9 +6,9 @@ import Ionicons from 'react-native-vector-icons/Ionicons'
 import { useTranslateService } from "@src/providers/translateProvider"
 import { StackScreenProps } from "@react-navigation/stack"
 import { useCallback, useEffect, useState } from "react"
-import theme from "@src/theme"
 import { walletService } from "@services/wallet"
 import { BNetwork } from "bitcoin-tx-lib"
+import theme from "@src/theme"
 
 const WalletManagerScreen = ({ navigation, route }: StackScreenProps<any>) => {
 
@@ -44,11 +44,7 @@ const WalletManagerScreen = ({ navigation, route }: StackScreenProps<any>) => {
             }))
             walletService.update(wallet)
             setRefreshing(false)
-        })
-        .catch((fail) => { 
-            setRefreshing(false)
-            console.log(fail)    
-        })
+        }).catch(() => setRefreshing(false))
 
         await walletService.update(wallet)
     }
