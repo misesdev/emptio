@@ -56,7 +56,9 @@ export const WalletTransactions = ({ transactions, onPressTransaction }: WalletT
         let ammountSatoshis = operator + formatSats(amount)
         let color = type == "received" ? theme.colors.green : theme.colors.red
 
-        return <Text style={{ color: color, margin: 2, fontWeight: "bold" }}>{ammountSatoshis}</Text>
+        return <Text style={{ color: color, margin: 2, fontWeight: "bold" }}>
+            {ammountSatoshis}
+        </Text>
     }
 
     const TransactionIcon = ({ type, confirmed }: Transaction) => {

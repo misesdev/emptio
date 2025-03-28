@@ -24,8 +24,7 @@ const FeedOrdersScreen = ({ navigation }: StackScreenProps<any>) => {
 
     useEffect(() => {
         setTimeout(handleData, 10)
-        if(!wallets.length)
-            pushMessage(useTranslate("message.wallet.alertcreate"))    
+        if(!wallets.length) pushMessage(useTranslate("message.wallet.alertcreate"))    
     }, [])
 
     const handleData = async () => {

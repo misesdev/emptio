@@ -11,6 +11,7 @@ import { BNetwork } from "bitcoin-tx-lib"
 import { getUserName, shortenString } from "@/src/utils"
 import { getFee } from "@services/bitcoin/mempool"
 import theme from "@src/theme"
+import { ActivityIndicator } from "react-native-paper"
 
 type FeeType = "high" | "medium" | "low" | "minimun"
 
@@ -43,9 +44,10 @@ const FeeOption = ({ label, description, feeType, onPress, selected }: FeeProps)
 
 const SendFinalScreen = ({ navigation, route }: any) => {
 
-    const { wallet, amount, address, user } = route.params
+    const { wallet, amount, address, receiver } = route.params
     const { useTranslate } = useTranslateService()
     const [loading, setLoading] = useState(false)
+    const [fetching, setFetching] = useState(false)
     const [nextDisabled, setNextDisabled] = useState(true)
     const [selectedFee, setSelectedFee] = useState<FeeType>()
     const [recomendedFee, setRecomendedFee] = useState<FeesRecommended>()
@@ -59,6 +61,7 @@ const SendFinalScreen = ({ navigation, route }: any) => {
     }
 
     const handleSelectFee = (type: FeeType) => {
+        setFetching(true)
         setSelectedFee(type)
         setNextDisabled(false)
         const feeValues = { 
@@ -68,6 +71,7 @@ const SendFinalScreen = ({ navigation, route }: any) => {
             "minimun": recomendedFee?.minimumFee
         }
         setFeeValue(feeValues[type]??1)
+        setFetching(false)
     }
 
     const handleSend = async () => {
@@ -84,7 +88,19 @@ const SendFinalScreen = ({ navigation, route }: any) => {
 
         if (result.success) {
             const network: BNetwork = wallet.type == "bitcoin" ? "mainnet" : "testnet"
-            await walletService.transaction.send(result.data, network)
+            const response = await walletService.transaction.send(result.data, network)
+            if(response.success) {
+                navigation.reset({
+                    index: 1,
+                    routes: [
+                        { name: 'core-stack' },
+                        { name: 'wallet-stack', params: { wallet } }
+                    ]
+                }) 
+            }
+
+            if (!result.success && result.message)
+                pushMessage(result.message)
         }
 
         if (!result.success && result.message)
@@ -106,7 +122,7 @@ const SendFinalScreen = ({ navigation, route }: any) => {
                 <Text style={styles.label}>
                     para {" "}
                     <Text style={styles.username}>
-                        {user.pubkey ? getUserName(user) : useTranslate("chat.unknown")}
+                        {!!receiver?.pubkey ? getUserName(receiver) : useTranslate("chat.unknown")}
                     </Text>
                 </Text>
                 <Text style={styles.label}>
@@ -116,37 +132,43 @@ const SendFinalScreen = ({ navigation, route }: any) => {
             </View>
 
             <Text style={styles.title}>Qual taxa de rede deseja pagar?</Text>
-           
-            <View style={{ width: "100%", alignItems: "center", marginVertical: 15 }}>
-                <FeeOption 
-                    label={`Prioridade alta - ${recomendedFee?.fastestFee??0} sats/vb`} 
-                    description="Taxa recomendada para confirmar a transação o mais rápido possível, geralmente no próximo bloco."
-                    feeType="high"
-                    selected={selectedFee == "high"}
-                    onPress={handleSelectFee}
-                />
-                <FeeOption 
-                    label={`Prioridade media - ${recomendedFee?.halfHourFee??0} sats/vb`} 
-                    description="Taxa recomendada para confirmar a transação dentro de 30 minutos (ou seja, dentro de aproximadamente 3 blocos)."
-                    feeType="medium"
-                    selected={selectedFee == "medium"}
-                    onPress={handleSelectFee}
-                />
-                <FeeOption 
-                    label={`Prioridade baixa - ${recomendedFee?.hourFee??0} sats/vb`} 
-                    description="Taxa recomendada para confirmar a transação dentro de 1 hora (ou seja, dentro de aproximadamente 6 blocos)."
-                    feeType="low"
-                    selected={selectedFee == "low"}
-                    onPress={handleSelectFee}
-                />
-                <FeeOption 
-                    label={`Sem prioridade - ${recomendedFee?.minimumFee??0} sats/vb`} 
-                    description="A menor taxa possível para que a transação não seja rejeitada pelos mineradores, mas sem garantia de tempo de confirmação."
-                    feeType="minimun"
-                    selected={selectedFee == "minimun"}
-                    onPress={handleSelectFee}
-                />
-            </View>
+            {fetching &&
+                <View style={{ paddingVertical: 20 }}>
+                    <ActivityIndicator size={20} color={theme.colors.white} />
+                </View>
+            }
+            {!fetching &&
+                <View style={{ width: "100%", alignItems: "center", marginVertical: 15 }}>
+                    <FeeOption 
+                        label={`Prioridade alta - ${recomendedFee?.fastestFee??0} sats/vb`} 
+                        description="Taxa recomendada para confirmar a transação o mais rápido possível, geralmente no próximo bloco."
+                        feeType="high"
+                        selected={selectedFee == "high"}
+                        onPress={handleSelectFee}
+                    />
+                    <FeeOption 
+                        label={`Prioridade media - ${recomendedFee?.halfHourFee??0} sats/vb`} 
+                        description="Taxa recomendada para confirmar a transação dentro de 30 minutos (ou seja, dentro de aproximadamente 3 blocos)."
+                        feeType="medium"
+                        selected={selectedFee == "medium"}
+                        onPress={handleSelectFee}
+                    />
+                    <FeeOption 
+                        label={`Prioridade baixa - ${recomendedFee?.hourFee??0} sats/vb`} 
+                        description="Taxa recomendada para confirmar a transação dentro de 1 hora (ou seja, dentro de aproximadamente 6 blocos)."
+                        feeType="low"
+                        selected={selectedFee == "low"}
+                        onPress={handleSelectFee}
+                    />
+                    <FeeOption 
+                        label={`Sem prioridade - ${recomendedFee?.minimumFee??0} sats/vb`} 
+                        description="A menor taxa possível para que a transação não seja rejeitada pelos mineradores, mas sem garantia de tempo de confirmação."
+                        feeType="minimun"
+                        selected={selectedFee == "minimun"}
+                        onPress={handleSelectFee}
+                    />
+                </View>
+            }
 
             <View style={styles.buttonArea}>
                 <ButtonPrimary 

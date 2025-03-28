@@ -39,7 +39,8 @@ const TransactionScreen = ({ navigation, route }: StackScreenProps<any>) => {
         
         const network: BNetwork = wallet.type == "bitcoin" ? "mainnet" : "testnet"
 
-        const transactionDetails = await walletService.transaction.details(transaction.txid ?? "", network)
+        const transactionDetails = await walletService.transaction.details(
+            transaction.txid ?? "", network, wallet.address ?? "")
 
         setTxDetails(transactionDetails)
 
@@ -77,7 +78,7 @@ const TransactionScreen = ({ navigation, route }: StackScreenProps<any>) => {
                             <View style={{ flexDirection: "row" }}>
                                 <Text style={[styles.infoLabels, { width: "50%"}]}>{useTranslate("wallet.transaction.balance")}</Text>
                                 <Text style={[styles.infoLabels, {width: "50%"}]}>
-                                    {formatSats(txDetails.amount)} Sats
+                                    {formatSats(txDetails.value)} Sats
                                 </Text>
                             </View>
                             

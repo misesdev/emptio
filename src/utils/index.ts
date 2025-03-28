@@ -28,9 +28,9 @@ export const getClipedContent = (content: string, limit: number=50) => {
 }
 
 export function shortenString(value: string, size: number) : string {
-    let length = size / 2;
+    let length = Math.ceil(size / 2);
     
-    return `${value.substring(0, length)}...${value.substring(length, size)}`
+    return `${value.substring(0, length)}...${value.slice(-length)}`
 }
 
 export const getDisplayPubkey = (pubkey: string, maxSize: number = 20) => {

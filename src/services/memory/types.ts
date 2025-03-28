@@ -1,7 +1,7 @@
-import { NDKEvent } from "@nostr-dev-kit/ndk-mobile"
+import { BNetwork, InputTransaction, OutputTransaction } from "bitcoin-tx-lib"
 import { Relay } from "nostr-tools"
 
-export type PairKey = {
+export interface PairKey {
     key: string,
     privateKey: string,
     publicKey: string
@@ -9,24 +9,26 @@ export type PairKey = {
 
 export type WalletType = "lightning" | "bitcoin" | "testnet" | "emptio"
 
-export type Wallet = {
+export interface Wallet {
     id?: number,
     name?: string,
     type?: WalletType,
     default?: boolean,
     lastBalance?: number,
     lastSended?: number,
-    lastReceived?: number, 
+    lastReceived?: number,
+    network?: BNetwork,
+    payfee?: boolean,
     address?: string,
     pairkey?: string, 
     key?: string
 }
 
-export type Purchase = {
+export interface Purchase {
     title?: string
 }
 
-export type Sales = {
+export interface Sales {
     title?: string
 }
 
@@ -43,26 +45,15 @@ export interface TransactionInfo {
     date?: string,
     txid?: string
     confirmed?: boolean,
-    inputs?: TransactionInput[],
-    outputs?: TransactionOutput[]
-}
-
-export interface TransactionInput {
-    amount?: number,
-    address?: string,
-    scriptPubkey?: string
-}
-
-export interface TransactionOutput {
-    amount?: number,
-    address?: string,
-    scriptPubkey?: string
+    inputs?: InputTransaction[],
+    outputs?: OutputTransaction[]
 }
 
 export interface Transaction {
     type?: "sended" | "received",
     description?: string,
     amount?: number,
+    value?: number,
     date?: string,
     txid?: string
     confirmed?: boolean,
@@ -70,8 +61,8 @@ export interface Transaction {
     fee?: number,
     size?: number,
     block_height?: number,
-    inputs?: TransactionInput[],
-    outputs?: TransactionOutput[]
+    inputs?: InputTransaction[],
+    outputs?: OutputTransaction[]
 }
 
 export interface User {

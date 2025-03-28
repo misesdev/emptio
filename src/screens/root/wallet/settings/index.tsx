@@ -2,7 +2,6 @@ import { useAuth } from "@src/providers/userProvider"
 import { ScrollView, StyleSheet, View } from "react-native"
 import { ButtonLink, ButtonPrimary } from "@components/form/Buttons"
 import MessageBox, { showMessage } from "@components/general/MessageBox"
-import SplashScreen from "@components/general/SplashScreen"
 import { FormControl, FormControlSwitch } from "@components/form/FormControl"
 import { HeaderScreen } from "@components/general/HeaderScreen"
 import { pushMessage } from "@services/notification"
@@ -19,20 +18,13 @@ interface ScreenParams { wallet: Wallet }
 const WalletSettings = ({ navigation, route }: StackScreenProps<any>) => {
 
     const { wallet } = route.params as ScreenParams
+    console.log(wallet)
     const { useTranslate } = useTranslateService()
     const { setWallets, user, setUser } = useAuth()
     const [loading, setLoading] = useState(false)
     const [walletName, setWalletName] = useState(wallet.name)
     const [defaultWallet, setDefaultWallet] = useState<boolean>(wallet.default ?? false)
-
-    useEffect(() => {
-        navigation.setOptions({
-            header: () => <HeaderScreen
-                title={useTranslate("wallet.title.settings")}
-                onClose={() => navigation.goBack()}
-            />
-        })
-    }, [])
+    const [payfee, setPayfee] = useState<boolean>(wallet.payfee ?? false)
 
     const hadleDeleteWallet = async () => {
         showMessage({
@@ -55,7 +47,8 @@ const WalletSettings = ({ navigation, route }: StackScreenProps<any>) => {
     const handleSave = async () => {
 
         setLoading(true)
-
+        
+        wallet.payfee = payfee
         wallet.name = walletName
         wallet.default = defaultWallet
 
@@ -64,7 +57,9 @@ const WalletSettings = ({ navigation, route }: StackScreenProps<any>) => {
             user.default_wallet = wallet.key
             user.bitcoin_address = wallet.address   
 
-            await userService.updateProfile({ user, setUser, upNostr: true })
+            await userService.updateProfile({ 
+                user, setUser, upNostr: true 
+            })
         }
 
         await walletService.update(wallet)
@@ -73,35 +68,43 @@ const WalletSettings = ({ navigation, route }: StackScreenProps<any>) => {
 
         pushMessage(useTranslate("message.wallet.saved"))
 
-        navigation.goBack()
+        navigation.reset({
+            index: 1,
+            routes: [
+                { name: 'core-stack' },
+                { name: 'wallet-stack', params: { wallet } }
+            ]
+        }) 
     }
-
-    if (loading)
-        return <SplashScreen />
 
     return (
         <View style={styles.container}>
+            
+            <HeaderScreen
+                title={useTranslate("wallet.title.settings")}
+                onClose={() => navigation.goBack()}
+            />
 
             <ScrollView contentContainerStyle={[theme.styles.scroll_container, { justifyContent: "center" }]}>
 
-                <FormControlSwitch label="Default Wallet" value={defaultWallet} onChangeValue={setDefaultWallet} />
-
                 <FormControl label={useTranslate("labels.wallet.name")} value={walletName} onChangeText={setWalletName} />
                 
-                {/* <SectionHeader label={useTranslate("commons.options")} /> */}
-
-                {/* <SectionContainer style={{ width: "94%" }}> */}
-                {/*     <LinkSection icon="eye" label={useTranslate("labels.wallet.getseed")} onPress={handleViewSeed}/> */}
-                {/* </SectionContainer> */}
+                <FormControlSwitch label="Default Wallet" value={defaultWallet} onChangeValue={setDefaultWallet} />
+                
+                <FormControlSwitch label={"Pay the fee"} value={payfee} onChangeValue={setPayfee} />
 
                 <ButtonLink label={useTranslate("commons.delete")} color={theme.colors.red} onPress={hadleDeleteWallet}/>
 
             </ScrollView>
 
-            {/* Footer */}
             <View style={styles.footer}>
-                <ButtonPrimary label={useTranslate("commons.save")} onPress={handleSave} />
+                <ButtonPrimary
+                    loading={loading} 
+                    label={useTranslate("commons.save")} 
+                    onPress={handleSave}
+                />
             </View>
+
             <MessageBox />
         </View>
     )

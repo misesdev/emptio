@@ -71,7 +71,7 @@ const AppRoutes = () => {
                 <Stack.Screen name="wallet-send-stack" component={SendScreen} options={ScreenCardOptions} />
                 <Stack.Screen name="wallet-send-receiver-stack" component={SendReceiverScreen} options={ScreenCardOptions} />
                 <Stack.Screen name="wallet-send-final-stack" component={SendFinalScreen} options={ScreenCardOptions} />
-                <Stack.Screen name="wallet-settings-stack" component={WalletSettings} options={{...ScreenCardOptions, headerShown: true }} />
+                <Stack.Screen name="wallet-settings-stack" component={WalletSettings} options={ScreenCardOptions} />
                 <Stack.Screen name="wallet-transaction-stack" component={TransactionScreen} options={ScreenCardOptions} />
 
                 <Stack.Screen name="add-follow-stack" component={AddFolowScreen} options={ScreenCardOptions} />

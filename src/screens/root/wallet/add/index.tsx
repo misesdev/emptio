@@ -10,7 +10,7 @@ import { useTranslateService } from "@src/providers/translateProvider"
 import { WalletType } from "@services/memory/types"
 import { getWallets } from "@services/memory/wallets"
 import { BaseWallet } from "@services/bitcoin"
-import { useEffect, useState } from "react"
+import { useState } from "react"
 import { StackScreenProps } from "@react-navigation/stack"
 import theme from "@src/theme"
 import { ScrollView } from "react-native-gesture-handler"
@@ -48,8 +48,7 @@ const AddWalletScreen = ({ navigation }: StackScreenProps<any>) => {
             const response = await walletService.create({ 
                 name: walletName, 
                 password: walletPassword, 
-                type: walletType,
-                wallets 
+                type: walletType
             })
             
             if (response.success)

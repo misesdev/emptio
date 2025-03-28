@@ -7,7 +7,6 @@ import { useTranslateService } from "@src/providers/translateProvider"
 import { StackScreenProps } from "@react-navigation/stack"
 import { useCallback, useEffect, useState } from "react"
 import { walletService } from "@services/wallet"
-import { BNetwork } from "bitcoin-tx-lib"
 import theme from "@src/theme"
 
 const WalletManagerScreen = ({ navigation, route }: StackScreenProps<any>) => {
@@ -31,10 +30,8 @@ const WalletManagerScreen = ({ navigation, route }: StackScreenProps<any>) => {
 
     const handleLoadTransactions = async () => {
         setRefreshing(true)
-        const address = wallet.address ?? ""
-        const network: BNetwork = wallet.type == "bitcoin" ? "mainnet" : "testnet"
         // search transactions and update wallet lastBalance
-        walletService.listTransactions(address, network).then(walletInfo => {
+        walletService.listTransactions(wallet).then(walletInfo => {
             setTransactions(walletInfo.transactions)
             setWallet((prev: Wallet) => ({
                 ...prev,
@@ -71,7 +68,6 @@ const WalletManagerScreen = ({ navigation, route }: StackScreenProps<any>) => {
                 contentContainerStyle={theme.styles.scroll_container}
                 refreshControl={<RefreshControl refreshing={refreshing} onRefresh={handleLoadTransactions} />}
             >
-
                 <WalletTransactions transactions={transactions} onPressTransaction={openTransaction} />
 
                 <View style={{ width: "100%", height: 50 }}></View>

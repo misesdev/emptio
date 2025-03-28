@@ -6,9 +6,8 @@ import { TouchableOpacity, View, Text, StyleSheet,
     Image, ViewStyle } from "react-native"
 import { ActivityIndicator } from "react-native-paper"
 import { getClipedContent, getDescriptionTypeWallet } from "@src/utils"
-import theme from "@src/theme"
 import { useTranslateService } from "@src/providers/translateProvider"
-import { BNetwork } from "bitcoin-tx-lib"
+import theme from "@src/theme"
 
 interface Props {
     wallet: Wallet,
@@ -31,9 +30,7 @@ const WalletListItem = ({ wallet, reload, handleOpen, style }: Props) => {
 
     const loadData = async () => {
         setLoading(true)
-        const address = wallet.address ?? ""
-        const network: BNetwork = wallet.type == "bitcoin" ? "mainnet" : "testnet"
-        walletService.listTransactions(address, network).then(async (walletInfo) => {
+        walletService.listTransactions(wallet).then(async (walletInfo) => {
             if(walletData.lastBalance != walletInfo.balance)
             {
                 setWalletData(prev => ({
@@ -73,7 +70,7 @@ const WalletListItem = ({ wallet, reload, handleOpen, style }: Props) => {
             </View>
             <View style={{ flexDirection: "row", width: "100%" }}>
                 <Text style={[styles.description, { color: theme.colors.white }]}>
-                        {toBitcoin(walletData.lastBalance)} BTC
+                    {toBitcoin(walletData.lastBalance)} BTC
                 </Text>
             </View> 
             <TouchableOpacity activeOpacity={.7} 

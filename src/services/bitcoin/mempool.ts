@@ -5,7 +5,7 @@ import { useTranslate } from "../translate"
 import { BNetwork } from "bitcoin-tx-lib"
 
 // post a transaction
-export const sendUtxo = async (txhex: string, network: BNetwork) => { 
+export const sendTx = async (txhex: string, network: BNetwork) => { 
     const { bitcoin: { transactions } } = mempool({
         hostname: process.env.MEMPOOL_API_URL,
         network: network
@@ -55,12 +55,29 @@ export const getFee = async (network: BNetwork) => {
     return await fees.getFeesRecommended()
 }
 
-export const getTransactionInfo = async (txid: string, network: BNetwork) => {
+interface TxProps {
+    txid: string,
+    network: BNetwork,
+    address: string
+}
+
+export const getTransactionInfo = async ({ txid, network, address }: TxProps) => {
 
     const utxo : Tx = await getTx(txid, network)
 
-    var amount: number = 0
-    utxo.vout.forEach(tx => amount += tx.value)
+    let received: number = 0, sended: number = 0
+
+    let isSended: boolean = utxo.vin.filter(i => { 
+        return i.prevout.scriptpubkey_address == address
+    }).length > 0
+
+    utxo.vin.forEach(tx => {
+        if(tx.prevout.scriptpubkey_address == address) sended += tx.prevout.value
+    })
+
+    utxo.vout.forEach((tx) => {
+        if (tx.scriptpubkey_address == address) received += tx.value
+    })
 
     var inputs: TransactionInput[] = utxo.vin.map((item): TransactionInput => { 
         return {
@@ -87,7 +104,8 @@ export const getTransactionInfo = async (txid: string, network: BNetwork) => {
         description: utxo.status.confirmed ? 
             await useTranslate("message.transaction.confirmed") : 
             await useTranslate("message.transaction.notconfirmed"),
-        amount: amount,
+        amount: isSended ? (sended-received)+utxo.fee : received,
+        value: isSended ? sended : received,
         date: utxo.status.confirmed ? 
             new Date(utxo.status.block_time * 1000).toLocaleString() : 
             await useTranslate("message.transaction.notconfirmed"),

@@ -38,13 +38,16 @@ export const updateWallet = async (wallet: Wallet) => {
     const wallets = await getWallets()
 
     wallets.forEach(item => {
-        if(wallet.key == item.key) {
-            item.name = wallet.name
-            item.lastBalance = wallet.lastBalance
-            item.lastReceived = wallet.lastReceived
-            item.lastSended = wallet.lastSended
-            item.address = wallet.address
-            item.default = wallet.default
+        if(wallet.key === item.key) {
+            item["name"] = wallet.name
+            item["type"] = wallet.type
+            item["lastBalance"] = wallet.lastBalance
+            item["lastReceived"] = wallet.lastReceived
+            item["lastSended"] = wallet.lastSended
+            item["address"] = wallet.address
+            item["default"] = wallet.default ?? false
+            item["payfee"] = wallet.payfee ?? false
+            item["network"] = wallet.network
         }
     })
 
@@ -55,9 +58,7 @@ export const clearDefaultWallets = async () => {
 
     const wallets = await getWallets()
 
-    wallets.forEach(item => {
-        item.default = false
-    })
+    wallets.forEach(wallet => wallet.default = false)
 
     await AsyncStorage.setItem("walletsData", JSON.stringify(wallets))
 }

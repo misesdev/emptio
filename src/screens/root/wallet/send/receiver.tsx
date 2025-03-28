@@ -21,8 +21,15 @@ const SendReceiverScreen = ({ navigation, route }: any) => {
     const [address, setAddress] = useState<string>("")
 
     const handleRead = (value: string) => {
-        setNextDisabled(!Address.isValid(value))
         setAddress(value)
+        setNextDisabled(!Address.isValid(value))
+        if(Address.isValid(value)) { 
+            navigation.navigate("wallet-send-final-stack", { 
+                amount, 
+                address: value,
+                wallet 
+            })
+        }
     }
 
     const onChangeText = (value: string) => {
@@ -36,13 +43,13 @@ const SendReceiverScreen = ({ navigation, route }: any) => {
        
         navigation.navigate("wallet-send-final-stack", {
             address: user.bitcoin_address, 
-            amount, wallet, user 
+            amount, wallet, receiver: user 
         })
     }
 
-    const handleSendToFee = () => { 
-        navigation.navigate("wallet-send-final-stack", { amount, address, wallet })
-    }
+    // const handleSendToFee = () => { 
+    //     navigation.navigate("wallet-send-final-stack", { amount, address, wallet })
+    // }
 
     return (
         <View style={styles.container}>
@@ -64,13 +71,13 @@ const SendReceiverScreen = ({ navigation, route }: any) => {
 
             <FollowList searchable toPayment onPressFollow={handleSelectUser} />
 
-            <View style={{ position: "absolute", bottom: 30, padding: 10, width: "100%", flexDirection: "row-reverse" }}>
-                <TouchableOpacity activeOpacity={.7} onPress={handleSendToFee} disabled={nextDisabled}
-                    style={{ borderRadius: 50, padding: 14, margin: 10, backgroundColor: nextDisabled ? theme.colors.disabled : theme.colors.blue }}
-                >
-                    <Ionicons name="arrow-forward-outline" size={theme.icons.large} color={nextDisabled ? theme.colors.gray : theme.colors.white} />
-                </TouchableOpacity>
-            </View>
+            {/* <View style={{ position: "absolute", bottom: 30, padding: 10, width: "100%", flexDirection: "row-reverse" }}> */}
+            {/*     <TouchableOpacity activeOpacity={.7} onPress={handleSendToFee} disabled={nextDisabled} */}
+            {/*         style={{ borderRadius: 50, padding: 14, margin: 10, backgroundColor: nextDisabled ? theme.colors.disabled : theme.colors.blue }} */}
+            {/*     > */}
+            {/*         <Ionicons name="arrow-forward-outline" size={theme.icons.large} color={nextDisabled ? theme.colors.gray : theme.colors.white} /> */}
+            {/*     </TouchableOpacity> */}
+            {/* </View> */}
         </View>
     )
 }

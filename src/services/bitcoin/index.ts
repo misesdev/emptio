@@ -2,7 +2,7 @@ import { bytesToHex } from "@noble/hashes/utils"
 import { generateMnemonic, mnemonicToSeedSync } from "bip39"
 import { PairKey, Wallet } from "../memory/types"
 import { getRandomKey } from "./signature"
-import { getFee, getTxsUtxos, sendUtxo } from "./mempool"
+import { getTxsUtxos, sendTx } from "./mempool"
 import { Response, trackException } from "../telemetry"
 import { Address, BNetwork, ECPairKey, Transaction } from "bitcoin-tx-lib"
 import { HDKey } from "@scure/bip32"
@@ -73,7 +73,7 @@ export const createTransaction = async ({ amount, destination, recomendedFee,
     wallet, pairkey }: TransactionProps): Promise<Response<any>> => {
     try 
     {
-        var utxoAmount = 0, fee = 30 // bytes of output has change 
+        var utxoAmount = 0 // bytes of output has change 
 
         const network: BNetwork = wallet.type == "bitcoin" ? "mainnet" : "testnet"
 
@@ -88,9 +88,12 @@ export const createTransaction = async ({ amount, destination, recomendedFee,
 
         // add destination address transaction -> buffer
         transaction.addOutput({ address: destination, amount: amount })
+        // add the change recipient, the amount is defined later
+        transaction.addOutput({ address: wallet.address ?? "", amount: 10 })
 
+        let calculatedFee = 0
         for (let utxo of ordenedUtxos) {
-            if (utxoAmount <= amount+fee) {
+            if (utxoAmount <= amount+calculatedFee) {
                 utxoAmount += utxo.value
                 let scriptPubKey = Address.getScriptPubkey(wallet.address??"")
                 transaction.addInput({
@@ -99,22 +102,26 @@ export const createTransaction = async ({ amount, destination, recomendedFee,
                     value: utxo.value,
                     scriptPubKey
                 })
-                // bytes to output of change
-                fee = recomendedFee * (transaction.vBytes() + 30) 
+                calculatedFee = Math.ceil(recomendedFee * transaction.vBytes()) 
             } 
-            else
+            else {
+                // add the change recipient
+                transaction.outputs.forEach(out => {
+                    // the sender pay the fee
+                    if(out.address == wallet.address) {
+                        let outwithFee = utxoAmount-(amount-calculatedFee)
+                        let outwithoutFee = utxoAmount-(amount+calculatedFee)
+                        out.amount = wallet.payfee ? outwithFee : outwithoutFee 
+                    }
+                    // the receiver pay the fee
+                    if(out.address != wallet.address && !wallet.payfee) {
+                        out.amount = (out.amount-calculatedFee)
+                    }
+                })
                 break
+            }
         }
         
-        // add the change recipient
-        if (utxoAmount > amount+fee) 
-        {
-            transaction.addOutput({ 
-                address: wallet.address ?? "",
-                amount: utxoAmount - (amount+fee) 
-            })
-        }
-
         const txHex = transaction.build()
 
         return { success: true, message: "", data: txHex }
@@ -125,13 +132,14 @@ export const createTransaction = async ({ amount, destination, recomendedFee,
 }
 
 export const sendTransaction = async (transactionHex: string, network: BNetwork): Promise<Response<any>> => {
-
     try {
-        const txid = await sendUtxo(transactionHex, network)
+        const txid = await sendTx(transactionHex, network)
 
         return { success: true, message: "", data: txid }
     }
-    catch (ex) { return trackException(ex) }
+    catch (ex) { 
+        return trackException(ex) 
+    }
 }
 
 
