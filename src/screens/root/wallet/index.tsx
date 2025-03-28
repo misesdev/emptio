@@ -33,13 +33,15 @@ const WalletManagerScreen = ({ navigation, route }: StackScreenProps<any>) => {
         // search transactions and update wallet lastBalance
         walletService.listTransactions(wallet).then(walletInfo => {
             setTransactions(walletInfo.transactions)
-            setWallet((prev: Wallet) => ({
-                ...prev,
-                lastBalance: walletInfo.balance,
-                lastReceived: walletInfo.received,
-                lastSended: walletInfo.sended
-            }))
-            walletService.update(wallet)
+            if(wallet.lastBalance != walletInfo.balance) {
+                setWallet((prev: Wallet) => ({
+                    ...prev,
+                    lastBalance: walletInfo.balance,
+                    lastReceived: walletInfo.received,
+                    lastSended: walletInfo.sended
+                }))
+                walletService.update(wallet)
+            }
             setRefreshing(false)
         }).catch(() => setRefreshing(false))
 

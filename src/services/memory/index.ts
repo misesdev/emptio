@@ -6,7 +6,7 @@ import { getRelays, insertRelay, setRelays, deleteRelay } from "./relays"
 import { addPubkeyOnBlackList, getBlackListPubkeys, getFeedVideoSettings,
     getSettings, saveFeedVideoSettings, saveSettings } from "./settings"
 import { getUser, insertUpdateUser, deleteUser } from "./user"
-import { clearDefaultWallets, deleteWallet, deleteWallets, getWallet, getWallets, 
+import { deleteWallet, deleteWallets, getWallet, getWallets, 
     insertWallet, updateWallet } from "./wallets"
 import { deletePaymentKey, getPaymentKey, getPaymentKeys, savePaymentKey } from "./payments"
 import { deleteEvent, insertEvent, listEventsByCategory } from "./database/events"
@@ -61,7 +61,6 @@ const wallets = {
     get: getWallet,
     list: getWallets,
     delete: deleteWallet,
-    clearDefault: clearDefaultWallets,
     clear: deleteWallets
 }
 

@@ -44,5 +44,28 @@ export const timeSeconds = {
         return Math.floor(Date.now() / 1000) - (days * timeSeconds.day)
     },
     now: () => Math.floor(Date.now() / 1000),
-    toString: (timestamp: number) => new Date(timestamp * 1000).toLocaleString()
+    toString: (timestamp: number) => {
+        // let now = Date.now()
+        let date = new Date(timestamp*1000)
+
+        return date.toLocaleString()
+        // const now = Math.floor(Date.now() / 1000);
+        // const diff = now - timestamp;
+        // const date = new Date(timestamp * 1000);
+        // 
+        // if (diff < 86400) { // Menos de um dia
+        //     const hours = date.getHours().toString().padStart(2, '0');
+        //     const minutes = date.getMinutes().toString().padStart(2, '0');
+        //     return diff < 43200 ? `Hoje às ${hours}:${minutes}` : `Ontem às ${hours}:${minutes}`;
+        // }
+        // 
+        // const days = Math.floor(diff / 86400);
+        // if (days === 1) return 'Ontem';
+        // if (days < 7) return `Há ${days} dias`;
+        // if (days < 14) return 'Há uma semana';
+        // if (days < 30) return `Há ${Math.floor(days / 7)} semanas`;
+        // if (days < 365) return days < 60 ? 'Há um mês' : `Há ${Math.floor(days / 30)} meses`;
+        // 
+        // return days < 730 ? 'Há um ano' : `Há ${Math.floor(days / 365)} anos`;
+    }
 }

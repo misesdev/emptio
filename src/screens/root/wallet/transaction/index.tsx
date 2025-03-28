@@ -61,7 +61,10 @@ const TransactionScreen = ({ navigation, route }: StackScreenProps<any>) => {
             <View style={{ alignItems: "center", alignContent: "center" }}>
                 <TransactionIcon type={transaction.type} confirmed={transaction.confirmed} /> 
                 
-                <Text style={styles.amount}>{formatSats(transaction.amount)} Sats</Text>
+                <Text style={styles.amount}>
+                    {transaction.type == "sended" ? '-' : '+'}
+                    {formatSats(transaction.amount)} Sats
+                </Text>
             </View>
             
             <View style={{ height: 30 }}></View>
@@ -78,7 +81,7 @@ const TransactionScreen = ({ navigation, route }: StackScreenProps<any>) => {
                             <View style={{ flexDirection: "row" }}>
                                 <Text style={[styles.infoLabels, { width: "50%"}]}>{useTranslate("wallet.transaction.balance")}</Text>
                                 <Text style={[styles.infoLabels, {width: "50%"}]}>
-                                    {formatSats(txDetails.value)} Sats
+                                    {formatSats(txDetails.amount)} Sats
                                 </Text>
                             </View>
                             

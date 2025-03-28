@@ -7,7 +7,7 @@ import { HeaderScreen } from "@components/general/HeaderScreen"
 import { pushMessage } from "@services/notification"
 import { useTranslateService } from "@src/providers/translateProvider"
 import { Wallet } from "@services/memory/types"
-import { useEffect, useState } from "react"
+import { useState } from "react"
 import { StackScreenProps } from "@react-navigation/stack"
 import { walletService } from "@services/wallet"
 import { userService } from "@services/user"
@@ -18,7 +18,6 @@ interface ScreenParams { wallet: Wallet }
 const WalletSettings = ({ navigation, route }: StackScreenProps<any>) => {
 
     const { wallet } = route.params as ScreenParams
-    console.log(wallet)
     const { useTranslate } = useTranslateService()
     const { setWallets, user, setUser } = useAuth()
     const [loading, setLoading] = useState(false)
@@ -47,22 +46,24 @@ const WalletSettings = ({ navigation, route }: StackScreenProps<any>) => {
     const handleSave = async () => {
 
         setLoading(true)
-        
-        wallet.payfee = payfee
-        wallet.name = walletName
-        wallet.default = defaultWallet
+        const walletData = {
+            ...wallet,
+            payfee,
+            name: walletName,
+            default: defaultWallet
+        }
 
-        if(wallet.default && wallet.key != user.default_wallet) 
+        if(walletData.default && walletData.key != user.default_wallet) 
         {           
-            user.default_wallet = wallet.key
-            user.bitcoin_address = wallet.address   
+            user.default_wallet = walletData.key
+            user.bitcoin_address = walletData.address   
 
             await userService.updateProfile({ 
                 user, setUser, upNostr: true 
             })
         }
 
-        await walletService.update(wallet)
+        await walletService.update(walletData)
 
         if(setWallets) setWallets(await walletService.list())
 
@@ -72,7 +73,7 @@ const WalletSettings = ({ navigation, route }: StackScreenProps<any>) => {
             index: 1,
             routes: [
                 { name: 'core-stack' },
-                { name: 'wallet-stack', params: { wallet } }
+                { name: 'wallet-stack', params: { wallet: walletData } }
             ]
         }) 
     }

@@ -15,7 +15,7 @@ export type BaseWallet = {
 
 export const createWallet = (password: string = "", network: BNetwork = "mainnet"): BaseWallet => {
 
-    const key = getRandomKey(10)
+    const key = getRandomKey(15)
 
     const mnemonic = generateMnemonic(128)
 
@@ -34,7 +34,7 @@ export const createWallet = (password: string = "", network: BNetwork = "mainnet
 
 export const importWallet = async (mnemonic: string, password?: string, network: BNetwork = "mainnet"): Promise<BaseWallet> => {
     
-    const key = getRandomKey(10)
+    const key = getRandomKey(15)
 
     const seed = mnemonicToSeedSync(mnemonic, password)
 
@@ -47,12 +47,6 @@ export const importWallet = async (mnemonic: string, password?: string, network:
     const pairkey =  { key, privateKey, publicKey: ecPairkey.getPublicKeyCompressed("hex") }
 
     return { pairkey, mnemonic, wallet: {} }
-}
-
-
-export type SeedProps = {
-    seed: string, // phrase with 12 or 24 words
-    passPhrase: string // password with a 
 }
 
 export const generateAddress = (publicKey: string, net: BNetwork = "mainnet"): string => {
@@ -110,12 +104,13 @@ export const createTransaction = async ({ amount, destination, recomendedFee,
                     // the sender pay the fee
                     if(out.address == wallet.address) {
                         let outwithFee = utxoAmount-(amount-calculatedFee)
-                        let outwithoutFee = utxoAmount-(amount+calculatedFee)
+                        let outwithoutFee = utxoAmount-amount
                         out.amount = wallet.payfee ? outwithFee : outwithoutFee 
                     }
                     // the receiver pay the fee
                     if(out.address != wallet.address && !wallet.payfee) {
-                        out.amount = (out.amount-calculatedFee)
+                        
+                        out.amount = out.amount-(calculatedFee / (transaction.outputs.length-1))
                     }
                 })
                 break

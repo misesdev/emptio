@@ -127,9 +127,6 @@ const exclude = async (wallet: Wallet): Promise<Response<any>> => {
 }
 
 const update = async (wallet: Wallet) => {
-    
-    if(wallet.default) await storageService.wallets.clearDefault()
-
     await storageService.wallets.update(wallet)
 }
 
@@ -164,15 +161,15 @@ const listTransactions = async (wallet: Wallet): Promise<WalletInfo> => {
             txid: utxo.txid,
             type: isSended ? "sended" : "received",
             amount: isSended ? (sended-received) : received,
-            value: isSended ? sended : received,
             confirmed: utxo.status.confirmed,
             description: utxo.status.confirmed ? confirmedLabel 
                 : notconfirmedLabel,
             date: utxo.status.confirmed ? timeSeconds.toString(utxo.status.block_time) 
                 : notconfirmedLabel,
             timestamp: utxo.status.confirmed ? utxo.status.block_time 
-                : timeSeconds.now() 
+                : timeSeconds.now()
         }
+        console.log(utxo.status.block_time)
 
         response.transactions.push(transaction)
         response.received += received
@@ -218,17 +215,11 @@ const address = {
     validate: (address: string) => ValidateAddress(address)
 }
 
-const clearDefaults = async () => {
-    await storageService.wallets.clearDefault()
-}
-
-
 export const walletService = {
     create,
-    update,
+    update: storageService.wallets.update,
     import: require,
     delete: exclude,
-    clearDefaults,
     listTransactions,
     list: storageService.wallets.list,
     address,

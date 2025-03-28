@@ -1,4 +1,4 @@
-import { BNetwork, InputTransaction, OutputTransaction } from "bitcoin-tx-lib"
+import { BNetwork } from "bitcoin-tx-lib"
 import { Relay } from "nostr-tools"
 
 export interface PairKey {
@@ -45,15 +45,26 @@ export interface TransactionInfo {
     date?: string,
     txid?: string
     confirmed?: boolean,
-    inputs?: InputTransaction[],
-    outputs?: OutputTransaction[]
+    inputs?: TransactionInput[],
+    outputs?: TransactionOutput[]
+}
+
+export interface TransactionInput {
+    amount?: number,
+    address?: string,
+    scriptPubkey?: string
+}
+
+export interface TransactionOutput {
+    amount?: number,
+    address?: string,
+    scriptPubkey?: string
 }
 
 export interface Transaction {
     type?: "sended" | "received",
     description?: string,
     amount?: number,
-    value?: number,
     date?: string,
     txid?: string
     confirmed?: boolean,
@@ -61,8 +72,8 @@ export interface Transaction {
     fee?: number,
     size?: number,
     block_height?: number,
-    inputs?: InputTransaction[],
-    outputs?: OutputTransaction[]
+    inputs?: TransactionInput[],
+    outputs?: TransactionOutput[]
 }
 
 export interface User {
