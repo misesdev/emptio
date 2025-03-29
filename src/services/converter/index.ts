@@ -45,15 +45,15 @@ export const timeSeconds = {
     },
     now: () => Math.floor(Date.now() / 1000),
     toString: (timestamp: number) => {
-        // let now = Date.now()
-        let date = new Date(timestamp*1000)
+        let date = new Date(timestamp * 1000)
+        // let now = Math.floor(Date.now() / 1000)
 
         return date.toLocaleString()
         // const now = Math.floor(Date.now() / 1000);
         // const diff = now - timestamp;
         // const date = new Date(timestamp * 1000);
         // 
-        // if (diff < 86400) { // Menos de um dia
+        // if (diff < timeSeconds.day) { // Menos de um dia
         //     const hours = date.getHours().toString().padStart(2, '0');
         //     const minutes = date.getMinutes().toString().padStart(2, '0');
         //     return diff < 43200 ? `Hoje às ${hours}:${minutes}` : `Ontem às ${hours}:${minutes}`;

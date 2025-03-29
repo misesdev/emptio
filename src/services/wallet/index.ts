@@ -169,8 +169,6 @@ const listTransactions = async (wallet: Wallet): Promise<WalletInfo> => {
             timestamp: utxo.status.confirmed ? utxo.status.block_time 
                 : timeSeconds.now()
         }
-        console.log(utxo.status.block_time)
-
         response.transactions.push(transaction)
         response.received += received
         response.sended += sended

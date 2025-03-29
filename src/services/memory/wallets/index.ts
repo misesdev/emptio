@@ -54,8 +54,6 @@ export const updateWallet = async (wallet: Wallet) => {
         }
     })
 
-    console.log("wallets", wallets)
-
     await AsyncStorage.setItem("walletsData", JSON.stringify(wallets))
 }
 
