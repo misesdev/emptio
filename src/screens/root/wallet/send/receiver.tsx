@@ -17,12 +17,12 @@ const SendReceiverScreen = ({ navigation, route }: any) => {
 
     const { wallet, amount } = route.params
     const { useTranslate } = useTranslateService()
-    const [nextDisabled, setNextDisabled] = useState(true)
+    //const [nextDisabled, setNextDisabled] = useState(true)
     const [address, setAddress] = useState<string>("")
 
     const handleRead = (value: string) => {
         setAddress(value)
-        setNextDisabled(!Address.isValid(value))
+        //setNextDisabled(!Address.isValid(value))
         if(Address.isValid(value)) { 
             navigation.navigate("wallet-send-final-stack", { 
                 amount, 
@@ -33,23 +33,19 @@ const SendReceiverScreen = ({ navigation, route }: any) => {
     }
 
     const onChangeText = (value: string) => {
-        setNextDisabled(!Address.isValid(value))
+        // setNextDisabled(!Address.isValid(value))
         setAddress(value)
     }
 
     const handleSelectUser = (user: User) => {
         if(!Address.isValid(user.bitcoin_address??"")) 
-            return pushMessage(`${getUserName(user)} não possui carteira no app.`)
+            return pushMessage(`${getUserName(user)} ${useTranslate("wallet.address.not-contains")}`)
        
         navigation.navigate("wallet-send-final-stack", {
             address: user.bitcoin_address, 
             amount, wallet, receiver: user 
         })
     }
-
-    // const handleSendToFee = () => { 
-    //     navigation.navigate("wallet-send-final-stack", { amount, address, wallet })
-    // }
 
     return (
         <View style={styles.container}>

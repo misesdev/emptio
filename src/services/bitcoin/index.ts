@@ -103,14 +103,14 @@ export const createTransaction = async ({ amount, destination, recomendedFee,
                 transaction.outputs.forEach(out => {
                     // the sender pay the fee
                     if(out.address == wallet.address) {
-                        let outwithFee = utxoAmount-(amount-calculatedFee)
-                        let outwithoutFee = utxoAmount-amount
-                        out.amount = wallet.payfee ? outwithFee : outwithoutFee 
+                        let withoutFee = utxoAmount-amount
+                        let withFee = utxoAmount-(amount-calculatedFee)
+                        out.amount = wallet.payfee ? withFee : withoutFee 
                     }
-                    // the receiver pay the fee
+                    // the receiver(s) pay the fee
                     if(out.address != wallet.address && !wallet.payfee) {
-                        
-                        out.amount = out.amount-(calculatedFee / (transaction.outputs.length-1))
+                        let mediaFee = calculatedFee / (transaction.outputs.length-1)
+                        out.amount = Math.ceil(out.amount-mediaFee)
                     }
                 })
                 break

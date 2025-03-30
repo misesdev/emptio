@@ -17,9 +17,11 @@ export const getWallet = async (key: string): Promise<Wallet> => {
 
     const wallets = await getWallets()
 
-    const walletFiltered = wallets.find(x => x.key === key) ?? {}
+    const wallet = wallets.find(x => x.key === key) 
 
-    return walletFiltered
+    if(!wallet) throw new Error("wallet not found")
+
+    return wallet
 }
 
 export const insertWallet = async (wallet: Wallet) : Promise<number> => {
@@ -61,9 +63,9 @@ export const deleteWallet = async (key: string) => {
 
     const walletList = await getWallets()
 
-    const filtered = walletList.filter(wallet => wallet.key != key)
+    const filtered = JSON.stringify(walletList.filter(wallet => wallet.key != key))
 
-    await AsyncStorage.setItem("walletsData", JSON.stringify(filtered))
+    await AsyncStorage.setItem("walletsData", filtered)
 }
 
 export const deleteWallets = async () => await AsyncStorage.removeItem("walletsData")

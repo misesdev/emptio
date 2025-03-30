@@ -113,25 +113,25 @@ const SendFinalScreen = ({ navigation, route }: any) => {
     return (
         <View style={styles.container}>
             <HeaderScreen
-                title={"Transferir"}
+                title={useTranslate("wallet.title.transfer")}
                 onClose={() => navigation.goBack()}
             />  
             
             <View style={{ width: "90%" }}>
                 <Text style={styles.amount}>{amount} sats</Text>
                 <Text style={styles.label}>
-                    para {" "}
+                    {useTranslate("commons.to")} {" "}
                     <Text style={styles.username}>
                         {!!receiver?.pubkey ? getUserName(receiver) : useTranslate("chat.unknown")}
                     </Text>
                 </Text>
                 <Text style={styles.label}>
-                    address {" "}
+                    {useTranslate("wallet.transfer.address")} {" "}
                     <Text style={styles.username}>{shortenString(address, 20)}</Text>
                 </Text>
             </View>
 
-            <Text style={styles.title}>Qual taxa de rede deseja pagar?</Text>
+            <Text style={styles.title}>{useTranslate("wallet.transfer.wantfeepay")}</Text>
             {fetching &&
                 <View style={{ paddingVertical: 20 }}>
                     <ActivityIndicator size={20} color={theme.colors.white} />
@@ -140,29 +140,29 @@ const SendFinalScreen = ({ navigation, route }: any) => {
             {!fetching &&
                 <View style={{ width: "100%", alignItems: "center", marginVertical: 15 }}>
                     <FeeOption 
-                        label={`Prioridade alta - ${recomendedFee?.fastestFee??0} sats/vb`} 
-                        description="Taxa recomendada para confirmar a transação o mais rápido possível, geralmente no próximo bloco."
+                        label={`${useTranslate("wallet.fee.high.title")} - ${recomendedFee?.fastestFee??0} sats/vb`} 
+                        description={useTranslate("wallet.fee.high.description")}
                         feeType="high"
                         selected={selectedFee == "high"}
                         onPress={handleSelectFee}
                     />
                     <FeeOption 
-                        label={`Prioridade media - ${recomendedFee?.halfHourFee??0} sats/vb`} 
-                        description="Taxa recomendada para confirmar a transação dentro de 30 minutos (ou seja, dentro de aproximadamente 3 blocos)."
+                        label={`${useTranslate("wallet.fee.medium.title")} - ${recomendedFee?.halfHourFee??0} sats/vb`} 
+                        description={useTranslate("wallet.fee.medium.description")}
                         feeType="medium"
                         selected={selectedFee == "medium"}
                         onPress={handleSelectFee}
                     />
                     <FeeOption 
-                        label={`Prioridade baixa - ${recomendedFee?.hourFee??0} sats/vb`} 
-                        description="Taxa recomendada para confirmar a transação dentro de 1 hora (ou seja, dentro de aproximadamente 6 blocos)."
+                        label={`${useTranslate("wallet.fee.low.title")} - ${recomendedFee?.hourFee??0} sats/vb`} 
+                        description={useTranslate("wallet.fee.low.description")}
                         feeType="low"
                         selected={selectedFee == "low"}
                         onPress={handleSelectFee}
                     />
                     <FeeOption 
-                        label={`Sem prioridade - ${recomendedFee?.minimumFee??0} sats/vb`} 
-                        description="A menor taxa possível para que a transação não seja rejeitada pelos mineradores, mas sem garantia de tempo de confirmação."
+                        label={`${useTranslate("wallet.fee.minimum.title")} - ${recomendedFee?.minimumFee??0} sats/vb`} 
+                        description={useTranslate("wallet.fee.minimum.description")}
                         feeType="minimun"
                         selected={selectedFee == "minimun"}
                         onPress={handleSelectFee}
