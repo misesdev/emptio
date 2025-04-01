@@ -70,7 +70,10 @@ const WalletManagerScreen = ({ navigation, route }: StackScreenProps<any>) => {
                 contentContainerStyle={theme.styles.scroll_container}
                 refreshControl={<RefreshControl refreshing={refreshing} onRefresh={handleLoadTransactions} />}
             >
-                <WalletTransactions transactions={transactions} onPressTransaction={openTransaction} />
+                <WalletTransactions 
+                    transactions={transactions} 
+                    onPressTransaction={openTransaction} 
+                />
 
                 <View style={{ width: "100%", height: 50 }}></View>
 
