@@ -75,16 +75,14 @@ const SendFinalScreen = ({ navigation, route }: any) => {
     }
 
     const handleSend = async () => {
-
         setLoading(true)
         setNextDisabled(true)
-
         const result = await walletService.transaction.build({ 
             amount: toNumber(amount), 
             destination: address, 
             walletKey: wallet.key ?? "",
             recomendedFee: feeValue
-        })
+        }) 
 
         if (result.success) {
             const network: BNetwork = wallet.type == "bitcoin" ? "mainnet" : "testnet"

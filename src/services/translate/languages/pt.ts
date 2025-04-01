@@ -223,7 +223,6 @@ export default {
     Contribua com essa iniciativa doando, compartilhando o App com amigos, ou codificando melhorias.`,
 
 
-
     "en": "Inglês",
     "pt": "Português"
 }
