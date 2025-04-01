@@ -86,7 +86,10 @@ export const createTransaction = async ({ amount, destination, recomendedFee,
         transaction.addOutput({ address: wallet.address ?? "", amount: 10 })
 
         let calculatedFee = 0
-        for (let utxo of ordenedUtxos) {
+        for (let utxo of ordenedUtxos) 
+        {
+            if(transaction.inputs.some(i => i.txid == utxo.txid)) continue
+
             if (utxoAmount <= amount+calculatedFee) {
                 utxoAmount += utxo.value
                 let scriptPubKey = Address.getScriptPubkey(wallet.address??"")
@@ -116,6 +119,9 @@ export const createTransaction = async ({ amount, destination, recomendedFee,
                 break
             }
         }
+
+        if(utxoAmount <= amount)
+            throw new Error("You do not have sufficient funds to complete the transaction.")
         
         const txHex = transaction.build()
 

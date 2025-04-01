@@ -17,12 +17,12 @@ const SendReceiverScreen = ({ navigation, route }: any) => {
 
     const { wallet, amount } = route.params
     const { useTranslate } = useTranslateService()
-    //const [nextDisabled, setNextDisabled] = useState(true)
+    const [nextDisabled, setNextDisabled] = useState(true)
     const [address, setAddress] = useState<string>("")
 
-    const handleRead = (value: string) => {
+    const handleSend = (value: string) => {
         setAddress(value)
-        //setNextDisabled(!Address.isValid(value))
+        setNextDisabled(!Address.isValid(value))
         if(Address.isValid(value)) { 
             navigation.navigate("wallet-send-final-stack", { 
                 amount, 
@@ -33,7 +33,7 @@ const SendReceiverScreen = ({ navigation, route }: any) => {
     }
 
     const onChangeText = (value: string) => {
-        // setNextDisabled(!Address.isValid(value))
+        setNextDisabled(!Address.isValid(value))
         setAddress(value)
     }
 
@@ -54,26 +54,28 @@ const SendReceiverScreen = ({ navigation, route }: any) => {
                 onClose={() => navigation.goBack()}
             />
 
-            <Text style={styles.title}>{`${useTranslate("wallet.title.sendreceiver")}${route.params?.amount} sats?`}</Text>
+            <Text style={styles.title}>
+                {`${useTranslate("wallet.title.sendreceiver")}${route.params?.amount} sats?`}
+            </Text>
 
             <TextBox value={address}
                 onChangeText={onChangeText}
                 placeholder={useTranslate("wallet.placeholder.addressuser")}
             />
 
-            <ButtonScanQRCode label={useTranslate("commons.scan")} onChangeText={handleRead} />
+            <ButtonScanQRCode label={useTranslate("commons.scan")} onChangeText={handleSend} />
 
             <SectionHeader label={useTranslate("labels.friends")} icon="people" />
 
             <FollowList searchable toPayment onPressFollow={handleSelectUser} />
 
-            {/* <View style={{ position: "absolute", bottom: 30, padding: 10, width: "100%", flexDirection: "row-reverse" }}> */}
-            {/*     <TouchableOpacity activeOpacity={.7} onPress={handleSendToFee} disabled={nextDisabled} */}
-            {/*         style={{ borderRadius: 50, padding: 14, margin: 10, backgroundColor: nextDisabled ? theme.colors.disabled : theme.colors.blue }} */}
-            {/*     > */}
-            {/*         <Ionicons name="arrow-forward-outline" size={theme.icons.large} color={nextDisabled ? theme.colors.gray : theme.colors.white} /> */}
-            {/*     </TouchableOpacity> */}
-            {/* </View> */}
+            <View style={styles.buttonArea}>
+                <TouchableOpacity activeOpacity={.7} onPress={() => handleSend(address)} disabled={nextDisabled}
+                    style={{ borderRadius: 50, padding: 14, margin: 10, backgroundColor: nextDisabled ? theme.colors.disabled : theme.colors.blue }}
+                >
+                    <Ionicons name="arrow-forward-outline" size={theme.icons.large} color={nextDisabled ? theme.colors.gray : theme.colors.white} />
+                </TouchableOpacity>
+            </View>
         </View>
     )
 }
@@ -81,7 +83,8 @@ const SendReceiverScreen = ({ navigation, route }: any) => {
 const styles = StyleSheet.create({
     container: { flex: 1, alignItems: 'center', backgroundColor: theme.colors.black },
     title: { fontSize: 24, maxWidth: "90%", fontWeight: "bold", textAlign: "center", 
-        marginVertical: 10, color: theme.colors.white }
+        marginVertical: 10, color: theme.colors.white },
+    buttonArea: { position: "absolute", bottom: 30, padding: 10, width: "100%", flexDirection: "row-reverse" }
 })
 
 export default SendReceiverScreen

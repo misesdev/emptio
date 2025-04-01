@@ -29,20 +29,16 @@ const FeedOrdersScreen = ({ navigation }: StackScreenProps<any>) => {
 
     const handleData = async () => {
         setLoading(true)
-        
         if(follows?.length) 
         {
             const friends = follows.map(u => u.pubkey) as string[]
-
             const posts = await listenerEvents({ 
                 limit: friends?.length, 
                 kinds: [NostrEventKinds.metadata],
                 authors: friends 
             })
-
             setPosts(posts)
         }
-
         setLoading(false)
     }
 

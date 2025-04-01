@@ -182,6 +182,9 @@ export default {
     "wallet.fee.low.description": "Taxa recomendada para confirmar a transação dentro de 1 hora (ou seja, dentro de aproximadamente 6 blocos).",
     "wallet.fee.minimum.title": "Sem prioridade",
     "wallet.fee.minimum.description": "A menor taxa possível para que a transação não seja rejeitada pelos mineradores, mas sem garantia de tempo de confirmação.",
+    "wallet.label.default": "Carteira principal",
+    "wallet.label.payfee": "Pagar a taxa de rede",
+    "wallet.label.testmode": "Modo de teste",
 
     "screen.title.addwallet": "Adicionar Carteira",
     "screen.title.importwallet": "Importar Carteira",

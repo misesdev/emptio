@@ -182,6 +182,9 @@ export default {
     "wallet.fee.low.description": "Recommended fee to confirm transaction within 1 hour (i.e. within approximately 6 blocks).",
     "wallet.fee.minimum.title": "No priority",
     "wallet.fee.minimum.description": "The lowest possible fee so that the transaction is not rejected by miners, but with no guarantee of confirmation time.",
+    "wallet.label.default": "Main wallet",
+    "wallet.label.payfee": "Pay the network fee",
+    "wallet.label.testmode": "Test mode",
 
     "screen.title.addwallet": "Add Wallet",
     "screen.title.importwallet": "Import Wallet",

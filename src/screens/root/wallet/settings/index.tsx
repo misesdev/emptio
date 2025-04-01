@@ -24,6 +24,7 @@ const WalletSettings = ({ navigation, route }: StackScreenProps<any>) => {
     const [walletName, setWalletName] = useState(wallet.name)
     const [defaultWallet, setDefaultWallet] = useState<boolean>(wallet.default ?? false)
     const [payfee, setPayfee] = useState<boolean>(wallet.payfee ?? false)
+    //const [testnet, setTestnet] = useState<boolean>(wallet.type=="testnet")
 
     const hadleDeleteWallet = async () => {
         showMessage({
@@ -46,9 +47,11 @@ const WalletSettings = ({ navigation, route }: StackScreenProps<any>) => {
     const handleSave = async () => {
 
         setLoading(true)
-        const walletData = {
+        const walletData: Wallet = {
             ...wallet,
             payfee,
+            // type: testnet ? "testnet":"bitcoin",
+            // network: testnet ? "testnet":"mainnet",
             name: walletName,
             default: defaultWallet
         }
@@ -88,13 +91,35 @@ const WalletSettings = ({ navigation, route }: StackScreenProps<any>) => {
 
             <ScrollView contentContainerStyle={[theme.styles.scroll_container, { justifyContent: "center" }]}>
 
-                <FormControl label={useTranslate("labels.wallet.name")} value={walletName} onChangeText={setWalletName} />
+                <FormControl 
+                    label={useTranslate("labels.wallet.name")} 
+                    value={walletName}
+                    onChangeText={setWalletName} 
+                />
                 
-                <FormControlSwitch label="Default Wallet" value={defaultWallet} onChangeValue={setDefaultWallet} />
+                <FormControlSwitch 
+                    label={useTranslate("wallet.label.default")} 
+                    value={defaultWallet}
+                    onChangeValue={setDefaultWallet}
+                />
                 
-                <FormControlSwitch label={"Pay the fee"} value={payfee} onChangeValue={setPayfee} />
+                <FormControlSwitch 
+                    label={useTranslate("wallet.label.payfee")} 
+                    value={payfee} 
+                    onChangeValue={setPayfee} 
+                />
+                
+                {/* <FormControlSwitch  */}
+                {/*     label={useTranslate("wallet.label.testmode")}  */}
+                {/*     value={testnet} */}
+                {/*     onChangeValue={setTestnet}  */}
+                {/* />  */}
 
-                <ButtonLink label={useTranslate("commons.delete")} color={theme.colors.red} onPress={hadleDeleteWallet}/>
+                <ButtonLink 
+                    label={useTranslate("commons.delete")} 
+                    color={theme.colors.red} 
+                    onPress={hadleDeleteWallet}
+                />
 
             </ScrollView>
 

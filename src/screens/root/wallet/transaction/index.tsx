@@ -49,7 +49,7 @@ const TransactionScreen = ({ navigation, route }: StackScreenProps<any>) => {
 
     const handleToWeb = () => { 
 
-        const directory = wallet.type == "bitcoin" ? "tx/" : "testnet/tx/"
+        const directory = wallet.network == "mainnet" ? "tx/" : "testnet/tx/"
 
         Linking.openURL(`https://${process.env.MEMPOOL_API_URL}/${directory}${txDetails.txid}`)
     }

@@ -105,7 +105,6 @@ export const getTransactionInfo = async ({ txid, network, address }: TxProps) =>
             await useTranslate("message.transaction.confirmed") : 
             await useTranslate("message.transaction.notconfirmed"),
         amount: isSended ? (sended-received)+utxo.fee : received,
-        value: isSended ? sended : received,
         date: utxo.status.confirmed ? 
             new Date(utxo.status.block_time * 1000).toLocaleString() : 
             await useTranslate("message.transaction.notconfirmed"),

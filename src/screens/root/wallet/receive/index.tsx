@@ -17,8 +17,7 @@ const WalletReceiveScreen = ({ navigation, route }: StackScreenProps<any>) => {
     const { user } = useAuth()
     const { wallet } = route.params as ScreenProps
     const { useTranslate } = useTranslateService()
-    const [address, setAddress] = useState<string>(wallet?.address ?? "")
-    const [valueText, setValueText] = useState<string>(wallet?.address ?? "")
+    const [valueText, setValueText] = useState(wallet?.address ?? "")
     const [pictureError, setPictureError] = useState<boolean>(false)
 
     const handleCopyValue = async () => {
@@ -55,7 +54,7 @@ const WalletReceiveScreen = ({ navigation, route }: StackScreenProps<any>) => {
                 <View style={styles.qrcode}>
                     <QRCode
                         size={240}
-                        value={address}
+                        value={wallet.address??""}
                         logoSize={75}
                         logoBorderRadius={12}
                         logo={require("@assets/icon.png")}
