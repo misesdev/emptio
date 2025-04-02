@@ -79,18 +79,18 @@ const styles = StyleSheet.create({
         color: theme.input.textColor,
     },
     pastButton: {
-        width: "20%",
+        width: "18%",
         position: "absolute",
         right: 0,
         top: 0,
         textAlign: "center",
-        borderTopRightRadius: 25,
-        borderBottomRightRadius: 25,
+        borderTopRightRadius: 10,
+        borderBottomRightRadius: 10,
         backgroundColor: theme.input.backGround,
-        padding: 2.4,
+        paddingVertical: 18     
     },
     pastIcon: {
         textAlign: "center",
-        paddingVertical: 20,
+        //paddingVertical: 20,
     }
 })

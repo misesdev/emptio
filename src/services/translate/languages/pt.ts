@@ -5,6 +5,7 @@ export default {
     "login.message": "Você só precisa escanear o código QR da sua chave privada ou copiá-lo para a área de transferência, o aplicativo cuida do resto!",
     "register.title": "Registrar-se",
     "register.message": "Você só precisa definir seu nome de usuário, o aplicativo cuida do resto!",
+    "register.already_exists": "Já existe um usuário com o nome",
 
     "commons.yes": "Sim",
     "commons.no": "Não",

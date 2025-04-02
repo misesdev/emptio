@@ -6,7 +6,7 @@ import { AppState } from "react-native"
 import { ChatUser } from "../zustand/chats"
 import useNDKStore from "../zustand/ndk"
 import { NostrEventKinds } from "@/src/constants/Events"
-import { processEventMessage } from "./processEvents"
+import { processEventMessage, processEventOrders } from "./processEvents"
 import { storageService } from "../memory"
 
 export const getUserData = async (publicKey: string): Promise<User> => {
@@ -71,18 +71,14 @@ export const getNostrInstance = async ({ user }: NostrInstanceProps): Promise<ND
     return ndk
 }
 
-type SubscribeProps = { 
-    user: User,
-    addChat: (chat: ChatUser) => void
-}
-
-export const subscribeUser = ({ user, addChat }: SubscribeProps) => {
-   
+export const subscribeUser = (user: User) => {
+  
     const ndk = useNDKStore.getState().ndk
 
     const filters: NDKFilter[] = [
-        { kinds: [4], "#p": [user.pubkey ?? ""] },
-        { kinds: [4], authors: [user.pubkey ?? ""] }
+        { kinds: [10002], "#o": ["orders", ""] }, // sell orders in relays event
+        { kinds: [4], "#p": [user.pubkey ?? ""] }, // private message to user
+        { kinds: [4], authors: [user.pubkey ?? ""] } // private message from user
     ]
 
     const subscriptionMessages = ndk.subscribe(filters, {
@@ -90,7 +86,8 @@ export const subscribeUser = ({ user, addChat }: SubscribeProps) => {
     })
 
     subscriptionMessages.on("event", event => {
-        if(event.kind == 4) processEventMessage({ user, event, addChat })
+        if(event.kind == 4) processEventMessage({ user, event })
+        if(event.kind == 10002) processEventOrders({ user, event })
     })
 
     subscriptionMessages.start()

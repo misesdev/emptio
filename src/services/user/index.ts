@@ -197,16 +197,22 @@ export const createFollowEvent = (user: User, friends: [string[]]) : NostrEvent 
 const searchUsers = async (user: User, searchTerm: string, limit: number = 50): Promise<User[]> => {
     try 
     {
+        let defaultPubkey = "55472e9c01f37a35f6032b9b78dade386e6e4c57d80fd1d0646abb39280e5e27"
+
         const response = await fetch(`${process.env.NOSBOOK_API_URL}/search`, {
             method: "post",
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
-                pubkey: user.pubkey,
+                pubkey: user.pubkey ?? defaultPubkey,
                 searchTerm,
                 limit
             })
         })
 
+        if(!response.ok) {
+            throw new Error("an unexpected error occurred during the request")
+        }
+        
         const users: any = await response.json()
 
         return users.filter((u: any) => u.pubkey != user.pubkey)
@@ -220,7 +226,9 @@ const searchUsers = async (user: User, searchTerm: string, limit: number = 50): 
                 }
             })
     }
-    catch { return [] }
+    catch {
+        return [] 
+    }
 }
 
 const lastNotes = async (user: User, limit: number = 3) : Promise<NDKEvent[]> => {

@@ -44,7 +44,7 @@ places, the price is multiplied by 100 and truncated.
 * `closure` Should contain the expiration date of the sales order in a timestamp of seconds, just
 like the `created_at` field of any event.  
 
-The event must contain the tag `o` with the value `order`, to indicate that it is an event 
+The event must contain the tag `o` with the value `orders`, to indicate that it is an event 
 containing sales orders and can be listed by the app. It should also contain in the `content`
 field a serialized JSON object with the property `orders`, which holds a list of objects 
 representing the sales orders.  
@@ -55,7 +55,7 @@ representing the sales orders.
     {
         ...,
         "tags": [
-            ["o", "order"]
+            ["o", "orders"]
         ],
         "content": "{ \"orders\": [{\"currency\": \"USD\", ...}, {...}] }"
     }
@@ -72,7 +72,7 @@ Example with the complete event:
     {
         "kind": 10002,
         "tags": [
-            ["o", "order"],
+            ["o", "orders"],
             ["r", "wss://alicerelay.example.com"],
             ["r", "wss://expensive-relay.example2.com", "write"],
             ["r", "wss://nostr-relay.example.com", "read"],

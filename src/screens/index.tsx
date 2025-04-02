@@ -45,7 +45,7 @@ const InitializeScreen = ({ navigation }: any) => {
 
             setChats(await messageService.listChats(result.data))
 
-            subscribeUser({ user: result.data ?? {}, addChat })
+            subscribeUser(result.data ?? {})
             
             if(setFollowsEvent) 
             {

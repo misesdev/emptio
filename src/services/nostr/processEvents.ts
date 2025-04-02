@@ -1,9 +1,12 @@
 import { NDKEvent } from "@nostr-dev-kit/ndk-mobile"
 import { dbEventProps, insertEventsInBatch } from "../memory/database/events"
 import { User } from "../memory/types"
-import { ChatUser } from "../zustand/chats"
 import { messageService } from "@services/message"
 import { getPubkeyFromTags } from "./events"
+import useOrderStore from "../zustand/orders"
+import useChatStore from "../zustand/chats"
+import { Order, Reputation } from "../types/order"
+import { timeSeconds } from "../converter"
 
 var batchTimer: NodeJS.Timeout|null = null
 var enqueueEvents: dbEventProps[] = []
@@ -19,10 +22,15 @@ const processEventsInBatch = async (notify: (dbEvent: dbEventProps) => void) => 
     withSuccess.forEach(notify) 
 }
 
-type addChatProps = { user: User, event: NDKEvent, addChat: (chat: ChatUser) => void }
+interface ProcessEventProps {
+    user: User, 
+    event: NDKEvent 
+}
 
-export const processEventMessage = async ({ user, event, addChat }: addChatProps) => { 
+export const processEventMessage = async ({ user, event }: ProcessEventProps) => { 
     try {
+        const store = useChatStore.getState()
+        
         const chat_id = messageService.generateChatId(event)
 
         enqueueEvents.push({ chat_id, event, category: "message" })
@@ -34,21 +42,37 @@ export const processEventMessage = async ({ user, event, addChat }: addChatProps
                     const lastMessage = {...dbEvent.event} as NDKEvent
                     if(lastMessage.pubkey == user.pubkey)
                         lastMessage.pubkey = getPubkeyFromTags(dbEvent.event)
-                    addChat({ chat_id: dbEvent.chat_id??"", lastMessage })
+                    store.addChat({ chat_id: dbEvent.chat_id??"", lastMessage })
                 })
                 batchTimer = null
             }, 100)
         }
-    
-        // if(["inactive", "background"].includes(AppState.currentState))
-        // {
-        //     await event.decrypt() 
-        //     const profile = await event.author.fetchProfile()
-        //     await pushNotification({ 
-        //         title: profile?.displayName ?? profile?.name ?? "",
-        //         message: event.content.length <= 30 ? event.content : `${event.content.substring(0,30)}..`
-        //     })
-        // }
-    
     } catch { }
+}
+
+export const processEventOrders = ({ user, event } :ProcessEventProps) => {
+    try { 
+        const store = useOrderStore.getState()
+        const data = JSON.parse(event.content)
+        // handling sell orders
+        if(event.tags.some(t => t[0] == "o" && t[1] == "orders")) {
+            let orders = data.orders as Order[]
+            orders.forEach(order => {
+                if(order.closure > timeSeconds.now()) {
+                    order.pubkey = event.pubkey
+                    store.addOrder(order)
+                }
+            })
+        }
+
+        // handling reputation mentions
+        if(event.tags.some(t => t[0] == "o" && t[1] == "reputations")) {
+            let reputations = data.reputations as Reputation[]
+            reputations.forEach(reputation => {
+                reputation.author = event.pubkey
+                store.addReputation(reputation)
+            })
+        }
+    } 
+    catch {}
 }

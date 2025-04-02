@@ -8,3 +8,9 @@ export interface Order {
     closure: number
 }
 
+export interface Reputation {
+    pubkey: string,
+    author: string,
+    safe_seller: boolean,
+    about: string
+}

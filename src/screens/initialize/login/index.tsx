@@ -8,7 +8,6 @@ import { useEffect, useState } from "react";
 import { useTranslateService } from "@src/providers/translateProvider";
 import { pushMessage } from "@services/notification";
 import useNDKStore from "@services/zustand/ndk";
-import useChatStore from "@services/zustand/chats";
 import { subscribeUser } from "@services/nostr/pool";
 import Clipboard from "@react-native-clipboard/clipboard";
 import { AppState } from "react-native";
@@ -19,7 +18,6 @@ import theme from "@src/theme";
 
 const LoginScreen = ({ navigation }: any) => {
 
-    const { addChat } = useChatStore()
     const { setNdkSigner } = useNDKStore()
     const { setUser, setFollowsEvent } = useAuth()
     const { useTranslate } = useTranslateService()
@@ -75,10 +73,10 @@ const LoginScreen = ({ navigation }: any) => {
                 {
                     const result = await userService.signIn({ secretKey, setUser })
 
-                    if (result.success && result.data) {
+                    if (result.success && result.data)
+                    {
                         setNdkSigner(result.data)
-
-                        subscribeUser({ user: result.data ?? {}, addChat })
+                        subscribeUser(result.data)
 
                         if(setFollowsEvent) 
                         {
@@ -123,9 +121,6 @@ const LoginScreen = ({ navigation }: any) => {
                     <ButtonPrimary disabled={disabled} loading={loading}
                         label={useTranslate("commons.signin")} 
                         onPress={handlerLogin} 
-                        style={{ backgroundColor: disabled ? theme.colors.disabled
-                            : theme.colors.blue
-                        }}
                     />
                 </View>
             </View>

@@ -5,6 +5,7 @@ export default {
     "login.message": "You just need to scan the QR code of your private key or copy it to your clipboard, the app takes care of the rest!",
     "register.title": "Sign Up",
     "register.message": "You just need to set your username, the app takes care of the rest!",
+    "register.already_exists": "There is already a user with the name",
 
     "commons.yes": "Yes",
     "commons.no": "No",

@@ -1,53 +1,29 @@
 import { View, Text, FlatList, StyleSheet, TouchableOpacity } from "react-native"
 import { SectionContainer } from "@components/general/section"
 import { ButtonDanger, ButtonSuccess } from "@components/form/Buttons"
-import { listenerEvents } from "@services/nostr/events"
-import { NostrEventKinds } from "@src/constants/Events"
 import { useAuth } from "@src/providers/userProvider"
-import { memo, useEffect, useState } from "react"
+import { memo, useEffect } from "react"
 import { useTranslateService } from "@/src/providers/translateProvider"
 import Ionicons from 'react-native-vector-icons/Ionicons'
-import { RefreshControl } from "react-native-gesture-handler"
 import { StackScreenProps } from "@react-navigation/stack"
 import { pushMessage } from "@services/notification"
-import { NostrEvent } from "@services/nostr/events"
-import { User } from "@services/memory/types"
 import { HeaderFeed } from "./header"
+import useOrderStore from "@services/zustand/orders"
+import { Order } from "@services/types/order"
 import theme from "@src/theme"
 
 const FeedOrdersScreen = ({ navigation }: StackScreenProps<any>) => {
 
-    const { follows, wallets } = useAuth()
+    const { wallets } = useAuth()
+    const { orders } = useOrderStore()
     const { useTranslate } = useTranslateService()
-    const [loading, setLoading] = useState(false)
-    const [posts, setPosts] = useState<NostrEvent[]>([])
 
-    useEffect(() => {
-        setTimeout(handleData, 10)
-        if(!wallets.length) pushMessage(useTranslate("message.wallet.alertcreate"))    
-    }, [])
-
-    const handleData = async () => {
-        setLoading(true)
-        if(follows?.length) 
-        {
-            const friends = follows.map(u => u.pubkey) as string[]
-            const posts = await listenerEvents({ 
-                limit: friends?.length, 
-                kinds: [NostrEventKinds.metadata],
-                authors: friends 
-            })
-            setPosts(posts)
-        }
-        setLoading(false)
-    }
-
-    const ListItem = memo(({ item }: { item: NostrEvent }) => {
-        const follow = item.content as User
+    const ListItem = memo(({ item }: { item: Order }) => {
+         
         return (
             <SectionContainer style={{ backgroundColor: theme.colors.blueOpacity }}>
                 <Text style={{ fontSize: 16, color: theme.colors.gray, margin: 10, textAlign: "center" }}>
-                    {follow.display_name ?? follow?.name}
+                    Sell Order R$ {(item.price * 100).toFixed(2)}
                 </Text>
                 <View style={{ width: "100%", flexDirection: "row", alignItems: "center" }}>
                     <ButtonSuccess label="Buy" onPress={() => { }} />
@@ -58,7 +34,7 @@ const FeedOrdersScreen = ({ navigation }: StackScreenProps<any>) => {
     })
 
     const EmptyComponent = () => (
-        <Text style={{ width: "80%", color: theme.colors.gray, marginTop: 200, textAlign: "center" }}>
+        <Text style={styles.empty}>
             {useTranslate("feed.empty")}
         </Text>
     )
@@ -74,13 +50,11 @@ const FeedOrdersScreen = ({ navigation }: StackScreenProps<any>) => {
         <View style={{ flex: 1, backgroundColor: theme.colors.black }}>
             <HeaderFeed navigation={navigation} />
             <FlatList
-                data={posts}
+                data={orders}
                 renderItem={({ item }) => <ListItem item={item}/>}
-                onEndReached={handleData}
                 ListEmptyComponent={EmptyComponent}
                 onEndReachedThreshold={.1}
                 contentContainerStyle={[theme.styles.scroll_container]}
-                refreshControl={<RefreshControl refreshing={loading} onRefresh={handleData} />}
                 keyExtractor={event => event.id ?? ""}
             />
 
@@ -95,7 +69,9 @@ const FeedOrdersScreen = ({ navigation }: StackScreenProps<any>) => {
 
 const styles = StyleSheet.create({
     newOrderButton: { backgroundColor: theme.colors.blue, padding: 18, borderRadius: 50 },
-    rightButton: { position: "absolute", bottom: 8, right: 0, width: 90, height: 70, justifyContent: "center", alignItems: "center" }
+    rightButton: { position: "absolute", bottom: 8, right: 0, width: 90, height: 70,
+        justifyContent: "center", alignItems: "center" },
+    empty: { width: "80%", color: theme.colors.gray, marginTop: 200, textAlign: "center" }
 })
 
 export default FeedOrdersScreen

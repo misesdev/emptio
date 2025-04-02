@@ -9,6 +9,7 @@ export type TranslateWords = "initial.message"
     | "login.message"
     | "register.title"
     | "register.message"
+    | "register.already_exists"
 
     | "commons.yes"
     | "commons.no"
