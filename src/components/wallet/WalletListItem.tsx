@@ -8,6 +8,7 @@ import { ActivityIndicator } from "react-native-paper"
 import { getClipedContent, getDescriptionTypeWallet } from "@src/utils"
 import { useTranslateService } from "@src/providers/translateProvider"
 import theme from "@src/theme"
+import { useAuth } from "@/src/providers/userProvider"
 
 interface Props {
     wallet: Wallet,
@@ -18,6 +19,7 @@ interface Props {
 
 const WalletListItem = ({ wallet, reload, handleOpen, style }: Props) => {
   
+    const { wallets, setWallets } = useAuth()
     const { useTranslate } = useTranslateService()
     const [loading, setLoading] = useState<boolean>()
     const [typeWallet, setTypeWallet] = useState<string>("")
@@ -40,8 +42,18 @@ const WalletListItem = ({ wallet, reload, handleOpen, style }: Props) => {
                     lastReceived: walletInfo.received
                 }))
 
-                setTimeout(async () => { 
+                setTimeout(async () => {
                     await walletService.update(walletData)
+                    if(setWallets) {
+                        setWallets(wallets.map(item => {
+                            if(item.key == walletData.key) {
+                                item.lastBalance = walletInfo.balance
+                                item.lastSended = walletInfo.sended
+                                item.lastReceived = walletInfo.received
+                            }
+                            return item
+                        }))
+                    }
                 }, 20)
             }
             setLoading(false)

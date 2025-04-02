@@ -90,6 +90,8 @@ const LoginScreen = ({ navigation }: any) => {
                         } 
 
                         navigation.reset({ index: 0, routes: [{ name: "core-stack" }] })                  
+                    } else {
+                        pushMessage(result.message??"")
                     }
                 } catch (ex) { 
                     pushMessage(ex as string)

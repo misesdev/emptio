@@ -6,7 +6,6 @@ import { ButtonPrimary } from "@components/form/Buttons"
 import { FormControl } from "@components/form/FormControl"
 import { ScrollView } from "react-native-gesture-handler"
 import Ionicons from 'react-native-vector-icons/Ionicons'
-import SplashScreen from "@components/general/SplashScreen"
 import { uploadImage } from "@services/blob"
 import { pushMessage } from "@services/notification"
 import { useTranslateService } from "@src/providers/translateProvider"
@@ -28,6 +27,7 @@ const UserEditScreen = ({ navigation }: StackScreenProps<any>) => {
     const [profile, setProfile] = useState(user.picture)
     const [profileColor, setProfileColor] = useState(theme.colors.green)
     const [pictureError, setPictureError] = useState(false)
+    const [disabled, setDisabled] = useState(false)
     const { useTranslate } = useTranslateService()
     
     useEffect(() => {
@@ -76,9 +76,6 @@ const UserEditScreen = ({ navigation }: StackScreenProps<any>) => {
         pushMessage(useTranslate("message.profile.saved"))
     }
 
-    if (loading)
-        return <SplashScreen />
-
     return (
         <ScrollView contentContainerStyle={[theme.styles.scroll_container, { paddingVertical: 20 }]} >
             <View style={styles.banner}>
@@ -117,7 +114,11 @@ const UserEditScreen = ({ navigation }: StackScreenProps<any>) => {
             <FormControl label={useTranslate("labels.mywebsite")} value={myWebsite} onChangeText={setMyWebsite} />
             <FormControl label={useTranslate("labels.lnaddress")} value={lnAddress} onChangeText={setLnAddress} />
 
-            <ButtonPrimary style={{ marginTop: 50 }} label={useTranslate("commons.save")} onPress={handleSave} />
+            <ButtonPrimary
+                style={{ marginTop: 50 }} 
+                label={useTranslate("commons.save")}
+                onPress={handleSave} loading={loading} disabled={disabled}
+            />
         </ScrollView>
     )
 }

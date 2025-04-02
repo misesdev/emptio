@@ -15,14 +15,13 @@ const NewOrderScreen = ({ navigation }: StackScreenProps<any>) => {
     const { useTranslate } = useTranslateService()
     const [amount, setAmount] = useState<string>("0")
     const [nextDisabled, setNextDisabled] = useState(true)
-    const [wallet, setWallet] = useState<Wallet>(wallets[0])
+    const [wallet, setWallet] = useState<Wallet>({})
 
     useEffect(() => { loadWallet() }, [])
 
     const loadWallet = async () => {
-        if(wallets.length && wallets.find(w => w.default)) {
-            setWallet(wallets.filter(w => w.default)[0])
-        } 
+        let wallet = wallets.find(w => w.default)
+        if(wallet) setWallet(wallet)
     } 
 
     return (

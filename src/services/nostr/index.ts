@@ -42,14 +42,12 @@ export const getHexKeys = (privateKey: string): PairKey => {
 
     const response: PairKey = { key, privateKey: "", publicKey: "" }
 
-    try {
-        const { type, data } = nip19.decode(privateKey)
+    const { type, data } = nip19.decode(privateKey)
 
-        if (type === "nsec") {
-            response.publicKey = getPublicKey(data)
-            response.privateKey = bytesToHex(data)
-        }
-    } catch { }
+    if (type === "nsec") {
+        response.publicKey = getPublicKey(data)
+        response.privateKey = bytesToHex(data)
+    }
 
     return response
 }

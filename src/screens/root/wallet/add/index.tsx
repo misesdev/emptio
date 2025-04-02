@@ -20,7 +20,7 @@ import { userService } from "@services/user"
 
 const AddWalletScreen = ({ navigation }: StackScreenProps<any>) => {
 
-    const { user, wallets, setWallets } = useAuth()
+    const { user, setWallets } = useAuth()
     const { useTranslate } = useTranslateService()
     const [loading, setLoading] = useState(false)
     const [disabled, setDisabled] = useState(true)
@@ -44,37 +44,35 @@ const AddWalletScreen = ({ navigation }: StackScreenProps<any>) => {
         setLoading(true)
         setDisabled(true)
 
-        setTimeout(async () => {
-            const response = await walletService.create({ 
-                name: walletName, 
-                password: walletPassword, 
-                type: walletType
+        const response = await walletService.create({ 
+            name: walletName, 
+            password: walletPassword, 
+            type: walletType
+        })
+        
+        if (response.success)
+        {
+            let base = response.data as BaseWallet
+            if (base.wallet.default) {
+                user.default_wallet = base.wallet.key
+                user.bitcoin_address = base.wallet.address
+                await userService.updateProfile({ user, upNostr: true })
+            }
+
+            if(setWallets) setWallets(await getWallets())
+
+            navigation.navigate("seed-wallet-stack", { 
+                origin: "create", 
+                wallet: base.wallet,
+                mnemonic: base.mnemonic.split(" ")
             })
-            
-            if (response.success)
-            {
-                let base = response.data as BaseWallet
-                if (base.wallet.default) {
-                    user.default_wallet = base.wallet.key
-                    user.bitcoin_address = base.wallet.address
-                    await userService.updateProfile({ user, upNostr: true })
-                }
+        }
+        else if(response.message) {
+            pushMessage(response.message)
+        }
 
-                if(setWallets) setWallets(await getWallets())
-
-                navigation.navigate("seed-wallet-stack", { 
-                    origin: "create", 
-                    wallet: base.wallet,
-                    mnemonic: base.mnemonic.split(" ")
-                })
-            }
-            else if(response.message) {
-                pushMessage(response.message)
-            }
-
-            setLoading(false)
-            setDisabled(false)
-        }, 20)
+        setLoading(false)
+        setDisabled(false)
     }
 
     const handleImportWallet = () => {

@@ -64,6 +64,7 @@ export type TranslateWords = "initial.message"
     | "commons.replie"
     | "commons.replies"
     | "commons.to"
+    | "commons.publish"
 
     | "labels.all"
     | "labels.username"

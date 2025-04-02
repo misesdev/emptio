@@ -60,6 +60,7 @@ export default {
     "commons.replie": "Responder",
     "commons.replies": "Ver respostas",
     "commons.to": "Para",
+    "commons.publish": "Publicar",
     
     "labels.all": "Todos",
     "labels.friends": "Amigos",

@@ -12,7 +12,7 @@ import { nip19 } from "nostr-tools"
 import useChatStore from "@services/zustand/chats"
 import { timeSeconds } from "@services/converter"
 
-type SignUpProps = { 
+interface SignUpProps { 
     userName: string, 
     setUser?: (user: User) => void,  
 }
@@ -46,7 +46,7 @@ const signUp = async ({ userName, setUser }: SignUpProps): Promise<Response<User
     }
 }
 
-type SignProps = { 
+interface SignProps { 
     secretKey: string, 
     setUser?: (user: User) => void,
 }
@@ -56,7 +56,6 @@ const signIn = async ({ secretKey, setUser }: SignProps) : Promise<Response<User
         const pairKey: PairKey = getHexKeys(secretKey)
 
         const userData = await getUserData(pairKey.publicKey)
-
 
         userData.keychanges = pairKey.key
 
@@ -73,7 +72,7 @@ const signIn = async ({ secretKey, setUser }: SignProps) : Promise<Response<User
     }
 }
 
-type UpdateProfileProps = {
+interface UpdateProfileProps {
     user: User,
     setUser?: (user: User) => void,
     upNostr?: boolean
@@ -166,7 +165,7 @@ const listFollows = async (user: User, follows?: NostrEvent, iNot: boolean = tru
     return friends
 }
 
-type UpdateFollowsProps = {
+interface UpdateFollowsProps {
     user: User,
     follows?: NostrEvent
 }
