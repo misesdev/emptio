@@ -1,16 +1,24 @@
 
-export interface Order {
+export interface SellOrder {
     id: string,
-    pubkey: string,
     currency: string,
     price: number,
-    satoshis: number,
-    closure: number
+    amount: number,
+    created_at: number,
+    closure: number,
+    author?: string,
+    relays?: string[]
 }
 
-export interface Reputation {
+export interface UserReputation {
     pubkey: string,
-    author: string,
     safe_seller: boolean,
-    about: string
+    about: string,
+    author?: string,
+    relays?: string[]
+}
+
+export interface DataOrderReputation {
+    orders: SellOrder[],
+    reputations: UserReputation[]
 }

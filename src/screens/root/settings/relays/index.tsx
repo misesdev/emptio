@@ -3,42 +3,46 @@ import { StyleSheet, View, ScrollView, Text } from "react-native"
 import { HeaderScreen } from "@components/general/HeaderScreen"
 import MessageBox, { showMessage } from "@components/general/MessageBox"
 import { ButtonPrimary } from "@components/form/Buttons"
-import { RelayList } from "@components/nostr/relays/RelayList"
 import { pushMessage } from "@services/notification"
 import { useTranslateService } from "@src/providers/translateProvider"
 import useNDKStore from "@services/zustand/ndk"
-import { useCallback, useEffect, useState } from "react"
+import { useEffect, useState } from "react"
 import { StackScreenProps } from "@react-navigation/stack"
+import { storageService } from "@services/memory"
+import { RelayList } from "./commons/relays"
 import theme from "@src/theme"
 import AddRelay from "./add"
 import axios from "axios"
-import { storageService } from "@/src/services/memory"
+import { SectionHeader } from "@/src/components/general/section/headers"
 
 const ManageRelaysScreen = ({ navigation }: StackScreenProps<any>) => {
 
     const { ndk } = useNDKStore()
     const { useTranslate } = useTranslateService()
     const [visible, setVisible] = useState(false)
-    const [relays, setRelays] = useState<string[]>([])
+    const [defaultRelays, setDefaultRelays] = useState<string[]>([])
+    const [connectedRelays, setConnectedRelays] = useState<string[]>([])
+    const [notConnectedRelays, setNotConnectedRelays] = useState<string[]>([])
 
     useEffect(() => { 
-        setTimeout(async () => { 
-            await loadDataRelays() 
-        }, 20)
+        setTimeout(loadDataRelays, 20)
     }, [])
 
     const loadDataRelays = async () => { 
+        let all_relays = await storageService.relays.list()
+        let connected_relays = ndk.pool.connectedRelays().map(r => r.url)
+        let not_connected_relays = all_relays.filter(r => !connectedRelays.includes(r))
 
-        const relayList = await storageService.relays.list()
-
-        setRelays(relayList)
+        setNotConnectedRelays(not_connected_relays)
+        setConnectedRelays(connected_relays)
+        setDefaultRelays(all_relays)
     }
 
     const handleAddRelay = () => setVisible(true)
 
     const handleSaveRelay = async (relay: string) => {
         try {
-            const relayList = [...relays, relay]
+            const relayList = [...defaultRelays, relay]
 
             const httpClient = axios.create({ headers: { Accept: "application/nostr+json" } })
 
@@ -51,9 +55,9 @@ const ManageRelaysScreen = ({ navigation }: StackScreenProps<any>) => {
 
             await storageService.relays.add(relay)
 
-            setRelays(relayList)
+            setDefaultRelays(relayList)
         } 
-        catch(ex) { 
+        catch { 
             return await pushMessage(useTranslate("message.default_error")) 
         }
 
@@ -70,7 +74,7 @@ const ManageRelaysScreen = ({ navigation }: StackScreenProps<any>) => {
 
                     await storageService.relays.delete(relay)
                     
-                    setRelays(prevItems => prevItems.filter(item => item != relay))
+                    setDefaultRelays(prev => prev.filter(item => item != relay))
 
                     ndk.explicitRelayUrls?.splice(ndk.explicitRelayUrls.indexOf(relay), 1)
 
@@ -80,35 +84,58 @@ const ManageRelaysScreen = ({ navigation }: StackScreenProps<any>) => {
         })
     }
 
-    const goBack = useCallback(() => navigation.goBack(), [])
-
     return (
         <View style={{ flex: 1 }}>
-            <HeaderScreen title={useTranslate("settings.relays")} onClose={goBack} />
+            <HeaderScreen 
+                title={useTranslate("settings.relays")} 
+                onClose={() => navigation.goBack()}
+            />
             <ScrollView contentContainerStyle={theme.styles.scroll_container} >
 
-                {!relays.length && 
+                {!defaultRelays.length && 
                     <Text style={{ color: theme.colors.gray }}>
                         {useTranslate("message.relay.empty")}
                     </Text>
                 }
+                
+                {connectedRelays.length &&
+                    <View>
+                        <SectionHeader label="Relays conectados" />
+                        <RelayList relays={connectedRelays} onPressRelay={() => {}} />
+                    </View>
+                }
+                {notConnectedRelays.length &&
+                    <View>
+                        <SectionHeader label="Relays conectados" />
+                        <RelayList relays={notConnectedRelays} onPressRelay={() => {}} />
+                    </View>
+                }
 
-                <RelayList relays={relays} onDelete={handleDeleteRelay} />
+                {/* <SectionHeader label="Todos os relays" /> */}
+                {/* <RelayList relays={defaultRelays} onPressRelay={handleDeleteRelay} /> */}
 
-                <View style={{ height: 80 }}></View>
+                <View style={{ height: 100 }}></View>
 
             </ScrollView>
             <View style={styles.buttonarea}>
-                <ButtonPrimary label={useTranslate("labels.relays.add")} onPress={handleAddRelay} />
+                <ButtonPrimary 
+                    label={useTranslate("labels.relays.add")} 
+                    onPress={handleAddRelay} 
+                />
             </View>            
-            <AddRelay visible={visible} relays={relays} onClose={() => setVisible(false)} onSaveRelay={handleSaveRelay} />
+            <AddRelay 
+                visible={visible}
+                relays={defaultRelays} 
+                onClose={() => setVisible(false)} 
+                onSaveRelay={handleSaveRelay} 
+            />
             <MessageBox />
         </View>
     )
 }
 
 const styles = StyleSheet.create({
-    buttonarea: { width: "100%", position: "absolute", alignItems: "center", bottom: 40 }
+    buttonarea: { width: "100%", position: "absolute", alignItems: "center", bottom: 30 }
 })
 
 export default ManageRelaysScreen

@@ -5,7 +5,7 @@ import { messageService } from "@services/message"
 import { getPubkeyFromTags } from "./events"
 import useOrderStore from "../zustand/orders"
 import useChatStore from "../zustand/chats"
-import { Order, Reputation } from "../types/order"
+import { SellOrder, UserReputation } from "../types/order"
 import { timeSeconds } from "../converter"
 
 var batchTimer: NodeJS.Timeout|null = null
@@ -54,12 +54,16 @@ export const processEventOrders = ({ user, event } :ProcessEventProps) => {
     try { 
         const store = useOrderStore.getState()
         const data = JSON.parse(event.content)
+
+        if(event.pubkey == user.pubkey) 
+            store.setEvent(event)
+        
         // handling sell orders
         if(event.tags.some(t => t[0] == "o" && t[1] == "orders")) {
-            let orders = data.orders as Order[]
+            let orders = data.orders as SellOrder[]
             orders.forEach(order => {
                 if(order.closure > timeSeconds.now()) {
-                    order.pubkey = event.pubkey
+                    order.author = event.pubkey
                     store.addOrder(order)
                 }
             })
@@ -67,7 +71,7 @@ export const processEventOrders = ({ user, event } :ProcessEventProps) => {
 
         // handling reputation mentions
         if(event.tags.some(t => t[0] == "o" && t[1] == "reputations")) {
-            let reputations = data.reputations as Reputation[]
+            let reputations = data.reputations as UserReputation[]
             reputations.forEach(reputation => {
                 reputation.author = event.pubkey
                 store.addReputation(reputation)

@@ -5,6 +5,9 @@ import { ButtonPrimary } from "@components/form/Buttons"
 import { useTranslateService } from "@src/providers/translateProvider"
 import { useAuth } from "@src/providers/userProvider"
 import { useState } from "react"
+import { Order } from "@services/nostr/orders"
+import { toNumber } from "@services/converter"
+import { timeSeconds } from "@services/converter"
 
 const OrderDetailScreen = ({ navigation, route }: any) => {
 
@@ -12,7 +15,8 @@ const OrderDetailScreen = ({ navigation, route }: any) => {
     const { amount } = route.params
     const { useTranslate } = useTranslateService()
     const [price, setPrice] = useState<string>("0")
-    const [closure, setClosure] = useState<number>()
+    const [currency, setCurrency] = useState<string>("USD")
+    const [closure, setClosure] = useState<number>(timeSeconds.now())
     const [loading, setLoading] = useState<boolean>(false)
     const [disabled, setDisabled] = useState<boolean>(true)
 
@@ -21,6 +25,14 @@ const OrderDetailScreen = ({ navigation, route }: any) => {
         setDisabled(true)
 
         // pulish order implemenmtation
+        const order = new Order(user, {
+            price: toNumber(price),
+            amount: toNumber(amount),
+            closure,
+            currency
+        })
+
+        await order.publish()
 
         setDisabled(false)
         setLoading(false)
@@ -38,7 +50,7 @@ const OrderDetailScreen = ({ navigation, route }: any) => {
             </Text>
 
             <View style={styles.buttonArea}>
-                <ButtonPrimary  disabled={disabled} loading={loading}
+                <ButtonPrimary disabled={disabled} loading={loading}
                     label={useTranslate("commons.publish")}
                     onPress={publishOrder}
                 />

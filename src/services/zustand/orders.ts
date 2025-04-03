@@ -1,25 +1,32 @@
-import { Order, Reputation } from "../types/order";
+import { NDKEvent } from "@nostr-dev-kit/ndk-mobile";
+import { SellOrder, UserReputation } from "../types/order";
 import { create } from "zustand"
 
 interface OrderStore {
-    orders: Order[],
-    addOrder: (order: Order) => void
-    removeOrder: (order: Order) => void
-    reputations: Reputation[],
-    addReputation: (reputation: Reputation) => void
-    removeReputation: (reputation: Reputation) => void
+    event: NDKEvent,
+    setEvent: (event: NDKEvent) => void,
+    orders: SellOrder[],
+    addOrder: (order: SellOrder) => void
+    removeOrder: (order: SellOrder) => void
+    reputations: UserReputation[],
+    addReputation: (reputation: UserReputation) => void
+    removeReputation: (reputation: UserReputation) => void
 }
 
 const useOrderStore = create<OrderStore>((set) => ({
     orders: [],
     reputations: [],
-    addOrder: (order: Order) => set((state) => ({
-        orders: [order, ...state.orders]
-    })),
-    removeOrder: (order: Order) => set((state) => ({
+    event: new NDKEvent(),
+    setEvent: (event: NDKEvent) => set({ event }),
+    addOrder: (order: SellOrder) => set((state) => {
+        return {
+            orders: [order, ...state.orders.filter(o => o.id != order.id)]
+        }
+    }),
+    removeOrder: (order: SellOrder) => set((state) => ({
         orders: [...state.orders.filter(o => o.id != order.id)]
     })),
-    addReputation: (reputation: Reputation) => set((state) => {
+    addReputation: (reputation: UserReputation) => set((state) => {
         if(state.reputations.some(r => r.pubkey == reputation.pubkey && r.author == reputation.author)) {
             return {
                 reputations: [
@@ -35,10 +42,12 @@ const useOrderStore = create<OrderStore>((set) => ({
         }
 
         return {
-            reputations: [...state.reputations, reputation]
+            reputations: [
+                reputation,
+                ...state.reputations.filter(r => r.pubkey != reputation.pubkey && r.author != reputation.author)]
         }
     }),
-    removeReputation: (reputation: Reputation) => set((state) => ({
+    removeReputation: (reputation: UserReputation) => set((state) => ({
         reputations: [
             ...state.reputations.filter(r => r.author == reputation.author && r.pubkey == reputation.pubkey)
         ]

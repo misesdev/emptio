@@ -1,7 +1,6 @@
 import { StyleSheet, View, Text, ScrollView, TouchableOpacity } from "react-native"
 import { LinkSection, SectionContainer } from "@components/general/section"
 import { getPairKey } from "@services/memory/pairkeys"
-import SplashScreen from "@components/general/SplashScreen"
 import { useAuth } from "@src/providers/userProvider"
 import { hexToBytes } from "@noble/hashes/utils"
 import Ionicons from 'react-native-vector-icons/Ionicons'
@@ -16,20 +15,40 @@ import { StackScreenProps } from "@react-navigation/stack"
 import AppShareBar from "./commons/shareapp"
 import { ProfilePicture } from "@components/nostr/user/ProfilePicture"
 import { authService } from "@services/auth"
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import { nip19 } from "nostr-tools";
 import theme from "@src/theme"
-import { userService } from "@/src/services/user"
+import { userService } from "@services/user"
+import { storageService } from "@services/memory"
+import useNDKStore from "@services/zustand/ndk"
 
 const UserMenuScreen = ({ navigation }: StackScreenProps<any>) => {
 
     const opacity = .7 
+    const { ndk } = useNDKStore()
     const appVersion = DeviceInfo.getVersion()
     const { user, setUser, setWallets, setFollows, setFollowsEvent } = useAuth()
     const { useTranslate } = useTranslateService()
     const [forceUpdate, setForceUpdate] = useState()
     const [loading, setLoading] = useState(false)
     const [shareVisible, setShareVisible] = useState(false)
+    const [connectedRelays, setConnectedRelays] = useState<number>(0)
+    const [relays, setRelays] = useState<number>(0)
+
+    useEffect(() => {
+        loadRelays()
+        const interval = setInterval(loadRelays, 2000)
+        const clear = () => clearInterval(interval)
+        return clear
+    }, [])
+
+    const loadRelays = async () => {
+        const relays = await storageService.relays.list()
+        const connectedRelays = ndk.pool.connectedRelays()
+        setConnectedRelays(connectedRelays.length)
+        setRelays(relays.length)
+        console.log("count relays")
+    }
 
     const handleCopySecretKey = async () => {
         const biometrics = await authService.checkBiometric()
@@ -78,9 +97,6 @@ const UserMenuScreen = ({ navigation }: StackScreenProps<any>) => {
         })
     }
 
-    if (loading)
-        return <SplashScreen />
-
     return (
         <View style={{ flex: 1 }}>
             <ScrollView showsVerticalScrollIndicator={false} 
@@ -125,9 +141,18 @@ const UserMenuScreen = ({ navigation }: StackScreenProps<any>) => {
 
                 <SectionContainer style={{ backgroundColor: theme.colors.blueOpacity }}>
                     {/* <LinkSection label="Wallet" icon="settings" onPress={() => navigation.navigate("wallet-stack")} /> */}
-                    <LinkSection label={useTranslate("settings.chooselanguage")} icon="language" onPress={showSelectLanguage} />
-                    <LinkSection label={useTranslate("settings.relays")} icon="earth" onPress={() => navigation.navigate("manage-relays-stack")} />
-                    <LinkSection label={useTranslate("settings.security")} icon="settings" onPress={() => navigation.navigate("manage-security-stack")} />
+                    <LinkSection icon="language" 
+                        label={useTranslate("settings.chooselanguage")} 
+                        onPress={showSelectLanguage} 
+                    />
+                    <LinkSection icon="earth"
+                        label={useTranslate("settings.relays")+` (${connectedRelays}/${relays})`} 
+                        onPress={() => navigation.navigate("manage-relays-stack")} 
+                    />
+                    <LinkSection icon="settings" 
+                        label={useTranslate("settings.security")} 
+                        onPress={() => navigation.navigate("manage-security-stack")} 
+                    />
                     {/* <LinkSection label={useTranslate("settings.about")} icon="settings" onPress={() => navigation.navigate("about-stack")} /> */}
                 </SectionContainer>
 
