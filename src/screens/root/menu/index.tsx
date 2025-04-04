@@ -15,40 +15,22 @@ import { StackScreenProps } from "@react-navigation/stack"
 import AppShareBar from "./commons/shareapp"
 import { ProfilePicture } from "@components/nostr/user/ProfilePicture"
 import { authService } from "@services/auth"
-import { useEffect, useState } from "react"
+import { useState } from "react"
 import { nip19 } from "nostr-tools";
 import theme from "@src/theme"
 import { userService } from "@services/user"
-import { storageService } from "@services/memory"
 import useNDKStore from "@services/zustand/ndk"
 
 const UserMenuScreen = ({ navigation }: StackScreenProps<any>) => {
 
     const opacity = .7 
     const { ndk } = useNDKStore()
+    const poolStats = ndk.pool.stats()
     const appVersion = DeviceInfo.getVersion()
     const { user, setUser, setWallets, setFollows, setFollowsEvent } = useAuth()
     const { useTranslate } = useTranslateService()
     const [forceUpdate, setForceUpdate] = useState()
-    const [loading, setLoading] = useState(false)
     const [shareVisible, setShareVisible] = useState(false)
-    const [connectedRelays, setConnectedRelays] = useState<number>(0)
-    const [relays, setRelays] = useState<number>(0)
-
-    useEffect(() => {
-        loadRelays()
-        const interval = setInterval(loadRelays, 2000)
-        const clear = () => clearInterval(interval)
-        return clear
-    }, [])
-
-    const loadRelays = async () => {
-        const relays = await storageService.relays.list()
-        const connectedRelays = ndk.pool.connectedRelays()
-        setConnectedRelays(connectedRelays.length)
-        setRelays(relays.length)
-        console.log("count relays")
-    }
 
     const handleCopySecretKey = async () => {
         const biometrics = await authService.checkBiometric()
@@ -71,7 +53,6 @@ const UserMenuScreen = ({ navigation }: StackScreenProps<any>) => {
     const handleDeleteAccount = async () => {
         
         const deleteAccount = async () => {
-            setLoading(true)
             const result = await userService.signOut()
 
             if (result.success) 
@@ -84,7 +65,6 @@ const UserMenuScreen = ({ navigation }: StackScreenProps<any>) => {
             }
             else if(result.message) 
                 pushMessage(result.message)
-            setLoading(false)
         }
 
         showMessage({
@@ -140,13 +120,12 @@ const UserMenuScreen = ({ navigation }: StackScreenProps<any>) => {
                 </SectionContainer>
 
                 <SectionContainer style={{ backgroundColor: theme.colors.blueOpacity }}>
-                    {/* <LinkSection label="Wallet" icon="settings" onPress={() => navigation.navigate("wallet-stack")} /> */}
                     <LinkSection icon="language" 
                         label={useTranslate("settings.chooselanguage")} 
                         onPress={showSelectLanguage} 
                     />
                     <LinkSection icon="earth"
-                        label={useTranslate("settings.relays")+` (${connectedRelays}/${relays})`} 
+                        label={useTranslate("settings.relays")+` (${poolStats?.connected}/${poolStats?.total})`} 
                         onPress={() => navigation.navigate("manage-relays-stack")} 
                     />
                     <LinkSection icon="settings" 

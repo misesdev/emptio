@@ -1,9 +1,9 @@
 import { ScrollView, StyleSheet, Text, TouchableOpacity, View } from "react-native"
 import Ionicons from 'react-native-vector-icons/Ionicons'
+import { useTranslateService } from "@src/providers/translateProvider"
 import { useEffect, useState } from "react"
 import theme from "@src/theme"
 import axios from "axios"
-import { useTranslateService } from "@/src/providers/translateProvider"
 
 type RelayProps = {
     relay: string,
@@ -32,6 +32,8 @@ export const RelayItem = ({ relay, onDelete }: RelayProps) => {
             const response = await httpClient.get(relay.replace("wss", "https"))
 
             if (response.status == 200) setMetadata(response.data as RelayMetadata)
+
+            console.log(response.data)
         } 
         catch { }
     }

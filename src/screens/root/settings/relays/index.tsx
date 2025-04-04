@@ -8,42 +8,40 @@ import { useTranslateService } from "@src/providers/translateProvider"
 import useNDKStore from "@services/zustand/ndk"
 import { useEffect, useState } from "react"
 import { StackScreenProps } from "@react-navigation/stack"
+import { SectionHeader } from "@components/general/section/headers"
 import { storageService } from "@services/memory"
-import { RelayList } from "./commons/relays"
+import { RelayList } from "./commons/list"
 import theme from "@src/theme"
 import AddRelay from "./add"
 import axios from "axios"
-import { SectionHeader } from "@/src/components/general/section/headers"
+import { NDKRelay } from "@nostr-dev-kit/ndk-mobile"
 
 const ManageRelaysScreen = ({ navigation }: StackScreenProps<any>) => {
 
     const { ndk } = useNDKStore()
     const { useTranslate } = useTranslateService()
     const [visible, setVisible] = useState(false)
-    const [defaultRelays, setDefaultRelays] = useState<string[]>([])
-    const [connectedRelays, setConnectedRelays] = useState<string[]>([])
-    const [notConnectedRelays, setNotConnectedRelays] = useState<string[]>([])
+    const [connectedRelays, setConnectedRelays] = useState<NDKRelay[]>([])
+    const [notConnectedRelays, setNotConnectedRelays] = useState<NDKRelay[]>([])
+    const [defaultRelays, setDefaultRelays] = useState<NDKRelay[]>([])
 
     useEffect(() => { 
         setTimeout(loadDataRelays, 20)
     }, [])
 
-    const loadDataRelays = async () => { 
-        let all_relays = await storageService.relays.list()
-        let connected_relays = ndk.pool.connectedRelays().map(r => r.url)
-        let not_connected_relays = all_relays.filter(r => !connectedRelays.includes(r))
-
-        setNotConnectedRelays(not_connected_relays)
+    const loadDataRelays = async () => {
+        let ndk_relays: NDKRelay[] = Array.from(ndk.pool.relays.values())
+        let connected_relays = ndk_relays.filter(r => r.connected) 
+        let disconnected_relays = ndk_relays.filter(r => !r.connected)
+        setNotConnectedRelays(disconnected_relays)
         setConnectedRelays(connected_relays)
-        setDefaultRelays(all_relays)
+        setDefaultRelays(ndk_relays)
     }
 
     const handleAddRelay = () => setVisible(true)
 
     const handleSaveRelay = async (relay: string) => {
         try {
-            const relayList = [...defaultRelays, relay]
-
             const httpClient = axios.create({ headers: { Accept: "application/nostr+json" } })
 
             const response = await httpClient.get(relay.replace("wss://", "https://"))
@@ -54,8 +52,6 @@ const ManageRelaysScreen = ({ navigation }: StackScreenProps<any>) => {
             ndk.addExplicitRelay(relay, undefined, true)
 
             await storageService.relays.add(relay)
-
-            setDefaultRelays(relayList)
         } 
         catch { 
             return await pushMessage(useTranslate("message.default_error")) 
@@ -64,24 +60,8 @@ const ManageRelaysScreen = ({ navigation }: StackScreenProps<any>) => {
         await pushMessage(useTranslate("message.relay.save_success"))
     }
 
-    const handleDeleteRelay = (relay: string) => {
-        showMessage({
-            title: useTranslate("message.relay.title_delete"),
-            message: useTranslate("message.relay.confirm_delete"),
-            action: {
-                label: useTranslate("commons.delete"),
-                onPress: async () => {       
-
-                    await storageService.relays.delete(relay)
-                    
-                    setDefaultRelays(prev => prev.filter(item => item != relay))
-
-                    ndk.explicitRelayUrls?.splice(ndk.explicitRelayUrls.indexOf(relay), 1)
-
-                    pushMessage(useTranslate("message.relay.delete_success"))
-                }
-            }
-        })
+    const openRelay = (relay: NDKRelay) => {
+        navigation.navigate("manage-relay-stack", { relay })
     }
 
     return (
@@ -90,9 +70,11 @@ const ManageRelaysScreen = ({ navigation }: StackScreenProps<any>) => {
                 title={useTranslate("settings.relays")} 
                 onClose={() => navigation.goBack()}
             />
-            <ScrollView contentContainerStyle={theme.styles.scroll_container} >
+            <ScrollView 
+                contentContainerStyle={theme.styles.scroll_container} 
+            >
 
-                {!defaultRelays.length && 
+                {!ndk.pool.relays.size && 
                     <Text style={{ color: theme.colors.gray }}>
                         {useTranslate("message.relay.empty")}
                     </Text>
@@ -101,18 +83,15 @@ const ManageRelaysScreen = ({ navigation }: StackScreenProps<any>) => {
                 {connectedRelays.length &&
                     <View>
                         <SectionHeader label="Relays conectados" />
-                        <RelayList relays={connectedRelays} onPressRelay={() => {}} />
+                        <RelayList relays={connectedRelays} onPressRelay={openRelay} />
                     </View>
                 }
                 {notConnectedRelays.length &&
                     <View>
-                        <SectionHeader label="Relays conectados" />
-                        <RelayList relays={notConnectedRelays} onPressRelay={() => {}} />
+                        <SectionHeader label="Relays nao conectados" />
+                        <RelayList relays={notConnectedRelays} onPressRelay={openRelay} />
                     </View>
                 }
-
-                {/* <SectionHeader label="Todos os relays" /> */}
-                {/* <RelayList relays={defaultRelays} onPressRelay={handleDeleteRelay} /> */}
 
                 <View style={{ height: 100 }}></View>
 

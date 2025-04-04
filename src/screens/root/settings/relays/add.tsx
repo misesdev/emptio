@@ -4,6 +4,7 @@ import { pushMessage } from "@services/notification"
 import { useTranslateService } from "@src/providers/translateProvider"
 import React, { useState } from "react"
 import theme from "@src/theme"
+import { NDKRelay } from "@nostr-dev-kit/ndk-mobile"
 
 type ButtonProps = {
     label: string,
@@ -27,7 +28,7 @@ const ButtonLight = ({ label, onPress }: ButtonProps) => {
 
 type Props = {
     visible: boolean,
-    relays: string[],
+    relays: NDKRelay[],
     onClose: () => void,
     onSaveRelay: (relay: string) => Promise<void>
 }
@@ -49,7 +50,9 @@ const AddRelay = ({ visible, relays, onClose, onSaveRelay }: Props) => {
 
     const handleAddRelay = async () => {
 
-        if (relays.includes(relayAddress))
+        let url_relays = relays.map(r => r.url.slice(0, -1))
+
+        if (url_relays.includes(relayAddress))
             return pushMessage(useTranslate("message.relay.already_exists"))
 
         if (await verifyRelay(relayAddress)) {

@@ -61,6 +61,8 @@ export default {
     "commons.replies": "See replies",
     "commons.to": "To",
     "commons.publish": "Publish",
+    "commons.connect": "Connect",
+    "commons.disconnect": "Disconect",
 
     "labels.all": "All",
     "labels.friends": "Friends",

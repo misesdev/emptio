@@ -32,6 +32,6 @@ export const insertRelay = async (relay: string) => {
 export const deleteRelay = async (relay: string) => {
     let relays = await getRelays()
        
-    setRelays(relays.filter(r => r != relay))
+    setRelays(relays.filter(r => r.includes(relay) || relay.includes(r)))
 }
 

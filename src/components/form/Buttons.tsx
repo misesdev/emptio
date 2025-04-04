@@ -66,7 +66,7 @@ export const ButtonDefault = ({ label, style, disabled=false, loading=false, lef
         disabled={disabled} loading={loading} leftIcon={leftIcon} 
         rightIcon={rightIcon} onPress={onPress} 
         style={[styles.button, styles.default, style, {
-            backgroundColor: disabled ? theme.colors.disabled : theme.colors.gray
+            backgroundColor: disabled ? theme.colors.disabled : theme.colors.default
         }]} 
     />
 }

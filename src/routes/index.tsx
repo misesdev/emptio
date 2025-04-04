@@ -29,7 +29,8 @@ import CreatedSeedScren from "@screens/root/wallet/add/seed"
 import TransactionScreen from "@screens/root/wallet/transaction"
 import NewOrderScreen from "@screens/root/orders/order/new"
 import ConversationChat from "@screens/root/chats/conversation"
-import ManageFriendsScreen from "../screens/root/friends"
+import ManageFriendsScreen from "@screens/root/friends"
+import RelayScreen from "@screens/root/settings/relays/relay"
 
 const Stack = createStackNavigator()
 
@@ -60,6 +61,7 @@ const AppRoutes = () => {
                 <Stack.Screen name="manage-account-stack" component={UserEditScreen} options={{ headerShown: true }} />
 
                 <Stack.Screen name="manage-relays-stack" component={ManageRelaysScreen} options={ScreenCardOptions} />
+                <Stack.Screen name="manage-relay-stack" component={RelayScreen} options={ScreenCardOptions} />
                 <Stack.Screen name="manage-security-stack" component={ManageSecurityScreen} options={ScreenCardOptions} />
                 <Stack.Screen name="about-stack" component={AboutScreen} options={ScreenCardOptions} />
 
