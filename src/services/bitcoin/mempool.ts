@@ -15,7 +15,7 @@ export const sendTx = async (txhex: string, network: BNetwork) => {
 }
 
 // find all utxos
-export const getUtxos = async (address: string, network: BNetwork) => { 
+export const getTxs = async (address: string, network: BNetwork) => { 
     const { bitcoin: { addresses } } = mempool({
         hostname: process.env.MEMPOOL_API_URL,
         network: network
@@ -25,7 +25,7 @@ export const getUtxos = async (address: string, network: BNetwork) => {
 }
 
 // find unspent cash
-export const getTxsUtxos = async (address: string, network: BNetwork) => {
+export const getUtxos = async (address: string, network: BNetwork) => {
 
     const { bitcoin: { addresses } } = mempool({
         hostname: process.env.MEMPOOL_API_URL,

@@ -2,12 +2,12 @@ import { bytesToHex } from "@noble/hashes/utils"
 import { generateMnemonic, mnemonicToSeedSync } from "bip39"
 import { PairKey, Wallet } from "../memory/types"
 import { getRandomKey } from "./signature"
-import { getTxsUtxos, sendTx } from "./mempool"
+import { getUtxos, sendTx } from "./mempool"
 import { Response, trackException } from "../telemetry"
 import { Address, BNetwork, ECPairKey, Transaction } from "bitcoin-tx-lib"
 import { HDKey } from "@scure/bip32"
 
-export type BaseWallet = {
+export interface BaseWallet {
     pairkey: PairKey,
     mnemonic: string,
     wallet: Wallet
@@ -55,7 +55,7 @@ export const generateAddress = (publicKey: string, net: BNetwork = "mainnet"): s
 
 export const ValidateAddress = (btcAddress: string) => Address.isValid(btcAddress) 
 
-type TransactionProps = {
+interface TransactionProps {
     amount: number,
     destination: string,
     recomendedFee: number,
@@ -75,12 +75,10 @@ export const createTransaction = async ({ amount, destination, recomendedFee,
 
         const transaction = new Transaction(ecPair)
 
-        const utxos = await getTxsUtxos(wallet.address ?? "", network)
-
+        const utxos = await getUtxos(wallet.address ?? "", network)
         // ordenate for include all minimal value utxo of wallet
         const ordenedUtxos = utxos.sort((a, b) => a.value - b.value)
-
-        // add destination address transaction -> buffer
+        // add destination address transaction, the amount is defined later
         transaction.addOutput({ address: destination, amount: amount })
         // add the change recipient, the amount is defined later
         transaction.addOutput({ address: wallet.address ?? "", amount: 10 })

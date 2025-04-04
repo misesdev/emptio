@@ -2,16 +2,18 @@ import theme from "@src/theme"
 import { useRef, useState } from "react"
 import Ionicons from 'react-native-vector-icons/Ionicons'
 import { StyleSheet, TextInput, View, TouchableOpacity } from "react-native"
+import { ActivityIndicator } from "react-native-paper"
 
 type SearchBoxProps = {
     label: string,
+    loading?: boolean,
     textCenter?: boolean,
     delayTime?: number,
     seachOnLenth: number,
     onSearch: (value: string) => void
 }
 
-export const SearchBox = ({ label, textCenter, delayTime = 500, seachOnLenth = 1, onSearch }: SearchBoxProps) => {
+export const SearchBox = ({ label, loading, textCenter, delayTime = 500, seachOnLenth = 1, onSearch }: SearchBoxProps) => {
     
     let TimeOutSearch: any = useRef(null)
 
@@ -41,10 +43,13 @@ export const SearchBox = ({ label, textCenter, delayTime = 500, seachOnLenth = 1
                     value={search}
                 />
                 <View style={styles.searchButton}>
-                    {search &&
+                    {search && !loading &&
                         <TouchableOpacity activeOpacity={.7} onPress={handleClear}>
                             <Ionicons name="close" size={theme.icons.large} color={theme.colors.gray} />
                         </TouchableOpacity>
+                    }
+                    {loading && 
+                        <ActivityIndicator size={15} color={theme.colors.gray}/>
                     }
                 </View>
             </View>

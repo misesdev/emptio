@@ -129,7 +129,7 @@ const RelayScreen = ({ navigation, route }: any) => {
                 <View style={{ padding: 10 }}>
                     <Text style={styles.title}>
                         {relay.url.replace("wss://", "").slice(0, -1)} {" "}
-                        <Ionicons name="earth" 
+                        <Ionicons name="ellipse" 
                             size={15} color={connected ? theme.colors.green : theme.colors.gray } 
                         />
                     </Text>
@@ -236,7 +236,6 @@ const RelayScreen = ({ navigation, route }: any) => {
                                 </View>
                             }
                         </SectionContainer>
-                        
                     </View>
                     </>
                 }

@@ -15,22 +15,33 @@ import { StackScreenProps } from "@react-navigation/stack"
 import AppShareBar from "./commons/shareapp"
 import { ProfilePicture } from "@components/nostr/user/ProfilePicture"
 import { authService } from "@services/auth"
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import { nip19 } from "nostr-tools";
 import theme from "@src/theme"
 import { userService } from "@services/user"
 import useNDKStore from "@services/zustand/ndk"
+import { NDKRelay } from "@nostr-dev-kit/ndk-mobile"
 
 const UserMenuScreen = ({ navigation }: StackScreenProps<any>) => {
 
     const opacity = .7 
     const { ndk } = useNDKStore()
-    const poolStats = ndk.pool.stats()
     const appVersion = DeviceInfo.getVersion()
     const { user, setUser, setWallets, setFollows, setFollowsEvent } = useAuth()
     const { useTranslate } = useTranslateService()
     const [forceUpdate, setForceUpdate] = useState()
     const [shareVisible, setShareVisible] = useState(false)
+    const [poolstats, setPoolstats] = useState<any>({})
+
+    useEffect(() => {
+        const relays: NDKRelay[] = Array.from(ndk.pool.relays.values())
+        if(poolstats.connected != relays.filter(r => r.connected).length) {
+            setPoolstats({
+                total: relays.length,
+                connected: relays.filter(r => r.connected).length
+            })
+        }
+    }, [ndk])
 
     const handleCopySecretKey = async () => {
         const biometrics = await authService.checkBiometric()
@@ -125,7 +136,7 @@ const UserMenuScreen = ({ navigation }: StackScreenProps<any>) => {
                         onPress={showSelectLanguage} 
                     />
                     <LinkSection icon="earth"
-                        label={useTranslate("settings.relays")+` (${poolStats?.connected}/${poolStats?.total})`} 
+                        label={useTranslate("settings.relays")+` (${poolstats?.connected}/${poolstats?.total})`} 
                         onPress={() => navigation.navigate("manage-relays-stack")} 
                     />
                     <LinkSection icon="settings" 

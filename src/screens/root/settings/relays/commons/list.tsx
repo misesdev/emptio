@@ -1,8 +1,8 @@
 import { NDKRelay } from "@nostr-dev-kit/ndk-mobile"
-import theme from "@src/theme"
 import { getClipedContent } from "@src/utils"
 import { StyleSheet, TouchableOpacity, View, Text } from "react-native"
 import Ionicons from "react-native-vector-icons/Ionicons"
+import theme from "@src/theme"
 
 interface RelayProps {
     relay: NDKRelay,
@@ -10,7 +10,6 @@ interface RelayProps {
 }
 
 const RelayItem = ({ relay, onPress }: RelayProps) => {
-
     return (
         <TouchableOpacity
             activeOpacity={.7} 
@@ -19,7 +18,10 @@ const RelayItem = ({ relay, onPress }: RelayProps) => {
         >
             <View style={styles.relayArea}>
                 <Text style={{ color: theme.colors.gray, fontWeight: "400" }}>
-                    {getClipedContent(relay.url.slice(0,-1), 28)}
+                    {getClipedContent(relay.url.slice(0,-1), 28)}{" "}
+                    <Ionicons name="ellipse" 
+                        size={10} color={relay.connected ? theme.colors.green : theme.colors.gray } 
+                    />
                 </Text>
             </View>
             <View style={styles.onlineArea}>
@@ -37,8 +39,8 @@ interface Props {
 export const RelayList = ({ relays, onPressRelay }: Props) => {
     return (
         <View style={styles.container}>
-            {relays.map((relay, key) => {
-                return <RelayItem key={key} onPress={onPressRelay} relay={relay} />
+            {relays.map((relay) => {
+                return <RelayItem key={relay.url} onPress={onPressRelay} relay={relay} />
             })}
         </View>       
     )

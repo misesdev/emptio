@@ -1,7 +1,5 @@
-
 import { StyleSheet, View, ScrollView, Text } from "react-native"
 import { HeaderScreen } from "@components/general/HeaderScreen"
-import MessageBox, { showMessage } from "@components/general/MessageBox"
 import { ButtonPrimary } from "@components/form/Buttons"
 import { pushMessage } from "@services/notification"
 import { useTranslateService } from "@src/providers/translateProvider"
@@ -10,33 +8,35 @@ import { useEffect, useState } from "react"
 import { StackScreenProps } from "@react-navigation/stack"
 import { SectionHeader } from "@components/general/section/headers"
 import { storageService } from "@services/memory"
+import { NDKRelay } from "@nostr-dev-kit/ndk-mobile"
 import { RelayList } from "./commons/list"
 import theme from "@src/theme"
 import AddRelay from "./add"
 import axios from "axios"
-import { NDKRelay } from "@nostr-dev-kit/ndk-mobile"
+
+interface RelayData {
+    all: NDKRelay[],
+    connected: NDKRelay[]
+    disconected: NDKRelay[]
+}
 
 const ManageRelaysScreen = ({ navigation }: StackScreenProps<any>) => {
 
     const { ndk } = useNDKStore()
     const { useTranslate } = useTranslateService()
     const [visible, setVisible] = useState(false)
-    const [connectedRelays, setConnectedRelays] = useState<NDKRelay[]>([])
-    const [notConnectedRelays, setNotConnectedRelays] = useState<NDKRelay[]>([])
-    const [defaultRelays, setDefaultRelays] = useState<NDKRelay[]>([])
+    const [relayData, setRelayData] = useState<RelayData>()
 
-    useEffect(() => { 
-        setTimeout(loadDataRelays, 20)
-    }, [])
-
-    const loadDataRelays = async () => {
-        let ndk_relays: NDKRelay[] = Array.from(ndk.pool.relays.values())
-        let connected_relays = ndk_relays.filter(r => r.connected) 
-        let disconnected_relays = ndk_relays.filter(r => !r.connected)
-        setNotConnectedRelays(disconnected_relays)
-        setConnectedRelays(connected_relays)
-        setDefaultRelays(ndk_relays)
-    }
+    useEffect(() => {
+        const relays: NDKRelay[] = Array.from(ndk.pool.relays.values())
+        let connected_relays = relays.filter(r => r.connected) 
+        let disconnected_relays = relays.filter(r => !r.connected)
+        setRelayData({
+            connected: connected_relays,
+            disconected: disconnected_relays,
+            all: relays
+        })
+    }, [ndk])
 
     const handleAddRelay = () => setVisible(true)
 
@@ -80,16 +80,16 @@ const ManageRelaysScreen = ({ navigation }: StackScreenProps<any>) => {
                     </Text>
                 }
                 
-                {connectedRelays.length &&
+                {relayData &&
                     <View>
                         <SectionHeader label="Relays conectados" />
-                        <RelayList relays={connectedRelays} onPressRelay={openRelay} />
+                        <RelayList relays={relayData.connected} onPressRelay={openRelay} />
                     </View>
                 }
-                {notConnectedRelays.length &&
+                {relayData &&
                     <View>
                         <SectionHeader label="Relays nao conectados" />
-                        <RelayList relays={notConnectedRelays} onPressRelay={openRelay} />
+                        <RelayList relays={relayData.disconected} onPressRelay={openRelay} />
                     </View>
                 }
 
@@ -99,16 +99,17 @@ const ManageRelaysScreen = ({ navigation }: StackScreenProps<any>) => {
             <View style={styles.buttonarea}>
                 <ButtonPrimary 
                     label={useTranslate("labels.relays.add")} 
-                    onPress={handleAddRelay} 
+                    onPress={() => navigation.navigate("add-relay-stack")} 
                 />
-            </View>            
-            <AddRelay 
-                visible={visible}
-                relays={defaultRelays} 
-                onClose={() => setVisible(false)} 
-                onSaveRelay={handleSaveRelay} 
-            />
-            <MessageBox />
+            </View>
+            {/* {relayData && */}
+            {/*     <AddRelay  */}
+            {/*         visible={visible} */}
+            {/*         relays={relayData.all}  */}
+            {/*         onClose={() => setVisible(false)}  */}
+            {/*         onSaveRelay={handleSaveRelay}  */}
+            {/*     /> */}
+            {/* } */}
         </View>
     )
 }

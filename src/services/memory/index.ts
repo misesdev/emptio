@@ -10,6 +10,7 @@ import { deleteWallet, deleteWallets, getWallet, getWallets,
     insertWallet, updateWallet } from "./wallets"
 import { deletePaymentKey, getPaymentKey, getPaymentKeys, savePaymentKey } from "./payments"
 import { deleteEvent, insertEvent, listEventsByCategory } from "./database/events"
+import { searchRelays } from "../nostr/pool"
 
 const clearStorage = async () => {
     await AsyncStorage.clear()
@@ -33,7 +34,8 @@ const relays = {
     set: setRelays,
     add: insertRelay,
     list: getRelays,
-    delete: deleteRelay
+    delete: deleteRelay,
+    search: searchRelays
 }
 
 const settings = {

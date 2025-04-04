@@ -1,6 +1,6 @@
-import { getTransactionInfo, getUtxos } from "@services/bitcoin/mempool"
+import { getTransactionInfo, getTxs, getUtxos } from "@services/bitcoin/mempool"
 import { useTranslate } from "@services/translate"
-import { Tx } from "@mempool/mempool.js/lib/interfaces/bitcoin/transactions"
+import { Tx, Vout } from "@mempool/mempool.js/lib/interfaces/bitcoin/transactions"
 import { createTransaction, createWallet, ValidateAddress, 
     sendTransaction, importWallet, BaseWallet } from "@services/bitcoin"
 import { getRandomKey } from "@services/bitcoin/signature"
@@ -10,6 +10,7 @@ import { timeSeconds } from "@services/converter"
 import { storageService } from "@services/memory"
 import { userService } from "../user"
 import { Address, BNetwork } from "bitcoin-tx-lib"
+import { AddressTxsUtxo } from "@mempool/mempool.js/lib/interfaces/bitcoin/addresses"
 
 type Props = {
     name: string,
@@ -131,52 +132,57 @@ const update = async (wallet: Wallet) => {
 }
 
 const listTransactions = async (wallet: Wallet): Promise<WalletInfo> => {
-    if(!wallet.address) throw new Error("wallet address null")
-    if(!wallet.network) throw new Error("wallet network null")
+    if(!wallet.address) 
+        throw new Error("wallet address null")
+    if(!wallet.network)
+        throw new Error("wallet network null")
 
-    const utxos: Tx[] = await getUtxos(wallet.address, wallet.network)
     const confirmedLabel = await useTranslate("message.transaction.confirmed")
     const notconfirmedLabel = await useTranslate("message.transaction.notconfirmed")
     const response: WalletInfo = { balance: 0, sended: 0, received: 0, transactions: [] }
+    const txs: Tx[] = await getTxs(wallet.address, wallet.network)
+    const utxos: AddressTxsUtxo[] = await getUtxos(wallet.address, wallet.network)
 
-    for(let i = 0; i < utxos.length; i++) {
-        const utxo = utxos[i]
-        
-        let received: number = 0, sended: number = 0
-        
-        let isSended: boolean = utxo.vin.filter(i => { 
+    for(let tx of txs) 
+    {
+        let isSended: boolean = tx.vin.some(i => { 
             return i.prevout.scriptpubkey_address == wallet.address
-        }).length > 0
-
-        utxo.vin.forEach(tx => {
-            if(tx.prevout.scriptpubkey_address == wallet.address) sended += tx.prevout.value
         })
 
-        utxo.vout.forEach((tx) => {
-            if (tx.scriptpubkey_address == wallet.address) received += tx.value
-        })
+        let sended: number = tx.vin.reduce((sum, input) => {
+            if(input.prevout.scriptpubkey_address == wallet.address) 
+                return sum + input.prevout.value
+            return sum
+        }, 0)
+
+        let received: number = tx.vout.reduce((sum, output) => {
+            if (output.scriptpubkey_address == wallet.address) 
+                return sum + output.value
+            return sum
+        }, 0)
 
         const transaction: Transaction = {
-            fee: utxo.fee,
-            txid: utxo.txid,
+            fee: tx.fee,
+            txid: tx.txid,
             type: isSended ? "sended" : "received",
             amount: isSended ? (sended-received) : received,
-            confirmed: utxo.status.confirmed,
-            description: utxo.status.confirmed ? confirmedLabel 
+            confirmed: tx.status.confirmed,
+            description: tx.status.confirmed ? confirmedLabel 
                 : notconfirmedLabel,
-            date: utxo.status.confirmed ? timeSeconds.toString(utxo.status.block_time) 
+            date: tx.status.confirmed ? timeSeconds.toString(tx.status.block_time) 
                 : notconfirmedLabel,
-            timestamp: utxo.status.confirmed ? utxo.status.block_time 
+            timestamp: tx.status.confirmed ? tx.status.block_time 
                 : timeSeconds.now()
         }
-        response.transactions.push(transaction)
-        response.received += received
-        response.sended += sended
-    }
 
-    response.transactions.sort((a, b) => (b.timestamp ?? 1) - (a.timestamp ?? 1));
+        response.transactions.push(transaction)
+        response.received += received 
+        response.sended += sended 
+    }
     
-    response.balance = response.received - response.sended
+    response.transactions.sort((a, b) => (b.timestamp ?? 1) - (a.timestamp ?? 1));
+   
+    response.balance = utxos.reduce((sum, item) => sum + item.value, 0)
 
     return response
 }

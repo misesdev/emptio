@@ -71,6 +71,35 @@ export const getNostrInstance = async ({ user }: NostrInstanceProps): Promise<ND
     return ndk
 }
 
+export const searchRelays = async (searchTerm: string, limit: number = 100): Promise<string[]> => {
+    try 
+    {
+        const response = await fetch(`${process.env.NOSBOOK_API_URL}/relays/search`, {
+            method: "post",
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                searchTerm,
+                limit
+            })
+        })
+
+        if(!response.ok) {
+            throw new Error("an unexpected error occurred during the request")
+        }
+        
+        const result: any = await response.json()
+
+        return result.sort((a:any, b:any) => (b.similarity ?? 1) - (a.similarity ?? 1))
+            .map((data: any) => {
+                return data.relay
+            })
+    }
+    catch (ex) {
+        console.log(ex)
+        return [] 
+    }
+}
+
 export const subscribeUser = (user: User) => {
   
     const ndk = useNDKStore.getState().ndk
