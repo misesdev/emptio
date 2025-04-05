@@ -6,7 +6,7 @@ import { CardStyleInterpolators, createStackNavigator } from "@react-navigation/
 import InitializeScreen from "../screens"
 import RegisterScreen from "@screens/initialize/register"
 import LoginScreen from "@screens/initialize/login"
-import UserMenuScreen from "@screens/root/menu"
+import UserMenuScreen from "@screens/root/settings"
 import HomeSearchScreen from "@screens/root/home/search/HomeSearch"
 import FeedSearchScreen from "@screens/root/orders/search/FeedSearch"
 import AuthenticateScreen from "@screens/initialize"
@@ -31,7 +31,7 @@ import NewOrderScreen from "@screens/root/orders/order/new"
 import ConversationChat from "@screens/root/chats/conversation"
 import ManageFriendsScreen from "@screens/root/friends"
 import RelayScreen from "@screens/root/settings/relays/relay"
-import AddRelayScreen from "../screens/root/settings/relays/commons/add"
+import AddRelayScreen from "@screens/root/settings/relays/add"
 
 const Stack = createStackNavigator()
 

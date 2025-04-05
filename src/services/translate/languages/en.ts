@@ -76,6 +76,8 @@ export default {
     "labels.wallet.getseed": "View Seed",
     "labels.wallet.password": "Password (optional)",
     "labels.relays.add": "Add Relay",
+    "labels.relays.connecteds": "Connected relays",
+    "labels.relays.disconnecteds": "Relays disconnected",
 
     "menu.home": "home",
     "menu.orders": "orders",
@@ -114,11 +116,12 @@ export default {
     "message.relay.confirm_delete": "The relay will be permanently deleted. Do you want to continue?",
     "message.relay.delete_success": "Relay removed successfully!",
     "message.relay.save_success": "Relay added successfully!",
-    "message.relay.invalid": "Invalid relay!",
-    "message.relay.invalid_format": "The relay is in an invalid format!",
+    "message.relay.invalid": "Invalid relay or offline!",
+    "message.relay.invalid_format": "The relay is in an invalid format or offline!",
     "message.relay.already_exists": "The relay already exists in the relay list!",
     "message.relay.supported_nips": "Nips supported by the relay",
     "message.relay.empty": "There are no relays to display",
+    "message.relay.adddetails": "Do you want to add the relay below to your relay list?",
     "message.friend.already": "already on your friends list",
     "message.download.successfully": "File downloaded successfully!",
 

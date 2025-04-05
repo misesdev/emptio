@@ -1,122 +1,111 @@
-import { Modal, StyleSheet, View, Text, TouchableOpacity, ActivityIndicator } from "react-native"
-import { FormControl } from "@components/form/FormControl"
-import { pushMessage } from "@services/notification"
+import { HeaderScreen } from "@components/general/HeaderScreen"
 import { useTranslateService } from "@src/providers/translateProvider"
-import React, { useState } from "react"
-import theme from "@src/theme"
-import { NDKRelay } from "@nostr-dev-kit/ndk-mobile"
+import { RelayList } from "@components/nostr/relays/RelayList"
+import { SearchBox } from "@components/form/SearchBox"
+import { storageService } from "@services/memory"
+import { useEffect, useState } from "react"
+import MessageBox, { showMessage } from "@components/general/MessageBox"
+import TransparentLoader from "@components/general/TransparentLoader"
+import { pushMessage } from "@services/notification"
+import useNDKStore from "@services/zustand/ndk"
+import { View } from "react-native"
+import axios from "axios"
 
-type ButtonProps = {
-    label: string,
-    onPress: () => void,
-}
+const AddRelayScreen = ({ navigation }: any) => {
 
-const ButtonLight = ({ label, onPress }: ButtonProps) => {
-
-    const [backColor, setBackColor] = useState(theme.colors.transparent)
-
-    return (
-        <TouchableOpacity onPress={onPress}
-            onPressIn={() => setBackColor("rgba(255, 255, 255, .2)")}
-            onPressOut={() => setBackColor(theme.colors.transparent)}
-            style={{ padding: 10, paddingHorizontal: 15, borderRadius: 8, backgroundColor: backColor }}
-        >
-            <Text style={{ fontSize: 14, fontWeight: "bold", color: theme.colors.white }}>{label}</Text>
-        </TouchableOpacity>
-    )
-}
-
-type Props = {
-    visible: boolean,
-    relays: NDKRelay[],
-    onClose: () => void,
-    onSaveRelay: (relay: string) => Promise<void>
-}
-
-const AddRelay = ({ visible, relays, onClose, onSaveRelay }: Props) => {
-
+    const { ndk } = useNDKStore()
     const { useTranslate } = useTranslateService()
-    const [loading, setLoading] = useState(false)
-    const [relayAddress, setRelayAddress] = useState("wss://")
+    const [relays, setRelays] = useState<string[]>([])
+    const [loading, setLoading] = useState<boolean>(true)
+    const [fetching, setFetching] = useState<boolean>(false)
 
-    const onChangeTextRelay = async (relay_address: string) => setRelayAddress(relay_address.toLowerCase())
+    useEffect(() => {  handleSearch("relay") }, [])
 
-    const verifyRelay = async (relay: string): Promise<boolean> => {
+    const handleSearch = async (searchTerm: string) => {
 
-        const regex = /^[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$/;
+        setLoading(true)
 
-        return regex.test(relay.replace("wss://", ""))
+        if(!searchTerm.trim().length) {
+            searchTerm = "relays"
+        }
+
+        const all_relays: string[] = await storageService.relays.list()
+        
+        const result: string[] = await storageService.relays.search(searchTerm.trim()) 
+        
+        setRelays(result.filter(r => !all_relays.includes(r)))
+        
+        setLoading(false)
     }
 
-    const handleAddRelay = async () => {
+    const handleOpenRelay = async (relay: string) => {
+        try {
+            setFetching(true)
 
-        let url_relays = relays.map(r => r.url.slice(0, -1))
+            const httpClient = axios.create({ headers: { Accept: "application/nostr+json" } })
 
-        if (url_relays.includes(relayAddress))
-            return pushMessage(useTranslate("message.relay.already_exists"))
+            const response = await httpClient.get(relay.replace("wss", "https"))
 
-        if (await verifyRelay(relayAddress)) {
-            setLoading(true)
-            await onSaveRelay(relayAddress)
-            setLoading(false)
-            handleClose()
-        } else
-            await pushMessage(useTranslate("message.relay.invalid_format"))
+            if (response.status != 200)
+                throw new Error(useTranslate("message.relay.invalid"))
+         
+            setFetching(false)
+
+            showMessage({
+                title: useTranslate("labels.relays.add"),
+                message: useTranslate("message.relay.adddetails"),
+                infolog: relay,
+                action: {
+                    label: useTranslate("commons.add"),
+                    onPress: async () => addRelay(relay)
+                }
+            })
+        }
+        catch (ex: any) {
+            pushMessage(ex?.message)
+            setFetching(false)
+        }
     }
 
-    const handleClose = () => {
-        setRelayAddress("wss://")
-        onClose()
+    const addRelay = async (relay: string) => {
+
+        const ndkRelay = ndk.addExplicitRelay(relay)
+
+        await storageService.relays.add(relay)
+
+        await ndkRelay.connect()
+
+        pushMessage(useTranslate("message.relay.save_success"))
+
+        navigation.reset({
+            index: 2,
+            routes: [
+                { name: "core-stack" },
+                { name: "user-menu-stack" },
+                { name: "manage-relays-stack" }
+            ]
+        })
     }
 
     return (
-        <Modal animationType="slide" onRequestClose={handleClose} visible={visible} transparent >
-            <View style={{ flex: 1, alignItems: "center", justifyContent: "center", backgroundColor: "rgba(0,0,0, .6)" }}>
-                <View style={styles.box}>
-                    <View style={{ padding: 10, paddingHorizontal: 15 }}>
-                        <Text style={styles.title}>{useTranslate("labels.relays.add")}</Text>
+        <View style={{ flex: 1 }}>
+            <HeaderScreen 
+                title={useTranslate("labels.relays.add")} 
+                onClose={() => navigation.goBack()}
+            />
 
-                        <View style={{ width: "100%", marginTop: 10, marginBottom: 20 }}>
-                            <FormControl label="Relay" value={relayAddress} onChangeText={onChangeTextRelay} fullScreen />
-                        </View>
+            <SearchBox
+                seachOnLenth={0}
+                loading={loading}
+                label={useTranslate("commons.search")} 
+                onSearch={handleSearch}
+            />
 
-                        <View style={styles.section_buttons}>
-                            <ButtonLight label={useTranslate("commons.add")} onPress={handleAddRelay} />
-                            <ButtonLight label={useTranslate("commons.close")} onPress={handleClose} />
-                        </View>
-                    </View>
-                    {loading &&
-                        <View style={styles.load_box}>
-                            <ActivityIndicator color={theme.colors.gray} size={theme.icons.extra} />
-                        </View>
-                    }
-                </View>
-            </View>
-        </Modal>
+            <RelayList relays={relays} onPressRelay={handleOpenRelay} />
+            <TransparentLoader active={fetching} />
+            <MessageBox />
+        </View>
     )
 }
 
-const styles = StyleSheet.create({
-    title: { color: theme.colors.white, fontSize: 18, marginVertical: 10, fontWeight: 'bold' },
-    box: { width: "90%", borderRadius: 8, backgroundColor: theme.colors.section },
-    validation_message: { color: theme.colors.red, fontWeight: "bold" },
-    section_buttons: { width: "100%", flexDirection: "row-reverse" },
-    load_box: {
-        position: "absolute",
-        width: "100%",
-        height: "100%",
-        borderRadius: 8,
-        justifyContent: "center",
-        alignItems: "center",
-        backgroundColor: "rgba(255, 255, 255, .1)"
-    },
-    absolute: {
-        position: "absolute",
-        top: 0,
-        left: 0,
-        right: 0,
-        bottom: 0,
-    }
-})
-
-export default AddRelay
+export default AddRelayScreen

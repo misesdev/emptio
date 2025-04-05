@@ -2,6 +2,7 @@ import { View, FlatList, TouchableOpacity, StyleSheet, Text } from "react-native
 import { useCallback } from "react"
 import theme from "@src/theme"
 import { getClipedContent } from "@/src/utils"
+import { useTranslateService } from "@/src/providers/translateProvider"
 
 interface RelayItemProps {
     relay: string,
@@ -31,15 +32,27 @@ interface Props {
 
 export const RelayList = ({ relays, onPressRelay }: Props) => {
 
+    const { useTranslate } = useTranslateService()
+
     const renderItem = useCallback(({ item }: { item: string }) => {
         return <RelayItem relay={item} onPressRelay={onPressRelay} />
     }, [onPressRelay])
+
+    const EmptyComponent = () => {
+        return (
+            <Text style={{ marginVertical: 50, textAlign: "center", color: theme.colors.gray }}>
+                {useTranslate("message.relay.empty")}
+            </Text>
+        )
+    }
 
     return (
         <View style={{ flex: 1, padding: 10 }}>
             <FlatList 
                 data={relays}
                 renderItem={renderItem}
+                ListEmptyComponent={EmptyComponent}
+                style={{ flex: 1 }}
             />
         </View>
     )
