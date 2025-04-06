@@ -23,12 +23,12 @@ const VideosFeed = ({ navigation }: StackScreenProps<any>) => {
     const subscription = useRef<NDKSubscription>()
     const lastTimestamp = useRef<number>(timeSeconds.now())
     const isFetching = useRef<boolean>(false) 
-    const { feedSettings, savedEvents, blackList } = useFeedVideosStore()
     const { useTranslate } = useTranslateService()
     const [videos, setVideos] = useState<NDKEvent[]>([])
     const [paused, setPaused] = useState<boolean>(false)
     const [playingIndex, setPlayingIndex] = useState<number>(0)
     const [source, setSource] = useState<VideoSource>("relays")
+    const { feedSettings, savedEvents, blackList } = useFeedVideosStore()
 
     const memorizedVideos = useMemo(() => videos, [videos])
 
@@ -36,6 +36,8 @@ const VideosFeed = ({ navigation }: StackScreenProps<any>) => {
         loadResetFeed()
         const unsubscribe = navigation.addListener("blur", () => {
             isFetching.current = false
+            subscription.current?.stop()
+            subscription.current = undefined
             setPaused(true)
         })
         return unsubscribe
@@ -64,6 +66,12 @@ const VideosFeed = ({ navigation }: StackScreenProps<any>) => {
             until: lastTimestamp.current, 
             "#t": feedSettings.filterTags,
             kinds: [NDKKind.Text, NDKKind.Media] 
+        }
+
+        if(subscription.current) {
+            subscription.current.stop()
+            subscription.current.removeAllListeners()
+            subscription.current = undefined
         }
 
         subscription.current = ndk.subscribe(filter, {
@@ -107,12 +115,11 @@ const VideosFeed = ({ navigation }: StackScreenProps<any>) => {
     }, [])
 
     const renderItem = useCallback(({ item, index }:{ item: NDKEvent, index: number }) => {
-        console.log("render item")
         return <FeedVideoViewer event={item} paused={index !== playingIndex || paused} />
     }, [playingIndex, paused])
 
     const EndLoader = () => (
-        <View style={{ paddingVertical: 20 }}>
+        <View style={{ paddingVertical: 100 }}>
             <ActivityIndicator size={24} color={theme.colors.white} />
         </View>
     )
@@ -125,7 +132,7 @@ const VideosFeed = ({ navigation }: StackScreenProps<any>) => {
                 renderItem={renderItem}
                 keyExtractor={(item: NDKEvent) => item.id}
                 showsVerticalScrollIndicator={false}
-                viewabilityConfig={{ itemVisiblePercentThreshold: 70 }}
+                viewabilityConfig={{ viewAreaCoveragePercentThreshold: 80 }} // itemVisiblePercentThreshold: 70 }}
                 onViewableItemsChanged={onViewableItemsChanged}
                 onEndReached={fetchVideos}
                 onEndReachedThreshold={.2}

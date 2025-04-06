@@ -7,31 +7,29 @@ import { useEffect, useState } from "react"
 import { pushMessage } from "@services/notification"
 import { HeaderHome } from "./header"
 import { StackScreenProps } from "@react-navigation/stack"
+import { walletService } from "@services/wallet"
 import theme from "@src/theme"
-import { walletService } from "@/src/services/wallet"
 
 const HomeScreen = ({ navigation }: StackScreenProps<any>) => {
 
     const { wallets, setWallets } = useAuth()
     const { useTranslate } = useTranslateService()
     const [loading, setLoading] = useState(false)
-    const [reloadWallets, setReloadWallets] = useState<boolean>(true)                                                               
 
     useEffect(() => { 
         navigation.setOptions({ header: () => <HeaderHome navigation={navigation} /> })
-        setTimeout(async () => handleData(), 20) 
+        setTimeout(handleData, 20) 
     }, [])
 
     const handleData = async () => {
         setLoading(true)
+        
         if(wallets.length) Vibration.vibrate(45)
 
         if(setWallets) setWallets(await walletService.list())
 
         if (wallets.length <= 0)
             pushMessage(useTranslate("message.wallet.alertcreate"))
-
-        setReloadWallets(!reloadWallets)
 
         setLoading(false)
     }
@@ -50,7 +48,7 @@ const HomeScreen = ({ navigation }: StackScreenProps<any>) => {
                 <SectionHeader icon="wallet" label={useTranslate("section.title.wallets")} actions={[actionWallet]} />
 
                 {/* Wallets section  */}
-                <WalletList reload={reloadWallets} wallets={wallets} navigation={navigation} />
+                <WalletList wallets={wallets} navigation={navigation} />
 
                 {/* Sales and Shopping section*/}
                 <SectionHeader icon="cash-outline" label={useTranslate("section.title.sales")} />
@@ -61,10 +59,7 @@ const HomeScreen = ({ navigation }: StackScreenProps<any>) => {
 }
 
 const styles = StyleSheet.create({
-    container: {
-        backgroundColor: theme.colors.black,
-        height: "100%"
-    },
+    container: { backgroundColor: theme.colors.black, height: "100%" },
 })
 
 export default HomeScreen

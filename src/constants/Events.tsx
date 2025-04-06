@@ -13,7 +13,7 @@ export const Events = {
     TimeOut: 5000,
 }
 
-export const NostrEventKinds = {
+export const EventKinds = {
     metadata: 0,
     note: 1,
     followList: 3,
@@ -24,5 +24,9 @@ export const NostrEventKinds = {
     classifiedListening: 30402,
     zap: 9734,    
 }
+
+export const jsonContentKinds = [
+    EventKinds.metadata
+]
 
 

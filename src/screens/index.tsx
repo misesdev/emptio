@@ -10,7 +10,7 @@ import { getNotificationPermission } from "@services/permissions"
 import { initDatabase } from "@services/memory/database/events"
 import useChatStore from "@services/zustand/chats"
 import useNDKStore from "@services/zustand/ndk"
-import { NostrEventKinds } from "../constants/Events"
+import { EventKinds } from "../constants/Events"
 import { useFeedVideosStore } from "@services/zustand/feedVideos"
 import { messageService } from "@services/message"
 import { userService } from "@services/user"
@@ -20,7 +20,7 @@ const InitializeScreen = ({ navigation }: any) => {
 
     const { initialize } = useFeedVideosStore()
     const { setNDK, setNdkSigner } = useNDKStore()
-    const { setChats, addChat } = useChatStore()
+    const { setChats } = useChatStore()
     const { setFollowsEvent } = useAuth()
     const [loading, setLoading] = useState(true)
     const { useTranslate } = useTranslateService()
@@ -50,7 +50,7 @@ const InitializeScreen = ({ navigation }: any) => {
             if(setFollowsEvent) 
             {
                 const eventFollow = await getEvent({ 
-                    kinds:[NostrEventKinds.followList], 
+                    kinds:[EventKinds.followList], 
                     authors: [result.data?.pubkey ?? ""], 
                     limit: 1
                 })

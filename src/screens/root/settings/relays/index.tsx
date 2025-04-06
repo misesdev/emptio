@@ -51,16 +51,19 @@ const ManageRelaysScreen = ({ navigation }: StackScreenProps<any>) => {
                         {useTranslate("message.relay.empty")}
                     </Text>
                 }
-                
                 {relayData &&
                     <View>
-                        <SectionHeader label={useTranslate("labels.relays.connecteds")} />
+                        <SectionHeader 
+                            label={useTranslate("labels.relays.connecteds")+" ("+relayData.connected.length+")"} 
+                        />
                         <RelayList relays={relayData.connected} onPressRelay={openRelay} />
                     </View>
                 }
                 {relayData &&
                     <View>
-                        <SectionHeader label={useTranslate("labels.relays.disconnecteds")} />
+                        <SectionHeader 
+                            label={useTranslate("labels.relays.disconnecteds")+" ("+relayData.disconected.length+")"}
+                        />
                         <RelayList relays={relayData.disconected} onPressRelay={openRelay} />
                     </View>
                 }

@@ -2,10 +2,10 @@
 import { NDKUserProfile, NDKEvent, NDKSubscriptionCacheUsage } from "@nostr-dev-kit/ndk-mobile"
 import { Filter } from "nostr-tools"
 import { PairKey, User } from "../memory/types"
-import { NostrEventKinds } from "@/src/constants/Events"
+import { jsonContentKinds } from "@src/constants/Events"
 import useNDKStore from "../zustand/ndk"
 
-export type NostrEvent = {
+export interface NostrEvent {
     id?: string,
     kind?: number,
     pubkey?: string,
@@ -57,28 +57,22 @@ export const listenerEvents = async (filters: Filter) : Promise<NostrEvent[]> =>
         cacheUsage: NDKSubscriptionCacheUsage.PARALLEL
     })
 
-    const eventsResut: NostrEvent[] = []
-
-    events.forEach((event: NDKEvent) => {
-
-        let jsonContent = [NostrEventKinds.metadata].includes(event.kind ?? 0)
-
-        eventsResut.push({
+    return Array.from(events).map((event) : NostrEvent => {
+        let jsonContent = jsonContentKinds.includes(event.kind ?? 0)
+        return {
             id: event.id,
             kind: event.kind,
             pubkey: event.pubkey,
             content: jsonContent ? JSON.parse(event.content) : event.content,
             created_at: event.created_at,
             tags: event.tags
-        })
+        } 
     })
-
-    return eventsResut
 }
 
 export const getEvent = async (filters: Filter) : Promise<NostrEvent> => {
 
-    var eventResut: NostrEvent
+    var eventResut: NostrEvent = {}
 
     const ndk = useNDKStore.getState().ndk
 
@@ -87,7 +81,7 @@ export const getEvent = async (filters: Filter) : Promise<NostrEvent> => {
     })
 
     if (event) {
-        let jsonContent = [NostrEventKinds.metadata].includes(event.kind ?? 0)
+        let jsonContent = jsonContentKinds.includes(event.kind ?? 0)
         
         eventResut = {
             id: event.id,
@@ -98,9 +92,10 @@ export const getEvent = async (filters: Filter) : Promise<NostrEvent> => {
             tags: event.tags
         }
 
-        return eventResut as NostrEvent
-    } else 
-        return {}
+        return eventResut 
+    }
+
+    throw new Error("event not found")
 }
 
 export const getPubkeyFromTags = (event: NDKEvent) : string => {
@@ -110,7 +105,7 @@ export const getPubkeyFromTags = (event: NDKEvent) : string => {
     if(pubkeys.length)
         return pubkeys[0]
 
-    return ""
+    throw new Error("the event does not have a pubkey in its tags")
 }
 
 

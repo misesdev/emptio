@@ -2,10 +2,8 @@ import NDK, { NDKCacheAdapterSqlite, NDKFilter, NDKPrivateKeySigner,
     NDKSubscriptionCacheUsage } from "@nostr-dev-kit/ndk-mobile"
 import { PairKey, User } from "../memory/types"
 import { publishEvent, NostrEvent, getEvent } from "./events"
-import { AppState } from "react-native"
-import { ChatUser } from "../zustand/chats"
 import useNDKStore from "../zustand/ndk"
-import { NostrEventKinds } from "@/src/constants/Events"
+import { EventKinds } from "@/src/constants/Events"
 import { processEventMessage, processEventOrders } from "./processEvents"
 import { storageService } from "../memory"
 
@@ -13,7 +11,7 @@ export const getUserData = async (publicKey: string): Promise<User> => {
 
     const event = await getEvent({ 
         authors: [publicKey], 
-        kinds: [NostrEventKinds.metadata], 
+        kinds: [EventKinds.metadata], 
         limit: 1 
     })
 
@@ -47,7 +45,7 @@ export const pushUserFollows = async (event: NostrEvent, pairKey: PairKey) => {
     await publishEvent(event, pairKey, true)
 }
 
-type NostrInstanceProps = { user?: User }
+interface NostrInstanceProps { user?: User }
 
 export const getNostrInstance = async ({ user }: NostrInstanceProps): Promise<NDK> => {
 

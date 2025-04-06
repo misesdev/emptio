@@ -8,10 +8,10 @@ import { useTranslateService } from "@src/providers/translateProvider"
 import { useEffect, useState } from "react"
 import { walletService } from "@services/wallet"
 import { BNetwork } from "bitcoin-tx-lib"
-import { getUserName, shortenString } from "@/src/utils"
+import { getUserName, shortenString } from "@src/utils"
 import { getFee } from "@services/bitcoin/mempool"
-import theme from "@src/theme"
 import { ActivityIndicator } from "react-native-paper"
+import theme from "@src/theme"
 
 type FeeType = "high" | "medium" | "low" | "minimun"
 
@@ -44,7 +44,7 @@ const FeeOption = ({ label, description, feeType, onPress, selected }: FeeProps)
 
 const SendFinalScreen = ({ navigation, route }: any) => {
 
-    const { wallet, amount, address, receiver } = route.params
+    const { wallet, amount, address, receiver, origin } = route.params
     const { useTranslate } = useTranslateService()
     const [loading, setLoading] = useState(false)
     const [fetching, setFetching] = useState(false)
@@ -89,16 +89,17 @@ const SendFinalScreen = ({ navigation, route }: any) => {
             const response = await walletService.transaction.send(result.data, network)
             if(response.success) {
                 navigation.reset({
-                    index: 1,
+                    index: origin == "donation" ? 0 : 1,
                     routes: [
                         { name: 'core-stack' },
                         { name: 'wallet-stack', params: { wallet } }
                     ]
-                }) 
+                })
             }
 
-            if (!result.success && result.message)
+            if (!result.success && result.message) {
                 pushMessage(result.message)
+            }
         }
 
         if (!result.success && result.message)

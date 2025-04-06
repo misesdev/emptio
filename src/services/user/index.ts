@@ -5,7 +5,7 @@ import { getEvent, listenerEvents, publishEvent, NostrEvent } from "@services/no
 import { NDKEvent, NDKFilter, NDKSubscriptionCacheUsage } from "@nostr-dev-kit/ndk-mobile"
 import { Response, trackException } from "@services/telemetry"
 import { clearEvents } from "@services/memory/database/events"
-import { NostrEventKinds } from "@/src/constants/Events"
+import { EventKinds } from "@/src/constants/Events"
 import { PairKey, User } from "@services/memory/types"
 import useNDKStore from "@services/zustand/ndk"
 import { nip19 } from "nostr-tools"
@@ -81,7 +81,7 @@ interface UpdateProfileProps {
 const updateProfile = async ({ user, setUser, upNostr = false }: UpdateProfileProps) => {
 
     if (!upNostr) {
-        const event = await getEvent({ kinds: [NostrEventKinds.metadata], authors: [user.pubkey ?? ""] })
+        const event = await getEvent({ kinds: [EventKinds.metadata], authors: [user.pubkey ?? ""] })
 
         if (event) 
         {
@@ -103,7 +103,7 @@ const updateProfile = async ({ user, setUser, upNostr = false }: UpdateProfilePr
         const pairkey = await storageService.pairkeys.get(user.keychanges ?? "")
         
         await publishEvent({ 
-            kind: NostrEventKinds.metadata,
+            kind: EventKinds.metadata,
             content: JSON.stringify(user)
         }, pairkey)
     }
@@ -186,7 +186,7 @@ export const createFollowEvent = (user: User, friends: [string[]]) : NostrEvent 
 
     return {
         pubkey: user.pubkey ?? "",
-        kind: NostrEventKinds.followList,
+        kind: EventKinds.followList,
         content: JSON.stringify(ndk.explicitRelayUrls),
         created_at: timeSeconds.now(),
         tags: friends
@@ -262,8 +262,12 @@ const listUsers = async (pubkeys: string[]): Promise<User[]> => {
 }
 
 const getProfile = async (pubkey: string) => {
-   
-    const event = await getEvent({ authors: [pubkey], kinds:[0], limit: 1 })
+ 
+    const event = await getEvent({
+        authors: [pubkey], 
+        kinds: [EventKinds.metadata], 
+        limit: 1 
+    })
 
     const user = event.content as User
 
@@ -274,12 +278,14 @@ const getProfile = async (pubkey: string) => {
 
 const convertPubkey = (pubkey: string) => nip19.npubEncode(pubkey)
 
+const getUser = storageService.user.get
+
 export const userService = {
     signUp,
     signIn,
     signOut,
     isLogged,
-    getUser: storageService.user.get,
+    getUser,
     getProfile,
     updateProfile,
     convertPubkey,

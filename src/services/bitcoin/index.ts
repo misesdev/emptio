@@ -80,8 +80,10 @@ export const createTransaction = async ({ amount, destination, recomendedFee,
         const ordenedUtxos = utxos.sort((a, b) => a.value - b.value)
         // add destination address transaction, the amount is defined later
         transaction.addOutput({ address: destination, amount: amount })
-        // add the change recipient, the amount is defined later
-        transaction.addOutput({ address: wallet.address ?? "", amount: 10 })
+        if(destination != wallet.address) {
+            // add the change recipient, the amount is defined later
+            transaction.addOutput({ address: wallet.address ?? "", amount: 10 })
+        }
 
         let calculatedFee = 0
         for (let utxo of ordenedUtxos) 
@@ -103,7 +105,7 @@ export const createTransaction = async ({ amount, destination, recomendedFee,
                 // add the change recipient
                 transaction.outputs.forEach(out => {
                     // the sender pay the fee
-                    if(out.address == wallet.address) {
+                    if(out.address == wallet.address && transaction.outputs.length > 1) {
                         let withoutFee = utxoAmount-amount
                         let withFee = utxoAmount-(amount-calculatedFee)
                         out.amount = wallet.payfee ? withFee : withoutFee 
@@ -112,6 +114,10 @@ export const createTransaction = async ({ amount, destination, recomendedFee,
                     if(out.address != wallet.address && !wallet.payfee) {
                         let mediaFee = calculatedFee / (transaction.outputs.length-1)
                         out.amount = Math.ceil(out.amount-mediaFee)
+                    }
+                    // self payment 
+                    if(destination == wallet.address && transaction.outputs.length == 1) {
+                        out.amount = calculatedFee
                     }
                 })
                 break

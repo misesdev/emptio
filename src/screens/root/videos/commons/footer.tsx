@@ -80,7 +80,7 @@ const VideoFooter = ({ event, url }: FooterVideoProps) => {
             subscription.current?.removeAllListeners()
             subscription.current = undefined
             setReacted(reactions.some(r => r.pubkey == user.pubkey))
-        }, 1000)
+        }, 1200)
     }
 
     const handleReact = () => {
@@ -201,7 +201,7 @@ const styles = StyleSheet.create({
         fontSize: 10, paddingHorizontal: 2 },
 
     shadow: { textShadowOffset: { width: 1, height: 1 },
-        textShadowRadius: 6, textShadowColor: theme.colors.semitransparentdark, }
+        textShadowRadius: 6, textShadowColor: theme.colors.semitransparent }
 })
 
 export default VideoFooter

@@ -1,7 +1,7 @@
 import { walletService } from "@services/wallet"
 import { formatSats, toBitcoin } from "@services/converter"
 import { Wallet } from "@services/memory/types"
-import { useEffect, useState } from "react"
+import { useEffect, useRef, useState } from "react"
 import { TouchableOpacity, View, Text, StyleSheet, 
     Image, ViewStyle } from "react-native"
 import { ActivityIndicator } from "react-native-paper"
@@ -9,16 +9,17 @@ import { getClipedContent, getDescriptionTypeWallet } from "@src/utils"
 import { useTranslateService } from "@src/providers/translateProvider"
 import theme from "@src/theme"
 import { useAuth } from "@/src/providers/userProvider"
+import { useFocusEffect } from "@react-navigation/native"
 
 interface Props {
     wallet: Wallet,
-    reload: boolean,
     style: ViewStyle,
     handleOpen: (wallet: Wallet) => void
 }
 
-const WalletListItem = ({ wallet, reload, handleOpen, style }: Props) => {
+const WalletListItem = ({ wallet, handleOpen, style }: Props) => {
   
+    const isFetching = useRef<boolean>(false)
     const { wallets, setWallets } = useAuth()
     const { useTranslate } = useTranslateService()
     const [loading, setLoading] = useState<boolean>()
@@ -26,20 +27,23 @@ const WalletListItem = ({ wallet, reload, handleOpen, style }: Props) => {
     const [walletData, setWalletData] = useState(wallet)
 
     useEffect(() => { 
-        getDescriptionTypeWallet(wallet.type ?? "bitcoin").then(setTypeWallet)
         setTimeout(loadData, 20)
-    }, [reload])
+        getDescriptionTypeWallet(wallet.type ?? "bitcoin").then(setTypeWallet)
+    }, [wallets])
 
     const loadData = async () => {
+
+        if(isFetching.current) return;
+
         setLoading(true)
-        walletService.listTransactions(wallet).then(async (walletInfo) => {
-            if(walletData.lastBalance != walletInfo.balance)
+        isFetching.current = true
+
+        walletService.getBalance(wallet).then(async (balance) => {
+            if(walletData.lastBalance != balance)
             {
                 setWalletData(prev => ({
                     ...prev,
-                    lastBalance: walletInfo.balance,
-                    lastSended: walletInfo.sended,
-                    lastReceived: walletInfo.received
+                    lastBalance: balance,
                 }))
 
                 setTimeout(async () => {
@@ -47,17 +51,19 @@ const WalletListItem = ({ wallet, reload, handleOpen, style }: Props) => {
                     if(setWallets) {
                         setWallets(wallets.map(item => {
                             if(item.key == walletData.key) {
-                                item.lastBalance = walletInfo.balance
-                                item.lastSended = walletInfo.sended
-                                item.lastReceived = walletInfo.received
+                                item.lastBalance = balance
                             }
                             return item
                         }))
                     }
                 }, 20)
             }
+            isFetching.current = false
             setLoading(false)
-        }).catch(() => setLoading(false))
+        }).catch(() => {
+            isFetching.current = false
+            setLoading(false)
+        })
     }
 
     let formatName = getClipedContent(walletData.name??"", 18)

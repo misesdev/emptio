@@ -2,12 +2,12 @@ import { HeaderScreen } from "@components/general/HeaderScreen"
 import { useTranslateService } from "@src/providers/translateProvider"
 import { RelayList } from "@components/nostr/relays/RelayList"
 import { SearchBox } from "@components/form/SearchBox"
-import { storageService } from "@services/memory"
-import { useEffect, useState } from "react"
 import MessageBox, { showMessage } from "@components/general/MessageBox"
 import TransparentLoader from "@components/general/TransparentLoader"
 import { pushMessage } from "@services/notification"
 import useNDKStore from "@services/zustand/ndk"
+import { useEffect, useState } from "react"
+import { storageService } from "@services/memory"
 import { View } from "react-native"
 import axios from "axios"
 
@@ -19,15 +19,13 @@ const AddRelayScreen = ({ navigation }: any) => {
     const [loading, setLoading] = useState<boolean>(true)
     const [fetching, setFetching] = useState<boolean>(false)
 
-    useEffect(() => {  handleSearch("relay") }, [])
+    useEffect(() => {  handleSearch("") }, [])
 
     const handleSearch = async (searchTerm: string) => {
 
         setLoading(true)
 
-        if(!searchTerm.trim().length) {
-            searchTerm = "relays"
-        }
+        if(!searchTerm.trim().length) searchTerm = "nostr"
 
         const all_relays: string[] = await storageService.relays.list()
         
@@ -102,6 +100,7 @@ const AddRelayScreen = ({ navigation }: any) => {
             />
 
             <RelayList relays={relays} onPressRelay={handleOpenRelay} />
+            
             <TransparentLoader active={fetching} />
             <MessageBox />
         </View>

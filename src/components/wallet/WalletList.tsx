@@ -6,13 +6,12 @@ import { FlatList } from "react-native-gesture-handler"
 import { useCallback, useEffect, useState } from "react"
 import theme from "@src/theme"
 
-type Props = {
+interface Props {
     wallets: Wallet[],
-    reload: boolean,
     navigation: any
 }
 
-const WalletList = ({ wallets, navigation, reload }: Props) => {
+const WalletList = ({ wallets, navigation }: Props) => {
     const { width } = Dimensions.get("window")
     const itemWidth = width * .82
     const spacing = width * .06
@@ -41,7 +40,7 @@ const WalletList = ({ wallets, navigation, reload }: Props) => {
             )
 
         return (
-            <WalletListItem reload={reload} wallet={item}
+            <WalletListItem wallet={item}
                 style={{ width: itemWidth, marginRight: spacing }}
                 handleOpen={handleOpenWallet} 
             />

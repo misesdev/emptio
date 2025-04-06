@@ -1,24 +1,24 @@
 import { getTransactionInfo, getTxs, getUtxos } from "@services/bitcoin/mempool"
 import { useTranslate } from "@services/translate"
-import { Tx, Vout } from "@mempool/mempool.js/lib/interfaces/bitcoin/transactions"
+import { Tx } from "@mempool/mempool.js/lib/interfaces/bitcoin/transactions"
 import { createTransaction, createWallet, ValidateAddress, 
     sendTransaction, importWallet, BaseWallet } from "@services/bitcoin"
 import { getRandomKey } from "@services/bitcoin/signature"
 import { Transaction, Wallet, WalletInfo, WalletType } from "@services/memory/types"
+import { AddressTxsUtxo } from "@mempool/mempool.js/lib/interfaces/bitcoin/addresses"
 import { Response, trackException } from "@services/telemetry"
 import { timeSeconds } from "@services/converter"
 import { storageService } from "@services/memory"
 import { userService } from "../user"
 import { Address, BNetwork } from "bitcoin-tx-lib"
-import { AddressTxsUtxo } from "@mempool/mempool.js/lib/interfaces/bitcoin/addresses"
 
-type Props = {
+interface CreateProps {
     name: string,
     type: WalletType,
     password: string
 }
 
-const create = async ({ name, type, password }: Props): Promise<Response<BaseWallet>> => {
+const create = async ({ name, type, password }: CreateProps): Promise<Response<BaseWallet>> => {
     try {
         const wallets = await walletService.list()
 
@@ -53,7 +53,7 @@ const create = async ({ name, type, password }: Props): Promise<Response<BaseWal
     catch (ex) { return trackException(ex) }
 }
 
-type ImportProps = {
+interface ImportProps {
     name: string,
     mnemonic: string,
     password?: string,
@@ -187,6 +187,19 @@ const listTransactions = async (wallet: Wallet): Promise<WalletInfo> => {
     return response
 }
 
+const getBalance = async (wallet: Wallet) => {
+    if(!wallet.address) 
+        throw new Error("wallet address null")
+    if(!wallet.network)
+        throw new Error("wallet network null")
+    
+    const utxos: AddressTxsUtxo[] = await getUtxos(wallet.address, wallet.network)
+
+    return utxos.reduce((sum, item) => {
+        return sum + item.value
+    }, 0)
+}
+
 interface TransactionProps {
     amount: number,
     destination: string, 
@@ -225,6 +238,7 @@ export const walletService = {
     import: require,
     delete: exclude,
     listTransactions,
+    getBalance,
     list: storageService.wallets.list,
     address,
     transaction
