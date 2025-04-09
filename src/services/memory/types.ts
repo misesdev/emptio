@@ -7,6 +7,16 @@ export interface PairKey {
     publicKey: string
 }
 
+export interface Secret {
+    key: string,
+    value: string
+}
+
+export interface PaymentKey {
+    key: string,
+    secret: string
+}
+
 export type WalletType = "lightning" | "bitcoin" | "testnet" | "emptio"
 
 export interface Wallet {

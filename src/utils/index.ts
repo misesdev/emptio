@@ -1,6 +1,6 @@
 import Clipboard from "@react-native-clipboard/clipboard"
-import { pushMessage } from "@services/notification"
-import { useTranslate } from "@services/translate"
+import { pushMessage } from "../services/notification"
+import { useTranslate } from "../services/translate"
 import { User, WalletType } from "@services/memory/types"
 import { hexToNpub } from "../services/converter"
 import theme from "../theme"
@@ -16,7 +16,7 @@ export const getUserName = (user: User, maxsize: number = 16): string => {
     const username = user.display_name ?? user.displayName ?? user.name ?? user.pubkey ?? ""
 
     if(username.length > maxsize)
-        return `${username?.substring(0,maxsize)}..` 
+        return `${username?.substring(0,maxsize)}...` 
 
     return username
 }

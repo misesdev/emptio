@@ -1,25 +1,25 @@
 import AsyncStorage from "@react-native-async-storage/async-storage"
 import { Language } from "@services/translate/types"
 
-export const saveLanguage = async (language: Language) => { 
-    await AsyncStorage.setItem("language", JSON.stringify(language))
-}
-
-export const getLanguage = async (): Promise<Language> => {
-
-    var language: Language = { label: "English", selector: "en" }
+export class LanguageStorage {
     
-    const register = await AsyncStorage.getItem("language")
+    static async get() : Promise<Language> {
+        var language: Language = { label: "English", selector: "en" }
+        const register = await AsyncStorage.getItem("language")
+        if(register)
+            language = JSON.parse(register)
+        return language
+    }
 
-    if(register)
-        language = JSON.parse(register)
-    
-    return language
+    static list() : Language[] {
+        return [
+            { label: "English", selector: "en" },
+            { label: "Portuguese", selector: "pt" }
+        ]
+    }
+
+    static async save(language: Language) : Promise<void> {
+        await AsyncStorage.setItem("language", JSON.stringify(language))
+    }
 }
 
-export const getLanguages = (): Language[] => {
-    return [
-        { label: "English", selector: "en" },
-        { label: "Portuguese", selector: "pt" }
-    ]
-}

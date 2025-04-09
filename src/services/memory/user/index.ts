@@ -1,18 +1,21 @@
 import AsyncStorage from "@react-native-async-storage/async-storage"
 import { User } from "../types"
 
-export const getUser = async (): Promise<User> => {
+export class UserStorage {
+    static async get() : Promise<User> {
+        let response: User = {}
+        var data = await AsyncStorage.getItem("userdata")
+        if(data)
+            response = JSON.parse(data) as User
+        return response
+    }
 
-    var response: User = {}
+    static async save(user: User) : Promise<void> {
+        await AsyncStorage.setItem("userdata", JSON.stringify(user))
+    }
 
-    var user = await AsyncStorage.getItem("userData")
-
-    if (user)
-        response = JSON.parse(user) as User
-
-    return response
+    static async delete() : Promise<void> {
+        await AsyncStorage.removeItem("userdata")
+    }
 }
 
-export const insertUpdateUser = async (userData: User) => await AsyncStorage.setItem("userData", JSON.stringify(userData))
-
-export const deleteUser = async () => await AsyncStorage.removeItem("userData")

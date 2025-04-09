@@ -1,43 +1,59 @@
 import EncryptedStorage from "react-native-encrypted-storage"
-import { PairKey } from "../types"
+import { PairKey, Secret } from "../types"
+import { ECPairKey } from "bitcoin-tx-lib"
 
-export const getPairKeys = async () : Promise<PairKey[]> => {
-    
-    const data = await EncryptedStorage.getItem("pairkeys")
+export class SecretStorage {
 
-    if (data) {
-        var pairkeys = JSON.parse(data) as PairKey[]
-
-        return pairkeys
+    static async getSecret(key: string) : Promise<Secret> {
+        let secrets = await this.listScrets()
+        let secret = secrets.find(s => s.key === key)
+        if(!secret) 
+            throw new Error("secret not found")
+        return secret
     }
-    return []
-} 
 
-export const insertPairKey = async (pairKey: PairKey) => {
-    
-    const pairkeys = await getPairKeys()
+    static async addSecret(secret: Secret) : Promise<void> {
+        let secrets = await this.listScrets()
+        secrets.push(secret)
+        await this.saveSecrets(secrets)
+    }
 
-    pairkeys.push(pairKey)
+    static async deleteSecret(key: string) : Promise<void> {
+        let secrets = await this.listScrets()
+        await this.saveSecrets(secrets.filter(s => s.key != key))
+    }
 
-    await EncryptedStorage.setItem("pairkeys", JSON.stringify(pairkeys))
+    static async getPairKey(key: string) : Promise<PairKey> {
+        let secret = await this.getSecret(key)
+        let ecPair = ECPairKey.fromHex({ privateKey: secret.value })
+        return {
+            key,
+            privateKey: ecPair.privateKey,
+            publicKey: ecPair.getPublicKeyCompressed("hex")
+        }
+    }
+
+    static async addPairKey(pair: PairKey) : Promise<void> {
+        await this.addSecret({
+            key: pair.key,
+            value: pair.privateKey
+        })
+    }
+
+    static async deletePairKey(key: string) : Promise<void> {
+        let secrets = await this.listScrets()
+        await this.saveSecrets(secrets.filter(s => s.key != key))
+    }
+
+    private static async listScrets() : Promise<Secret[]> {
+        let secrets: Secret[] = []
+        let data = await EncryptedStorage.getItem("secrets")
+        if(data) secrets = JSON.parse(data) as Secret[]
+        return secrets
+    }
+
+    private static async saveSecrets(secrets: Secret[]) : Promise<void> {
+        await EncryptedStorage.setItem("secrets", JSON.stringify(secrets))
+    }
 }
 
-export const getPairKey = async (key: string): Promise<PairKey> => {
-
-    const pairkeys = await getPairKeys()
-
-    const pairkey = pairkeys.find(x => x.key == key)
-
-    if(!pairkey) throw Error("Pairkey not found!")
-
-    return pairkey
-}
-
-export const deletePairKey = async (key: string) => {
-    
-    const pairkeys = await getPairKeys()
-
-    let filtered = pairkeys.filter(k => k.key != key)
-
-    await EncryptedStorage.setItem("pairkeys", JSON.stringify(filtered))
-}

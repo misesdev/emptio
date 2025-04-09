@@ -1,6 +1,4 @@
-import { deleteEventsByCondition, selecMessageChats, 
-    selecMessages, updateEventContent} from "@services/memory/database/events"
-import { getPairKey } from "@services/memory/pairkeys"
+import { DBEvents } from "@services/memory/database/events"
 import { User } from "@services/memory/types"
 import { getPubkeyFromTags } from "@services/nostr/events"
 import { ChatUser } from "@services/zustand/chats"
@@ -8,10 +6,11 @@ import useNDKStore from "@services/zustand/ndk"
 import { NDKEvent, NDKTag } from "@nostr-dev-kit/ndk-mobile"
 import { nip04 } from "nostr-tools"
 import { timeSeconds } from "@services/converter"
+import { storageService } from "../memory"
 
 const listMessages = async (chat_id: string) : Promise<NDKEvent[]> => {
 
-    const events = await selecMessages(chat_id)
+    const events = await DBEvents.selecMessages(chat_id)
 
     return events.sort((a, b) => {
         return (b.created_at ?? 1) - (a.created_at ?? 1)
@@ -20,7 +19,7 @@ const listMessages = async (chat_id: string) : Promise<NDKEvent[]> => {
 
 const listChats = async (user: User): Promise<ChatUser[]> => {
     
-    const eventsChat = await selecMessageChats()
+    const eventsChat = await DBEvents.selecChats()
 
     eventsChat.forEach(chat => { 
         if(chat.lastMessage.pubkey == user.pubkey) {
@@ -34,7 +33,7 @@ const listChats = async (user: User): Promise<ChatUser[]> => {
 }
 
 const deleteChats = async (chat_ids: string[]) => {
-    await deleteEventsByCondition(`chat_id in ('${chat_ids.join("','")}')`, [])
+    await DBEvents.deleteByCondition(`chat_id in ('${chat_ids.join("','")}')`, [])
 }
 
 const generateChatId = (event: NDKEvent): string => {
@@ -53,7 +52,7 @@ const generateChatId = (event: NDKEvent): string => {
 
 const encryptMessage = async (user: User, follow: User, event: NDKEvent) : Promise<NDKEvent> => {
 
-    const pair = await getPairKey(user.keychanges ?? "")
+    const pair = await storageService.pairkeys.get(user.keychanges ?? "")
 
     event.content = await nip04.encrypt(pair.privateKey, follow.pubkey ?? "", event.content)
 
@@ -62,7 +61,7 @@ const encryptMessage = async (user: User, follow: User, event: NDKEvent) : Promi
 
 const decryptMessage = async (user: User, event: NDKEvent) : Promise<NDKEvent> => {
     
-    const pair = await getPairKey(user.keychanges ?? "")
+    const pair = await storageService.pairkeys.get(user.keychanges ?? "")
 
     if(pair.publicKey != event.pubkey)
         event.content = await nip04.decrypt(pair.privateKey, event.pubkey, event.content)
@@ -71,7 +70,7 @@ const decryptMessage = async (user: User, event: NDKEvent) : Promise<NDKEvent> =
         event.content = await nip04.decrypt(pair.privateKey, pubkey, event.content)
     }
 
-    await updateEventContent(event)
+    await DBEvents.updateContent(event)
 
     return {...event} as NDKEvent
 }
@@ -121,7 +120,7 @@ const deleteMessage = async ({ user, event, onlyForMe = false }: DeleteEventProp
     
     const ndk = useNDKStore.getState().ndk
 
-    deleteEventsByCondition("id = ?", [event.id])
+    await DBEvents.deleteByCondition("id = ?", [event.id])
 
     if(!onlyForMe) 
     {
@@ -148,7 +147,7 @@ const deleteMessages = async ({ user, events, onlyForMe = false }: DeleteEventsP
     const ndk = useNDKStore.getState().ndk
 
     const event_ids = `('${events.map(e => e.id).join("','")}')`
-    await deleteEventsByCondition(`id IN ${event_ids}`, [])
+    await DBEvents.deleteByCondition(`id IN ${event_ids}`, [])
 
     if(!onlyForMe) 
     {

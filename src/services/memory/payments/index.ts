@@ -1,35 +1,42 @@
 import EncryptedStorage from "react-native-encrypted-storage"
+import { PaymentKey } from "../types"
 
-export interface PaymentKey {
-    key: string,
-    secret: string
+export class PaymentStorage {
+  
+    static async get(key: string) : Promise<PaymentKey> {
+        let paymentKeys = await this.list()
+        let paymentKey = paymentKeys.find(p => p.key == key)
+        if(!paymentKey)
+            throw new Error("payment key not found")
+        return paymentKey
+    }
+
+    static async add(paymentKey: PaymentKey) : Promise<void> {
+        let paymentKeys = await this.list()
+        paymentKeys.push(paymentKey)
+        await this.save(paymentKeys)
+    }
+
+    static async delete(key: string) : Promise<void> {
+        let paymentKeys = await this.list()
+        await this.save(paymentKeys.filter(p => p.key != key))
+    }
+
+    static async list() : Promise<PaymentKey[]> {
+        let paymentKeys: PaymentKey[] = []
+        let data = await EncryptedStorage.getItem("paymentkeys")
+        if(data)
+            paymentKeys = JSON.parse(data) as PaymentKey[]
+        return paymentKeys
+    }
+
+    static async save(paymentKeys: PaymentKey[]) : Promise<void> {
+        await EncryptedStorage.setItem("paymentkeys", JSON.stringify(paymentKeys))
+    }
+
+    static async clear() : Promise<void> {
+        await EncryptedStorage.removeItem("paymentkeys")
+    }
 }
 
-export const getPaymentKeys = async (): Promise<PaymentKey[]> => {
-    var paymentKeys: PaymentKey[] = []
-    var data = await EncryptedStorage.getItem("payment-keys") 
-    if(data)
-        paymentKeys = JSON.parse(data) as PaymentKey[]
-    return paymentKeys
-}
 
-export const savePaymentKey = async (paymentKey: PaymentKey) => {
-    const paymentKeys = await getPaymentKeys()
-    paymentKeys.push(paymentKey)
-    await EncryptedStorage.setItem("payment-keys", JSON.stringify(paymentKey))
-}
-
-export const getPaymentKey = async (key: string) : Promise<PaymentKey|undefined> => {
-    var paymentKeys: PaymentKey[] = []
-    var data = await EncryptedStorage.getItem("payment-keys") 
-    if(data)
-        paymentKeys = JSON.parse(data) as PaymentKey[]
-
-    return paymentKeys.find(p => p.key == key)
-}
-
-export const deletePaymentKey = async (key: string) => {
-    const paymentKeys = await getPaymentKeys()
-    const data = paymentKeys.filter(p => p.key != key)
-    await EncryptedStorage.setItem("payment-keys", JSON.stringify(data))
-}

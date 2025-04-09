@@ -6,7 +6,7 @@ import { pushMessage } from "../notification"
 
 const ndk = useNDKStore.getState().ndk
 
-type ListReactionProps = { user: User, note: NDKEvent }
+interface ListReactionProps { user: User, note: NDKEvent }
 
 const listReactions = async ({ user, note }: ListReactionProps): Promise<NDKEvent[]> => {
 

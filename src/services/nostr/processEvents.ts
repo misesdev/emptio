@@ -1,5 +1,4 @@
 import { NDKEvent } from "@nostr-dev-kit/ndk-mobile"
-import { dbEventProps, insertEventsInBatch } from "../memory/database/events"
 import { User } from "../memory/types"
 import { messageService } from "@services/message"
 import { getPubkeyFromTags } from "./events"
@@ -7,6 +6,7 @@ import useOrderStore from "../zustand/orders"
 import useChatStore from "../zustand/chats"
 import { SellOrder, UserReputation } from "../types/order"
 import { timeSeconds } from "../converter"
+import { DBEvents, dbEventProps } from "../memory/database/events"
 
 var batchTimer: NodeJS.Timeout|null = null
 var enqueueEvents: dbEventProps[] = []
@@ -17,7 +17,7 @@ const processEventsInBatch = async (notify: (dbEvent: dbEventProps) => void) => 
     const batch = [...enqueueEvents]
     enqueueEvents.length = 0
 
-    const withSuccess = await insertEventsInBatch(batch)
+    const withSuccess = await DBEvents.insertInBatch(batch)
    
     withSuccess.forEach(notify) 
 }

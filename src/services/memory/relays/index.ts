@@ -1,37 +1,31 @@
-import { DefaultRelays } from "@src/constants/Relays"
+import { DefaultRelays } from "../../../constants/Relays"
 import AsyncStorage from "@react-native-async-storage/async-storage"
 
-export const getRelays = async (): Promise<string[]> => {
+export class RelayStorage {
+    private static relays = DefaultRelays
 
-    var relays = DefaultRelays
-
-    const data = await AsyncStorage.getItem("relays")
-
-    if (data && JSON.parse(data).length > 0) {
-        relays = JSON.parse(data)
-    }
-    else 
-        await setRelays(relays)
- 
-    return relays
-}
-
-export const setRelays = async (relays: string[]) => await AsyncStorage.setItem("relays", JSON.stringify(relays))
-
-export const insertRelay = async (relay: string) => {
-    let relays = await getRelays()
-    
-    if (relays) {
+    static async add(relay: string) : Promise<void> {
+        let relays = await this.list()
         relays.push(relay)
-    } else
-        relays = [relay]
+        await this.save(relays)
+    }
 
-    setRelays(relays)
+    static async remove(relay: string) : Promise<void> {
+        let relays = await this.list()
+        await this.save(relays.filter(r => r != relay))
+    }
+
+    static async list() : Promise<string[]> {
+        var relays = this.relays
+        const data = await AsyncStorage.getItem("relays")
+        if(data)
+            relays = JSON.parse(data) as string[]
+        return relays
+    }
+
+    private static async save(relays: string[]) : Promise<void> {
+        await AsyncStorage.setItem("relays", JSON.stringify(relays))
+    }
 }
 
-export const deleteRelay = async (relay: string) => {
-    let relays = await getRelays()
-       
-    setRelays(relays.filter(r => r.includes(relay) || relay.includes(r)))
-}
 

@@ -4,13 +4,13 @@ import { getUserData, pushUserData } from "@services/nostr/pool"
 import { getEvent, listenerEvents, publishEvent, NostrEvent } from "@services/nostr/events"
 import { NDKEvent, NDKFilter, NDKSubscriptionCacheUsage } from "@nostr-dev-kit/ndk-mobile"
 import { Response, trackException } from "@services/telemetry"
-import { clearEvents } from "@services/memory/database/events"
 import { EventKinds } from "@/src/constants/Events"
 import { PairKey, User } from "@services/memory/types"
 import useNDKStore from "@services/zustand/ndk"
 import { nip19 } from "nostr-tools"
 import useChatStore from "@services/zustand/chats"
 import { timeSeconds } from "@services/converter"
+import { DBEvents } from "../memory/database/events"
 
 interface SignUpProps { 
     userName: string, 
@@ -116,7 +116,7 @@ const updateProfile = async ({ user, setUser, upNostr = false }: UpdateProfilePr
 
 const signOut = async (): Promise<Response<any>> => {
     try {
-        await clearEvents()
+        await DBEvents.clear()
         await storageService.clear()
         useChatStore.getState().setChats([])
         return { success: true }
