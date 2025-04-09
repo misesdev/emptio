@@ -3,9 +3,10 @@ import NDK, { NDKCacheAdapterSqlite, NDKFilter, NDKPrivateKeySigner,
 import { PairKey, User } from "../memory/types"
 import { publishEvent, NostrEvent, getEvent } from "./events"
 import useNDKStore from "../zustand/ndk"
-import { EventKinds } from "@/src/constants/Events"
+import { EventKinds } from "@src/constants/Events"
 import { processEventMessage, processEventOrders } from "./processEvents"
 import { storageService } from "../memory"
+import { getUserName } from "@src/utils"
 
 export const getUserData = async (publicKey: string): Promise<User> => {
 
@@ -22,7 +23,7 @@ export const pushUserData = async (user: User, pairKey: PairKey) => {
 
     const profile: User = {
         name: user.name,
-        display_name: user.display_name,
+        display_name: getUserName(user, 100),
         picture: user.picture,
         image: user.image,
         about: user.about,
