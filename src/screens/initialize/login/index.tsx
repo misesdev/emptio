@@ -1,107 +1,15 @@
-import MessageBox, { showMessage } from "@components/general/MessageBox";
+import MessageBox from "@components/general/MessageBox";
 import { Image, StyleSheet, Text, View } from "react-native";
 import { QRCodeTextBox } from "@components/form/TextBoxs";
 import { ButtonPrimary } from "@components/form/Buttons";
-import { validatePrivateKey } from "@services/nostr";
-import { useAuth } from "@src/providers/userProvider";
-import { useEffect, useState } from "react";
 import { useTranslateService } from "@src/providers/translateProvider";
-import { pushMessage } from "@services/notification";
-import useNDKStore from "@services/zustand/ndk";
-import { subscribeUser } from "@services/nostr/pool";
-import Clipboard from "@react-native-clipboard/clipboard";
-import { AppState } from "react-native";
-import { getEvent } from "@services/nostr/events";
-import { EventKinds } from "@src/constants/Events";
-import { userService } from "@services/user";
+import { useLogin } from "../../hooks/use-login";
 import theme from "@src/theme";
 
 const LoginScreen = ({ navigation }: any) => {
 
-    const { setNdkSigner } = useNDKStore()
-    const { setUser, setFollowsEvent } = useAuth()
     const { useTranslate } = useTranslateService()
-    const [loading, setLoading] = useState(false)
-    const [disabled, setDisabled] = useState(true)
-    const [secretKey, setSecretKey] = useState("")
-
-    useEffect(() => {
-        checkClipboardContainsKey()
-        const listener = AppState.addEventListener("change", handleAppStateChange)
-        const clear = () => listener.remove() 
-        return clear
-    }, [])
-
-    const setValidateSecretKey = (value: string) => {
-        setDisabled(!validatePrivateKey(value))
-        setSecretKey(value)
-    }
-
-    const checkClipboardContainsKey = async () => {
-        // verify clipboard for a privateKey nostr
-        const nsec = await Clipboard.getString()
-        handlerClipboard(nsec)
-    }
-
-    const handleAppStateChange = (appstate: any) => {
-        if (appstate === 'active') checkClipboardContainsKey()
-    }
-
-    const handlerClipboard = (key: string) => {
-        if (validatePrivateKey(key)) {
-            showMessage({
-                title: useTranslate("commons.detectedkey"),
-                message: useTranslate("message.detectedkey"),
-                infolog: useTranslate("message.detectedkey.value") + key,
-                action: {
-                    label: useTranslate("commons.yes"), onPress: () => {
-                        setValidateSecretKey(key)
-                    }
-                }
-            })
-        }
-    }
-
-    const handlerLogin = async () => {
-        setLoading(true)
-        setDisabled(true)
-        setTimeout(async () => {
-            if (validatePrivateKey(secretKey))
-            {
-                try 
-                {
-                    const result = await userService.signIn({ secretKey, setUser })
-
-                    if (result.success && result.data)
-                    {
-                        setNdkSigner(result.data)
-                        subscribeUser(result.data)
-
-                        if(setFollowsEvent) 
-                        {
-                            const eventFollow = await getEvent({ 
-                                kinds:[EventKinds.followList], 
-                                authors: [result.data?.pubkey ?? ""], 
-                                limit: 1
-                            })
-
-                            if(eventFollow) setFollowsEvent(eventFollow)
-                        } 
-
-                        navigation.reset({ index: 0, routes: [{ name: "core-stack" }] })                  
-                    } else {
-                        pushMessage(result.message??"")
-                    }
-                } catch (ex) { 
-                    pushMessage(ex as string)
-                }
-            } else
-                showMessage({ message: useTranslate("message.invalidkey"), infolog: secretKey })
-
-            setLoading(false)
-            setDisabled(false)
-        }, 20)
-    }
+    const { loading, disabled, secretKey, setSecretKey, login } = useLogin({ navigation })
 
     return (
         <View style ={{ flex: 1 }}>
@@ -113,7 +21,7 @@ const LoginScreen = ({ navigation }: any) => {
 
                 <QRCodeTextBox value={secretKey}
                     placeholder={useTranslate("labels.privatekey")} 
-                    onChangeText={setValidateSecretKey}
+                    onChangeText={setSecretKey}
                 />
 
                 <View style={{ height: 100 }}></View>
@@ -121,7 +29,7 @@ const LoginScreen = ({ navigation }: any) => {
                 <View style={styles.buttonArea}>
                     <ButtonPrimary disabled={disabled} loading={loading}
                         label={useTranslate("commons.signin")} 
-                        onPress={handlerLogin} 
+                        onPress={login} 
                     />
                 </View>
             </View>

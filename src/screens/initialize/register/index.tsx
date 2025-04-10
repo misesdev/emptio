@@ -1,72 +1,14 @@
-import { useState } from "react";
 import { Image, StyleSheet, Text, View } from "react-native";
 import { ButtonPrimary } from "@components/form/Buttons";
-import { useAuth } from "@src/providers/userProvider";
 import { useTranslateService } from "@src/providers/translateProvider";
-import { pushUserFollows, subscribeUser } from "@services/nostr/pool";
 import { FormControl } from "@components/form/FormControl";
-import { createFollowEvent, userService } from "@services/user";
-import { storageService } from "@services/memory";
-import { pushMessage } from "@services/notification";
-import { getUserName } from "@src/utils";
+import { useRegister } from "../../hooks/use-register";
 import theme from "@src/theme";
 
 const RegisterScreen = ({ navigation }: any) => {
 
-    const { setUser, setFollowsEvent } = useAuth()
     const { useTranslate } = useTranslateService()
-    const [userName, setUserName] = useState("")
-    const [loading, setLoading] = useState(false)
-    const [disabled, setDisabled] = useState(true)
-
-    const setValidateUserName = (value: string) => {
-        setDisabled(value.trim().length < 3)
-        setUserName(value)
-    }
-
-    const handlerRegister = async () => {
-        if (userName.trim())
-        {
-            setLoading(true)
-            setDisabled(true)
-
-            const results = await userService.searchUsers({}, userName.trim())
-          
-            if(results.some(u => getUserName(u).trim() == userName.trim())) {
-                setLoading(false)
-                setDisabled(false)
-                return pushMessage(`${useTranslate("register.already_exists")} ${userName.trim()}`)
-            }
-
-            await registerUser()
-
-            setDisabled(false)
-            setLoading(false)
-        }
-    }
-
-    const registerUser = async () => {
-
-        const result = await userService.signUp({ userName: userName.trim(), setUser })
-
-        if (result.success && result.data) 
-        {
-            subscribeUser(result.data)
-
-            const pairKey = await storageService.pairkeys.get(result.data.keychanges??"")
-            
-            const followsEvent = createFollowEvent(result.data ?? {}, [
-                ["p", result.data.pubkey??""]
-            ])
-
-            await pushUserFollows(followsEvent, pairKey)
-
-            if(setFollowsEvent) setFollowsEvent(followsEvent)
-
-            return navigation.reset({ index: 0, routes: [{ name: "core-stack" }] })
-        }
-        pushMessage(`${useTranslate("message.request.error")} ${result.message}`)
-    }
+    const { loading, disabled, userName, setUserName, register } = useRegister({ navigation })
 
     return (
         <View style={{ flex: 1 }}>
@@ -78,7 +20,7 @@ const RegisterScreen = ({ navigation }: any) => {
                 <View style={{ width: "96%" }}>
                     <FormControl value={userName}
                         label={useTranslate("labels.username")} 
-                        onChangeText={setValidateUserName}
+                        onChangeText={setUserName}
                     />
                 </View>
 
@@ -87,7 +29,7 @@ const RegisterScreen = ({ navigation }: any) => {
                 <View style={styles.buttonArea}>
                     <ButtonPrimary loading={loading} disabled={disabled}
                         label={useTranslate("commons.signup")} 
-                        onPress={handlerRegister}
+                        onPress={register}
                     />
                 </View>
             </View>

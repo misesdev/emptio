@@ -3,50 +3,20 @@ import { useTranslateService } from "@src/providers/translateProvider"
 import { StackScreenProps } from "@react-navigation/stack"
 import { StyleSheet, TouchableOpacity, FlatList, View } from "react-native"
 import Ionicons from "react-native-vector-icons/Ionicons"
-import { useAuth } from "@src/providers/userProvider"
 import { User } from "@services/memory/types"
-import { memo, useCallback, useState } from "react"
+import { memo, useCallback } from "react"
 import { FollowItem } from "@components/nostr/follow/FollowItem"
 import { SearchBox } from "@components/form/SearchBox"
-import { getUserName } from "@src/utils"
-import { walletService } from "@services/wallet"
-import { userService } from "@services/user"
 import theme from "@src/theme"
+import { useFriends } from "./hooks/useFriends"
 
 const ManageFriendsScreen = ({ navigation }: StackScreenProps<any>) => {
 
     const { useTranslate } = useTranslateService()
-    const { user, follows, setFollows, followsEvent } = useAuth()
-    const [friends, setFriends] = useState<User[]>(follows)
+    const { friends, search, remove } = useFriends()
   
-    const handleSearch = (filter: string) => {
-        if (filter?.length && !walletService.address.validate(filter)) {
-            const searchResult = follows?.filter(follow => {
-                let filterNameLower = getUserName(follow, 30).toLowerCase()
-                return filterNameLower.includes(filter.toLowerCase())
-            })
-
-            setFriends(searchResult ?? [])
-        }
-        else setFriends(follows??[])
-    }
-
-    const handleRemoveFriend = async (follow: User) => {
-      
-        setFriends(prev => {
-            return [...prev.filter(f => f.pubkey != follow.pubkey)]
-        })
-
-        if(setFollows && follows) 
-            setFollows([...follows.filter(f => f.pubkey != follow.pubkey)])
-
-        followsEvent!.tags = followsEvent?.tags?.filter(t => t[0] == "p" && t[1] != follow.pubkey) ?? []
-    
-        await userService.updateFollows({ user, follows: followsEvent })
-    }
-
     const ListItem = memo(({ item }: { item: User }) => (
-        <FollowItem isFriend follow={item} toManage handleClickFollow={handleRemoveFriend} />
+        <FollowItem isFriend follow={item} toManage handleClickFollow={remove} />
     ))
 
     const renderItem = useCallback(({ item }: { item: User }) => {
@@ -69,7 +39,7 @@ const ManageFriendsScreen = ({ navigation }: StackScreenProps<any>) => {
             
             <SearchBox delayTime={200} seachOnLenth={0}
                 label={useTranslate("commons.search")} 
-                onSearch={handleSearch}
+                onSearch={search}
             />  
 
             <FlatList 
