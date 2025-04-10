@@ -22,6 +22,7 @@ export class WalletStorage {
         wallets.forEach(item => {
             if(wallet.default && wallet.key != item.key) item.default = false
             if(wallet.key === item.key) {
+                console.log("updatig wallet", wallet.lastBalance)
                 item["name"] = wallet.name
                 item["type"] = wallet.type
                 item["lastBalance"] = wallet.lastBalance

@@ -12,7 +12,7 @@ import { subscribeUser } from "@services/nostr/pool";
 import Clipboard from "@react-native-clipboard/clipboard";
 import { AppState } from "react-native";
 import { getEvent } from "@services/nostr/events";
-import { NostrEventKinds } from "@src/constants/Events";
+import { EventKinds } from "@src/constants/Events";
 import { userService } from "@services/user";
 import theme from "@src/theme";
 
@@ -28,9 +28,8 @@ const LoginScreen = ({ navigation }: any) => {
     useEffect(() => {
         checkClipboardContainsKey()
         const listener = AppState.addEventListener("change", handleAppStateChange)
-        return () => {
-            listener.remove() 
-        }
+        const clear = () => listener.remove() 
+        return clear
     }, [])
 
     const setValidateSecretKey = (value: string) => {
@@ -81,7 +80,7 @@ const LoginScreen = ({ navigation }: any) => {
                         if(setFollowsEvent) 
                         {
                             const eventFollow = await getEvent({ 
-                                kinds:[NostrEventKinds.followList], 
+                                kinds:[EventKinds.followList], 
                                 authors: [result.data?.pubkey ?? ""], 
                                 limit: 1
                             })

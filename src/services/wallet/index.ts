@@ -20,7 +20,7 @@ interface CreateProps {
 
 const create = async ({ name, type, password }: CreateProps): Promise<Response<BaseWallet>> => {
     try {
-        const wallets = await walletService.list()
+        const wallets = await storageService.wallets.list() 
 
         const network: BNetwork = type == "bitcoin" ? "mainnet" : "testnet"
 
@@ -44,7 +44,7 @@ const create = async ({ name, type, password }: CreateProps): Promise<Response<B
             network
         }
 
-        await storageService.pairkeys.add(base.pairkey)
+        await storageService.secrets.addPairKey(base.pairkey)
 
         await storageService.wallets.add(base.wallet)
 
@@ -63,7 +63,7 @@ interface ImportProps {
 const require = async ({ name, type = "bitcoin", mnemonic, password }: ImportProps): Promise<Response<BaseWallet>> => {
 
     try {
-        const wallets = await walletService.list()
+        const wallets = await storageService.wallets.list()
 
         const network: BNetwork = type == "bitcoin" ? "mainnet" : "testnet"
 
@@ -87,7 +87,7 @@ const require = async ({ name, type = "bitcoin", mnemonic, password }: ImportPro
             network,
         }
 
-        await storageService.pairkeys.add(base.pairkey)
+        await storageService.secrets.addPairKey(base.pairkey)
 
         await storageService.wallets.add(base.wallet)
 
@@ -101,7 +101,7 @@ const require = async ({ name, type = "bitcoin", mnemonic, password }: ImportPro
 const exclude = async (wallet: Wallet): Promise<Response<any>> => {
 
     try {
-        storageService.pairkeys.delete(wallet.pairkey??"")
+        storageService.secrets.deletePairKey(wallet.pairkey??"")
         storageService.wallets.delete(wallet.key??"")
         if(wallet.default) 
         {
@@ -212,7 +212,7 @@ const transaction = {
 
         const wallet = await storageService.wallets.get(walletKey)
 
-        const pairkey = await storageService.pairkeys.get(wallet.pairkey??"")
+        const pairkey = await storageService.secrets.getPairKey(wallet.pairkey??"")
 
         const transaction = await createTransaction({
             amount,
@@ -234,12 +234,10 @@ const address = {
 
 export const walletService = {
     create,
-    update: storageService.wallets.update,
     import: require,
     delete: exclude,
     listTransactions,
     getBalance,
-    list: storageService.wallets.list,
     address,
     transaction
 }

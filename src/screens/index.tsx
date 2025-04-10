@@ -7,7 +7,6 @@ import { useAuth } from "../providers/userProvider"
 import { useTranslateService } from "../providers/translateProvider"
 import { getNostrInstance, subscribeUser } from "@services/nostr/pool"
 import { getNotificationPermission } from "@services/permissions"
-import { initDatabase } from "@services/memory/database/events"
 import useChatStore from "@services/zustand/chats"
 import useNDKStore from "@services/zustand/ndk"
 import { EventKinds } from "../constants/Events"
@@ -15,6 +14,7 @@ import { useFeedVideosStore } from "@services/zustand/feedVideos"
 import { messageService } from "@services/message"
 import { userService } from "@services/user"
 import theme from "@src/theme"
+import { DBEvents } from "../services/memory/database/events"
 
 const InitializeScreen = ({ navigation }: any) => {
 
@@ -32,7 +32,7 @@ const InitializeScreen = ({ navigation }: any) => {
 
     const handleVerifyLogon = async () => {
 
-        await initDatabase()
+        await DBEvents.initDatabase()
         
         setNDK(await getNostrInstance({ }))
         
@@ -51,7 +51,7 @@ const InitializeScreen = ({ navigation }: any) => {
             {
                 const eventFollow = await getEvent({ 
                     kinds:[EventKinds.followList], 
-                    authors: [result.data?.pubkey ?? ""], 
+                    authors: [result.data.pubkey??""], 
                     limit: 1
                 })
 

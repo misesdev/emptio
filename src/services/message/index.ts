@@ -52,7 +52,7 @@ const generateChatId = (event: NDKEvent): string => {
 
 const encryptMessage = async (user: User, follow: User, event: NDKEvent) : Promise<NDKEvent> => {
 
-    const pair = await storageService.pairkeys.get(user.keychanges ?? "")
+    const pair = await storageService.secrets.getPairKey(user.keychanges ?? "")
 
     event.content = await nip04.encrypt(pair.privateKey, follow.pubkey ?? "", event.content)
 
@@ -61,7 +61,7 @@ const encryptMessage = async (user: User, follow: User, event: NDKEvent) : Promi
 
 const decryptMessage = async (user: User, event: NDKEvent) : Promise<NDKEvent> => {
     
-    const pair = await storageService.pairkeys.get(user.keychanges ?? "")
+    const pair = await storageService.secrets.getPairKey(user.keychanges ?? "")
 
     if(pair.publicKey != event.pubkey)
         event.content = await nip04.decrypt(pair.privateKey, event.pubkey, event.content)
@@ -110,7 +110,7 @@ const sendMessage = async (props: NDKEvent | MessageProps) : Promise<NDKEvent> =
     return event
 }
 
-type DeleteEventProps = {
+interface DeleteEventProps {
     user: User,
     event: NDKEvent,
     onlyForMe?: boolean
@@ -135,7 +135,7 @@ const deleteMessage = async ({ user, event, onlyForMe = false }: DeleteEventProp
     }
 }
 
-type DeleteEventsProps = {
+interface DeleteEventsProps {
     user: User,
     events: NDKEvent[],
     onlyForMe?: boolean,

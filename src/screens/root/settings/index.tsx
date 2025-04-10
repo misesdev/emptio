@@ -1,6 +1,5 @@
 import { StyleSheet, View, Text, ScrollView, TouchableOpacity } from "react-native"
 import { LinkSection, SectionContainer } from "@components/general/section"
-import { getPairKey } from "@services/memory/pairkeys"
 import { useAuth } from "@src/providers/userProvider"
 import { hexToBytes } from "@noble/hashes/utils"
 import Ionicons from 'react-native-vector-icons/Ionicons'
@@ -21,6 +20,7 @@ import theme from "@src/theme"
 import { userService } from "@services/user"
 import useNDKStore from "@services/zustand/ndk"
 import { NDKRelay } from "@nostr-dev-kit/ndk-mobile"
+import { storageService } from "@services/memory"
 
 const UserMenuScreen = ({ navigation }: StackScreenProps<any>) => {
 
@@ -47,14 +47,14 @@ const UserMenuScreen = ({ navigation }: StackScreenProps<any>) => {
         const biometrics = await authService.checkBiometric()
         
         if (biometrics) {
-            const { privateKey } = await getPairKey(user?.keychanges ?? "")
+            const { privateKey } = await storageService.secrets.getPairKey(user?.keychanges ?? "")
             const secretkey = nip19.nsecEncode(hexToBytes(privateKey))
             copyToClipboard(secretkey)
         }
     }
 
     const handleCopyPublicKey = async () => {
-        const { publicKey } = await getPairKey(user?.keychanges ?? "")
+        const { publicKey } = await storageService.secrets.getPairKey(user?.keychanges ?? "")
 
         const pubKey = nip19.npubEncode(publicKey)
 

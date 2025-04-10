@@ -60,7 +60,7 @@ export const getNostrInstance = async ({ user }: NostrInstanceProps): Promise<ND
 
     if(user?.keychanges) 
     {
-        const pairKey = await storageService.pairkeys.get(user.keychanges ?? "")
+        const pairKey = await storageService.secrets.getPairKey(user.keychanges ?? "")
 
         ndk.signer = new NDKPrivateKeySigner(pairKey.privateKey)
     }

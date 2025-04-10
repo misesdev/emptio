@@ -44,11 +44,6 @@ export const HeaderHome = ({ navigation }: Props) => {
                     <Ionicons name="heart" color={theme.colors.gray} size={theme.icons.large} />
                 </TouchableOpacity>
             </View>
-            {/* <View style={{ width: "13%", alignItems: "center", justifyContent: "center" }}> */}
-            {/*     <TouchableOpacity onPress={() => navigation.navigate("add-follow-stack")}> */}
-            {/*         <Ionicons name="person-add-sharp" color={theme.colors.gray} size={theme.icons.large} /> */}
-            {/*     </TouchableOpacity> */}
-            {/* </View> */}
         </View>
     )
 }

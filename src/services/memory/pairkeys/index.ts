@@ -23,13 +23,14 @@ export class SecretStorage {
         await this.saveSecrets(secrets.filter(s => s.key != key))
     }
 
-    static async getPairKey(key: string) : Promise<PairKey> {
+    static async getPairKey(key: string, marker: boolean = true) : Promise<PairKey> {
         let secret = await this.getSecret(key)
         let ecPair = ECPairKey.fromHex({ privateKey: secret.value })
+        let pubkey = ecPair.getPublicKeyCompressed("hex")
         return {
             key,
             privateKey: ecPair.privateKey,
-            publicKey: ecPair.getPublicKeyCompressed("hex")
+            publicKey: marker ? pubkey : pubkey.slice(2)
         }
     }
 

@@ -8,7 +8,6 @@ import { pushMessage } from "@services/notification"
 import { useAuth } from "@src/providers/userProvider"
 import { useTranslateService } from "@src/providers/translateProvider"
 import { WalletType } from "@services/memory/types"
-import { getWallets } from "@services/memory/wallets"
 import { BaseWallet } from "@services/bitcoin"
 import { useState } from "react"
 import { StackScreenProps } from "@react-navigation/stack"
@@ -16,6 +15,7 @@ import theme from "@src/theme"
 import { ScrollView } from "react-native-gesture-handler"
 import { walletService } from "@services/wallet"
 import { userService } from "@services/user"
+import { storageService } from "@/src/services/memory"
 
 
 const AddWalletScreen = ({ navigation }: StackScreenProps<any>) => {
@@ -59,7 +59,7 @@ const AddWalletScreen = ({ navigation }: StackScreenProps<any>) => {
                 await userService.updateProfile({ user, upNostr: true })
             }
 
-            if(setWallets) setWallets(await getWallets())
+            if(setWallets) setWallets(await storageService.wallets.list())
 
             navigation.navigate("seed-wallet-stack", { 
                 origin: "create", 

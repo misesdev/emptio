@@ -12,6 +12,10 @@ jest.mock("../../../constants/Relays", () => ({
     DefaultRelays: ["wss://default1.example", "wss://default2.example"]
 }))
 
+jest.mock("../../nostr/pool", () => ({
+    searchRelays: jest.fn()
+}))
+
 describe("RelayStorage", () => {
     const defaultRelays = [...DefaultRelays]
 

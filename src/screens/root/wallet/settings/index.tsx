@@ -12,6 +12,7 @@ import { StackScreenProps } from "@react-navigation/stack"
 import { walletService } from "@services/wallet"
 import { userService } from "@services/user"
 import theme from "@src/theme"
+import { storageService } from "@services/memory"
 
 interface ScreenParams { wallet: Wallet }
 
@@ -36,7 +37,7 @@ const WalletSettings = ({ navigation, route }: StackScreenProps<any>) => {
 
                     await walletService.delete(wallet ?? {})
 
-                    if(setWallets) setWallets(await walletService.list())
+                    if(setWallets) setWallets(await storageService.wallets.list())
 
                     navigation.reset({ index: 0, routes: [{ name: "core-stack" }] })
                 }
@@ -66,9 +67,9 @@ const WalletSettings = ({ navigation, route }: StackScreenProps<any>) => {
             })
         }
 
-        await walletService.update(walletData)
+        await storageService.wallets.update({ ...walletData })
 
-        if(setWallets) setWallets(await walletService.list())
+        if(setWallets) setWallets(await storageService.wallets.list())
 
         pushMessage(useTranslate("message.wallet.saved"))
 

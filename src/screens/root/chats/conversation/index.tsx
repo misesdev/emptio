@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useRef, useState } from "react"
-import { View, StyleSheet, TextInput, FlatList, Image, 
+import { View, StyleSheet, TextInput, FlatList,  
     TouchableOpacity, BackHandler} from "react-native"
 import { NDKEvent } from "@nostr-dev-kit/ndk"
 import { useAuth } from "@src/providers/userProvider"

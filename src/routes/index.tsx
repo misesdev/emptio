@@ -32,6 +32,7 @@ import ConversationChat from "@screens/root/chats/conversation"
 import ManageFriendsScreen from "@screens/root/friends"
 import RelayScreen from "@screens/root/settings/relays/relay"
 import AddRelayScreen from "@screens/root/settings/relays/add"
+import OrderDetailScreen from "../screens/root/orders/order/new/details"
 
 const Stack = createStackNavigator()
 
@@ -82,6 +83,7 @@ const AppRoutes = () => {
                 <Stack.Screen name="friends-list-stack" component={ManageFriendsScreen} options={ScreenCardOptions} />
 
                 <Stack.Screen name="feed-order-new" component={NewOrderScreen} options={ScreenCardOptions} />
+                <Stack.Screen name="feed-order-ndetails" component={OrderDetailScreen} options={ScreenCardOptions} />
             </Stack.Navigator>
         </NavigationContainer>
     )

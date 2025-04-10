@@ -18,7 +18,7 @@ export class LanguageStorage {
         ]
     }
 
-    static async save(language: Language) : Promise<void> {
+    static async add(language: Language) : Promise<void> {
         await AsyncStorage.setItem("language", JSON.stringify(language))
     }
 }

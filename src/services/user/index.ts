@@ -29,7 +29,7 @@ const signUp = async ({ userName, setUser }: SignUpProps): Promise<Response<User
             keychanges: pairKey.key,
         }
         
-        await storageService.pairkeys.add(pairKey)
+        await storageService.secrets.addPairKey(pairKey)
         
         await useNDKStore.getState().setNdkSigner(profile)
        
@@ -61,7 +61,7 @@ const signIn = async ({ secretKey, setUser }: SignProps) : Promise<Response<User
 
         await storageService.user.save(userData)
 
-        await storageService.pairkeys.add(pairKey)
+        await storageService.secrets.addPairKey(pairKey)
 
         if (setUser) setUser(userData)
         
@@ -81,7 +81,10 @@ interface UpdateProfileProps {
 const updateProfile = async ({ user, setUser, upNostr = false }: UpdateProfileProps) => {
 
     if (!upNostr) {
-        const event = await getEvent({ kinds: [EventKinds.metadata], authors: [user.pubkey ?? ""] })
+        const event = await getEvent({ 
+            kinds: [EventKinds.metadata], 
+            authors: [user.pubkey ?? ""]
+        })
 
         if (event) 
         {
@@ -100,7 +103,7 @@ const updateProfile = async ({ user, setUser, upNostr = false }: UpdateProfilePr
             user.bitcoin_address = userData?.bitcoin_address
         }
     } else {
-        const pairkey = await storageService.pairkeys.get(user.keychanges ?? "")
+        const pairkey = await storageService.secrets.getPairKey(user.keychanges ?? "")
         
         await publishEvent({ 
             kind: EventKinds.metadata,
@@ -131,7 +134,7 @@ const isLogged = async () : Promise<Response<User|null>> => {
     try {
         const user: User = await storageService.user.get()
 
-        const pairKey = await storageService.pairkeys.get(user.keychanges ?? "")
+        const pairKey = await storageService.secrets.getPairKey(user.keychanges ?? "", false)
 
         user.pubkey = pairKey.publicKey
 
@@ -172,7 +175,7 @@ interface UpdateFollowsProps {
 
 const updateFollows = async ({ user, follows } : UpdateFollowsProps) => {
     try {
-        const pairKey = await storageService.pairkeys.get(user.keychanges ?? "")
+        const pairKey = await storageService.secrets.getPairKey(user.keychanges ?? "")
 
         if(follows)
             await publishEvent(follows, pairKey, true)
@@ -269,7 +272,7 @@ const getProfile = async (pubkey: string) => {
         limit: 1 
     })
 
-    const user = event.content as User
+    const user = event?.content as User
 
     user.pubkey = pubkey
 
@@ -278,7 +281,7 @@ const getProfile = async (pubkey: string) => {
 
 const convertPubkey = (pubkey: string) => nip19.npubEncode(pubkey)
 
-const getUser = storageService.user.get
+const getUser = () => storageService.user.get()
 
 export const userService = {
     signUp,

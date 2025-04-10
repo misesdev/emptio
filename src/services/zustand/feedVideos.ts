@@ -36,7 +36,7 @@ export const useFeedVideosStore = create<FeedVideoStore>((set) => ({
     initialize: async () => {
         const blackList = await storageService.settings.blackList.get()
         const feedSettings = await storageService.settings.feedVideos.get()
-        const savedEvents = await storageService.database.events.list("videos")
+        const savedEvents = await storageService.database.events.listByCategory("videos")
         set(() => ({
             blackList,
             feedSettings,

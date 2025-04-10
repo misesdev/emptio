@@ -10,6 +10,7 @@ import { useState } from "react"
 import { StackScreenProps } from "@react-navigation/stack"
 import { walletService } from "@services/wallet"
 import theme from "@src/theme"
+import { storageService } from "@/src/services/memory"
 
 const ImportWalletScreen = ({ navigation, route }: StackScreenProps<any>) => {
 
@@ -52,7 +53,7 @@ const ImportWalletScreen = ({ navigation, route }: StackScreenProps<any>) => {
                 password: passPhrase?.trim() 
             })
 
-            if(setWallets) setWallets(await walletService.list())
+            if(setWallets) setWallets(await storageService.wallets.list())
 
             if (response.success)
                 navigation.reset({ index: 0, routes: [{ name: "core-stack" }] })

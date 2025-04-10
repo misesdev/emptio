@@ -1,5 +1,6 @@
 import { DefaultRelays } from "../../../constants/Relays"
 import AsyncStorage from "@react-native-async-storage/async-storage"
+import { searchRelays } from "../../nostr/pool"
 
 export class RelayStorage {
     private static relays = DefaultRelays
@@ -26,6 +27,8 @@ export class RelayStorage {
     private static async save(relays: string[]) : Promise<void> {
         await AsyncStorage.setItem("relays", JSON.stringify(relays))
     }
+
+    static search = searchRelays
 }
 
 

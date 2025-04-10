@@ -1,10 +1,8 @@
 import { 
-    copyToClipboard, 
     getUserName, 
     getClipedContent, 
     shortenString, 
     getDisplayPubkey, 
-    copyPubkey, 
     replaceContentEvent, 
     getDescriptionTypeWallet, 
     extractVideoUrl, 
@@ -12,12 +10,10 @@ import {
     distinctBy 
 } from './index'
 
-import Clipboard from "@react-native-clipboard/clipboard"
-import { pushMessage } from "../services/notification"
 import { useTranslate } from "../services/translate"
 import { WalletType, User } from "@services/memory/types"
-import { hexToNpub } from "../services/converter"
 import theme from "../theme"
+import { hexToNpub } from '../services/converter'
 
 jest.mock("react-native", () => ({
     StyleSheet: {
@@ -37,27 +33,11 @@ jest.mock("../services/translate", () => ({
     useTranslate: jest.fn(),
 }))
 
-
 describe('Utility functions', () => {
 
     beforeEach(() => {
         jest.clearAllMocks()
     })
-
-    // describe('copyToClipboard()', () => {
-    //     it('should copy text to clipboard and send a translated push message', async () => {
-    //         const text = "Hello World"
-    //         const translatedMessage = "Message copied"
-
-    //         (useTranslate as jest.Mock).mockResolvedValue(translatedMessage)
-
-    //         copyToClipboard(text)
-
-    //         expect(Clipboard.setString).toHaveBeenCalledWith(text)
-    //         expect(useTranslate).toHaveBeenCalledWith("message.copied")
-    //         expect(pushMessage).toHaveBeenCalledWith(translatedMessage)
-    //     })
-    // })
 
     describe('getUserName()', () => {
         it('should return the correct username', () => {
@@ -108,19 +88,14 @@ describe('Utility functions', () => {
         })
     })
 
-    // describe('copyPubkey()', () => {
-    //     it('should convert pubkey to npub and copy to clipboard', async () => {
-    //         const pubkey = '2a3481b2052d8d4dd9380830cf4ef179bc50728e386a046ee637c10331bfb257'
-    //         const npub = 'npub19g6grvs99kx5mkfcpqcv7nh30x79qu5w8p4qgmhxxlqsxvdlkftscc609h'
+    describe('hexToNpub', () => {
+        it('should convert pubkey to npub and copy to clipboard', async () => {
+            const pubkey = '2a3481b2052d8d4dd9380830cf4ef179bc50728e386a046ee637c10331bfb257'
+            const npub = 'npub19g6grvs99kx5mkfcpqcv7nh30x79qu5w8p4qgmhxxlqsxvdlkftscc609h'
 
-    //         (hexToNpub as jest.Mock).mockReturnValue(npub)
-
-    //         await copyPubkey(pubkey)
-
-    //         expect(Clipboard.setString).toHaveBeenCalledWith(npub)
-    //         expect(hexToNpub).toHaveBeenCalledWith(pubkey)
-    //     })
-    // })
+            expect(hexToNpub(pubkey)).toBe(npub)
+        })
+    })
 
     describe('replaceContentEvent()', () => {
         it('should replace content correctly', () => {

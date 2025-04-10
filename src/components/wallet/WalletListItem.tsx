@@ -9,7 +9,7 @@ import { getClipedContent, getDescriptionTypeWallet } from "@src/utils"
 import { useTranslateService } from "@src/providers/translateProvider"
 import theme from "@src/theme"
 import { useAuth } from "@/src/providers/userProvider"
-import { useFocusEffect } from "@react-navigation/native"
+import { storageService } from "@services/memory"
 
 interface Props {
     wallet: Wallet,
@@ -20,7 +20,7 @@ interface Props {
 const WalletListItem = ({ wallet, handleOpen, style }: Props) => {
   
     const isFetching = useRef<boolean>(false)
-    const { wallets, setWallets } = useAuth()
+    const { wallets } = useAuth()
     const { useTranslate } = useTranslateService()
     const [loading, setLoading] = useState<boolean>()
     const [typeWallet, setTypeWallet] = useState<string>("")
@@ -32,38 +32,21 @@ const WalletListItem = ({ wallet, handleOpen, style }: Props) => {
     }, [wallets])
 
     const loadData = async () => {
-
-        if(isFetching.current) return;
-
-        setLoading(true)
-        isFetching.current = true
-
-        walletService.getBalance(wallet).then(async (balance) => {
+        if(!isFetching.current) 
+        {
+            setLoading(true)
+            isFetching.current = true
+            let balance = await walletService.getBalance(wallet)
             if(walletData.lastBalance != balance)
             {
-                setWalletData(prev => ({
-                    ...prev,
-                    lastBalance: balance,
-                }))
-
-                setTimeout(async () => {
-                    await walletService.update(walletData)
-                    if(setWallets) {
-                        setWallets(wallets.map(item => {
-                            if(item.key == walletData.key) {
-                                item.lastBalance = balance
-                            }
-                            return item
-                        }))
-                    }
-                }, 20)
+                setWalletData(prev => ({ ...prev, lastBalance: balance }))
+                setTimeout(async () => await storageService.wallets.update({
+                    ...walletData, lastBalance: balance
+                }), 20)
             }
             isFetching.current = false
             setLoading(false)
-        }).catch(() => {
-            isFetching.current = false
-            setLoading(false)
-        })
+        }
     }
 
     let formatName = getClipedContent(walletData.name??"", 18)

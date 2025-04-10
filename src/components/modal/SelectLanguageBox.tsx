@@ -1,10 +1,10 @@
 import { useState } from "react"
 import { Modal, StyleSheet, Text, TouchableOpacity, View } from "react-native"
-import { getLanguages, saveLanguage } from "@services/memory/language"
 import { useTranslateService } from "@src/providers/translateProvider"
 import Ionicons from 'react-native-vector-icons/Ionicons'
 import { Language } from "@services/translate/types"
 import theme from "@src/theme"
+import { storageService } from "@services/memory"
 
 var showLanguagesFunction: () => void
 
@@ -19,7 +19,7 @@ const SelectLanguageBox = ({ forceUpdate }: Props) => {
     const [languagesList, setLanguageList] = useState<Language[]>()
 
     showLanguagesFunction = () => {
-        setLanguageList(getLanguages())
+        setLanguageList(storageService.language.list())
         setVisible(true)
     }
 
@@ -27,7 +27,7 @@ const SelectLanguageBox = ({ forceUpdate }: Props) => {
         if (setLanguage)
             setLanguage(language)
         setVisible(false)
-        saveLanguage(language)
+        storageService.language.add(language)
         forceUpdate(Math.random())
     }
 

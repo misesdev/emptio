@@ -7,6 +7,7 @@ import { useTranslateService } from "@src/providers/translateProvider"
 import { StackScreenProps } from "@react-navigation/stack"
 import { useCallback, useEffect, useState } from "react"
 import { walletService } from "@services/wallet"
+import { storageService } from "@services/memory"
 import theme from "@src/theme"
 
 const WalletManagerScreen = ({ navigation, route }: StackScreenProps<any>) => {
@@ -20,7 +21,9 @@ const WalletManagerScreen = ({ navigation, route }: StackScreenProps<any>) => {
         // add to header menu wallet options 
         navigation.setOptions({
             headerRight: () => (
-                <TouchableOpacity style={{ paddingHorizontal: 5, marginHorizontal: 10 }} onPress={() => navigation.navigate("wallet-settings-stack", { wallet })}>
+                <TouchableOpacity style={{ paddingHorizontal: 5, marginHorizontal: 10 }}
+                    onPress={() => navigation.navigate("wallet-settings-stack", { wallet })}
+                >
                     <Ionicons name="ellipsis-vertical-sharp" color={theme.colors.white} size={theme.icons.large} />
                 </TouchableOpacity>
             )
@@ -31,21 +34,18 @@ const WalletManagerScreen = ({ navigation, route }: StackScreenProps<any>) => {
     const handleLoadTransactions = async () => {
         setRefreshing(true)
         // search transactions and update wallet lastBalance
-        walletService.listTransactions(wallet).then(walletInfo => {
-            setTransactions(walletInfo.transactions)
-            if(wallet.lastBalance != walletInfo.balance) {
-                setWallet((prev: Wallet) => ({
-                    ...prev,
-                    lastBalance: walletInfo.balance,
-                    lastReceived: walletInfo.received,
-                    lastSended: walletInfo.sended
-                }))
-                walletService.update(wallet)
-            }
-            setRefreshing(false)
-        }).catch(() => setRefreshing(false))
-
-        await walletService.update(wallet)
+        let walletInfo = await  walletService.listTransactions(wallet)
+        setTransactions(walletInfo.transactions)
+        if(wallet.lastBalance != walletInfo.balance) {
+            setWallet((prev: Wallet) => ({
+                ...prev,
+                lastBalance: walletInfo.balance,
+                lastReceived: walletInfo.received,
+                lastSended: walletInfo.sended
+            }))
+            setTimeout(() => storageService.wallets.update({...wallet}), 20)
+        }
+        setRefreshing(false)
     }
 
     const openTransaction = useCallback((transaction: TransactionInfo) => {

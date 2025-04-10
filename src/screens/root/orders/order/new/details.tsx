@@ -8,11 +8,12 @@ import { useState } from "react"
 import { Order } from "@services/nostr/orders"
 import { toNumber } from "@services/converter"
 import { timeSeconds } from "@services/converter"
+import DatePicker from "react-native-date-picker"
 
 const OrderDetailScreen = ({ navigation, route }: any) => {
 
     const { user } = useAuth() 
-    const { amount } = route.params
+    const { amount, wallet } = route.params
     const { useTranslate } = useTranslateService()
     const [price, setPrice] = useState<string>("0")
     const [currency, setCurrency] = useState<string>("USD")
@@ -39,28 +40,41 @@ const OrderDetailScreen = ({ navigation, route }: any) => {
     }
 
     return (
-        <ScrollView style={theme.styles.scroll_container}>
+        <View style={{ flex: 1 }}>
             <HeaderScreen 
                 title="Order Details"
-                onClose={navigation.goBack()}
+                onClose={() => navigation.goBack()}
             />
+            <ScrollView contentContainerStyle={theme.styles.scroll_container}>
 
-            <Text style={styles.sats}>
-                {amount}
-            </Text>
+                <Text style={styles.sats}>
+                    {amount} sats
+                </Text>
 
+                <View style={{ justifyContent: "center" }}>
+                    <View>
+                        <Text style={{ color: theme.colors.white, fontWeight: "500", fontSize: 20 }}>
+                            Data de vencimento da ordem
+                        </Text>
+                    </View>
+                    <DatePicker 
+                        date={new Date()} 
+                        onDateChange={date => console.log(date)} 
+                    />
+                </View>
+            </ScrollView>
             <View style={styles.buttonArea}>
                 <ButtonPrimary disabled={disabled} loading={loading}
                     label={useTranslate("commons.publish")}
                     onPress={publishOrder}
                 />
             </View>
-        </ScrollView>
+        </View>
     )
 }
 
 const styles = StyleSheet.create({
-    sats: { color: theme.colors.white, fontSize: 25 },
+    sats: { color: theme.colors.white, fontWeight: "500", fontSize: 25 },
     buttonArea: { width: "100%", paddingVertical: 10, marginVertical: 20 },
 })
 

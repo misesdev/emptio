@@ -70,14 +70,14 @@ export const listenerEvents = async (filters: Filter) : Promise<NostrEvent[]> =>
     })
 }
 
-export const getEvent = async (filters: Filter) : Promise<NostrEvent> => {
+export const getEvent = async (filters: Filter) : Promise<NostrEvent|null> => {
 
     var eventResut: NostrEvent = {}
 
     const ndk = useNDKStore.getState().ndk
 
     const event = await ndk.fetchEvent(filters, {
-        cacheUsage: NDKSubscriptionCacheUsage.PARALLEL
+        cacheUsage: NDKSubscriptionCacheUsage.ONLY_RELAY
     })
 
     if (event) {
@@ -91,21 +91,19 @@ export const getEvent = async (filters: Filter) : Promise<NostrEvent> => {
             created_at: event.created_at,
             tags: event.tags
         }
-
-        return eventResut 
     }
 
-    throw new Error("event not found")
+    return eventResut
 }
 
-export const getPubkeyFromTags = (event: NDKEvent) : string => {
+export const getPubkeyFromTags = (event: NDKEvent) : string|null => {
 
     const pubkeys = event.tags.filter(t => t[0] == "p").map(t => t[1])
 
     if(pubkeys.length)
         return pubkeys[0]
-
-    throw new Error("the event does not have a pubkey in its tags")
+    
+    return null
 }
 
 
