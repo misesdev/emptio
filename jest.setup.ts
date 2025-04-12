@@ -16,6 +16,13 @@ jest.mock("react-native", () => ({
     }
 }))
 
+jest.mock("react-native-encrypted-storage", () => ({
+    EncryptedStorage: {
+        setItem: jest.fn(),
+        getItem: jest.fn()
+    } 
+}))
+
 jest.mock("@services/user", () => ({
     userService: {
         signIn: jest.fn(),
@@ -30,4 +37,22 @@ jest.mock("@services/message", () => ({
         listMessages: jest.fn()
     }
 }))
+
+jest.mock("@services/wallet", () => ({
+    walletService: {
+        listTransactions: jest.fn()
+    }
+}))
+
+jest.mock("@services/memory", () => ({
+    storageService: {
+        wallets: {
+            add: jest.fn(),
+            get: jest.fn(),
+            list: jest.fn(),
+            update: jest.fn(),
+        }
+    }
+}))
+
 

@@ -2,7 +2,7 @@ import { JestConfigWithTsJest } from "ts-jest"
 
 const jestConfig: JestConfigWithTsJest  = {
     preset: "ts-jest",
-    testEnvironment: "node",
+    testEnvironment: "node", // "node"
     roots: ['<rootDir>'],
     setupFilesAfterEnv: ["<rootDir>/jest.setup.ts"],
     moduleNameMapper: {
@@ -10,7 +10,11 @@ const jestConfig: JestConfigWithTsJest  = {
         "^@services/(.*)$": "<rootDir>/src/services/$1",
         "^@src/(.*)$": "<rootDir>/src/$1",
         "^@assets/(.*)$": "<rootDir>/assets/$1",
-    }
+    },
+    // fakeTimers: {
+    //     enableGlobally: true,
+    //     legacyFakeTimers: false
+    // }
 }
 
 export default jestConfig

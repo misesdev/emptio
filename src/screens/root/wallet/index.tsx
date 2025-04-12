@@ -1,21 +1,17 @@
 import { WalletButtons, WalletHeader, WalletTransactions } from "@components/wallet"
 import { SectionHeader } from "@components/general/section/headers"
-import { Transaction, TransactionInfo, Wallet } from "@services/memory/types"
 import { View, ScrollView, RefreshControl, TouchableOpacity } from "react-native"
 import Ionicons from 'react-native-vector-icons/Ionicons'
 import { useTranslateService } from "@src/providers/translateProvider"
 import { StackScreenProps } from "@react-navigation/stack"
-import { useCallback, useEffect, useState } from "react"
-import { walletService } from "@services/wallet"
-import { storageService } from "@services/memory"
+import { useEffect } from "react"
 import theme from "@src/theme"
+import { useWallet } from "./hooks/use-wallet"
 
 const WalletManagerScreen = ({ navigation, route }: StackScreenProps<any>) => {
 
     const { useTranslate } = useTranslateService()
-    const [refreshing, setRefreshing] = useState(false)
-    const [transactions, setTransactions] = useState<Transaction[]>([])
-    const [wallet, setWallet] = useState<Wallet>(route.params?.wallet)
+    const { wallet, transactions, refreshing, showOptions, openTransaction, loadTransactions } = useWallet({ navigation, route })
 
     useEffect(() => {
         // add to header menu wallet options 
@@ -28,33 +24,7 @@ const WalletManagerScreen = ({ navigation, route }: StackScreenProps<any>) => {
                 </TouchableOpacity>
             )
         })
-        setTimeout(handleLoadTransactions, 20)
     }, [])
-
-    const handleLoadTransactions = async () => {
-        setRefreshing(true)
-        // search transactions and update wallet lastBalance
-        let walletInfo = await  walletService.listTransactions(wallet)
-        setTransactions(walletInfo.transactions)
-        if(wallet.lastBalance != walletInfo.balance) {
-            setWallet((prev: Wallet) => ({
-                ...prev,
-                lastBalance: walletInfo.balance,
-                lastReceived: walletInfo.received,
-                lastSended: walletInfo.sended
-            }))
-            setTimeout(() => storageService.wallets.update({...wallet}), 20)
-        }
-        setRefreshing(false)
-    }
-
-    const openTransaction = useCallback((transaction: TransactionInfo) => {
-        navigation.navigate("wallet-transaction-stack", { wallet, transaction })
-    }, [wallet, navigation])
-
-    const showOptions = useCallback(() => {
-        navigation.navigate("wallet-settings-stack", { wallet })
-    }, [wallet, navigation])
 
     return (
         <View style={{ flex: 1 }}>
@@ -63,12 +33,12 @@ const WalletManagerScreen = ({ navigation, route }: StackScreenProps<any>) => {
             <SectionHeader
                 icon="repeat-outline"
                 label={useTranslate("section.title.transactions")}
-                actions={[{ icon: "reload", action: handleLoadTransactions }]}
+                actions={[{ icon: "reload", action: loadTransactions }]}
             />
 
             <ScrollView
                 contentContainerStyle={theme.styles.scroll_container}
-                refreshControl={<RefreshControl refreshing={refreshing} onRefresh={handleLoadTransactions} />}
+                refreshControl={<RefreshControl refreshing={refreshing} onRefresh={loadTransactions} />}
             >
                 <WalletTransactions 
                     transactions={transactions} 
