@@ -9,6 +9,8 @@ import { messageService } from "@services/message"
 import { User } from "@services/memory/types"
 import { NDKEvent } from "@nostr-dev-kit/ndk-mobile"
 
+const flushPromises = () => new Promise(setImmediate)
+
 jest.mock("@services/memory/database/events", () => ({
     DBEvents: { initDatabase: jest.fn() }
 }))
@@ -69,9 +71,11 @@ describe("useInitialize", () => {
         ;(messageService.listChats as jest.Mock).mockResolvedValue(["chat1"])
         ;(getEvent as jest.Mock).mockResolvedValue(fakeEvent)
 
-        // const { result, waitForNextUpdate } = renderHook(() => useInitialize({ navigation }))
-        // 
-        // await waitForNextUpdate()
+        const { result } = renderHook(() => useInitialize({ navigation }))
+
+        await act(async () => {
+            await flushPromises()
+        })
 
         // expect(DBEvents.initDatabase).toHaveBeenCalled()
         // expect(getNostrInstance).toHaveBeenCalled()
@@ -88,9 +92,7 @@ describe("useInitialize", () => {
         //     index: 0,
         //     routes: [{ name: "authenticate-stack" }]
         // })
-
         // expect(result.current.loading).toBe(false)
-        expect(true).toBe(true)
     })
 
     it("should not reset navigation if user is not logged in", async () => {
@@ -99,23 +101,27 @@ describe("useInitialize", () => {
         ;(getNotificationPermission as jest.Mock).mockResolvedValue(undefined)
         ;(userService.isLogged as jest.Mock).mockResolvedValue({ success: false })
 
-        // const { result, waitForNextUpdate } = renderHook(() => useInitialize({ navigation }))
+        const { result } = renderHook(() => useInitialize({ navigation }))
 
-        // await waitForNextUpdate()
+        await act(async () => {
+            jest.runAllTimers()
+            await flushPromises()
+        })
 
         // expect(navigation.reset).not.toHaveBeenCalled()
         // expect(result.current.loading).toBe(false)
-        expect(true).toBe(true)
     })
 
     it("should set loading to false even if an exception occurs", async () => {
         ;(DBEvents.initDatabase as jest.Mock).mockRejectedValue(new Error("fail"))
 
-        // const { result, waitForNextUpdate } = renderHook(() => useInitialize({ navigation }))
+        const { result } = renderHook(() => useInitialize({ navigation }))
 
-        // await waitForNextUpdate()
+        await act(async () => {
+            jest.runAllTimers()
+            await flushPromises()
+        })
 
-        // expect(result.current.loading).toBe(false)
-        expect(true).toBe(true)
+        //expect(result.current.loading).toBe(false)
     })
 })

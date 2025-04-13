@@ -1,12 +1,11 @@
 import { Video } from 'react-native-video'
-import { memo, useEffect, useRef, useState } from "react"
-import { View, StyleSheet, Text, Dimensions } from 'react-native'
+import { View, StyleSheet, Text } from 'react-native'
 import Slider from '@react-native-community/slider'
 import { useTranslateService } from '@src/providers/translateProvider'
 import { NDKEvent } from '@nostr-dev-kit/ndk-mobile'
 import { ActivityIndicator } from 'react-native-paper'
 import VideoFooter from './commons/footer'
-import { extractVideoUrl } from '@src/utils'
+import { useVideoViewer } from './hooks/use-video-viewer'
 import theme from '@src/theme'
 
 interface VideoProps { 
@@ -16,41 +15,12 @@ interface VideoProps {
 
 const FeedVideoViewer = ({ event, paused }: VideoProps) => {
 
-    const videoRef = useRef<any>(null)
     const { useTranslate } = useTranslateService()
-    const { width, height } = Dimensions.get("window")
-    const [duration, setDuration] = useState<number>(0)
-    const [currentTime, setCurrentTime] = useState<number>(0)
-    const [error, setError] = useState<boolean>(false)
-    const [loading, setLoading] = useState<boolean>(true)
-    const url = useRef(extractVideoUrl(event.content)??"").current
-
-    useEffect(() => {
-        const unsubscribe = () => {
-            if(videoRef.current) {
-                videoRef.current?.seek(0)
-                videoRef.current = null 
-            }
-        }
-        return unsubscribe
-    }, [])
-
-    const onLoadVideo = (data: any) => {
-        setDuration(data?.duration||0)
-        setLoading(false)
-    }
-
-    const onProgressVideo = (data: any) => { 
-        setCurrentTime(data?.currentTime||0)
-    }
-
-    const handleSeek = (time: number) => {
-        if(videoRef.current) {
-            videoRef.current.seek(time)
-            setCurrentTime(time)
-        }
-    }
-
+    const {
+        url, width, height, loading, videoRef, duration, currentTime, error, 
+        setError, onLoadVideo, onProgressVideo, handleSeek
+    } = useVideoViewer(event)
+ 
     return (
         <View style={[styles.contentVideo, { width: width, height: height }]}>
             <Video onError={() => setError(true)} 
