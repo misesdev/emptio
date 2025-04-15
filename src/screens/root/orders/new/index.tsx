@@ -38,7 +38,6 @@ const NewOrderScreen = ({ navigation }: StackScreenProps<any>) => {
                 isValidHandle={(valid) => setNextDisabled(!valid)}
             />
 
-            {/* Footer */}
             <View style={styles.buttonArea}>
                 <TouchableOpacity activeOpacity={.7} disabled={nextDisabled}
                     onPress={() => navigation.navigate("feed-order-ndetails", { wallet, amount })}
