@@ -1,5 +1,5 @@
 import NoteViewer from "@components/nostr/event/NoteViewer"
-import { NDKEvent, NDKFilter, NDKKind, NDKSubscription, NDKSubscriptionCacheUsage } from "@nostr-dev-kit/ndk-mobile"
+import { NDKEvent, NDKFilter, NDKKind, NDKSubscription, NDKSubscriptionCacheUsage, NostrEvent } from "@nostr-dev-kit/ndk-mobile"
 import { TouchableOpacity, View, Text, StyleSheet } from "react-native"
 import Ionicons from "react-native-vector-icons/Ionicons"
 import theme from "@src/theme"
@@ -10,8 +10,8 @@ import { useAuth } from "@src/providers/userProvider"
 import { noteService } from "@services/nostr/noteService"
 
 interface CommentItemProps {
-    event: NDKEvent,
-    replies: NDKEvent[]
+    event: NostrEvent,
+    replies: NostrEvent[]
 }
 
 const CommentItem = ({ event, replies }: CommentItemProps) => {
@@ -23,7 +23,7 @@ const CommentItem = ({ event, replies }: CommentItemProps) => {
     const { useTranslate } = useTranslateService()
     const [showReplies, setShowReplies] = useState(false)
     const [reacted, setReacted] = useState<boolean>(false)
-    const [reactions, setReactions] = useState<NDKEvent[]>([])
+    const [reactions, setReactions] = useState<NostrEvent[]>([])
 
     useEffect(() => { 
         setTimeout(fetchReactions, 20)
@@ -40,12 +40,20 @@ const CommentItem = ({ event, replies }: CommentItemProps) => {
         
     const fetchReactions = async () => {
         
-        const filter: NDKFilter = { kinds: [NDKKind.Reaction], "#e": [event.id] }
+        const filter: NDKFilter = { kinds: [NDKKind.Reaction], "#e": [event.id??""] }
         subscription.current = ndk.subscribe(filter, {
             cacheUsage: NDKSubscriptionCacheUsage.ONLY_RELAY
         })  
 
-        subscription.current.on("event", event => setReactions(prev => [...prev, event]))
+        subscription.current.on("event", note => setReactions(prev => [...prev, {
+            id: note.id,
+            kind: note.kind,
+            pubkey: note.pubkey,
+            tags: note.tags,
+            content: note.content,
+            created_at: note.created_at,
+            sig: note.sig
+        } as NostrEvent]))
 
         timeout.current = setTimeout(() => {
             subscription.current?.stop()
@@ -58,16 +66,16 @@ const CommentItem = ({ event, replies }: CommentItemProps) => {
     const handleReact = () => {
         setReacted(prev => !prev)
         setTimeout(() => {
-            const reaction = reactions.find(r => r.pubkey == user.pubkey)
+            const reaction = reactions.find(r => r.pubkey == user.pubkey) as NostrEvent
             if(!reaction) {
-                setReactions(prev => [...prev, user as NDKEvent])
-                noteService.reactNote({ note: event, reaction:"❣️" }).then(reaction => {
-                    setReactions(prev => [...prev.filter(r => r.pubkey != user.pubkey), reaction])
+                setReactions(prev => [...prev, user as NostrEvent])
+                noteService.reactNote({ note: event as NDKEvent, reaction:"❣️" }).then(reaction => {
+                    setReactions(prev => [...prev.filter(r => r.pubkey != user.pubkey), reaction as NostrEvent])
                 })
             }
             if(reaction) {
                 setReactions(prev => [...prev.filter(r => r.id != reaction.id)])
-                noteService.deleteReact(reaction)
+                noteService.deleteReact(reaction as NDKEvent)
             }
         }, 20)
     }
@@ -78,7 +86,7 @@ const CommentItem = ({ event, replies }: CommentItemProps) => {
         <View style={{ width: "100%", paddingVertical: 10 }}>
             <View style={{ width: "100%", flexDirection: "row" }}>
                 <View style={{ width: "90%" }}>
-                    <NoteViewer note={event} />
+                    <NoteViewer note={event as NDKEvent} />
                 </View>
                 <View style={{ width: "10%", alignItems: "center" }}>
                     <TouchableOpacity style={{ marginTop: 10 }} onPress={handleReact}>

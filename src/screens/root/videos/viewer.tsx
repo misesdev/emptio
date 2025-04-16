@@ -2,14 +2,14 @@ import { Video } from 'react-native-video'
 import { View, StyleSheet, Text } from 'react-native'
 import Slider from '@react-native-community/slider'
 import { useTranslateService } from '@src/providers/translateProvider'
-import { NDKEvent } from '@nostr-dev-kit/ndk-mobile'
+import { NostrEvent } from '@nostr-dev-kit/ndk-mobile'
 import { ActivityIndicator } from 'react-native-paper'
 import VideoFooter from './commons/footer'
 import { useVideoViewer } from './hooks/use-video-viewer'
 import theme from '@src/theme'
 
 interface VideoProps { 
-    event: NDKEvent,
+    event: NostrEvent,
     paused: boolean
 }
 
@@ -20,12 +20,12 @@ const FeedVideoViewer = ({ event, paused }: VideoProps) => {
         url, width, height, loading, videoRef, duration, currentTime, error, 
         setError, onLoadVideo, onProgressVideo, handleSeek
     } = useVideoViewer(event)
- 
+
     return (
         <View style={[styles.contentVideo, { width: width, height: height }]}>
             <Video onError={() => setError(true)} 
                 ref={videoRef} repeat paused={paused} 
-                source={{ uri: url }}                
+                source={{ uri: url, shouldCache: false }}                
                 style={styles.video}
                 resizeMode="none"
                 onLoad={onLoadVideo}

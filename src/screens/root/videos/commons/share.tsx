@@ -1,5 +1,5 @@
 
-import { NDKEvent } from "@nostr-dev-kit/ndk-mobile"
+import { NDKEvent, NostrEvent } from "@nostr-dev-kit/ndk-mobile"
 import { Modal, StyleSheet, View, Text, TouchableOpacity } from "react-native"
 import { FollowList } from "@components/nostr/follow/FollowList"
 import { User } from "@services/memory/types"
@@ -11,7 +11,7 @@ import { getUserName } from "@src/utils"
 import theme from "@src/theme"
 
 type ChatProps = {
-    event: NDKEvent,
+    event: NostrEvent,
     visible: boolean,
     setVisible: (state: boolean) => void
 }
@@ -23,7 +23,7 @@ const VideoShareBar = ({ event, visible, setVisible }: ChatProps) => {
 
     const handleSend = (follow: User) => {
 
-        const message = event.encode(2)
+        const message = (event as NDKEvent).encode(2)
 
         setTimeout(() => { 
             messageService.sendMessage({ user, follow, message })

@@ -16,7 +16,7 @@ export const getUserData = async (publicKey: string): Promise<User> => {
         limit: 1 
     })
 
-    return event.content as User
+    return event?.content as User
 }
 
 export const pushUserData = async (user: User, pairKey: PairKey) => {
@@ -54,7 +54,7 @@ export const getNostrInstance = async ({ user }: NostrInstanceProps): Promise<ND
        
     const ndk = new NDK({ 
         explicitRelayUrls: relays, 
-        cacheAdapter: new NDKCacheAdapterSqlite("nevents"),
+        //cacheAdapter: new NDKCacheAdapterSqlite("nevents"),
         clientName: "emptio_p2p",  
     })
 

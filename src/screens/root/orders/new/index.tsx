@@ -28,7 +28,9 @@ const NewOrderScreen = ({ navigation }: StackScreenProps<any>) => {
                 onClose={() => navigation.goBack()} 
             />
 
-            <Text style={styles.title}>{useTranslate("order.new.amount-title")}</Text>
+            <Text style={styles.title}>
+                {useTranslate("order.new.amount-title")}
+            </Text>
 
             <AmountBox wallet={wallet} 
                 setWallet={setWallet}

@@ -1,9 +1,10 @@
 import { useTranslateService } from "@src/providers/translateProvider"
 import { timeSeconds } from "@services/converter"
-import { NDKEvent, NDKFilter, NDKKind, NDKSubscription,
-    NDKSubscriptionCacheUsage } from "@nostr-dev-kit/ndk-mobile"
+import { NDKFilter, NDKKind, NDKSubscription,
+    NDKSubscriptionCacheUsage, 
+    NostrEvent } from "@nostr-dev-kit/ndk-mobile"
 import useNDKStore from "@services/zustand/ndk"
-import { useEffect, useRef, useState } from "react"
+import { useCallback, useEffect, useMemo, useRef, useState } from "react"
 import { VideoSource } from "../commons/header"
 import { useFeedVideosStore } from "@services/zustand/feedVideos"
 import { useFocusEffect } from "@react-navigation/native"
@@ -19,11 +20,13 @@ export const useVideos =({ navigation }: any) => {
     const subscription = useRef<NDKSubscription>()
     const lastTimestamp = useRef<number>(timeSeconds.now())
     const isFetching = useRef<boolean>(false) 
-    const [videos, setVideos] = useState<NDKEvent[]>([])
+    const [videos, setVideos] = useState<NostrEvent[]>([])
     const [paused, setPaused] = useState<boolean>(false)
     const [playingIndex, setPlayingIndex] = useState<number>(0)
     const [source, setSource] = useState<VideoSource>("relays")
     const { feedSettings, savedEvents, blackList } = useFeedVideosStore()
+
+    const savedVideos = useMemo(() => videos, [videos])
 
     useEffect(() => {
         loadResetFeed()
@@ -40,12 +43,12 @@ export const useVideos =({ navigation }: any) => {
         setVideos([])
         events.current.clear()
         lastTimestamp.current = timeSeconds.now() 
-        setTimeout(fetchVideos, 20)
+        fetchVideos()
     }
 
     useFocusEffect(() => { setPaused(false) })
 
-    const fetchVideos = () => {
+    const fetchVideos = useCallback(() => {
         if(isFetching.current) return;
         if(source == "saved") {
             if(videos.length == savedEvents.size)
@@ -79,7 +82,15 @@ export const useVideos =({ navigation }: any) => {
                 if(founds >= feedSettings.VIDEOS_LIMIT) return subscription.current?.stop()
                 if(extractVideoUrl(event.content)) 
                 {
-                    setVideos(prev => [...prev, event])
+                    setVideos(prev => [...prev, { 
+                        id: event.id,
+                        kind: event.kind,
+                        pubkey: event.pubkey,
+                        tags: event.tags,
+                        content: event.content,
+                        created_at: event.created_at,
+                        sig: event.sig
+                    } as NostrEvent])
                     events.current.add(event.id)
                     founds ++
                 }
@@ -90,6 +101,7 @@ export const useVideos =({ navigation }: any) => {
             clearTimeout(timeout.current)
             setTimeout(() => isFetching.current = false, 20)
             subscription.current?.removeAllListeners()
+            subscription.current = undefined
         }
         
         subscription.current.on("eose", finishFetch)
@@ -99,11 +111,11 @@ export const useVideos =({ navigation }: any) => {
             if(founds === 0) pushMessage(useTranslate("feed.videos.notfound"))
             subscription.current?.stop()
         }, 5000)
-    }
+    }, [feedSettings, source])
 
     return {
-        videos,
         paused,
+        savedVideos,
         playingIndex,
         setPlayingIndex,
         setSource,

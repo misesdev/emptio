@@ -1,9 +1,9 @@
 import { extractVideoUrl } from "@src/utils"
-import { NDKEvent } from "@nostr-dev-kit/ndk-mobile"
+import { NostrEvent } from "@nostr-dev-kit/ndk-mobile"
 import { useEffect, useRef, useState } from "react"
 import { Dimensions } from "react-native"
 
-export const useVideoViewer = (event: NDKEvent) => {
+export const useVideoViewer = (event: NostrEvent) => {
 
     const videoRef = useRef<any>(null)
     const { width, height } = Dimensions.get("window")

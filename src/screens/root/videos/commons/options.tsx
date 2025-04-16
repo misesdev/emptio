@@ -1,5 +1,5 @@
 
-import { NDKEvent } from "@nostr-dev-kit/ndk-mobile"
+import { NDKEvent, NostrEvent } from "@nostr-dev-kit/ndk-mobile"
 import { Modal, StyleSheet, View, Text, TouchableOpacity, Animated } from "react-native"
 import Ionicons from "react-native-vector-icons/Ionicons"
 import { useTranslateService } from "@/src/providers/translateProvider"
@@ -15,7 +15,7 @@ import theme from "@src/theme"
 var showOptionsFunction: () => void
 
 interface VideoOptionProps {
-    event: NDKEvent;
+    event: NostrEvent;
 }
 
 const VideoOptionsBar = ({ event }: VideoOptionProps) => {
@@ -43,11 +43,11 @@ const VideoOptionsBar = ({ event }: VideoOptionProps) => {
     const handleSave = async () => {
         if(hasSaved) {
             setHasSaved(false)
-            storageService.database.events.delete(event.id)
+            storageService.database.events.delete(event.id??"")
             savedEvents.delete(event)
         } else {
             setHasSaved(true)
-            storageService.database.events.add({ event, category: "videos" })
+            storageService.database.events.insert({ event: event as NDKEvent, category: "videos" })
             savedEvents.add(event)
         }
     }

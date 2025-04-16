@@ -1,4 +1,4 @@
-import { NDKEvent } from "@nostr-dev-kit/ndk-mobile"
+import { NDKEvent, NostrEvent } from "@nostr-dev-kit/ndk-mobile"
 import { memo, useCallback, useMemo, useState } from "react"
 import { Modal, StyleSheet, View, Text, TouchableOpacity, 
     TextInput, FlatList } from "react-native"
@@ -11,8 +11,8 @@ import theme from "@src/theme"
 import CommentItem from "./comment"
 
 interface VideoCommentsProps {
-    event: NDKEvent,
-    comments: NDKEvent[],
+    event: NostrEvent,
+    comments: NostrEvent[],
     visible: boolean,
     setVisible: (state: boolean) => void
 }
@@ -38,7 +38,7 @@ const VideoComments = ({ event, visible, comments, setVisible }: VideoCommentsPr
             pubkey: user.pubkey??"",
             content: comment.trim(),
             tags: [
-                ["e", event.id, "", "root"],
+                ["e", event.id??"", "", "root"],
                 ["p", event.pubkey]
             ],
             created_at: timeSeconds.now()
@@ -51,13 +51,13 @@ const VideoComments = ({ event, visible, comments, setVisible }: VideoCommentsPr
 
     }, [comment, user, event])
 
-    const getReplies = useCallback((event: NDKEvent) => {
+    const getReplies = useCallback((event: NostrEvent) => {
         return comments.filter(comment => {
             return comment.tags.some(t => t[0] == "e" && t[1] == event.id)
         })
     }, [comments])
 
-    const renderItem = useCallback(({ item }: { item: NDKEvent }) => {
+    const renderItem = useCallback(({ item }: { item: NostrEvent }) => {
         return <CommentItem event={item} replies={getReplies(item)} />
     }, [getReplies])
 
@@ -85,7 +85,7 @@ const VideoComments = ({ event, visible, comments, setVisible }: VideoCommentsPr
                     {visible &&
                         <FlatList 
                             data={memorizedComments}
-                            keyExtractor={event => event.id}
+                            keyExtractor={event => event.id??""}
                             renderItem={renderItem}
                             style={{ flex: 1 }}
                             contentContainerStyle={styles.listComments}

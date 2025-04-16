@@ -1,4 +1,4 @@
-import { NDKEvent } from "@nostr-dev-kit/ndk-mobile"
+import { NDKEvent, NostrEvent } from "@nostr-dev-kit/ndk-mobile"
 import { StackScreenProps } from "@react-navigation/stack"
 import { View, FlatList, SafeAreaView } from "react-native"
 import { ActivityIndicator } from "react-native-paper"
@@ -11,7 +11,7 @@ import theme from "@src/theme"
 const VideosFeed = ({ navigation }: StackScreenProps<any>) => {
 
     const { 
-        videos, paused, playingIndex, setPlayingIndex, 
+        savedVideos, paused, playingIndex, setPlayingIndex, 
         setSource, fetchVideos 
     } = useVideos({ navigation })
 
@@ -21,7 +21,7 @@ const VideosFeed = ({ navigation }: StackScreenProps<any>) => {
         }
     }, [])
 
-    const renderItem = useCallback(({ item, index }:{ item: NDKEvent, index: number }) => {
+    const renderItem = useCallback(({ item, index }:{ item: NostrEvent, index: number }) => {
         return <FeedVideoViewer event={item} paused={index !== playingIndex || paused} />
     }, [playingIndex, paused])
 
@@ -34,10 +34,10 @@ const VideosFeed = ({ navigation }: StackScreenProps<any>) => {
     return (
         <SafeAreaView style={theme.styles.container}>
             <FlatList pagingEnabled
-                data={videos}
+                data={savedVideos}
                 style={{ flex: 1 }}
                 renderItem={renderItem}
-                keyExtractor={(item: NDKEvent) => item.id}
+                keyExtractor={(item: NostrEvent) => item.id??""}
                 showsVerticalScrollIndicator={false}
                 viewabilityConfig={{ viewAreaCoveragePercentThreshold: 80 }} 
                 onViewableItemsChanged={onViewableItemsChanged}

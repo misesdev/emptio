@@ -4,9 +4,9 @@ import { StyleSheet, Modal, View, TouchableOpacity, FlatList, Text } from "react
 import { FormControl } from "@components/form/FormControl"
 import Ionicons from 'react-native-vector-icons/Ionicons'
 import { useFeedVideosStore } from "@services/zustand/feedVideos"
-import { saveFeedVideoSettings } from "@services/memory/settings"
 import { memo, useCallback, useState } from "react"
 import theme from "@src/theme"
+import { storageService } from "@/src/services/memory"
 
 var showFiltersFunction: () => void
 
@@ -49,7 +49,7 @@ const VideosFilters = () => {
 
     const handleSave = () => {
         setFeedSettings({...feedSettings, filterTags})
-        saveFeedVideoSettings({...feedSettings, filterTags})
+        storageService.settings.feedVideos.save({...feedSettings, filterTags})
         setVisible(false)
     }
 

@@ -6,34 +6,29 @@ import { useTranslateService } from "@src/providers/translateProvider"
 import DatePicker from "react-native-date-picker"
 import useCreateOrder from "../hooks/use-create-order"
 
-const OrderDetailScreen = ({ navigation, route }: any) => {
+const OrderClosureScreen = ({ navigation, route }: any) => {
 
     const { useTranslate } = useTranslateService()
     const { 
-        loading, disabled, amount, setClosure, publishOrder 
+        loading, disabled, setClosure, publishOrder 
     } = useCreateOrder({ navigation, route })
 
     return (
         <View style={{ flex: 1 }}>
             <HeaderScreen 
-                title="Order Details"
+                title="Vencimento da Ordem"
                 onClose={() => navigation.goBack()}
             />
             <ScrollView contentContainerStyle={theme.styles.scroll_container}>
 
-                <Text style={styles.sats}>
-                    {amount} sats
+                <Text style={styles.title}>
+                    Data de vencimento da ordem de venda
                 </Text>
 
-                <View style={{ justifyContent: "center" }}>
-                    <View>
-                        <Text style={{ color: theme.colors.white, fontWeight: "500", fontSize: 20 }}>
-                            Data de vencimento da ordem
-                        </Text>
-                    </View>
+                <View style={styles.dateArea}>
                     <DatePicker 
-                        date={new Date()} 
-                        onDateChange={date => setClosure(date.getDate())} 
+                        date={new Date()}
+                        onDateChange={date => setClosure(date.valueOf())} 
                     />
                 </View>
             </ScrollView>
@@ -48,8 +43,11 @@ const OrderDetailScreen = ({ navigation, route }: any) => {
 }
 
 const styles = StyleSheet.create({
-    sats: { color: theme.colors.white, fontWeight: "500", fontSize: 25 },
-    buttonArea: { width: "100%", paddingVertical: 10, marginVertical: 20 },
+    title: { fontSize: 25, maxWidth: "90%", fontWeight: "bold", textAlign: "center",
+        color: theme.colors.white },
+    dateArea: { marginVertical: 100, justifyContent: "center" },
+
+    buttonArea: { width: "100%", paddingVertical: 10, marginVertical: 20, alignItems: "center" },
 })
 
-export default OrderDetailScreen
+export default OrderClosureScreen

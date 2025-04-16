@@ -1,7 +1,7 @@
 import { User } from "@services/memory/types"
 import Ionicons from 'react-native-vector-icons/Ionicons'
 import { copyPubkey, getDisplayPubkey, getUserName } from "@src/utils"
-import { NDKEvent, NDKFilter, NDKKind, NDKSubscription, NDKSubscriptionCacheUsage } from "@nostr-dev-kit/ndk-mobile"
+import { NDKEvent, NDKFilter, NDKKind, NDKSubscription, NDKSubscriptionCacheUsage, NostrEvent } from "@nostr-dev-kit/ndk-mobile"
 import { useEffect, useState, useCallback, useMemo, useRef } from "react"
 import { StyleSheet, View, Text, TouchableOpacity } from "react-native"
 import VideoDescription from "./description"
@@ -18,7 +18,7 @@ import VideoOptionsBar, { showVideoOptions } from "./options"
 import VideosFilters from "./filters"
 
 interface FooterVideoProps { 
-    event: NDKEvent, 
+    event: NostrEvent, 
     url: string,
 }
 
@@ -33,8 +33,8 @@ const VideoFooter = ({ event, url }: FooterVideoProps) => {
     const [commentsVisible, setCommentsVisible] = useState<boolean>(false)
     const [shareVisible, setShareVisible] = useState<boolean>(false)
     const [reacted, setReacted] = useState<boolean>(false)
-    const [reactions, setReactions] = useState<NDKEvent[]>([])
-    const [comments, setComments] = useState<NDKEvent[]>([])
+    const [reactions, setReactions] = useState<NostrEvent[]>([])
+    const [comments, setComments] = useState<NostrEvent[]>([])
 
     const isFriend = useMemo(() => follows?.some(f => f.pubkey == event.pubkey), [follows, event.pubkey])
     
@@ -57,8 +57,8 @@ const VideoFooter = ({ event, url }: FooterVideoProps) => {
 
     const fetchData = () => {
         const filters: NDKFilter[] = [
-            { kinds: [1], "#e": [event.id] }, // comments
-            { kinds: [7], "#e": [event.id] }, // reactions
+            { kinds: [1], "#e": [event.id??""] }, // comments
+            { kinds: [7], "#e": [event.id??""] }, // reactions
             { kinds: [0], authors:[event.pubkey], limit: 1 }, // profile
         ]
                
@@ -70,9 +70,25 @@ const VideoFooter = ({ event, url }: FooterVideoProps) => {
             if(note.kind == NDKKind.Metadata) 
                 setProfile(JSON.parse(note.content) as User)
             if(note.kind == NDKKind.Text && isComment(note)) 
-                setComments(prev => [...prev, note])
+                setComments(prev => [...prev, {
+                    id: note.id,
+                    kind: note.kind,
+                    pubkey: note.pubkey,
+                    tags: note.tags,
+                    content: note.content,
+                    created_at: note.created_at,
+                    sig: note.sig
+                } as NostrEvent])
             if(note.kind == NDKKind.Reaction) 
-                setReactions(prev => [...prev, note])
+                setReactions(prev => [...prev, {
+                    id: note.id,
+                    kind: note.kind,
+                    pubkey: note.pubkey,
+                    tags: note.tags,
+                    content: note.content,
+                    created_at: note.created_at,
+                    sig: note.sig
+                } as NostrEvent])
         })
 
         timeout.current = setTimeout(() => {
@@ -85,16 +101,16 @@ const VideoFooter = ({ event, url }: FooterVideoProps) => {
 
     const handleReact = () => {
         setReacted(prev => !prev)
-        const reaction = reactions.find(r => r.pubkey == user.pubkey)
+        const reaction: NostrEvent = reactions.find(r => r.pubkey == user.pubkey) as NostrEvent
         if(!reaction) {
-            setReactions(prev => [...prev, user as NDKEvent])
-            noteService.reactNote({ note: event, reaction:"❣️" }).then(reaction => {
-                setReactions(prev => [...prev.filter(r => r.pubkey != user.pubkey), reaction])
+            setReactions(prev => [...prev, user as NostrEvent])
+            noteService.reactNote({ note: event as NDKEvent, reaction:"❣️" }).then(reaction => {
+                setReactions(prev => [...prev.filter(r => r.pubkey != user.pubkey), reaction as NostrEvent])
             })
         }
         if(reaction) {
             setReactions(prev => [...prev.filter(r => r.id != reaction.id)])
-            noteService.deleteReact(reaction)
+            noteService.deleteReact(reaction as NDKEvent)
         }
     }
 
