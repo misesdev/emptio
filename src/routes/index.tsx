@@ -27,12 +27,12 @@ import WalletReceiveScreen from "@screens/root/wallet/receive"
 import ImportWalletScreen from "@screens/root/wallet/add/import"
 import CreatedSeedScren from "@screens/root/wallet/add/seed"
 import TransactionScreen from "@screens/root/wallet/transaction"
-import NewOrderScreen from "@screens/root/orders/order/new"
+import NewOrderScreen from "@screens/root/orders/new"
 import ConversationChat from "@screens/root/chats/conversation"
 import ManageFriendsScreen from "@screens/root/friends"
 import RelayScreen from "@screens/root/settings/relays/relay"
 import AddRelayScreen from "@screens/root/settings/relays/add"
-import OrderDetailScreen from "../screens/root/orders/order/new/details"
+import OrderDetailScreen from "@screens/root/orders/new/details"
 
 const Stack = createStackNavigator()
 
