@@ -10,6 +10,8 @@ import useChatStore from "@services/zustand/chats"
 import { useFeedVideosStore } from "@services/zustand/feedVideos"
 import useNDKStore from "@services/zustand/ndk"
 import { useEffect, useState } from "react"
+import { pushMessage } from "@services/notification"
+import { useTranslateService } from "@src/providers/translateProvider"
 
 export const useInitialize = ({ navigation }: any) => {
 
@@ -18,6 +20,7 @@ export const useInitialize = ({ navigation }: any) => {
     const { initialize } = useFeedVideosStore()
     const { setNDK, setNdkSigner } = useNDKStore()
     const [loading, setLoading] = useState(true)
+    const { useTranslate } = useTranslateService()
 
     useEffect(() => {  
         initialize()
@@ -26,34 +29,37 @@ export const useInitialize = ({ navigation }: any) => {
 
     const verifyLogon = async () => {
 
-        console.log("verify logon")
-        await DBEvents.initDatabase()
-        
-        setNDK(await getNostrInstance({ }))
-        
-        await getNotificationPermission() 
-        
-        const result = await userService.isLogged()
-        if (result.success && result.data) 
-        {
-            setNdkSigner(result.data)
-
-            setChats(await messageService.listChats(result.data))
-
-            subscribeUser(result.data ?? {})
+        try {
+            await DBEvents.initDatabase()
             
-            if(setFollowsEvent) 
+            setNDK(await getNostrInstance({ }))
+            
+            await getNotificationPermission() 
+            
+            const result = await userService.isLogged()
+            if (result.success && result.data) 
             {
-                const eventFollow = await getEvent({ 
-                    kinds:[EventKinds.followList], 
-                    authors: [result.data.pubkey??""], 
-                    limit: 1
-                })
+                setNdkSigner(result.data)
 
-                if(eventFollow) setFollowsEvent(eventFollow)
-            }                
-            
-            navigation.reset({ index: 0, routes: [{ name: "authenticate-stack" }] })
+                setChats(await messageService.listChats(result.data))
+
+                subscribeUser(result.data ?? {})
+                
+                if(setFollowsEvent) 
+                {
+                    const eventFollow = await getEvent({ 
+                        kinds:[EventKinds.followList], 
+                        authors: [result.data.pubkey??""], 
+                        limit: 1
+                    })
+
+                    if(eventFollow) setFollowsEvent(eventFollow)
+                }                
+                
+                navigation.reset({ index: 0, routes: [{ name: "authenticate-stack" }] })
+            }
+        } catch {
+            pushMessage(useTranslate("message.default_error"))
         }
         setLoading(false)
     }

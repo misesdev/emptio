@@ -4,7 +4,7 @@ import Ionicons from 'react-native-vector-icons/Ionicons'
 import { useEffect, useRef, useState } from "react"
 import theme from "@src/theme"
 
-type TextBoxProps = {
+interface TextBoxProps {
     value?: string | ""
     placeholder?: string,
     onChangeText: (text: string) => void,

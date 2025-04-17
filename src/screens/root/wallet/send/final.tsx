@@ -80,13 +80,12 @@ const SendFinalScreen = ({ navigation, route }: any) => {
         const result = await walletService.transaction.build({ 
             amount: toNumber(amount), 
             destination: address, 
-            walletKey: wallet.key ?? "",
+            wallet,
             recomendedFee: feeValue
         }) 
 
         if (result.success) {
-            const network: BNetwork = wallet.type == "bitcoin" ? "mainnet" : "testnet"
-            const response = await walletService.transaction.send(result.data, network)
+            const response = await walletService.transaction.send(result.data, wallet.network)
             if(response.success) {
                 navigation.reset({
                     index: origin == "donation" ? 0 : 1,

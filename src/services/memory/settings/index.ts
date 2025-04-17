@@ -31,12 +31,21 @@ export class SettingsStorage {
         "25129977b8047f3ee1a27583449bcd0009ed513da78e75b4177ebdbb7c7695f9"
     ]
 
+    private static defaultSettings: Settings = {
+        useBiometrics: false,
+        currency: {
+            code: "USD", 
+            label: "currency.label.usd", 
+            symbol: "$", 
+            flag: "🇺🇸"
+        }
+    }
+
     static async get() : Promise<Settings> {
-        let settings: Settings = { useBiometrics: false }
+        let settings: Settings = this.defaultSettings 
         let data = await AsyncStorage.getItem("settings")
         if(data)
             settings = JSON.parse(data) as Settings
-
         return settings
     }
 

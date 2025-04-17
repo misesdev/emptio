@@ -1,6 +1,7 @@
 import { ReactElement, ReactNode, createContext, useContext, useEffect, useState } from "react"
 import { Settings } from "@services/memory/types"
 import { storageService } from "@services/memory"
+import Currencies from "../constants/Currencies"
 
 type SettingContextType = {
     settings: Settings,
@@ -16,7 +17,12 @@ const SettingsProvider = ({ children }: { children: ReactNode }): ReactElement =
     const [settings, setSettings] = useState<Settings>({})
 
     useEffect(() => {
-        storageService.settings.get().then(setSettings)
+        storageService.settings.get().then(conf => {
+            if(!conf.currency) {
+                conf.currency = Currencies[0]
+            }
+            setSettings(conf)
+        })
     }, [])
 
     const setSettingsOptions = (settings: Settings) => {

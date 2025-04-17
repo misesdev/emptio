@@ -203,14 +203,12 @@ const getBalance = async (wallet: Wallet) => {
 interface TransactionProps {
     amount: number,
     destination: string, 
-    walletKey: string,
+    wallet: Wallet,
     recomendedFee: number
 }
 
 const transaction = {
-    build: async ({ amount, destination, walletKey, recomendedFee }: TransactionProps): Promise<Response<any>> => {
-
-        const wallet = await storageService.wallets.get(walletKey)
+    build: async ({ amount, destination, wallet, recomendedFee }: TransactionProps): Promise<Response<any>> => {
 
         const pairkey = await storageService.secrets.getPairKey(wallet.pairkey??"")
 

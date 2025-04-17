@@ -15,7 +15,7 @@ const DonateScreen = ({ navigation, route }: StackScreenProps<any>) => {
     } = useDonateState({ navigation, route }) 
 
     return (
-        <View style={{ flex: 1 }} >
+        <View style={{ flex: 1, alignItems: "center" }} >
             <HeaderScreen
                 style={{ marginBottom: 25 }}
                 title={useTranslate("screen.title.donate")} 

@@ -136,7 +136,7 @@ export default {
     "settings.secretkey.copy": "Copy secret key",
     "settings.chooselanguage": "Language",
     "settings.security": "Security",
-    
+
     "section.title.wallets": "Wallets",
     "section.title.sales": "Purchasing & Sales",
     "section.title.transactions": "Transactions",
@@ -210,7 +210,7 @@ export default {
     "chat.action.markread": "Mark as read",
 
     "message.chats.alertdelete": "Are you sure you want to delete the selected conversations? The messages will only be deleted locally.",
-    
+
     "feed.empty": "No orders found, try adding seller friends",
     "feed.comments.empty": "No comments here",
     "feed.videos.comments": "Comments",
@@ -226,14 +226,33 @@ export default {
     "settings.about": "About",
     "settings.about.content": `Emptio P2P is an open-source application aimed at initially enabling peer-to-peer buying and selling of Bitcoin in a decentralized manner using the Nostr protocol.
 
-    To facilitate decentralized user communication, the Nostr protocol is employed, while the open API of Mempool is used for sending and receiving satoshis, and fiat currency payments utilize payment processor APIs.
-    
-    The goal is to address the issue of centralization in Bitcoin buying and selling, currently concentrated in the hands of banks and exchanges, thereby reducing the level of control and centralization by banking or governmental entities.
-    
-    Contribute to this initiative by donating, sharing the app with friends, or coding improvements.`,
+To facilitate decentralized user communication, the Nostr protocol is employed, while the open API of Mempool is used for sending and receiving satoshis, and fiat currency payments utilize payment processor APIs.
+
+The goal is to address the issue of centralization in Bitcoin buying and selling, currently concentrated in the hands of banks and exchanges, thereby reducing the level of control and centralization by banking or governmental entities.
+
+Contribute to this initiative by donating, sharing the app with friends, or coding improvements.`,
 
 
-
+    "currency.label.usd": "US Dollar",
+    "currency.label.eur": "Euro",
+    "currency.label.brl": "Brazilian Real",
+    "currency.label.gbp": "British Pound",
+    "currency.label.jpy": "Japanese Yen",
+    "currency.label.aud": "Australian Dollar",
+    "currency.label.cad": "Canadian Dollar",
+    "currency.label.chf": "Swiss Franc",
+    "currency.label.cny": "Chinese Yuan",
+    "currency.label.inr": "Indian Rupee",
+    "currency.label.mxn": "Mexican Peso",
+    "currency.label.rub": "Russian Ruble",
+    "currency.label.zar": "South African Rand",
+    "currency.label.krw": "South Korean Won",
+    "currency.label.sek": "Swedish Krona",
+    "currency.label.nok": "Norwegian Krone",
+    "currency.label.dkk": "Danish Krone",
+    "currency.label.pln": "Polish Zloty",
+    "currency.label.try": "Turkish Lira",
+    "currency.label.ars": "Argentine Peso",
 
     "en": "English",
     "pt": "Portuguese"

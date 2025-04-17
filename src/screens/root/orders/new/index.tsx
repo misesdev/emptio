@@ -8,12 +8,14 @@ import { Wallet } from "@services/memory/types"
 import { useEffect, useState } from "react"
 import theme from "@src/theme"
 import { useAuth } from "@src/providers/userProvider"
+import { CurrencyInput } from "@components/wallet/currency/CurrencyInput"
 
 const NewOrderScreen = ({ navigation }: StackScreenProps<any>) => {
 
     const { wallets } = useAuth()
     const { useTranslate } = useTranslateService()
-    const [amount, setAmount] = useState<string>("0")
+    const [price, setPrice] = useState<string>("0")
+    const [satoshis, setSatoshis] = useState<string>("0")
     const [nextDisabled, setNextDisabled] = useState(true)
     const [wallet, setWallet] = useState<Wallet>({})
 
@@ -35,14 +37,20 @@ const NewOrderScreen = ({ navigation }: StackScreenProps<any>) => {
             <AmountBox wallet={wallet} 
                 setWallet={setWallet}
                 manageWallet={wallets.length > 1} 
-                value={amount} 
-                onChangeText={setAmount} 
+                value={satoshis} 
+                onChangeText={setSatoshis} 
                 isValidHandle={(valid) => setNextDisabled(!valid)}
+            />
+
+            <CurrencyInput 
+                value={price} 
+                onChange={setPrice}
+                label={"Defina o preço dos satoshis em fiat."}
             />
 
             <View style={styles.buttonArea}>
                 <TouchableOpacity activeOpacity={.7} disabled={nextDisabled}
-                    onPress={() => navigation.navigate("feed-order-ndetails", { wallet, amount })}
+                    onPress={() => navigation.navigate("feed-order-ndetails", { wallet, satoshis })}
                     style={{ borderRadius: 50, padding: 14, margin: 10, backgroundColor: nextDisabled ? theme.colors.disabled : theme.colors.blue }}
                 >
                     <Ionicons name="arrow-forward-outline" size={theme.icons.large} color={nextDisabled ? theme.colors.gray : theme.colors.white} />

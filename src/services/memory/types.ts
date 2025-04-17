@@ -1,3 +1,4 @@
+import { Currency } from "@/src/constants/Currencies"
 import { BNetwork } from "bitcoin-tx-lib"
 import { Relay } from "nostr-tools"
 
@@ -115,7 +116,8 @@ export interface FeedVideosSettings {
 }
 
 export type Settings = {
-    useBiometrics?: boolean
+    useBiometrics?: boolean,
+    currency?: Currency
 }
 
 export type Relays = Relay[]

@@ -1,10 +1,8 @@
-import { renderHook, act } from "@testing-library/react-hooks"
+import { renderHook, act } from "@testing-library/react-native"
 import { useWallet } from "./use-wallet"
 import { walletService } from "@services/wallet"
 import { storageService } from "@services/memory"
 import { Transaction, Wallet, WalletInfo } from "@services/memory/types"
-
-const flushPromises = () => new Promise(setImmediate)
 
 const mockWallet = {
     key: "wallet1",
@@ -27,12 +25,9 @@ const route = {
 describe("useWallet", () => {
     beforeEach(() => {
         jest.clearAllMocks()
-        //jest.useFakeTimers()
+        jest.useFakeTimers()
     })
 
-    // afterEach(() => {
-    //     jest.useRealTimers()
-    // })
     it("should initialize and load transactions", async () => {
         const mockResult : WalletInfo = {
             balance: 100,
@@ -50,7 +45,6 @@ describe("useWallet", () => {
 
         await act(async () => {
             jest.runAllTimers()
-            await flushPromises()
         })
                
         expect(walletService.listTransactions).toHaveBeenCalledWith(mockWallet)
@@ -80,7 +74,6 @@ describe("useWallet", () => {
 
         await act(async () => {
             jest.runAllTimers()
-            await flushPromises()
         })
 
         expect(storageService.wallets.update).not.toHaveBeenCalled()

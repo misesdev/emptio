@@ -1,4 +1,4 @@
-import { renderHook, act } from "@testing-library/react-hooks"
+import { renderHook, act } from "@testing-library/react-native"
 import { useLogin } from "./use-login" 
 import { showMessage } from "@components/general/MessageBox"
 import { validatePrivateKey } from "@services/nostr"
@@ -7,30 +7,6 @@ import { subscribeUser } from "@services/nostr/pool"
 import { pushMessage } from "@services/notification"
 import { userService } from "@services/user"
 import Clipboard from "@react-native-clipboard/clipboard"
-
-jest.mock("@components/general/MessageBox", () => ({
-    showMessage: jest.fn()
-}))
-
-jest.mock("@src/providers/translateProvider", () => ({
-    useTranslateService: () => ({
-        useTranslate: (key: string) => key
-    })
-}))
-
-jest.mock("@src/providers/userProvider", () => ({
-    useAuth: () => ({
-        setUser: jest.fn(),
-        setFollowsEvent: jest.fn()
-    })
-}))
-
-jest.mock("@services/zustand/ndk", () => ({
-    __esModule: true,
-    default: () => ({
-        setNdkSigner: jest.fn()
-    })
-}))
 
 jest.mock("@services/nostr", () => ({
     validatePrivateKey: jest.fn()
@@ -42,14 +18,6 @@ jest.mock("@services/nostr/events", () => ({
 
 jest.mock("@services/nostr/pool", () => ({
     subscribeUser: jest.fn()
-}))
-
-jest.mock("@services/notification", () => ({
-    pushMessage: jest.fn()
-}))
-
-jest.mock("@react-native-clipboard/clipboard", () => ({
-    getString: jest.fn()
 }))
 
 describe("useLogin", () => {

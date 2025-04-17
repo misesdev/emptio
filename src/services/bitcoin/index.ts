@@ -73,24 +73,27 @@ export const createTransaction = async ({ amount, destination, recomendedFee,
 
         const ecPair = ECPairKey.fromHex({ privateKey: pairkey.privateKey, network })
 
-        const transaction = new Transaction(ecPair)
+        const transaction = new Transaction(ecPair, {
+            whoPayTheFee: wallet.payfee ? wallet.address : destination,
+            fee: recomendedFee
+        })
 
         const utxos = await getUtxos(wallet.address ?? "", network)
         // ordenate for include all minimal value utxo of wallet
         const ordenedUtxos = utxos.sort((a, b) => a.value - b.value)
         // add destination address transaction, the amount is defined later
         transaction.addOutput({ address: destination, amount: amount })
-        if(destination != wallet.address) {
+        if(destination !== wallet.address) {
             // add the change recipient, the amount is defined later
             transaction.addOutput({ address: wallet.address ?? "", amount: 10 })
         }
 
-        let calculatedFee = 0
+        let calculatedFee = 0;
         for (let utxo of ordenedUtxos) 
         {
             if(transaction.inputs.some(i => i.txid == utxo.txid)) continue
 
-            if (utxoAmount <= amount+calculatedFee) {
+            if (utxoAmount <= (amount+calculatedFee)) {
                 utxoAmount += utxo.value
                 let scriptPubKey = Address.getScriptPubkey(wallet.address??"")
                 transaction.addInput({
@@ -99,37 +102,24 @@ export const createTransaction = async ({ amount, destination, recomendedFee,
                     value: utxo.value,
                     scriptPubKey
                 })
-                calculatedFee = Math.ceil(recomendedFee * transaction.vBytes()) 
+                calculatedFee = transaction.getFeeSats()
+                if(utxoAmount > (amount+calculatedFee)) {
+                    transaction.outputs.forEach(out => {
+                        if(out.address === wallet.address) { 
+                            out.amount = utxoAmount-amount
+                        }
+                    }) 
+                }
+            } else {
+                transaction.resolveFee()
+                break;
             } 
-            else {
-                // add the change recipient
-                transaction.outputs.forEach(out => {
-                    // the sender pay the fee
-                    if(out.address == wallet.address && transaction.outputs.length > 1) {
-                        let withoutFee = utxoAmount-amount
-                        let withFee = utxoAmount-(amount-calculatedFee)
-                        out.amount = wallet.payfee ? withFee : withoutFee 
-                    }
-                    // the receiver(s) pay the fee
-                    if(out.address != wallet.address && !wallet.payfee) {
-                        let mediaFee = calculatedFee / (transaction.outputs.length-1)
-                        out.amount = Math.ceil(out.amount-mediaFee)
-                    }
-                    // self payment 
-                    if(destination == wallet.address && transaction.outputs.length == 1) {
-                        out.amount = calculatedFee
-                    }
-                })
-                break
-            }
         }
 
         if(utxoAmount <= amount)
             throw new Error("You do not have sufficient funds to complete the transaction.")
-        
-        const txHex = transaction.build()
-
-        return { success: true, message: "", data: txHex }
+      
+        return { success: true, message: "", data: transaction.build() }
     }
     catch (ex) {
         return trackException(ex)

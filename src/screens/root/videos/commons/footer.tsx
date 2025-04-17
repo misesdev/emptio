@@ -1,7 +1,8 @@
 import { User } from "@services/memory/types"
 import Ionicons from 'react-native-vector-icons/Ionicons'
 import { copyPubkey, getDisplayPubkey, getUserName } from "@src/utils"
-import { NDKEvent, NDKFilter, NDKKind, NDKSubscription, NDKSubscriptionCacheUsage, NostrEvent } from "@nostr-dev-kit/ndk-mobile"
+import { NDKEvent, NDKFilter, NDKKind, NDKSubscription, NDKSubscriptionCacheUsage, 
+    NostrEvent } from "@nostr-dev-kit/ndk-mobile"
 import { useEffect, useState, useCallback, useMemo, useRef } from "react"
 import { StyleSheet, View, Text, TouchableOpacity } from "react-native"
 import VideoDescription from "./description"
@@ -67,9 +68,11 @@ const VideoFooter = ({ event, url }: FooterVideoProps) => {
         })
 
         subscription.current.on("event", note => {
-            if(note.kind == NDKKind.Metadata) 
-                setProfile(JSON.parse(note.content) as User)
-            if(note.kind == NDKKind.Text && isComment(note)) 
+            if(note.kind == NDKKind.Metadata) { 
+                const user = JSON.parse(note.content) as User
+                user.pubkey = note.pubkey
+                setProfile(user)
+            } else if(note.kind == NDKKind.Text && isComment(note)) { 
                 setComments(prev => [...prev, {
                     id: note.id,
                     kind: note.kind,
@@ -79,7 +82,7 @@ const VideoFooter = ({ event, url }: FooterVideoProps) => {
                     created_at: note.created_at,
                     sig: note.sig
                 } as NostrEvent])
-            if(note.kind == NDKKind.Reaction) 
+            } else if(note.kind == NDKKind.Reaction) { 
                 setReactions(prev => [...prev, {
                     id: note.id,
                     kind: note.kind,
@@ -89,6 +92,7 @@ const VideoFooter = ({ event, url }: FooterVideoProps) => {
                     created_at: note.created_at,
                     sig: note.sig
                 } as NostrEvent])
+            }
         })
 
         timeout.current = setTimeout(() => {

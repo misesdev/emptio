@@ -63,7 +63,7 @@ export default {
     "commons.publish": "Publicar",
     "commons.connect": "Conectar",
     "commons.disconnect": "Desconectar",
-    
+
     "labels.all": "Todos",
     "labels.friends": "Amigos",
     "labels.username": "Nome de Usuário",
@@ -226,12 +226,32 @@ export default {
     "settings.about": "Sobre",
     "settings.about.content": `Emptio P2P é uma aplicação de código aberto que tem o objetivo de permitir inicialmente a compra e venda de bitcoin de pessoa para pessoa de forma descentralizada utilizando o protocolo Nostr.
 
-    Para permitir a comunicação entre usuário de forma descentralizada é utilizado o protocolo Nostr, para enviar e receber satoshis é utilizada a API aberta da Mempool e para pagamentos em moeda fiat são utilizadas APIS de processador de pagamento.
-    
-    O objetivo é resolver o problema da centralização da comprae venda de bitcoin nas mão de bancos e corretoras, assim reduzindo o nível de captura e centralização em entidades bancarias ou governamentais.
-    
-    Contribua com essa iniciativa doando, compartilhando o App com amigos, ou codificando melhorias.`,
+Para permitir a comunicação entre usuário de forma descentralizada é utilizado o protocolo Nostr, para enviar e receber satoshis é utilizada a API aberta da Mempool e para pagamentos em moeda fiat são utilizadas APIS de processador de pagamento.
 
+O objetivo é resolver o problema da centralização da comprae venda de bitcoin nas mão de bancos e corretoras, assim reduzindo o nível de captura e centralização em entidades bancarias ou governamentais.
+
+Contribua com essa iniciativa doando, compartilhando o App com amigos, ou codificando melhorias.`,
+
+    "currency.label.usd": "Dólar Americano",
+    "currency.label.eur": "Euro",
+    "currency.label.brl": "Real Brasileiro",
+    "currency.label.gbp": "Libra Esterlina",
+    "currency.label.jpy": "Iene Japonês",
+    "currency.label.aud": "Dólar Australiano",
+    "currency.label.cad": "Dólar Canadense",
+    "currency.label.chf": "Franco Suíço",
+    "currency.label.cny": "Yuan Chinês",
+    "currency.label.inr": "Rupia Indiana",
+    "currency.label.mxn": "Peso Mexicano",
+    "currency.label.rub": "Rublo Russo",
+    "currency.label.zar": "Rand Sul-Africano",
+    "currency.label.krw": "Won Sul-Coreano",
+    "currency.label.sek": "Coroa Sueca",
+    "currency.label.nok": "Coroa Norueguesa",
+    "currency.label.dkk": "Coroa Dinamarquesa",
+    "currency.label.pln": "Zlóti Polonês",
+    "currency.label.try": "Lira Turca",
+    "currency.label.ars": "Peso Argentino",
 
     "en": "Inglês",
     "pt": "Português"

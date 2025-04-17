@@ -1,4 +1,4 @@
-import { NDKEvent, NostrEvent } from "@nostr-dev-kit/ndk-mobile"
+import { NostrEvent } from "@nostr-dev-kit/ndk-mobile"
 import { StackScreenProps } from "@react-navigation/stack"
 import { View, FlatList, SafeAreaView } from "react-native"
 import { ActivityIndicator } from "react-native-paper"

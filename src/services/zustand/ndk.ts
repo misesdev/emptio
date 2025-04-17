@@ -1,7 +1,7 @@
 import NDK, { NDKPrivateKeySigner } from "@nostr-dev-kit/ndk-mobile"
 import { create } from "zustand"
 import { User } from "../memory/types"
-import { getPairKey } from "../memory/pairkeys"
+import { storageService } from "../memory"
 
 interface NDKStore {
     ndk: NDK,
@@ -17,7 +17,7 @@ const useNDKStore = create<NDKStore>((set) => ({
         }))
     },
     setNdkSigner: async (user: User) => {
-        const pairKey = await getPairKey(user.keychanges ?? "")
+        const pairKey = await storageService.secrets.getPairKey(user.keychanges ?? "")
         set((state) => {
             state.ndk.signer = new NDKPrivateKeySigner(pairKey.privateKey)
             return state

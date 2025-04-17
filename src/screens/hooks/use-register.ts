@@ -42,26 +42,30 @@ export const useRegister = ({ navigation }: any) => {
     }
 
     const registerUser = async () => {
+        try {
+            const result = await userService.signUp({ userName: userName.trim(), setUser })
 
-        const result = await userService.signUp({ userName: userName.trim(), setUser })
+            if (result.success && result.data) 
+            {
+                subscribeUser(result.data)
 
-        if (result.success && result.data) 
-        {
-            subscribeUser(result.data)
+                const pairKey = await storageService.secrets.getPairKey(result.data.keychanges??"")
+                
+                const followsEvent = createFollowEvent(result.data ?? {}, [
+                    ["p", result.data.pubkey??""]
+                ])
 
-            const pairKey = await storageService.secrets.getPairKey(result.data.keychanges??"")
-            
-            const followsEvent = createFollowEvent(result.data ?? {}, [
-                ["p", result.data.pubkey??""]
-            ])
+                await pushUserFollows(followsEvent, pairKey)
 
-            await pushUserFollows(followsEvent, pairKey)
+                if(setFollowsEvent) setFollowsEvent(followsEvent)
 
-            if(setFollowsEvent) setFollowsEvent(followsEvent)
-
-            return navigation.reset({ index: 0, routes: [{ name: "core-stack" }] })
+                return navigation.reset({ index: 0, routes: [{ name: "core-stack" }] })
+            }
+            pushMessage(`${useTranslate("message.request.error")} ${result.message}`)
+        } 
+        catch(ex: any) {
+            pushMessage(`${useTranslate("message.request.error")} ${ex?.message}`)
         }
-        pushMessage(`${useTranslate("message.request.error")} ${result.message}`)
     }
 
     return {
