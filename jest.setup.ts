@@ -1,10 +1,10 @@
 import "@testing-library/jest-native/extend-expect"
 import "react-native-gesture-handler/jestSetup"
 
-// Evita warnings de timers
+// Avoid time warnings 
 jest.useFakeTimers()
 
-// Clipboard mock de exemplo
+// Clipboard mock exemple
 jest.mock("@react-native-clipboard/clipboard", () => ({
   getString: jest.fn(),
   setString: jest.fn(),
@@ -81,7 +81,16 @@ jest.mock("@services/zustand/ndk", () => ({
     __esModule: true,
     default: () => ({
         setNDK: jest.fn(),
-        setNdkSigner: jest.fn()
+        setNdkSigner: jest.fn(),
+        ndk: {
+            pool: {
+                relays: new Map([
+                    ['r1', { connected: true }],
+                    ['r2', { connected: false }],
+                    ['r3', { connected: true }],
+                ]),
+            },
+        },
     }),
 }))
 
@@ -122,7 +131,13 @@ jest.mock("@src/providers/translateProvider", () => ({
 
 jest.mock("@src/providers/userProvider", () => ({
     useAuth: () => ({
+        user: {},
         setUser: jest.fn(),
+        wallets: [],
+        setWallets: jest.fn(),
+        follows: [],
+        setFollows: jest.fn(),
+        followsEvent: {},
         setFollowsEvent: jest.fn()
     })
 }))

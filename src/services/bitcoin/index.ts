@@ -67,18 +67,17 @@ export const createTransaction = async ({ amount, destination, recomendedFee,
     wallet, pairkey }: TransactionProps): Promise<Response<any>> => {
     try 
     {
-        var utxoAmount = 0 // bytes of output has change 
-
-        const network: BNetwork = wallet.type == "bitcoin" ? "mainnet" : "testnet"
-
-        const ecPair = ECPairKey.fromHex({ privateKey: pairkey.privateKey, network })
+        const ecPair = ECPairKey.fromHex({
+            privateKey: pairkey.privateKey, 
+            network: wallet.network
+        })
 
         const transaction = new Transaction(ecPair, {
             whoPayTheFee: wallet.payfee ? wallet.address : destination,
             fee: recomendedFee
         })
 
-        const utxos = await getUtxos(wallet.address ?? "", network)
+        const utxos = await getUtxos(wallet.address ?? "", wallet.network as BNetwork)
         // ordenate for include all minimal value utxo of wallet
         const ordenedUtxos = utxos.sort((a, b) => a.value - b.value)
         // add destination address transaction, the amount is defined later
@@ -88,7 +87,7 @@ export const createTransaction = async ({ amount, destination, recomendedFee,
             transaction.addOutput({ address: wallet.address ?? "", amount: 10 })
         }
 
-        let calculatedFee = 0;
+        let calculatedFee = 0, utxoAmount = 0;
         for (let utxo of ordenedUtxos) 
         {
             if(transaction.inputs.some(i => i.txid == utxo.txid)) continue

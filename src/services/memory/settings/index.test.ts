@@ -15,7 +15,15 @@ describe("SettingsStorage", () => {
             (AsyncStorage.getItem as jest.Mock).mockResolvedValue(null)
 
             const settings = await SettingsStorage.get()
-            expect(settings).toEqual({ useBiometrics: false })
+            expect(settings).toEqual({
+                useBiometrics: false,
+                currency: {
+                    code: "USD", 
+                    label: "currency.label.usd", 
+                    symbol: "$", 
+                    flag: "🇺🇸"
+                }
+            })
         })
 
         it("returns parsed settings from AsyncStorage", async () => {
