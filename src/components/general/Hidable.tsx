@@ -1,6 +1,6 @@
 import { StyleProp, View, ViewStyle } from "react-native"
 
-type Props = {
+interface Props {
     visible: boolean,
     duration?: number,
     children: any,

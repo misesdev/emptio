@@ -5,7 +5,7 @@ import { useTranslateService } from "@src/providers/translateProvider"
 import { useCallback } from "react"
 import theme from "@src/theme"
 
-type FriendListProps = {
+interface FriendListProps {
     users: User[],
     onPressUser?: (user: User) => void,
 }

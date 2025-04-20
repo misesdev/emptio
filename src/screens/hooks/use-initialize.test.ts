@@ -1,6 +1,5 @@
 import { useInitialize } from "./use-initialize"
 import { DBEvents } from "@services/memory/database/events"
-import { userService } from "@services/user"
 import { getNotificationPermission } from "@services/permissions"
 import { getEvent } from "@services/nostr/events"
 import { getNostrInstance, subscribeUser } from "@services/nostr/pool"
@@ -8,6 +7,7 @@ import { messageService } from "@services/message"
 import { User } from "@services/memory/types"
 import { NDKEvent } from "@nostr-dev-kit/ndk-mobile"
 import { renderHook, act } from "@testing-library/react-native"
+import { authService } from "@services/auth"
 
 jest.mock("@services/memory/database/events", () => ({
     DBEvents: { initDatabase: jest.fn() }
@@ -40,7 +40,7 @@ describe("useInitialize", () => {
         ;(DBEvents.initDatabase as jest.Mock).mockResolvedValue(undefined)
         ;(getNostrInstance as jest.Mock).mockResolvedValue("mockNDK")
         ;(getNotificationPermission as jest.Mock).mockResolvedValue(undefined)
-        ;(userService.isLogged as jest.Mock).mockResolvedValue({ success: true, data: fakeUser })
+        ;(authService.isLogged as jest.Mock).mockResolvedValue({ success: true, data: fakeUser })
         ;(messageService.listChats as jest.Mock).mockResolvedValue(["chat1"])
         ;(getEvent as jest.Mock).mockResolvedValue(fakeEvent)
 
@@ -53,7 +53,7 @@ describe("useInitialize", () => {
         expect(DBEvents.initDatabase).toHaveBeenCalled()
         expect(getNostrInstance).toHaveBeenCalled()
         expect(getNotificationPermission).toHaveBeenCalled()
-        expect(userService.isLogged).toHaveBeenCalled()
+        expect(authService.isLogged).toHaveBeenCalled()
         expect(messageService.listChats).toHaveBeenCalledWith(fakeUser)
         expect(subscribeUser).toHaveBeenCalledWith(fakeUser)
         expect(getEvent).toHaveBeenCalledWith({
@@ -72,7 +72,7 @@ describe("useInitialize", () => {
         ;(DBEvents.initDatabase as jest.Mock).mockResolvedValue(undefined)
         ;(getNostrInstance as jest.Mock).mockResolvedValue("mockNDK")
         ;(getNotificationPermission as jest.Mock).mockResolvedValue(undefined)
-        ;(userService.isLogged as jest.Mock).mockResolvedValue({ success: false })
+        ;(authService.isLogged as jest.Mock).mockResolvedValue({ success: false })
 
         const { result } = renderHook(() => useInitialize({ navigation }))
 

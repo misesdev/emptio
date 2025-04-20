@@ -1,4 +1,4 @@
-import theme from "@/src/theme"
+import theme from "@src/theme"
 import { Modal, View, StyleSheet } from "react-native"
 import { ActivityIndicator } from "react-native-paper"
 

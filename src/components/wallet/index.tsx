@@ -7,7 +7,7 @@ import Ionicons from 'react-native-vector-icons/Ionicons'
 import { styles } from "./style"
 import theme from "@src/theme";
 
-type WalletProps = {
+interface WalletProps {
     wallet: Wallet,
     showOptions?: () => void
 }
@@ -41,7 +41,7 @@ export const WalletHeader = ({ wallet, showOptions }: WalletProps) => {
     )
 }
 
-type WalletTransactionsProps = {
+interface WalletTransactionsProps {
     transactions: Transaction[],
     onPressTransaction: (transaction: Transaction) => void
 }
@@ -118,7 +118,7 @@ export const WalletTransactions = ({ transactions, onPressTransaction }: WalletT
     )
 }
 
-type WalletButtonProps = {
+interface WalletButtonProps {
     onSend?: () => void,
     onReceive: (visible: boolean) => void
 }

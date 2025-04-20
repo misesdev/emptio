@@ -1,11 +1,11 @@
 import { renderHook, act } from "@testing-library/react-native"
 import { useRegister } from "./use-register"
-import { useAuth } from "@src/providers/userProvider"
-import { userService, createFollowEvent } from "@services/user"
+import { createFollowEvent, userService } from "@services/user"
 import { storageService } from "@services/memory"
 import { subscribeUser, pushUserFollows } from "@services/nostr/pool"
 import { pushMessage } from "@services/notification"
 import { getUserName } from "@src/utils"
+import { authService } from "@services/auth"
 
 jest.mock("@services/nostr/pool", () => ({
     subscribeUser: jest.fn(),
@@ -76,7 +76,7 @@ describe("useRegister", () => {
         }
 
         ;(userService.searchUsers as jest.Mock).mockResolvedValue([])
-        ;(userService.signUp as jest.Mock).mockResolvedValue({
+        ;(authService.signUp as jest.Mock).mockResolvedValue({
             success: true,
             data: newUser,
         })
@@ -113,7 +113,7 @@ describe("useRegister", () => {
         const { result } = renderHook(() => useRegister({ navigation }))
 
         ;(userService.searchUsers as jest.Mock).mockResolvedValue([])
-        ;(userService.signUp as jest.Mock).mockResolvedValue({
+        ;(authService.signUp as jest.Mock).mockResolvedValue({
             success: false,
             message: "server error",
         })
@@ -144,7 +144,7 @@ describe("useRegister", () => {
         const newUser = { pubkey: "pubkey123", keychanges: "key123" }
 
         ;(userService.searchUsers as jest.Mock).mockResolvedValue([])
-        ;(userService.signUp as jest.Mock).mockResolvedValue({
+        ;(authService.signUp as jest.Mock).mockResolvedValue({
             success: true,
             data: newUser,
         })
@@ -173,7 +173,7 @@ describe("useRegister", () => {
         }
 
         ;(userService.searchUsers as jest.Mock).mockResolvedValue([])
-        ;(userService.signUp as jest.Mock).mockResolvedValue({
+        ;(authService.signUp as jest.Mock).mockResolvedValue({
             success: true,
             data: newUser,
         })

@@ -1,15 +1,15 @@
-import { IconNames } from "@src/services/types/icons"
+import { IconNames } from "@services/types/icons"
 import { StyleSheet, View, Text, TouchableOpacity } from "react-native"
 import Ionicons from 'react-native-vector-icons/Ionicons'
 import theme from "@src/theme"
 
-export type ActionHeader = {
+export interface ActionHeader {
     label?: string,
     icon?: IconNames
     action: () => void
 }
 
-type Props = {
+interface Props {
     label: string,
     icon?: IconNames,
     actions?: ActionHeader[]
@@ -44,38 +44,12 @@ export const SectionHeader = ({ label, icon, actions }: Props) => {
 }
 
 const styles = StyleSheet.create({
-    container: {
-        width: "100%",
-        flexDirection: "row",
-        marginTop: 38,
-        paddingHorizontal: 20,
-        marginVertical: 10,
-    },
-    label: {
-        fontSize: 20,
-        fontWeight: "bold",
-        color: theme.colors.gray,
-        paddingVertical: 5
-    },
-    action: {
-        padding: 8,
-        borderRadius: 10,
-        flexDirection: "row",
-        marginHorizontal: 5,
-        backgroundColor: theme.colors.blue
-    },
-    actionLabel: {
-        fontSize: 16,
-        marginHorizontal: 5,
-        color: theme.colors.white
-    },
-    actionIcon: {
-        fontSize: 20,
-        color: theme.colors.white
-    },
-    labelIcon: {
-        color: theme.colors.gray, 
-        marginHorizontal: 10, 
-        marginVertical: 7
-    }
+    container: { width: "100%", flexDirection: "row", marginTop: 38, paddingHorizontal: 20,
+        marginVertical: 10 },
+    label: { fontSize: 20, fontWeight: "bold", color: theme.colors.gray, paddingVertical: 5 },
+    action: { padding: 8, borderRadius: 10, flexDirection: "row", marginHorizontal: 5,
+        backgroundColor: theme.colors.blue },
+    actionLabel: { fontSize: 16, marginHorizontal: 5, color: theme.colors.white },
+    actionIcon: { fontSize: 20, color: theme.colors.white },
+    labelIcon: { color: theme.colors.gray, marginHorizontal: 10, marginVertical: 7 }
 })

@@ -4,7 +4,7 @@ import { NostrEvent } from "@services/nostr/events";
 import { userService } from "@services/user";
 import { storageService } from "@services/memory";
 
-type AuthContextType = {
+interface AuthContextType {
     user: User,
     wallets: Wallet[],
     follows: User[],

@@ -2,7 +2,6 @@ import theme from "@src/theme";
 import { StyleSheet } from "react-native";
 
 export const styles = StyleSheet.create({
-    // Wallet Scren
     headerWallet: {
         top: 0,
         height: 240,
@@ -31,7 +30,7 @@ export const styles = StyleSheet.create({
         borderRadius: 23,
         marginVertical: 4,
         flexDirection: "row",
-        backgroundColor: "rgba(0, 55, 55, .2)"//theme.colors.section
+        backgroundColor: "rgba(0, 55, 55, .2)"
     },
     walletButtonsSection: {
         width: "100%",
@@ -46,7 +45,7 @@ export const styles = StyleSheet.create({
         paddingHorizontal: 10,
         flexDirection: "row",
         justifyContent: "center",
-        backgroundColor: "rgba(60,60,60, .8)"// theme.colors.gray
+        backgroundColor: "rgba(60,60,60, .8)"
     },
     walletaAtionText: {
         margin: 6,

@@ -8,7 +8,6 @@ import { authService } from "@services/auth"
 import { storageService } from "@services/memory"
 import { copyToClipboard } from "@src/utils"
 import { hexToBytes } from "bitcoin-tx-lib"
-import { userService } from "@services/user"
 import { pushMessage } from "@services/notification"
 import { showMessage } from "@components/general/MessageBox"
 import { nip19 } from "nostr-tools";
@@ -54,7 +53,7 @@ const useMenu = ({ navigation }: any) => {
     const deleteAccount = async () => {
         
         const deleteAccount = async () => {
-            const result = await userService.signOut()
+            const result = await authService.signOut()
 
             if (result.success) 
             {

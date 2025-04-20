@@ -8,7 +8,7 @@ import { storageService } from "@services/memory"
 
 var showLanguagesFunction: () => void
 
-type Props = {
+interface Props {
     forceUpdate: (number: any) => void
 }
 

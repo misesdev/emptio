@@ -3,7 +3,7 @@ import { ButtonPrimary } from "../form/Buttons"
 import QRCodeReaderModal from "../modal/QRCodeReaderModal"
 import { useState } from "react"
 
-type Props = {
+interface Props {
     label: string,
     onChangeText: (value: string) => void,
     style?: StyleProp<ViewStyle>

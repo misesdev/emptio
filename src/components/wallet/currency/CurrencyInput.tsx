@@ -108,7 +108,7 @@ const styles = StyleSheet.create({
         borderRadius: 10, padding: 12 },
     
     container: { width: "90%", paddingHorizontal: 20, paddingVertical: 15, borderRadius: 10, 
-        margin: 10, padding: 10, backgroundColor: theme.input.backGround },
+        margin: 10, padding: 10, backgroundColor: "rgba(0, 55, 55, .2)" },
     input: { padding: 10, fontSize: 26, fontWeight: "bold", borderBottomWidth: 1, 
         borderBottomColor: theme.colors.gray, color: theme.colors.white },
 

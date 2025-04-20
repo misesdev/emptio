@@ -3,16 +3,17 @@ import { useEffect, useState } from "react"
 import { StyleSheet, Text, View, Image, Linking, TouchableOpacity } from "react-native"
 import { ActivityIndicator } from "react-native-paper"
 import LinkError from "./LinkError"
-import { getPreviewData } from "@/src/utils/preview"
+import { getPreviewData } from "@src/utils/preview"
 
-type MetadadaLink = {
+interface MetadadaLink {
     url?: string,
     domain?: string,
     title?: string,
     subtitle?: string,
     image?: string
 }
-type Props = {
+
+interface Props {
     link: string
 }
 

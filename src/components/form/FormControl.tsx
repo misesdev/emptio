@@ -1,7 +1,7 @@
 import { View, Text, StyleSheet, TextInput, Switch, ReturnKeyTypeOptions } from "react-native"
 import theme from "@src/theme"
 
-type FormControlProps = {
+interface FormControlProps {
     label: string,
     value?: string,   
     type?: "none" | "password", 
@@ -46,7 +46,7 @@ export const FormControl = ({ label, showLabel=true, value, onChangeText, onFocu
     )
 }
 
-type FormSwitchProps = {
+interface FormSwitchProps {
     label: string,
     value?: boolean,  
     onChangeValue: (value: boolean) => void,  

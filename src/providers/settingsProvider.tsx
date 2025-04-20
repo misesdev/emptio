@@ -3,7 +3,7 @@ import { Settings } from "@services/memory/types"
 import { storageService } from "@services/memory"
 import Currencies from "../constants/Currencies"
 
-type SettingContextType = {
+interface SettingContextType {
     settings: Settings,
     setSettings?: (settings: Settings) => void
 }

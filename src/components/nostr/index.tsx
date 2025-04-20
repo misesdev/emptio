@@ -9,7 +9,7 @@ import { SectionHeader } from "../general/section/headers"
 import { FollowItem } from "./follow/FollowItem"
 import theme from "@src/theme"
 
-type FriendListProps = {
+interface FriendListProps {
     searchTerm?: string,
     loadCombo?: number,
     toFollow?: boolean,
@@ -78,12 +78,6 @@ export const FriendList = ({ searchTerm, onPressFollow, loadCombo=20,
 
     const handleRenderItem = ({ item }: { item: User }) => <FollowItem key={item.pubkey} follow={item} handleClickFollow={handleClickFollow} />
 
-    const handleLoaderEnd = () => {
-        if (refreshing)
-            // Show loader at the end of list when fetching next page data.
-            return <ActivityIndicator color={theme.colors.gray} style={{ margin: 10 }} size={50} />
-    }
-
     return (
         <View>
             <SectionHeader label={labelFriends} icon="people" actions={[{ label: followListData.length.toString(), action: () => { } }]} />
@@ -93,7 +87,6 @@ export const FriendList = ({ searchTerm, onPressFollow, loadCombo=20,
                 onEndReached={handleLoadScroll}
                 onEndReachedThreshold={.3}
                 contentContainerStyle={theme.styles.scroll_container}
-                //ListFooterComponent={handleLoaderEnd}
             />
         </View>
     )

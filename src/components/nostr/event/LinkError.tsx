@@ -1,7 +1,7 @@
 import { Linking, TouchableOpacity, View, Text, StyleSheet } from "react-native"
-import theme from "@/src/theme"
+import theme from "@src/theme"
 
-type ScreenProps = { url: string }
+interface ScreenProps { url: string }
 
 const LinkError = ({ url }: ScreenProps) => {
     return (

@@ -4,7 +4,7 @@ import Ionicons from 'react-native-vector-icons/Ionicons'
 import theme from '@src/theme';
 import { ActivityIndicator } from 'react-native-paper';
 
-type Props = {
+interface Props {
     label: string,
     loading?: boolean,
     disabled?: boolean,
@@ -86,7 +86,7 @@ export const ButtonLink = ({ label, color, style, onPress }: Props) => {
     )
 }
 
-type IconProps = {
+interface IconProps {
     icon: IconNames,
     size?: number,
     style?: StyleProp<TextStyle>,

@@ -5,13 +5,13 @@ import { messageService } from "@services/message"
 import { getEvent } from "@services/nostr/events"
 import { getNostrInstance, subscribeUser } from "@services/nostr/pool"
 import { getNotificationPermission } from "@services/permissions"
-import { userService } from "@services/user"
 import useChatStore from "@services/zustand/chats"
 import { useFeedVideosStore } from "@services/zustand/feedVideos"
 import useNDKStore from "@services/zustand/ndk"
 import { useEffect, useState } from "react"
 import { pushMessage } from "@services/notification"
 import { useTranslateService } from "@src/providers/translateProvider"
+import { authService } from "@services/auth"
 
 export const useInitialize = ({ navigation }: any) => {
 
@@ -36,7 +36,7 @@ export const useInitialize = ({ navigation }: any) => {
             
             await getNotificationPermission() 
             
-            const result = await userService.isLogged()
+            const result = await authService.isLogged()
             if (result.success && result.data) 
             {
                 setNdkSigner(result.data)

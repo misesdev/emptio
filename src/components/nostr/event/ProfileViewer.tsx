@@ -6,10 +6,11 @@ import theme from "@/src/theme"
 import { nip19 } from "nostr-tools"
 import { userService } from "@services/user"
 
-type ScreenProps = {
+interface ScreenProps {
     nprofile?: string,
     npub?: string
 }
+
 const ProfileViewer = ({ npub, nprofile }: ScreenProps) => {
 
     const [user, setUser] = useState<User>({})

@@ -1,8 +1,8 @@
 import { View, FlatList, TouchableOpacity, StyleSheet, Text } from "react-native"
 import { useCallback } from "react"
 import theme from "@src/theme"
-import { getClipedContent } from "@/src/utils"
-import { useTranslateService } from "@/src/providers/translateProvider"
+import { getClipedContent } from "@src/utils"
+import { useTranslateService } from "@src/providers/translateProvider"
 
 interface RelayItemProps {
     relay: string,

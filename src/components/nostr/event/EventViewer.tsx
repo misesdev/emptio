@@ -12,9 +12,9 @@ import ImagePreview from "./ImagePreview"
 import VideoViewer from "./VideoViewer"
 import ProfileViewer from "./ProfileViewer"
 import HashTagViewer from "./HashTagViewer"
-import { userService } from "@/src/services/user"
+import { userService } from "@services/user"
 
-type ScreenProps = {
+interface ScreenProps {
     event?: NDKEvent | null,
     nevent?: string,
     note?: string,

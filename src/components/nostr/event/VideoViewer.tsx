@@ -3,11 +3,11 @@ import { useEffect, useRef, useState } from "react"
 import { View, StyleSheet, TouchableOpacity, Text, Dimensions } from 'react-native';
 import Ionicons from 'react-native-vector-icons/Ionicons'
 import Slider from '@react-native-community/slider';
-import { blobService } from '@/src/services/blob';
+import { blobService } from '@services/blob';
 import theme from '@src/theme';
 import LinkError from './LinkError';
 
-type VideoProps = { 
+interface VideoProps { 
     url: string,
     paused?: boolean,
     muted?: boolean,

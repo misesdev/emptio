@@ -16,7 +16,7 @@ import { ProfilePicture } from '../user/ProfilePicture';
 import { useAuth } from '@src/providers/userProvider';
 import { userService } from '@services/user';
 
-type Props = { 
+interface Props { 
     author?: User,
     note: NDKEvent, 
     showUser?: boolean,

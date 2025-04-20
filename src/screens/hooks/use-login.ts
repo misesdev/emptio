@@ -6,11 +6,11 @@ import { validatePrivateKey } from "@services/nostr"
 import { getEvent } from "@services/nostr/events"
 import { subscribeUser } from "@services/nostr/pool"
 import { pushMessage } from "@services/notification"
-import { userService } from "@services/user"
 import useNDKStore from "@services/zustand/ndk"
 import Clipboard from "@react-native-clipboard/clipboard"
 import { useEffect, useState } from "react"
 import { AppState } from "react-native"
+import { authService } from "@services/auth"
 
 export const useLogin = ({ navigation }: any) => {
    
@@ -65,7 +65,7 @@ export const useLogin = ({ navigation }: any) => {
         {
             try 
             {
-                const result = await userService.signIn({ secretKey, setUser })
+                const result = await authService.signIn({ secretKey, setUser })
 
                 if (result.success && result.data)
                 {

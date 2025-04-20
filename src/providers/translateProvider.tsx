@@ -5,7 +5,7 @@ import { ReactElement, ReactNode, createContext, useContext, useEffect, useState
 import { storageService } from "@services/memory"
 
 
-type TranslateContextType = {
+interface TranslateContextType {
     language?: Language,
     setLanguage?: (language: Language) => void,
     useTranslate: (wordKey: TranslateWords) => string

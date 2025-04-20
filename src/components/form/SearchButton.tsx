@@ -2,7 +2,7 @@ import { StyleSheet, Text, TouchableOpacity, View } from "react-native"
 import Ionicons from 'react-native-vector-icons/Ionicons'
 import theme from "@src/theme"
 
-type Props = {
+interface Props {
     label?: string,
     onPress?: () => void
 }

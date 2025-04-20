@@ -1,4 +1,4 @@
-import Currencies, { Currency } from "@/src/constants/Currencies"
+import Currencies, { Currency } from "@src/constants/Currencies"
 import { useTranslateService } from "@src/providers/translateProvider"
 import { TranslateWords } from "@services/translate/types"
 import { FlatList, StyleSheet, View, Text, TouchableOpacity } from "react-native"

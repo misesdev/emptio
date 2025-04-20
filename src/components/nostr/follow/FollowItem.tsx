@@ -4,10 +4,10 @@ import { memo } from "react"
 import theme from "@src/theme"
 import Ionicons from "react-native-vector-icons/Ionicons"
 import { getDisplayPubkey, getUserName } from "@/src/utils"
-import { useTranslateService } from "@/src/providers/translateProvider"
+import { useTranslateService } from "@src/providers/translateProvider"
 import { ProfilePicture } from "../user/ProfilePicture"
 
-type UserItemProps = {
+interface UserItemProps {
     follow: User,
     toOpen?: boolean,
     toSend?: boolean,

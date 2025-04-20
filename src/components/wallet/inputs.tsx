@@ -5,7 +5,7 @@ import SelectWalletBox, { showSelectWallet } from "./WalletSelection"
 import { useTranslateService } from "@src/providers/translateProvider"
 import { Wallet } from "@services/memory/types"
 import theme from "@src/theme"
-import { getClipedContent } from "@/src/utils"
+import { getClipedContent } from "@src/utils"
 
 interface AmountBoxProps {
     value?: string | "",
@@ -90,7 +90,7 @@ export const AmountBox = ({ value, placeholder, onChangeText, isValidHandle, wal
 
 const styles = StyleSheet.create({
     container: { width: "90%", paddingHorizontal: 20, paddingVertical: 15, borderRadius: 10, 
-        margin: 10, backgroundColor: theme.input.backGround },
+        margin: 10, backgroundColor: "rgba(0, 55, 55, .2)" },
     amount: { padding: 10, fontSize: 32, fontWeight: "bold", borderBottomWidth: 1, 
         borderBottomColor: theme.colors.gray, color: theme.colors.white },
     wallets: { borderRadius: 10, padding: 2, backgroundColor: theme.colors.blueOpacity, 

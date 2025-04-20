@@ -4,7 +4,7 @@ import { StyleProp, StyleSheet, Text, TouchableOpacity, View, ViewStyle } from "
 import { IconNames } from "@services/types/icons"
 import { useState } from "react"
 
-type SectionProps = {
+interface SectionProps {
     style?: StyleProp<ViewStyle>
     children: any
 }
@@ -18,7 +18,7 @@ export const SectionContainer = ({ style, children }: SectionProps) => {
     )
 }
 
-type LinkSectionProps = {
+interface LinkSectionProps {
     label: string,
     onPress: () => void,
     icon?: IconNames

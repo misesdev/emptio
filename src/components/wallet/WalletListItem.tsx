@@ -8,7 +8,7 @@ import { ActivityIndicator } from "react-native-paper"
 import { getClipedContent, getDescriptionTypeWallet } from "@src/utils"
 import { useTranslateService } from "@src/providers/translateProvider"
 import theme from "@src/theme"
-import { useAuth } from "@/src/providers/userProvider"
+import { useAuth } from "@src/providers/userProvider"
 import { storageService } from "@services/memory"
 
 interface Props {

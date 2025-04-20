@@ -50,6 +50,16 @@ jest.mock("@services/user", () => ({
     createFollowEvent: jest.fn(),
 }))
 
+jest.mock("@services/auth", () => ({
+    authService: {
+        checkBiometric: jest.fn(),
+        signIn: jest.fn(),
+        signUp: jest.fn(),
+        isLogged: jest.fn(),
+        signOut: jest.fn()
+    }
+}))
+
 jest.mock("@services/message", () => ({
     messageService: {
         listChats: jest.fn(),

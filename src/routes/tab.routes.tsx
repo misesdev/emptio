@@ -4,9 +4,9 @@ import HomeScreen from "@screens/root/home"
 import FeedOrdersScreen from "@screens/root/orders"
 import ChatsScreen from '@screens/root/chats'
 import { useTranslateService } from '../providers/translateProvider'
-import useChatStore from '../services/zustand/chats'
+import useChatStore from '@services/zustand/chats'
 import theme from "@src/theme"
-import VideosFeed from '../screens/root/videos'
+import VideosFeed from '@screens/root/videos'
 import { tabBarStyle } from '../constants/RouteSettings'
 
 const Tab = createBottomTabNavigator()

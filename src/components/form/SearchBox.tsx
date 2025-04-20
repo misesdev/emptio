@@ -4,7 +4,7 @@ import Ionicons from 'react-native-vector-icons/Ionicons'
 import { StyleSheet, TextInput, View, TouchableOpacity } from "react-native"
 import { ActivityIndicator } from "react-native-paper"
 
-type SearchBoxProps = {
+interface SearchBoxProps {
     label: string,
     loading?: boolean,
     textCenter?: boolean,

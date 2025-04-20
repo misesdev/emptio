@@ -5,8 +5,8 @@ import { validatePrivateKey } from "@services/nostr"
 import { getEvent } from "@services/nostr/events"
 import { subscribeUser } from "@services/nostr/pool"
 import { pushMessage } from "@services/notification"
-import { userService } from "@services/user"
 import Clipboard from "@react-native-clipboard/clipboard"
+import { authService } from "@services/auth"
 
 jest.mock("@services/nostr", () => ({
     validatePrivateKey: jest.fn()
@@ -75,7 +75,7 @@ describe("useLogin", () => {
     it("should call pushMessage on login failure", async () => {
         ;(validatePrivateKey as jest.Mock).mockReturnValue(true)
 
-        ;(userService.signIn as jest.Mock).mockResolvedValue({
+        ;(authService.signIn as jest.Mock).mockResolvedValue({
             success: false,
             message: "user not found"
         })
@@ -95,7 +95,7 @@ describe("useLogin", () => {
 
     it("should complete login and navigate on success", async () => {
         ;(validatePrivateKey as jest.Mock).mockReturnValue(true)
-        ;(userService.signIn as jest.Mock).mockResolvedValue({
+        ;(authService.signIn as jest.Mock).mockResolvedValue({
             success: true,
             data: {
                 pubkey: "abc",

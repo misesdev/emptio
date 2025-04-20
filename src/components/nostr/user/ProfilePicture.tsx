@@ -1,6 +1,6 @@
 import { User } from "@services/memory/types"
 import { getColorFromPubkey } from "@src/utils"
-import { memo, useEffect, useState } from "react"
+import { useEffect, useState } from "react"
 import { StyleSheet, Image } from "react-native"
 import theme from "@src/theme"
 
@@ -9,6 +9,7 @@ interface PictureProps {
     size: number,
     withBorder?: boolean
 }
+
 export const ProfilePicture = ({ user, size, withBorder=true }: PictureProps) => {
     
     const [profileError, setProfileError] = useState<boolean>(false)

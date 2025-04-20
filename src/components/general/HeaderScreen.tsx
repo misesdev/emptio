@@ -2,7 +2,7 @@ import theme from "@src/theme"
 import { View, Text, TouchableOpacity, StyleProp, ViewStyle, StyleSheet } from "react-native"
 import Ionicons from 'react-native-vector-icons/Ionicons'
 
-type HeaderProps = {
+interface HeaderProps {
     title: string,
     onClose: () => void,
     action?: React.JSX.Element,

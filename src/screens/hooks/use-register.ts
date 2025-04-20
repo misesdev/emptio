@@ -6,6 +6,7 @@ import { pushMessage } from "@services/notification"
 import { createFollowEvent, userService } from "@services/user"
 import { getUserName } from "@src/utils"
 import { useState } from "react"
+import { authService } from "@services/auth"
 
 export const useRegister = ({ navigation }: any) => {
 
@@ -43,7 +44,7 @@ export const useRegister = ({ navigation }: any) => {
 
     const registerUser = async () => {
         try {
-            const result = await userService.signUp({ userName: userName.trim(), setUser })
+            const result = await authService.signUp({ userName: userName.trim(), setUser })
 
             if (result.success && result.data) 
             {

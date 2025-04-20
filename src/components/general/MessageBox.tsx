@@ -5,12 +5,12 @@ import theme from "@src/theme"
 
 type typeMessage = "alert" | "error" | "success"
 
-type MessageAction = {
+interface MessageAction {
     label: string,
     onPress: () => void
 }
 
-type alertBoxProps = {
+interface alertBoxProps {
     title?: string,
     message: string,
     infolog?: string,
@@ -18,7 +18,7 @@ type alertBoxProps = {
     type?: typeMessage
 }
 
-type ButtonProps = {
+interface ButtonProps {
     label: string,
     onPress: () => void,
 }

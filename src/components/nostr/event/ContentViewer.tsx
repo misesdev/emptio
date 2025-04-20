@@ -1,4 +1,3 @@
-
 import theme from '@src/theme';
 import { View, StyleSheet } from 'react-native';
 import ParsedText from 'react-native-parsed-text';
@@ -10,7 +9,7 @@ import HashTagViewer from './HashTagViewer';
 import VideoViewer from './VideoViewer';
 import { replaceContentEvent } from '@/src/utils';
 
-type Props = { 
+interface Props { 
     content: string 
 }
 

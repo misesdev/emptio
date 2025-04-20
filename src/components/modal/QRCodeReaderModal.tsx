@@ -4,7 +4,7 @@ import { Camera, CameraView } from 'expo-camera'
 import { useEffect } from 'react'
 import theme from '@src/theme'
 
-type Props = {
+interface Props {
     visible: boolean,
     setValue: (data: string) => void,
     runClose: (value: boolean) => void, // the boolean reference visible
@@ -50,27 +50,12 @@ export default function QRCodeReaderModal({ visible, setValue, runClose }: Props
 }
 
 const styles = StyleSheet.create({
-    container: {
-        flex: 1,
-        flexDirection: 'column',
-        justifyContent: 'flex-end',
-        backgroundColor: theme.colors.black,
-    },
-    scanner: {
-        justifyContent: 'center',
-        alignItems: 'center',
-    },
-    frameCode: {
-        width: 185,
-        height: 185,
-        borderRadius: 10,
-        backgroundColor: "rgba(255, 255, 255, .2)",
-    },
-    closeButton: {
-        bottom: 80,
-        borderRadius: 50,
-        position: 'absolute',  
-        backgroundColor: "rgba(0,0,0,.5)"      
-    }
+    container: { flex: 1, flexDirection: 'column', justifyContent: 'flex-end',
+        backgroundColor: theme.colors.black },
+    scanner: { justifyContent: 'center', alignItems: 'center' },
+    frameCode: { width: 185, height: 185, borderRadius: 10,
+        backgroundColor: "rgba(255, 255, 255, .2)" },
+    closeButton: { bottom: 80, borderRadius: 50, position: 'absolute',  
+        backgroundColor: "rgba(0,0,0,.5)" }
 })
 

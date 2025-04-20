@@ -6,7 +6,7 @@ import { NDKEvent } from "@nostr-dev-kit/ndk-mobile"
 import { User } from "@services/memory/types"
 import theme from "@src/theme"
 
-type NoteProps = {
+interface NoteProps {
     user?: User,
     note: NDKEvent, 
     videoMuted?: boolean, 
@@ -32,7 +32,7 @@ const NoteItem = ({ user, note, videoMuted=true, setVideoMuted, videoPaused=true
     )
 }
 
-type NoteListProps = {
+interface NoteListProps {
     user?: User,
     notes: NDKEvent[],
     horizontal?: boolean,
@@ -81,22 +81,8 @@ export const NoteList = ({ user, notes, isVisible, horizontal=true, pagingEnable
 }
 
 const styles = StyleSheet.create({
-    scroll: {
-        width: "100%", 
-        marginBottom: 10,
-    },
-    scrollNote: {
-        height: 340, 
-        margin: 6,
-        borderRadius: 10,
-        backgroundColor: theme.colors.black,
-    },
-    note: { 
-        color: theme.colors.gray, 
-    },
-    viewNote: {
-        flex: 1,
-        height: 'auto',
-        marginVertical: 20
-    }
+    scroll: { width: "100%", marginBottom: 10 },
+    scrollNote: { height: 340, margin: 6, borderRadius: 10, backgroundColor: theme.colors.black },
+    note: { color: theme.colors.gray },
+    viewNote: { flex: 1, height: 'auto', marginVertical: 20 }
 })

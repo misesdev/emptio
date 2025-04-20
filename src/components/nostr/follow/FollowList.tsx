@@ -9,7 +9,7 @@ import { SearchBox } from "../../form/SearchBox"
 import { useTranslateService } from "@src/providers/translateProvider"
 import { walletService } from "@services/wallet"
 
-type FriendListProps = {
+interface FriendListProps {
     toSend?: boolean,
     toOpen?: boolean,
     toView?: boolean,

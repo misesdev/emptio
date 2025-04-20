@@ -1,9 +1,9 @@
 import { renderHook, act } from '@testing-library/react-native'
 import useMenu from './use-menu'
 import { storageService } from '@services/memory'
-import { userService } from '@services/user'
 import { showMessage } from '@components/general/MessageBox'
 import { pushMessage } from '@services/notification'
+import { authService } from '@services/auth'
 
 // Mocks diretos
 jest.mock('react-native-device-info', () => ({
@@ -13,13 +13,6 @@ jest.mock('react-native-device-info', () => ({
 const copyToClipboard = jest.fn()
 jest.mock('@src/utils', () => ({
     copyToClipboard: (...args: any[]) => copyToClipboard(...args),
-}))
-
-const checkBiometric = jest.fn()
-jest.mock('@services/auth', () => ({
-    authService: {
-        checkBiometric: (...args: any[]) => checkBiometric(...args),
-    },
 }))
 
 jest.mock('nostr-tools', () => ({
@@ -59,7 +52,8 @@ describe('useMenu', () => {
     })
 
     it('copy secret key if biometrics are OK', async () => {
-        checkBiometric.mockResolvedValueOnce(true)
+        
+        ;(authService.checkBiometric as jest.Mock).mockResolvedValueOnce(true)
         ;(storageService.secrets.getPairKey as jest.Mock)
             .mockResolvedValueOnce({ privateKey: 'deadbeef' })
 
@@ -70,7 +64,7 @@ describe('useMenu', () => {
     })
 
     it('successfully delete account', async () => {
-        (userService.signOut as jest.Mock).mockResolvedValueOnce({ success: true })
+        (authService.signOut as jest.Mock).mockResolvedValueOnce({ success: true })
 
         let actionFn: () => void = () => {}
         (showMessage as jest.Mock).mockImplementationOnce(({ action }) => {
@@ -84,11 +78,14 @@ describe('useMenu', () => {
             actionFn()
         })
 
-        expect(navigation.reset).toHaveBeenCalled()
+        expect(navigation.reset).toHaveBeenCalledWith({ 
+            index: 0, 
+            routes: [{ name: "initial-stack" }] 
+        })
     })
 
     it('show error if deleteAccount fails', async () => {
-        ;(userService.signOut as jest.Mock)
+        ;(authService.signOut as jest.Mock)
             .mockResolvedValueOnce({ success: false, message: 'Error when exiting' })
 
         let actionFn: () => void = () => {}

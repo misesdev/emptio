@@ -5,12 +5,12 @@ import { useEffect, useState } from "react"
 import theme from "@src/theme"
 import axios from "axios"
 
-type RelayProps = {
+interface RelayProps {
     relay: string,
     onDelete: (relay: string) => void
 }
 
-type RelayMetadata = {
+interface RelayMetadata {
     name?: string,
     description?: string,
     contact?: string,

@@ -2,10 +2,11 @@ import { useEffect, useRef, useState } from "react"
 import { View, Image, StyleSheet, Dimensions, TouchableOpacity } from "react-native"
 import Ionicons from 'react-native-vector-icons/Ionicons'
 import LinkError from "./LinkError"
-import theme from "@/src/theme"
-import { blobService } from "@/src/services/blob"
+import theme from "@src/theme"
+import { blobService } from "@services/blob"
 
-type ScreenProps = { url: string, redute?: number }
+interface ScreenProps { url: string, redute?: number }
+
 const ImagePreview = ({ url, redute=180 }: ScreenProps) => {
   
     const { width } = Dimensions.get("window")
