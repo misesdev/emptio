@@ -6,8 +6,8 @@ jest.useFakeTimers()
 
 // Clipboard mock exemple
 jest.mock("@react-native-clipboard/clipboard", () => ({
-  getString: jest.fn(),
-  setString: jest.fn(),
+    getString: jest.fn(),
+    setString: jest.fn(),
 }))
 
 jest.mock("@react-navigation/native", () => {
@@ -85,12 +85,12 @@ jest.mock("@services/zustand/ndk", () => ({
         ndk: {
             pool: {
                 relays: new Map([
-                    ['r1', { connected: true }],
-                    ['r2', { connected: false }],
-                    ['r3', { connected: true }],
+                    ['relay1', { url: "relay1", connected: true }],
+                    ['relay2', { url: "relay2", connected: false }],
+                    ['relay3', { url: "relay3", connected: true }],
                 ]),
             },
-        },
+        },    
     }),
 }))
 

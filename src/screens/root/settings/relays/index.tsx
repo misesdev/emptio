@@ -6,37 +6,16 @@ import useNDKStore from "@services/zustand/ndk"
 import { useEffect, useState } from "react"
 import { StackScreenProps } from "@react-navigation/stack"
 import { SectionHeader } from "@components/general/section/headers"
-import { NDKRelay } from "@nostr-dev-kit/ndk-mobile"
 import { RelayList } from "./commons/list"
 import theme from "@src/theme"
-
-interface RelayData {
-    all: NDKRelay[],
-    connected: NDKRelay[]
-    disconected: NDKRelay[]
-}
+import useRelaySettings from "../hooks/use-relay-settings"
 
 const ManageRelaysScreen = ({ navigation }: StackScreenProps<any>) => {
 
     const { ndk } = useNDKStore()
     const { useTranslate } = useTranslateService()
-    const [relayData, setRelayData] = useState<RelayData>()
-
-    useEffect(() => {
-        const relays: NDKRelay[] = Array.from(ndk.pool.relays.values())
-        let connected_relays = relays.filter(r => r.connected) 
-        let disconnected_relays = relays.filter(r => !r.connected)
-        setRelayData({
-            connected: connected_relays,
-            disconected: disconnected_relays,
-            all: relays
-        })
-    }, [ndk])
-
-    const openRelay = (relay: NDKRelay) => {
-        navigation.navigate("manage-relay-stack", { relay })
-    }
-
+    const { relayData, openRelay } = useRelaySettings({ navigation })
+ 
     return (
         <View style={{ flex: 1 }}>
             <HeaderScreen 

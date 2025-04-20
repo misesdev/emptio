@@ -33,14 +33,14 @@ jest.mock('bitcoin-tx-lib', () => ({
     hexToBytes: (hex: string) => `bytes-of-${hex}`,
 }))
 
-describe('useMenu (sem spy)', () => {
+describe('useMenu', () => {
     const navigation = { reset: jest.fn() }
 
     beforeEach(() => {
         jest.clearAllMocks()
     })
 
-    it('inicializa corretamente', () => {
+    it('boots correctly', () => {
         const { result } = renderHook(() => useMenu({ navigation }))
 
         expect(result.current.appVersion).toBe('1.2.3')
@@ -48,7 +48,7 @@ describe('useMenu (sem spy)', () => {
         expect(result.current.poolstats.total).toBe(3)
     })
 
-    it('copia chave pública', async () => {
+    it('copy public key', async () => {
         ;(storageService.secrets.getPairKey as jest.Mock)
             .mockResolvedValueOnce({ publicKey: 'pub123' })
 
@@ -58,7 +58,7 @@ describe('useMenu (sem spy)', () => {
         expect(copyToClipboard).toHaveBeenCalledWith('npub-pub123')
     })
 
-    it('copia chave secreta se biometria estiver OK', async () => {
+    it('copy secret key if biometrics are OK', async () => {
         checkBiometric.mockResolvedValueOnce(true)
         ;(storageService.secrets.getPairKey as jest.Mock)
             .mockResolvedValueOnce({ privateKey: 'deadbeef' })
@@ -69,7 +69,7 @@ describe('useMenu (sem spy)', () => {
         expect(copyToClipboard).toHaveBeenCalledWith('nsec-bytes-of-deadbeef')
     })
 
-    it('deleta conta com sucesso', async () => {
+    it('successfully delete account', async () => {
         (userService.signOut as jest.Mock).mockResolvedValueOnce({ success: true })
 
         let actionFn: () => void = () => {}
@@ -81,15 +81,15 @@ describe('useMenu (sem spy)', () => {
         await act(() => result.current.deleteAccount())
 
         await act(async () => {
-            await actionFn()
+            actionFn()
         })
 
         expect(navigation.reset).toHaveBeenCalled()
     })
 
-    it('mostra erro se deleteAccount falhar', async () => {
+    it('show error if deleteAccount fails', async () => {
         ;(userService.signOut as jest.Mock)
-            .mockResolvedValueOnce({ success: false, message: 'Erro ao sair' })
+            .mockResolvedValueOnce({ success: false, message: 'Error when exiting' })
 
         let actionFn: () => void = () => {}
         (showMessage as jest.Mock).mockImplementationOnce(({ action }) => {
@@ -99,8 +99,8 @@ describe('useMenu (sem spy)', () => {
         const { result } = renderHook(() => useMenu({ navigation }))
         await act(() => result.current.deleteAccount())
 
-        await act(() => actionFn())
+        await act(async () => actionFn())
 
-        expect(pushMessage).toHaveBeenCalledWith('Erro ao sair')
+        expect(pushMessage).toHaveBeenCalledWith('Error when exiting')
     })
 })
