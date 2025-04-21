@@ -1,4 +1,4 @@
-import { hash256, numberToHex } from "bitcoin-tx-lib"
+import { BNetwork, hash256, numberToHex } from "bitcoin-tx-lib"
 import { timeSeconds } from "../converter"
 import { User } from "../memory/types"
 import NDK, { NDKEvent } from "@nostr-dev-kit/ndk-mobile"
@@ -10,7 +10,8 @@ interface OrderProps {
     price: number,
     amount: number,
     currency: string,
-    closure: number
+    closure: number,
+    network: BNetwork
 }
 
 export class Order {
@@ -20,14 +21,16 @@ export class Order {
     public closure: number = 0
     public created_at: number = 0
     public currency: string = "USD"
+    public network: BNetwork = "testnet"
     private _ndk: NDK = useNDKStore.getState().ndk
     private _event: NDKEvent = useOrderStore.getState().event
 
-    public constructor(user: User, { price, amount, currency, closure }: OrderProps) {
+    public constructor(user: User, { price, amount, currency, closure, network }: OrderProps) {
         this.price = price
         this.amount = amount
         this.currency = currency
         this.closure = closure
+        this.network = network
         this.user = user
     }
 
@@ -63,7 +66,9 @@ export class Order {
        
         this._event.content = JSON.stringify(data)
 
-        this._event.publishReplaceable() 
+        await this._event.sign()
+
+        await this._event.publishReplaceable() 
     }
 
     public getId() : string {
@@ -84,7 +89,8 @@ export class Order {
             amount: this.amount,
             currency: this.currency,
             created_at: this.created_at,
-            closure: this.closure
+            closure: this.closure,
+            network: this.network
         }
     }
 }

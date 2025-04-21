@@ -1,5 +1,5 @@
 import { userService } from "@services/user"
-import { useAuth } from "@/src/providers/userProvider"
+import { useAuth } from "@src/providers/userProvider"
 import { NDKEvent } from "@nostr-dev-kit/ndk-mobile"
 import { User } from "@services/memory/types"
 import useChatStore, { ChatUser } from "@services/zustand/chats"
@@ -8,9 +8,9 @@ import { FilterChat } from "./list"
 import { getUserName } from "@src/utils"
 import { Vibration, View, Text, TouchableOpacity, StyleSheet, Animated } from "react-native"
 import { ProfilePicture } from "@components/nostr/user/ProfilePicture"
-import theme from "@/src/theme"
+import theme from "@src/theme"
 import { getClipedContent } from "@src/utils"
-import { messageService } from "@/src/services/message"
+import { messageService } from "@services/message"
 
 interface ListItemProps {
     user: User,

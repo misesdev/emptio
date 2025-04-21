@@ -79,7 +79,7 @@ const AppRoutes = () => {
                 <Stack.Screen name="wallet-settings-stack" component={WalletSettings} options={ScreenCardOptions} />
                 <Stack.Screen name="wallet-transaction-stack" component={TransactionScreen} options={ScreenCardOptions} />
 
-                <Stack.Screen name="add-follow-stack" component={AddFolowScreen} options={ScreenCardOptions} />
+                <Stack.Screen name="add-followtáxons resolvedores-stack" component={AddFolowScreen} options={ScreenCardOptions} />
                 <Stack.Screen name="friends-list-stack" component={ManageFriendsScreen} options={ScreenCardOptions} />
 
                 <Stack.Screen name="feed-order-new" component={NewOrderScreen} options={ScreenCardOptions} />

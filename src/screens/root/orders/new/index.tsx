@@ -4,15 +4,18 @@ import { AmountBox } from "@components/wallet/inputs"
 import Ionicons from 'react-native-vector-icons/Ionicons'
 import { useTranslateService } from "@src/providers/translateProvider"
 import { StackScreenProps } from "@react-navigation/stack"
+import { useAuth } from "@src/providers/userProvider"
+import { CurrencyInput } from "@components/wallet/currency/CurrencyInput"
+import { formatCurrency } from "@services/converter/currency"
+import { useSettings } from "@src/providers/settingsProvider"
 import { Wallet } from "@services/memory/types"
 import { useEffect, useState } from "react"
 import theme from "@src/theme"
-import { useAuth } from "@src/providers/userProvider"
-import { CurrencyInput } from "@components/wallet/currency/CurrencyInput"
 
 const NewOrderScreen = ({ navigation }: StackScreenProps<any>) => {
 
     const { wallets } = useAuth()
+    const { settings } = useSettings()
     const { useTranslate } = useTranslateService()
     const [price, setPrice] = useState<string>("0")
     const [satoshis, setSatoshis] = useState<string>("0")
@@ -21,7 +24,17 @@ const NewOrderScreen = ({ navigation }: StackScreenProps<any>) => {
 
     useEffect(() => { 
         setWallet(wallets.find(w => w.default) ?? {})
+        setPrice(formatCurrency(0, settings.currency?.code))
     }, [])
+
+    const goToClosure = () => {
+        navigation.navigate("feed-order-ndetails", { 
+            currency: settings.currency?.code,
+            satoshis,
+            wallet, 
+            price,
+        })
+    }
 
     return (
         <View style={styles.container}>
@@ -50,7 +63,7 @@ const NewOrderScreen = ({ navigation }: StackScreenProps<any>) => {
 
             <View style={styles.buttonArea}>
                 <TouchableOpacity activeOpacity={.7} disabled={nextDisabled}
-                    onPress={() => navigation.navigate("feed-order-ndetails", { wallet, satoshis })}
+                    onPress={goToClosure}
                     style={{ borderRadius: 50, padding: 14, margin: 10, backgroundColor: nextDisabled ? theme.colors.disabled : theme.colors.blue }}
                 >
                     <Ionicons name="arrow-forward-outline" size={theme.icons.large} color={nextDisabled ? theme.colors.gray : theme.colors.white} />

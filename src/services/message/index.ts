@@ -54,7 +54,7 @@ const encryptMessage = async (user: User, follow: User, event: NDKEvent) : Promi
 
     const pair = await storageService.secrets.getPairKey(user.keychanges ?? "")
 
-    event.content = await nip04.encrypt(pair.privateKey, follow.pubkey ?? "", event.content)
+    event.content = nip04.encrypt(pair.privateKey, follow.pubkey ?? "", event.content)
 
     return event
 }
@@ -64,10 +64,10 @@ const decryptMessage = async (user: User, event: NDKEvent) : Promise<NDKEvent> =
     const pair = await storageService.secrets.getPairKey(user.keychanges ?? "")
 
     if(pair.publicKey != event.pubkey)
-        event.content = await nip04.decrypt(pair.privateKey, event.pubkey, event.content)
+        event.content = nip04.decrypt(pair.privateKey, event.pubkey, event.content)
     else {
         const pubkey = getPubkeyFromTags(event)
-        event.content = await nip04.decrypt(pair.privateKey, pubkey, event.content)
+        event.content = nip04.decrypt(pair.privateKey, pubkey??"", event.content)
     }
 
     await DBEvents.updateContent(event)

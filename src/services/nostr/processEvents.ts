@@ -1,4 +1,4 @@
-import { NDKEvent } from "@nostr-dev-kit/ndk-mobile"
+import { NDKEvent, NostrEvent } from "@nostr-dev-kit/ndk-mobile"
 import { User } from "../memory/types"
 import { messageService } from "@services/message"
 import { getPubkeyFromTags } from "./events"
@@ -7,6 +7,8 @@ import useChatStore from "../zustand/chats"
 import { SellOrder, UserReputation } from "../types/order"
 import { timeSeconds } from "../converter"
 import { DBEvents, dbEventProps } from "../memory/database/events"
+import useDataEventStore from "../zustand/dataEvents"
+import { EventKinds } from "@/src/constants/Events"
 
 var batchTimer: NodeJS.Timeout|null = null
 var enqueueEvents: dbEventProps[] = []
@@ -41,7 +43,7 @@ export const processEventMessage = async ({ user, event }: ProcessEventProps) =>
                 await processEventsInBatch(dbEvent => {
                     const lastMessage = {...dbEvent.event} as NDKEvent
                     if(lastMessage.pubkey == user.pubkey)
-                        lastMessage.pubkey = getPubkeyFromTags(dbEvent.event)
+                        lastMessage.pubkey = getPubkeyFromTags(dbEvent.event) ?? lastMessage.pubkey
                     store.addChat({ chat_id: dbEvent.chat_id??"", lastMessage })
                 })
                 batchTimer = null
@@ -79,4 +81,18 @@ export const processEventOrders = ({ user, event } :ProcessEventProps) => {
         }
     } 
     catch {}
+}
+
+export const processDataEvents = (event: NDKEvent)  => {
+    
+    const store = useDataEventStore.getState()
+
+    switch(event.kind) {
+        case EventKinds.metadata:
+            store.addEventData("metadata", event as NostrEvent)
+        case EventKinds.followList:
+            store.addEventData("follows", event as NostrEvent)
+        case 10002:
+            store.addEventData("orders", event as NostrEvent)
+    }
 }

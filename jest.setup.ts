@@ -70,6 +70,7 @@ jest.mock("@services/message", () => ({
 jest.mock("@services/wallet", () => ({
     walletService: {
         listTransactions: jest.fn(),
+        getBalance: jest.fn()
     }
 }))
 

@@ -16,7 +16,6 @@ import AppRoutes from './src/routes';
 import theme from './src/theme';
 
 export default function App(): React.JSX.Element {
-    
     return (
         <View style={styles.root}>
             <TranslateProvider>

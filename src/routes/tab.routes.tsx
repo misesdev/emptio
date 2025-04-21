@@ -5,9 +5,9 @@ import FeedOrdersScreen from "@screens/root/orders"
 import ChatsScreen from '@screens/root/chats'
 import { useTranslateService } from '../providers/translateProvider'
 import useChatStore from '@services/zustand/chats'
-import theme from "@src/theme"
 import VideosFeed from '@screens/root/videos'
 import { tabBarStyle } from '../constants/RouteSettings'
+import theme from "@src/theme"
 
 const Tab = createBottomTabNavigator()
 
@@ -22,7 +22,6 @@ const TabRoutes = () => {
             screenOptions={{
                 tabBarActiveTintColor: theme.colors.blue,
                 tabBarInactiveTintColor: theme.colors.gray,
-                //tabBarStyle: { backgroundColor: theme.colors.black, borderTopWidth: 0 },
                 tabBarStyle: tabBarStyle,
                 headerStyle: { backgroundColor: theme.colors.black },
                 tabBarHideOnKeyboard: true,

@@ -1,3 +1,4 @@
+import { BNetwork } from "bitcoin-tx-lib"
 
 export interface SellOrder {
     id: string,
@@ -6,6 +7,7 @@ export interface SellOrder {
     amount: number,
     created_at: number,
     closure: number,
+    network: BNetwork,
     author?: string,
     relays?: string[]
 }

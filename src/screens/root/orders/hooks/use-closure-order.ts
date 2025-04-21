@@ -1,20 +1,19 @@
 import { useAuth } from "@src/providers/userProvider"
 import { timeSeconds, toNumber } from "@services/converter"
-import { useState } from "react"
 import { Order } from "@services/nostr/orders"
+import { useState } from "react"
 
-const useCreateOrder = ({ navigation, route }: any) => {
+const useClosureOrder = ({ navigation, route }: any) => {
 
     const { user } = useAuth() 
-    const { amount, wallet } = route.params
-    const [price, setPrice] = useState<string>("0")
-    const [currency, setCurrency] = useState<string>("USD")
+    const { satoshis, wallet, price, currency } = route.params
     const [closure, _setClosure] = useState<number>(timeSeconds.now())
     const [loading, setLoading] = useState<boolean>(false)
     const [disabled, setDisabled] = useState<boolean>(true)
 
     const setClosure = (value: number) => {
         _setClosure(Math.floor(value/1000))
+        setDisabled(value <= timeSeconds.now())
     }
 
     const publishOrder = async () => {
@@ -24,12 +23,21 @@ const useCreateOrder = ({ navigation, route }: any) => {
         // pulish order implemenmtation
         const order = new Order(user, {
             price: toNumber(price),
-            amount: toNumber(amount),
+            amount: toNumber(satoshis),
+            network: wallet.network ?? "testnet",
             closure,
             currency
         })
 
         await order.publish()
+
+        navigation.reset({ 
+            index: 1, 
+            routes: [
+                { name: "core-stack" },
+                { name: "orders-stack" },
+            ] 
+        })
 
         setDisabled(false)
         setLoading(false)
@@ -38,10 +46,11 @@ const useCreateOrder = ({ navigation, route }: any) => {
     return {
         loading,
         disabled,
-        amount,
+        satoshis,
+        closure,
         setClosure,
         publishOrder
     }
 }
 
-export default useCreateOrder
+export default useClosureOrder

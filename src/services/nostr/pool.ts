@@ -1,10 +1,10 @@
-import NDK, { NDKCacheAdapterSqlite, NDKFilter, NDKPrivateKeySigner, 
+import NDK, { NDKFilter, NDKPrivateKeySigner, 
     NDKSubscriptionCacheUsage } from "@nostr-dev-kit/ndk-mobile"
 import { PairKey, User } from "../memory/types"
 import { publishEvent, NostrEvent, getEvent } from "./events"
 import useNDKStore from "../zustand/ndk"
 import { EventKinds } from "@src/constants/Events"
-import { processEventMessage, processEventOrders } from "./processEvents"
+import { processDataEvents, processEventMessage, processEventOrders } from "./processEvents"
 import { storageService } from "../memory"
 import { getUserName } from "@src/utils"
 
@@ -54,7 +54,6 @@ export const getNostrInstance = async ({ user }: NostrInstanceProps): Promise<ND
        
     const ndk = new NDK({ 
         explicitRelayUrls: relays, 
-        //cacheAdapter: new NDKCacheAdapterSqlite("nevents"),
         clientName: "emptio_p2p",  
     })
 
@@ -104,9 +103,9 @@ export const subscribeUser = (user: User) => {
     const ndk = useNDKStore.getState().ndk
 
     const filters: NDKFilter[] = [
-        { kinds: [10002], "#o": ["orders", ""] }, // sell orders in relays event
         { kinds: [4], "#p": [user.pubkey ?? ""] }, // private message to user
-        { kinds: [4], authors: [user.pubkey ?? ""] } // private message from user
+        { kinds: [4], authors: [user.pubkey ?? ""] }, // private message from user
+        { kinds: [0, 10002], authors: [user.pubkey ?? ""] }, // sell orders in relays event
     ]
 
     const subscriptionMessages = ndk.subscribe(filters, {
@@ -114,8 +113,14 @@ export const subscribeUser = (user: User) => {
     })
 
     subscriptionMessages.on("event", event => {
+        let dataKinds = [0, 10002]
         if(event.kind == 4) processEventMessage({ user, event })
-        if(event.kind == 10002) processEventOrders({ user, event })
+        if(dataKinds.includes(event.kind??0)) {
+            if(event.kind == 10002) {
+                processEventOrders({ user, event })
+            }
+            processDataEvents(event)
+        }
     })
 
     subscriptionMessages.start()

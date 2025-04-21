@@ -4,14 +4,14 @@ import { HeaderScreen } from "@components/general/HeaderScreen"
 import { ButtonPrimary } from "@components/form/Buttons"
 import { useTranslateService } from "@src/providers/translateProvider"
 import DatePicker from "react-native-date-picker"
-import useCreateOrder from "../hooks/use-create-order"
+import useClosureOrder from "../hooks/use-closure-order"
 
 const OrderClosureScreen = ({ navigation, route }: any) => {
 
     const { useTranslate } = useTranslateService()
     const { 
-        loading, disabled, setClosure, publishOrder 
-    } = useCreateOrder({ navigation, route })
+        loading, disabled, closure, setClosure, publishOrder 
+    } = useClosureOrder({ navigation, route })
 
     return (
         <View style={{ flex: 1 }}>
@@ -19,15 +19,17 @@ const OrderClosureScreen = ({ navigation, route }: any) => {
                 title="Vencimento da Ordem"
                 onClose={() => navigation.goBack()}
             />
-            <ScrollView contentContainerStyle={theme.styles.scroll_container}>
+            <ScrollView contentContainerStyle={[theme.styles.scroll_container, {
+                justifyContent: "center"
+            }]}>
 
                 <Text style={styles.title}>
                     Data de vencimento da ordem de venda
                 </Text>
 
                 <View style={styles.dateArea}>
-                    <DatePicker 
-                        date={new Date()}
+                    <DatePicker
+                        date={new Date(Math.floor(closure * 1000))}
                         onDateChange={date => setClosure(date.valueOf())} 
                     />
                 </View>

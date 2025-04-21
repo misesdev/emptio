@@ -1,6 +1,6 @@
 import { timeSeconds } from "../converter"
 
-export const getRandomKey = (length: number): string => {
+export const getRandomKey = (length: number = 15): string => {
 
     var hash = ""
     const timestamp = timeSeconds.now().toFixed(0)
