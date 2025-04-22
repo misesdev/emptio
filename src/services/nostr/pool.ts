@@ -100,29 +100,33 @@ export const searchRelays = async (searchTerm: string, limit: number = 100): Pro
 
 export const subscribeUser = (user: User) => {
   
+    const dataEventKinds = [
+        EventKinds.metadata,    // user profile data
+        EventKinds.followList,  // user pubkey follows list
+        10002,                  // user relay list with orders and reputation
+        10050,                  // user relay list from chat events
+    ]
     const ndk = useNDKStore.getState().ndk
 
     const filters: NDKFilter[] = [
         { kinds: [4], "#p": [user.pubkey ?? ""] }, // private message to user
         { kinds: [4], authors: [user.pubkey ?? ""] }, // private message from user
-        { kinds: [0, 10002], authors: [user.pubkey ?? ""] }, // sell orders in relays event
+        { kinds: dataEventKinds, authors: [user.pubkey ?? ""], limit: dataEventKinds.length }, // sell orders in relays event
     ]
 
-    const subscriptionMessages = ndk.subscribe(filters, {
-        cacheUsage: NDKSubscriptionCacheUsage.PARALLEL
+    const subscription = ndk.subscribe(filters, {
+        cacheUsage: NDKSubscriptionCacheUsage.ONLY_RELAY
     })
 
-    subscriptionMessages.on("event", event => {
-        let dataKinds = [0, 10002]
+    subscription.on("event", event => {
         if(event.kind == 4) processEventMessage({ user, event })
-        if(dataKinds.includes(event.kind??0)) {
-            if(event.kind == 10002) {
-                processEventOrders({ user, event })
-            }
+        if(dataEventKinds.includes(event.kind??0)) 
+        {
+            if(event.kind == 10002) processEventOrders({ user, event })
             processDataEvents(event)
         }
     })
 
-    subscriptionMessages.start()
+    subscription.start()
 }
 

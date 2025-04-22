@@ -7,7 +7,7 @@ import EventViewer from './EventViewer';
 import ProfileViewer from './ProfileViewer';
 import HashTagViewer from './HashTagViewer';
 import VideoViewer from './VideoViewer';
-import { replaceContentEvent } from '@/src/utils';
+import { replaceContentEvent } from '@src/utils';
 
 interface Props { 
     content: string 
@@ -30,22 +30,16 @@ const ContentViewer = ({ content }: Props) => {
     const renderText = (matchingString: string, matches: string[]): any => {
         const url = matches[0]
         if (isImageUrl(url)) return <ImagePreview url={url} />
-        else if(isVideoUrl(url)) {
-            return <VideoViewer url={url} hideFullscreen/>
-        } else 
-            return <LinkPreview link={url} />
+        else if(isVideoUrl(url)) return <VideoViewer url={url} hideFullscreen/>
+        else return <LinkPreview link={url} />
     }
 
     const renderNostr = (matchingString: string, matches: string[]): any => {
         const nostr = matches[0]
         if(nostr.includes("npub")) return <ProfileViewer npub={nostr} />
         else if(nostr.includes("nprofile")) return <ProfileViewer nprofile={nostr} />
-        else if(nostr.includes("nevent")) { 
-            return <EventViewer nevent={nostr}/>
-        } 
-        else if(nostr.includes("note")) {
-            return <EventViewer note={nostr} />
-        } 
+        else if(nostr.includes("nevent")) return <EventViewer nevent={nostr}/>
+        else if(nostr.includes("note")) return <EventViewer note={nostr} />
         else if(nostr.includes("naddr")) return "@addr"
         return ""
     }

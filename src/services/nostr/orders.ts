@@ -23,7 +23,7 @@ export class Order {
     public currency: string = "USD"
     public network: BNetwork = "testnet"
     private _ndk: NDK = useNDKStore.getState().ndk
-    private _event: NDKEvent = useOrderStore.getState().event
+    private _event: NDKEvent = useOrderStore.getState().event ?? {}
 
     public constructor(user: User, { price, amount, currency, closure, network }: OrderProps) {
         this.price = price

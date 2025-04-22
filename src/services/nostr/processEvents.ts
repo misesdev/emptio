@@ -90,9 +90,14 @@ export const processDataEvents = (event: NDKEvent)  => {
     switch(event.kind) {
         case EventKinds.metadata:
             store.addEventData("metadata", event as NostrEvent)
+            break
         case EventKinds.followList:
             store.addEventData("follows", event as NostrEvent)
+            break
         case 10002:
             store.addEventData("orders", event as NostrEvent)
+            break
+        case 10050: 
+            store.addEventData("chat-relays", event as NostrEvent)
     }
 }

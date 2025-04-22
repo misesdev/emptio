@@ -1,139 +1,25 @@
 import theme from "@src/theme"
-import { StyleSheet, View, TouchableOpacity, FlatList, BackHandler } from "react-native"
+import { StyleSheet, View, TouchableOpacity } from "react-native"
 import Ionicons from 'react-native-vector-icons/Ionicons'
-import { useCallback, useEffect, useRef, useState } from "react"
 import { HeaderChats } from "./header"
 import { SearchBox } from "@components/form/SearchBox"
 import { useTranslateService } from "@src/providers/translateProvider"
-import { useAuth } from "@src/providers/userProvider"
-import useChatStore, { ChatUser } from "@services/zustand/chats"
-import { User } from "@services/memory/types"
 import { StackScreenProps } from "@react-navigation/stack"
-import ChatFilters, { ChatFilterType } from "./commons/filters"
-import ChatList, { FilterChat } from "./commons/list"
-import ChatGroupAction, { ChatActionType } from "./commons/options"
-import MessageBox, { showMessage } from "@components/general/MessageBox"
-import { useFocusEffect } from "@react-navigation/native"
-import ProfileView, { ShowProfileView } from "./commons/profile"
-import { messageService } from "@services/message"
+import ChatFilters from "./commons/filters"
+import ChatList from "./commons/list"
+import ChatGroupAction from "./commons/options"
+import MessageBox from "@components/general/MessageBox"
+import ProfileView from "./commons/profile"
+import useChatScreen from "./hooks/use-chat-screen"
 
 const ChatsScreen = ({ navigation }: StackScreenProps<any>) => {
    
-    const timeout = useRef<any>(null)
-    const listRef = useRef<FlatList>(null)
-    const { user, followsEvent } = useAuth()
-    const { chats, markReadChat, setChats } = useChatStore()
     const { useTranslate } = useTranslateService()
-    const selectedItems = useRef<Set<ChatUser>>(new Set<ChatUser>())
-    const filterChatsUsers = useRef<FilterChat[]>([])
-    const [filteredChats, setFilteredChats] = useState(chats)
-    const [filterSection, setFilterSection] = useState<ChatFilterType>("all")
-    const { selectionMode, toggleSelectionMode, removeChat } = useChatStore()
-
-    useFocusEffect(
-        useCallback(() => {
-            const onBackPress = () => {
-                if (selectionMode) {
-                    toggleSelectionMode(false)
-                    selectedItems.current.clear()
-                    return true 
-                }
-                return false 
-            }
-
-            const backHandler = BackHandler.addEventListener("hardwareBackPress", onBackPress)
-
-            return () => backHandler.remove() 
-        }, [selectionMode, selectedItems])
-    )
-
-    useEffect(() => {
-        if(filterChatsUsers.current.length) {
-            if(timeout.current) clearTimeout(timeout.current)
-            timeout.current = setTimeout(() => handleFilter(filterSection), 10)
-        }
-    }, [chats, followsEvent])
-
-    const handleSearch = (searchTerm: string) => {
-      
-        const cleanSearchTerm = searchTerm.trim().toLowerCase()
-
-        if(!cleanSearchTerm.length) 
-            return handleFilter(filterSection)
-
-        const chat_ids = filterChatsUsers.current
-            .filter(f => filteredChats.map(c => c.chat_id).includes(f.chat_id))
-            .filter(f => f.user_name.toLowerCase().includes(cleanSearchTerm))
-            .map(f => f.chat_id)
-
-        setFilteredChats(chats.filter(c => chat_ids.includes(c.chat_id)))
-    }
-
-    const handleFilter = useCallback((section: ChatFilterType) => {
-      
-        setFilterSection(section)
-        
-        if(section == "all") setFilteredChats(chats)
-        
-        if(section == "unread") {
-            const unreads = chats.filter(c => (c.unreadCount??0) > 0).map(c => c.chat_id)
-            setFilteredChats(chats.filter(c => unreads.includes(c.chat_id)))
-        }
-        if(section == "friends") {
-            const friends = filterChatsUsers.current.filter(c => c.is_friend).map(c => c.chat_id)
-            setFilteredChats(chats.filter(c => friends.includes(c.chat_id)))
-        }
-        if(section == "unknown") {
-            const friends = filterChatsUsers.current.filter(c => !c.is_friend).map(c => c.chat_id)
-            setFilteredChats(chats.filter(c => friends.includes(c.chat_id)))
-        }
-
-    }, [chats, filterChatsUsers])
-
-    const handleGroupAction = useCallback((action: ChatActionType) => {
-        if(action == "cancel") { 
-            toggleSelectionMode(false)
-            selectedItems.current.clear()
-        }
-        if(action == "markread") {
-            selectedItems.current.forEach(chat => {
-                markReadChat(chat.chat_id)
-            })
-            toggleSelectionMode(false)
-            selectedItems.current.clear()
-        }
-        if(action == "delete") {
-            showMessage({
-                title: useTranslate("chat.labels.delete-conversations"),
-                message: useTranslate("message.chats.alertdelete"),
-                action: {
-                    label: useTranslate("commons.delete"),
-                    onPress: () => {
-                        toggleSelectionMode(false)
-                        const chat_ids = [...selectedItems.current].map(c => c.chat_id)
-                        setTimeout(async () => await messageService.deleteChats(chat_ids), 20)
-                        chat_ids.forEach(removeChat)
-                        selectedItems.current.clear()
-                    }
-                }
-            })
-        }
-    }, [selectedItems, markReadChat, setChats, useTranslate])
-
-    const handleOpenChat = useCallback((chat_id: string, follow: User) => {
-        navigation.navigate("conversation-chat-stack", { chat_id, follow })
-    }, [navigation])
-
-    const showProfile = useCallback((profile: User) => {
-        ShowProfileView({ profile })
-    }, [ShowProfileView])
-
-    const handleFriend = useCallback((profile: User, isFriend: boolean) => {
-        filterChatsUsers.current.forEach(item => {
-            if(item.profile.pubkey == profile.pubkey) item.is_friend = isFriend
-        })
-        handleFilter(filterSection)
-    }, [filterChatsUsers, handleFilter, filterSection])
+    const { 
+        user, listRef, selectionMode, selectedItems, filteredChats, filterChatsUsers,
+        handleFilter, filterSection, handleSearch, showProfile, handleFriend,
+        handleOpenChat, handleGroupAction
+    } = useChatScreen({ navigation }) 
 
     return (
         <View style={theme.styles.container}>
