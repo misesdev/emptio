@@ -11,18 +11,24 @@ jest.mock("@react-native-clipboard/clipboard", () => ({
 }))
 
 jest.mock("@react-navigation/native", () => {
-    const actualNav = jest.requireActual("@react-navigation/native")
+    //const actualNav = jest.requireActual("@react-navigation/native")
     return {
-        ...actualNav,
+        //...actualNav,
         useNavigation: () => ({
             navigate: jest.fn(),
             reset: jest.fn(),
         }),
+        useFocusEffect: jest.fn((cb) => cb())
     }
 })
 
 jest.mock("react-native", () => ({
     AppState: {
+        addEventListener: jest.fn(() => ({
+            remove: jest.fn()
+        }))
+    },
+    BackHandler: {
         addEventListener: jest.fn(() => ({
             remove: jest.fn()
         }))
@@ -63,7 +69,8 @@ jest.mock("@services/auth", () => ({
 jest.mock("@services/message", () => ({
     messageService: {
         listChats: jest.fn(),
-        listMessages: jest.fn()
+        listMessages: jest.fn(),
+        deleteChats: jest.fn(),
     }
 }))
 
