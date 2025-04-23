@@ -10,7 +10,7 @@ import ChatList from "./commons/list"
 import ChatGroupAction from "./commons/options"
 import MessageBox from "@components/general/MessageBox"
 import ProfileView from "./commons/profile"
-import useChatScreen from "./hooks/use-chat-screen"
+import useChatScreen from "./hooks/use-chats-screen"
 
 const ChatsScreen = ({ navigation }: StackScreenProps<any>) => {
    
