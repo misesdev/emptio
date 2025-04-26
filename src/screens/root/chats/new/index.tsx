@@ -2,9 +2,10 @@ import { HeaderScreen } from "@components/general/HeaderScreen"
 import { FollowList } from "@components/nostr/follow/FollowList"
 import { View } from "react-native"
 import { User } from "@services/memory/types"
-import { useTranslateService } from "@/src/providers/translateProvider"
+import { useTranslateService } from "@src/providers/translateProvider"
 import { useAuth } from "@src/providers/userProvider"
 import { StackScreenProps } from "@react-navigation/stack"
+import { messageService } from "@services/message"
 import theme from "@src/theme"
 
 const NewChatScreen = ({ navigation }: StackScreenProps<any>) => {
@@ -13,10 +14,7 @@ const NewChatScreen = ({ navigation }: StackScreenProps<any>) => {
     const { useTranslate } = useTranslateService()
 
     const handleChatFollow = (follow: User) => {
-        var chat_id: string = ""
-        chat_id = (user?.pubkey?.substring(0, 30) ?? "")+(follow?.pubkey?.substring(0, 30) ??"")
-        chat_id = chat_id.match(/.{1,2}/g)?.sort().join("") ?? ""
-
+        var chat_id: string = messageService.generateChatId(undefined, [user.pubkey??"", follow.pubkey??""])
         navigation.navigate("conversation-chat-stack", { follow, chat_id })
     }
 

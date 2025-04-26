@@ -36,14 +36,20 @@ const deleteChats = async (chat_ids: string[]) => {
     await DBEvents.deleteByCondition(`chat_id in ('${chat_ids.join("','")}')`, [])
 }
 
-const generateChatId = (event: NDKEvent): string => {
+const generateChatId = (event?: NDKEvent, pubkeys?: string[]): string => {
     
     var chat_id: string = ""
 
-    const pubkeys: string[] = event?.tags?.filter(t => t[0] == "p").map(t => t[1]) ?? [""]
-    
-    if(pubkeys.length) {
-        chat_id = pubkeys[0].substring(0, 30) + event.pubkey.substring(0, 30)
+    if(event) {
+        const pubs: string[] = event?.tags?.filter(t => t[0] == "p").map(t => t[1]) ?? [""]
+        if(pubs.length) {
+            chat_id = pubs[0].substring(0, 30) + event.pubkey.substring(0, 30)
+            chat_id = chat_id.match(/.{1,2}/g)?.sort().join("") ?? ""
+        }
+    }
+
+    if(pubkeys && pubkeys?.length >= 2) {
+        chat_id = pubkeys[0].substring(0, 30) + pubkeys[1].substring(0, 30)
         chat_id = chat_id.match(/.{1,2}/g)?.sort().join("") ?? ""
     }
     
