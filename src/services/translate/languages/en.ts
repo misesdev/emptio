@@ -222,6 +222,7 @@ export default {
 
     "order.new.title": "New Sales Order",
     "order.new.amount-title": "How many Sats do you want to sell?",
+    "order.new.price-label": "Set the price of satoshis in fiat currency.",
 
     "settings.about": "About",
     "settings.about.content": `Emptio P2P is an open-source application aimed at initially enabling peer-to-peer buying and selling of Bitcoin in a decentralized manner using the Nostr protocol.

@@ -229,6 +229,7 @@ export type TranslateWords = "initial.message"
 
 | "order.new.title"
 | "order.new.amount-title"
+| "order.new.price-label"
 
 | "currency.label.usd"
 | "currency.label.eur"

@@ -58,7 +58,7 @@ const NewOrderScreen = ({ navigation }: StackScreenProps<any>) => {
             <CurrencyInput 
                 value={price} 
                 onChange={setPrice}
-                label={"Defina o preço dos satoshis em fiat."}
+                label={useTranslate("order.new.price-label")}
             />
 
             <View style={styles.buttonArea}>
@@ -82,3 +82,4 @@ const styles = StyleSheet.create({
 })
 
 export default NewOrderScreen
+

@@ -200,7 +200,8 @@ export default {
     "screen.title.newchat": "Nova Conversa",
 
     "order.new.title": "Nova Ordem de Venda",
-    "order.new.amount-title": "Quantos Sats deseja vender?",    
+    "order.new.amount-title": "Quantos Sats deseja vender?", 
+    "order.new.price-label": "Defina o preço dos satoshis em moeda fiat.",
 
     "chats.title": "Conversas",
     "chat.empty": "Você não possui nenhuma mensagem",
