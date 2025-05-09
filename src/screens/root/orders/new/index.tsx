@@ -4,37 +4,17 @@ import { AmountBox } from "@components/wallet/inputs"
 import Ionicons from 'react-native-vector-icons/Ionicons'
 import { useTranslateService } from "@src/providers/translateProvider"
 import { StackScreenProps } from "@react-navigation/stack"
-import { useAuth } from "@src/providers/userProvider"
 import { CurrencyInput } from "@components/wallet/currency/CurrencyInput"
-import { formatCurrency } from "@services/converter/currency"
-import { useSettings } from "@src/providers/settingsProvider"
-import { Wallet } from "@services/memory/types"
-import { useEffect, useState } from "react"
+import useNewOrder from "../hooks/use-new-order"
 import theme from "@src/theme"
 
 const NewOrderScreen = ({ navigation }: StackScreenProps<any>) => {
 
-    const { wallets } = useAuth()
-    const { settings } = useSettings()
     const { useTranslate } = useTranslateService()
-    const [price, setPrice] = useState<string>("0")
-    const [satoshis, setSatoshis] = useState<string>("0")
-    const [nextDisabled, setNextDisabled] = useState(true)
-    const [wallet, setWallet] = useState<Wallet>({})
-
-    useEffect(() => { 
-        setWallet(wallets.find(w => w.default) ?? {})
-        setPrice(formatCurrency(0, settings.currency?.code))
-    }, [])
-
-    const goToClosure = () => {
-        navigation.navigate("feed-order-ndetails", { 
-            currency: settings.currency?.code,
-            satoshis,
-            wallet, 
-            price,
-        })
-    }
+    const { 
+        wallet, setWallet, wallets, price, setPrice, satoshis, setSatoshis,
+        nextDisabled, setNextDisabled, goToClosure 
+    } = useNewOrder({ navigation })
 
     return (
         <View style={styles.container}>
