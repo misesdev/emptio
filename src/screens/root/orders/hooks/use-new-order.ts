@@ -16,7 +16,7 @@ const useNewOrder = ({ navigation }: any) => {
     useEffect(() => { 
         setWallet(wallets.find(w => w.default) ?? {})
         setPrice(formatCurrency(0, settings.currency?.code))
-    }, [])
+    }, [wallets, settings])
 
     const goToClosure = () => {
         navigation.navigate("feed-order-ndetails", { 
