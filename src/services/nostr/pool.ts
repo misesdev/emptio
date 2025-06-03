@@ -112,6 +112,7 @@ export const subscribeUser = (user: User) => {
         { kinds: [4], "#p": [user.pubkey ?? ""] }, // private message to user
         { kinds: [4], authors: [user.pubkey ?? ""] }, // private message from user
         { kinds: dataEventKinds, authors: [user.pubkey ?? ""], limit: dataEventKinds.length }, // sell orders in relays event
+        { kinds: [10002], "#o": ["orders"] }, // list orders event with the relay list
     ]
 
     const subscription = ndk.subscribe(filters, {

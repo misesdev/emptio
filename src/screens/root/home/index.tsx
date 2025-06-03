@@ -7,6 +7,7 @@ import { HeaderHome } from "./header"
 import { StackScreenProps } from "@react-navigation/stack"
 import theme from "@src/theme"
 import { useHomeState } from "./hooks/useHomeState"
+import { useFocusEffect } from "@react-navigation/native"
 
 const HomeScreen = ({ navigation }: StackScreenProps<any>) => {
 
@@ -17,6 +18,10 @@ const HomeScreen = ({ navigation }: StackScreenProps<any>) => {
         navigation.setOptions({ header: () => <HeaderHome navigation={navigation} /> })
         setTimeout(loadData, 20) 
     }, [])
+
+    // useFocusEffect(() => {
+    //     setTimeout(loadData, 20) 
+    // })
 
     const actionWallet: ActionHeader = {
         icon: "add", action: () => navigation.navigate("add-wallet-stack")

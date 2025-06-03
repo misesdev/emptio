@@ -19,7 +19,6 @@ const FeedOrdersScreen = ({ navigation }: StackScreenProps<any>) => {
     const { useTranslate } = useTranslateService()
 
     const ListItem = memo(({ item }: { item: SellOrder }) => {
-         
         return (
             <SectionContainer style={{ backgroundColor: theme.colors.blueOpacity }}>
                 <Text style={{ fontSize: 16, color: theme.colors.gray, margin: 10, textAlign: "center" }}>
@@ -42,7 +41,6 @@ const FeedOrdersScreen = ({ navigation }: StackScreenProps<any>) => {
     const newOrder = () => {
         if(!wallets.length)
             return pushMessage(useTranslate("message.wallet.alertcreate"))
-
         navigation.navigate("feed-order-new")
     }
 
