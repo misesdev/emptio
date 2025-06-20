@@ -32,8 +32,8 @@ const TabRoutes = () => {
                 name="home"
                 component={HomeScreen}                
                 options={{                    
-                    tabBarLabel: useTranslate("menu.home"),
-                    tabBarIcon: ({ color }) => <Ionicons name="wallet" color={color} size={theme.icons.medium} />,
+                    tabBarLabel: useTranslate("menu.wallet"),
+                    tabBarIcon: ({ color }) => <Ionicons name="briefcase" color={color} size={theme.icons.medium} />,
                     //tabBarBadge: 1
                 }}
             />
@@ -43,20 +43,20 @@ const TabRoutes = () => {
                 options={{
                     headerShown: false,
                     tabBarLabel: useTranslate("menu.orders"),
-                    tabBarIcon: ({ color }) => <Ionicons name="briefcase" color={color} size={theme.icons.large} />,
+                    tabBarIcon: ({ color }) => <Ionicons name="trail-sign" color={color} size={theme.icons.large} />,
                     // tabBarBadge: false
                 }}
             />
-            <Tab.Screen
-                name="videos-feed"
-                component={VideosFeed}
-                options={{
-                    headerShown: false,
-                    tabBarLabel: useTranslate("menu.videos"),
-                    tabBarIcon: ({ color }) => <Ionicons name="caret-forward-circle" color={color} size={theme.icons.large} />,
-                    // tabBarBadge: false
-                }}
-            />
+            {/* <Tab.Screen */}
+            {/*     name="videos-feed" */}
+            {/*     component={VideosFeed} */}
+            {/*     options={{ */}
+            {/*         headerShown: false, */}
+            {/*         tabBarLabel: useTranslate("menu.videos"), */}
+            {/*         tabBarIcon: ({ color }) => <Ionicons name="caret-forward-circle" color={color} size={theme.icons.large} />, */}
+            {/*         // tabBarBadge: false */}
+            {/*     }} */}
+            {/* /> */}
             <Tab.Screen
                 name="chats"
                 component={ChatsScreen}
@@ -70,7 +70,7 @@ const TabRoutes = () => {
 
             {/* <Tab.Screen */}
             {/*     name="notifications" */}
-            {/*     component={NotificationScreen} */}
+            {/*     component={() => <></>} */}
             {/*     options={{ */}
             {/*         tabBarLabel: useTranslate("menu.notifications"), */}
             {/*         tabBarIcon: ({ color }) => <Ionicons name="notifications" color={color} size={theme.icons.medium} />, */}

@@ -26,10 +26,11 @@ const NewChatScreen = ({ navigation }: StackScreenProps<any>) => {
                 onClose={() => navigation.goBack()} 
             />
 
-            <FollowList toOpen 
+            <FollowList 
                 searchable 
                 searchTimout={200} 
                 onPressFollow={handleChatFollow} 
+                labelAction={useTranslate("commons.talk")}
             />
 
         </View>

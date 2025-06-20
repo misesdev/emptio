@@ -10,8 +10,7 @@ const InitializeScreen = ({ navigation }: any) => {
     const { useTranslate } = useTranslateService()
     const { loading } = useInitialize({ navigation })
 
-    if (loading)
-        return <SplashScreen />
+    if (loading) return <SplashScreen />
 
     return (
         <View style={theme.styles.container}>

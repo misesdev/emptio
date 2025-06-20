@@ -18,7 +18,7 @@ export const HeaderChats = ({ navigation }: ScreenProps) => {
         <View style={styles.header}>
             <View style={{ width: "15%", alignItems: "center", justifyContent: "center" }}>
                 <TouchableOpacity onPress={() => navigation.navigate("user-menu-stack")}>
-                    <ProfilePicture user={user} size={38} withBorder={false} />
+                    <ProfilePicture user={user} size={34} withBorder={false} />
                 </TouchableOpacity>
             </View>
 

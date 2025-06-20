@@ -41,9 +41,11 @@ const AppShareBar = ({ visible, setVisible }: ChatProps) => {
                     </View>
 
                     {visible && 
-                        <FollowList searchable toInvite 
+                        <FollowList 
+                            searchable  
                             searchTimout={50}
                             onPressFollow={handleSend} 
+                            labelAction={useTranslate("commons.invite")}
                         />
                     }
                 </View>

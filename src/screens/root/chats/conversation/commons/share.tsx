@@ -29,8 +29,9 @@ const MessageShareBar = ({ visible, setVisible, sendMessages }: ChatProps) => {
                         </TouchableOpacity>
                     </View>
 
-                    <FollowList searchable toSend 
+                    <FollowList searchable  
                         searchTimout={200}
+                        labelAction={useTranslate("commons.send")}
                         onPressFollow={sendMessages} 
                     />
                 </View>

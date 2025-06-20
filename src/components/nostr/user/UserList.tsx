@@ -6,11 +6,15 @@ import { useCallback } from "react"
 import theme from "@src/theme"
 
 interface FriendListProps {
-    users: User[],
-    onPressUser?: (user: User) => void,
+    users: User[];
+    showButton?: boolean;
+    labelAction?: string;
+    onPressUser?: (user: User) => void;
 }
 
-export const UserList = ({ users, onPressUser }: FriendListProps) => {
+export const UserList = ({ 
+    users, onPressUser, showButton=false, labelAction
+}: FriendListProps) => {
 
     const { useTranslate } = useTranslateService()
 
@@ -19,7 +23,14 @@ export const UserList = ({ users, onPressUser }: FriendListProps) => {
     }, [onPressUser])
 
     const ListItem = useCallback(({ item }: { item: User }) => {
-        return <FollowItem handleClickFollow={handleClickFollow} follow={item}/>
+        return (
+            <FollowItem 
+                showButton={showButton}
+                labelAction={labelAction}
+                handleClickFollow={handleClickFollow} 
+                follow={item}
+            />
+        )
     },[])
 
     const EmptyComponent = () => (

@@ -123,7 +123,7 @@ const ListItemChat = ({ item, user, filters,
                             </Text>
                         </View>
                     }
-                    <View style={{ width: "100%" }}>
+                    <View style={{ width: "100%", paddingHorizontal: 6 }}>
                         <Text style={styles.message}>
                             {getClipedContent(eventRef.current.content.replaceAll("\n", " "), 26)}
                         </Text>

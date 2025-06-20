@@ -63,6 +63,7 @@ export default {
     "commons.publish": "Publicar",
     "commons.connect": "Conectar",
     "commons.disconnect": "Desconectar",
+    "commons.talk": "Conversar",
 
     "labels.all": "Todos",
     "labels.friends": "Amigos",
@@ -87,6 +88,7 @@ export default {
     "menu.videos": "cuts",
     "menu.chats": "chats",
     "menu.notifications": "notificações",
+    "menu.wallet": "carteira",
 
     "message.invalidkey": "Chave privada inválida, verifique se a chave digitada está no formato correto começando com 'nsec', caso você não possua uma chave privada nostr considere criar uma conta.",
     "message.detectedkey": "Chave privada detectada em sua area de transferência, deseja entrar com a chave privada detectada?",

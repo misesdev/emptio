@@ -10,20 +10,15 @@ import { useTranslateService } from "@src/providers/translateProvider"
 import { walletService } from "@services/wallet"
 
 interface FriendListProps {
-    toSend?: boolean,
-    toOpen?: boolean,
-    toView?: boolean,
-    toInvite?: boolean,
-    toFollow?: boolean,
-    toPayment?: boolean,
-    searchable?: boolean,
-    searchTimout?: number,
-    showButton?: boolean,
-    onPressFollow?: (user: User) => void,
+    labelAction?: string;
+    searchable?: boolean;
+    searchTimout?: number;
+    showButton?: boolean;
+    onPressFollow?: (user: User) => void;
 }
 
-export const FollowList = ({ onPressFollow, toPayment=false, searchable, toView=false, 
-    searchTimout=200, toSend=false, toFollow=false, toOpen=false, toInvite=false
+export const FollowList = ({ 
+    onPressFollow, searchable, searchTimout=200, showButton=true, labelAction=""
 }: FriendListProps) => {
 
     const { follows } = useAuth()
@@ -50,8 +45,11 @@ export const FollowList = ({ onPressFollow, toPayment=false, searchable, toView=
     }, [onPressFollow])
 
     const ListItem = memo(({ item }: { item: User }) => (
-        <FollowItem isFriend follow={item} toFollow={toFollow} toView={toView}
-            toOpen={toOpen} toSend={toSend} toInvite={toInvite} toPayment={toPayment}
+        <FollowItem 
+            isFriend 
+            follow={item}
+            showButton={showButton}
+            labelAction={labelAction} 
             handleClickFollow={handleClickFollow} 
         />
     ))

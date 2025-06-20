@@ -4,31 +4,22 @@ import { memo } from "react"
 import theme from "@src/theme"
 import Ionicons from "react-native-vector-icons/Ionicons"
 import { getDisplayPubkey, getUserName } from "@/src/utils"
-import { useTranslateService } from "@src/providers/translateProvider"
 import { ProfilePicture } from "../user/ProfilePicture"
 
 interface UserItemProps {
-    follow: User,
-    toOpen?: boolean,
-    toSend?: boolean,
-    toInvite?: boolean,
-    toView?: boolean,
-    toFollow?: boolean,
-    toManage?: boolean,
-    isFriend?: boolean,
-    toPayment?: boolean,
-    handleClickFollow: (follow: User) => void
+    follow: User;
+    showButton?: boolean;
+    labelAction?: string;
+    isFriend?: boolean;
+    toPayment?: boolean;
+    handleClickFollow: (follow: User) => void;
 }
 
-export const FollowItem = memo(({ follow, handleClickFollow, toSend=false, toView=false,
-    toFollow=false, isFriend=false, toOpen=false, toManage=false, toPayment=true,
-    toInvite=false
+export const FollowItem = memo(({ 
+    follow, handleClickFollow, labelAction, isFriend=false, showButton=true
 }: UserItemProps) => {
 
-    const { useTranslate } = useTranslateService()
-
-    const handleClick = (toFollow||toSend||toOpen) 
-            ? () => {} : () => handleClickFollow(follow)
+    const handleClick = () => handleClickFollow(follow)
 
     return (
         <TouchableOpacity
@@ -38,13 +29,13 @@ export const FollowItem = memo(({ follow, handleClickFollow, toSend=false, toVie
         >
             <View style={styles.profileArea}>
                 <ProfilePicture user={follow} size={50} />
-                {isFriend && toFollow &&
+                {isFriend && 
                     <Text style={styles.friendtag}>
-                        <Ionicons name="beer" size={16} color={theme.colors.yellow} />
+                        <Ionicons name="sparkles" size={16} color={theme.colors.yellow} />
                     </Text>
                 }
             </View>
-            <View style={{ width: "56%", minHeight: 70 }}>
+            <View style={{ width: showButton ? "56%" : "84%", minHeight: 70 }}>
                 <View style={{ width: "100%", flexDirection: "row" }}>
                     <Text style={styles.userName}>
                         {getUserName(follow, 22)}
@@ -52,11 +43,11 @@ export const FollowItem = memo(({ follow, handleClickFollow, toSend=false, toVie
                 </View>
                 <View style={{ flexDirection: "row", width: "100%" }}>
                     <Text style={styles.userAbout}>
-                        {getDisplayPubkey(follow.pubkey ?? "", toPayment ? 23 : 20)}
+                        {getDisplayPubkey(follow.pubkey ?? "", 20)}
                     </Text>
                 </View>
             </View>    
-            {!toPayment &&
+            {showButton &&
                 <View style={{ width: "28%", alignItems: "center", paddingVertical: 10 }}>
                     <TouchableOpacity 
                         style={{ padding: 8, paddingHorizontal: 18, borderRadius: 10,
@@ -65,21 +56,9 @@ export const FollowItem = memo(({ follow, handleClickFollow, toSend=false, toVie
                         onPress={() => handleClickFollow(follow)} 
                     >
                         <Text style={{ fontSize: 12, fontWeight: "500", color: theme.colors.white }}>
-                            {(toManage && isFriend) && useTranslate("commons.remove")} 
-                            {(toManage && !isFriend) && useTranslate("commons.add")} 
-                            {(toFollow && isFriend) && useTranslate("commons.unfollow")} 
-                            {(toFollow && !isFriend) && useTranslate("commons.follow")} 
-                            {toView && useTranslate("commons.details")} 
-                            {toOpen && useTranslate("commons.open")} 
-                            {toSend && useTranslate("commons.send")} 
-                            {toInvite && useTranslate("commons.invite")} 
+                            {labelAction}
                         </Text>
                     </TouchableOpacity>
-                </View>
-            }
-            {toPayment &&
-                <View style={{ width: "28%", alignItems: "center", paddingVertical: 10 }}>
-
                 </View>
             }
         </TouchableOpacity>

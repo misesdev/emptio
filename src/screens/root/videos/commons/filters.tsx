@@ -5,8 +5,8 @@ import { FormControl } from "@components/form/FormControl"
 import Ionicons from 'react-native-vector-icons/Ionicons'
 import { useFeedVideosStore } from "@services/zustand/feedVideos"
 import { memo, useCallback, useState } from "react"
+import { storageService } from "@services/memory"
 import theme from "@src/theme"
-import { storageService } from "@/src/services/memory"
 
 var showFiltersFunction: () => void
 

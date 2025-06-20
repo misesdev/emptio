@@ -32,7 +32,12 @@ const AddFolowScreen = ({ navigation }: StackScreenProps<any>) => {
                 onSearch={search} 
             />
 
-            <UserList users={users} onPressUser={handleAddFollow} />
+            <UserList 
+                users={users} 
+                showButton
+                labelAction={useTranslate("commons.details")}
+                onPressUser={handleAddFollow} 
+            />
 
             <View style={{ height: 38 }}></View>
 

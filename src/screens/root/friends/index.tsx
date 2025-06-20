@@ -16,7 +16,12 @@ const ManageFriendsScreen = ({ navigation }: StackScreenProps<any>) => {
     const { friends, search, remove } = useFriends()
   
     const ListItem = memo(({ item }: { item: User }) => (
-        <FollowItem isFriend follow={item} toManage handleClickFollow={remove} />
+        <FollowItem 
+            isFriend 
+            follow={item} 
+            handleClickFollow={remove} 
+            labelAction={useTranslate("commons.remove")}
+        />
     ))
 
     const renderItem = useCallback(({ item }: { item: User }) => {

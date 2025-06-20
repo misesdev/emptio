@@ -63,6 +63,7 @@ export default {
     "commons.publish": "Publish",
     "commons.connect": "Connect",
     "commons.disconnect": "Disconect",
+    "commons.talk": "To Talk",
 
     "labels.all": "All",
     "labels.friends": "Friends",
@@ -87,6 +88,7 @@ export default {
     "menu.setting": "settings",
     "menu.chats": "chats",
     "menu.notifications": "notifications",
+    "menu.wallet": "wallet",
 
     "message.invalidkey": "Invalid private key, please check if the key entered is in the correct format starting with 'nsec'. If you do not have a Nostr private key, consider creating an account.",
     "message.detectedkey": "Private key detected in your clipboard, do you want to enter with the detected private key?",
