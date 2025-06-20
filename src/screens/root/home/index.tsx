@@ -24,7 +24,7 @@ const HomeScreen = ({ navigation }: StackScreenProps<any>) => {
     // })
 
     const actionWallet: ActionHeader = {
-        icon: "add", action: () => navigation.navigate("add-wallet-stack")
+        icon: "add", action: () => navigation.navigate("new-wallet")
     }
 
     return (
@@ -34,7 +34,11 @@ const HomeScreen = ({ navigation }: StackScreenProps<any>) => {
                 refreshControl={<RefreshControl refreshing={loading} onRefresh={loadData} />}
             >
                 {/* Wallets */}
-                <SectionHeader icon="wallet" label={useTranslate("section.title.wallets")} actions={[actionWallet]} />
+                <SectionHeader
+                    icon="wallet" 
+                    label={useTranslate("section.title.wallets")} 
+                    actions={[actionWallet]}
+                />
 
                 {/* Wallets section  */}
                 <WalletList wallets={wallets} navigation={navigation} />

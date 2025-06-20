@@ -3,18 +3,11 @@ import { ScrollView, StyleSheet, Text, View } from "react-native"
 import { ButtonPrimary } from "@components/form/Buttons"
 import { useTranslateService } from "@src/providers/translateProvider"
 import { useEffect, useState } from "react"
-import { StackScreenProps } from "@react-navigation/stack"
-import { Wallet } from "@services/memory/types"
 import theme from "@src/theme"
 
-interface SeedParams {
-    wallet: Wallet,
-    mnemonic: string[]
-}
+const CreatedSeedScren = ({ navigation, route }: any) => {
 
-const CreatedSeedScren = ({ navigation, route }: StackScreenProps<any>) => {
-
-    const { mnemonic } = route?.params as SeedParams
+    const { mnemonic } = route.params
     const { useTranslate } = useTranslateService()
     const [wordList, setWordList] = useState<string[]>()
 
@@ -38,7 +31,6 @@ const CreatedSeedScren = ({ navigation, route }: StackScreenProps<any>) => {
             
             <Text style={styles.title}>{useTranslate("message.wallet.saveseed")}</Text>
 
-            {/* Body */}
             <ScrollView showsVerticalScrollIndicator>
                 <View style={styles.seedarea}>
                     <View style={{ width: "50%", padding: 8 }}>

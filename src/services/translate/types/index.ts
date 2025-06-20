@@ -68,6 +68,7 @@ export type TranslateWords = "initial.message"
 | "commons.connect"
 | "commons.disconnect"
 | "commons.talk"
+| "commons.continue"
 
 | "labels.all"
 | "labels.username"

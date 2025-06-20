@@ -14,15 +14,13 @@ import { Address, BNetwork } from "bitcoin-tx-lib"
 
 interface CreateProps {
     name: string,
-    type: WalletType,
+    network: BNetwork,
     password: string
 }
 
-const create = async ({ name, type, password }: CreateProps): Promise<Response<BaseWallet>> => {
+const create = async ({ name, network, password }: CreateProps): Promise<Response<BaseWallet>> => {
     try {
         const wallets = await storageService.wallets.list() 
-
-        const network: BNetwork = type == "bitcoin" ? "mainnet" : "testnet"
 
         const base: BaseWallet = createWallet(password, network)
         
@@ -32,7 +30,6 @@ const create = async ({ name, type, password }: CreateProps): Promise<Response<B
 
         base.wallet = {
             name,
-            type,
             lastBalance: 0,
             lastReceived: 0,
             lastSended: 0,
@@ -57,15 +54,13 @@ interface ImportProps {
     name: string,
     mnemonic: string,
     password?: string,
-    type?: WalletType
+    network?: BNetwork
 }
 
-const require = async ({ name, type = "bitcoin", mnemonic, password }: ImportProps): Promise<Response<BaseWallet>> => {
+const require = async ({ name, network = "mainnet", mnemonic, password }: ImportProps): Promise<Response<BaseWallet>> => {
 
     try {
         const wallets = await storageService.wallets.list()
-
-        const network: BNetwork = type == "bitcoin" ? "mainnet" : "testnet"
 
         const base = await importWallet(mnemonic, password, network)
         
@@ -75,7 +70,6 @@ const require = async ({ name, type = "bitcoin", mnemonic, password }: ImportPro
 
         base.wallet = {
             name,
-            type,
             lastBalance: 0,
             lastReceived: 0,
             lastSended: 0,

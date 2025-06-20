@@ -10,7 +10,8 @@ import { useState } from "react"
 import { StackScreenProps } from "@react-navigation/stack"
 import { walletService } from "@services/wallet"
 import theme from "@src/theme"
-import { storageService } from "@/src/services/memory"
+import { storageService } from "@services/memory"
+import { ScrollView } from "react-native-gesture-handler"
 
 const ImportWalletScreen = ({ navigation, route }: StackScreenProps<any>) => {
 
@@ -47,7 +48,7 @@ const ImportWalletScreen = ({ navigation, route }: StackScreenProps<any>) => {
 
         setTimeout(async () => {
             const response = await walletService.import({ 
-                type,
+                network: "testnet",
                 name: walletName.trim(),
                 mnemonic: seedPhrase.trim(), 
                 password: passPhrase?.trim() 
@@ -66,55 +67,60 @@ const ImportWalletScreen = ({ navigation, route }: StackScreenProps<any>) => {
     }
 
     return (
-        <View style={styles.container}>
+        <ScrollView contentContainerStyle={styles.container}>
             <HeaderScreen style={{ marginBottom: 10 }}
                 title={useTranslate("screen.title.addwallet")}
                 onClose={() => navigation.goBack()}
             />
 
-            <View style={{ height: 75 }}></View>
+            <View style={{ width: "100%" }}>
+                <View style={{ height: 30 }}></View>
 
-            <Text style={styles.title}>{useTranslate("wallet.title.import")}</Text>
+                <Text style={styles.title}>{useTranslate("wallet.title.import")}</Text>
 
-            <View style={{ alignItems: "center", marginVertical: 26 }}>
-                <Text style={{ 
-                    width: "50%", 
-                    padding: 4,
-                    borderRadius: 10,
-                    textAlign: "center",
-                    color: theme.colors.white, 
-                    backgroundColor: type == "bitcoin" ? theme.colors.orange : theme.colors.green
-                }}>
-                    {type == "bitcoin" && useTranslate("wallet.bitcoin.tag")}
-                    {type == "testnet" && useTranslate("wallet.bitcoin.testnet.tag")}
-                </Text>
+                <View style={{ alignItems: "center", marginVertical: 26 }}>
+                    <Text style={{ 
+                        width: "50%", 
+                        padding: 4,
+                        borderRadius: 10,
+                        textAlign: "center",
+                        color: theme.colors.white, 
+                        backgroundColor: type == "bitcoin" ? theme.colors.orange : theme.colors.green
+                    }}>
+                        {type == "bitcoin" && useTranslate("wallet.bitcoin.tag")}
+                        {type == "testnet" && useTranslate("wallet.bitcoin.testnet.tag")}
+                    </Text>
+                </View>
+
+                <FormControl  
+                    value={walletName} 
+                    onChangeText={handleSetName}                 
+                    label={useTranslate("labels.wallet.name")}
+                />
+
+                <FormControl isTextArea
+                    value={seedPhrase} 
+                    label="Seed Phrase"
+                    onChangeText={value => handleSetSeed(value.toLowerCase())}  
+                />
+                
+                <FormControl type="password"
+                    value={passPhrase}
+                    label={useTranslate("labels.wallet.password")} 
+                    onChangeText={setPassPhrase} 
+                /> 
             </View>
-
-            <FormControl  
-                value={walletName} 
-                onChangeText={handleSetName}                 
-                label={useTranslate("labels.wallet.name")}
-            />
-
-            <FormControl isTextArea
-                value={seedPhrase} 
-                label="Seed Phrase"
-                onChangeText={value => handleSetSeed(value.toLowerCase())}  
-            />
-            
-            <FormControl value={passPhrase}
-                label={useTranslate("labels.wallet.password")} 
-                onChangeText={setPassPhrase} type="password" 
-            /> 
            
             {/* Footer */}
             <View style={styles.buttonArea}>
-                <ButtonPrimary disabled={disabled} loading={loading}
+                <ButtonPrimary 
+                    loading={loading}
+                    disabled={disabled} 
                     label={useTranslate("commons.import")} 
                     onPress={() => handleImport()} 
                 />
             </View>
-        </View>
+        </ScrollView>
     )
 }
 

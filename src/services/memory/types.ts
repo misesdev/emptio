@@ -18,12 +18,9 @@ export interface PaymentKey {
     secret: string
 }
 
-export type WalletType = "lightning" | "bitcoin" | "testnet" | "emptio"
-
 export interface Wallet {
     id?: number,
     name?: string,
-    type?: WalletType,
     default?: boolean,
     lastBalance?: number,
     lastSended?: number,

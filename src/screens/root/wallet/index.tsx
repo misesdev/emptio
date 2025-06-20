@@ -11,7 +11,10 @@ import { useWallet } from "./hooks/use-wallet"
 const WalletManagerScreen = ({ navigation, route }: StackScreenProps<any>) => {
 
     const { useTranslate } = useTranslateService()
-    const { wallet, transactions, refreshing, showOptions, openTransaction, loadTransactions } = useWallet({ navigation, route })
+    const {
+        wallet, transactions, refreshing, showOptions, 
+        openTransaction, loadTransactions 
+    } = useWallet({ navigation, route })
 
     useEffect(() => {
         // add to header menu wallet options 
@@ -50,7 +53,7 @@ const WalletManagerScreen = ({ navigation, route }: StackScreenProps<any>) => {
             </ScrollView>
 
             <WalletButtons
-                onReceive={() => navigation.navigate("add-wallet-receive-stack", { wallet })}
+                onReceive={() => navigation.navigate("wallet-receive-stack", { wallet })}
                 onSend={() => navigation.navigate("wallet-send-stack", { wallet })}
             />
         </View>

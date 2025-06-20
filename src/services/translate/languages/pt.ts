@@ -64,6 +64,7 @@ export default {
     "commons.connect": "Conectar",
     "commons.disconnect": "Desconectar",
     "commons.talk": "Conversar",
+    "commons.continue": "Continuar",
 
     "labels.all": "Todos",
     "labels.friends": "Amigos",

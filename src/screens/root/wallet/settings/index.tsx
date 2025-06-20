@@ -51,8 +51,6 @@ const WalletSettings = ({ navigation, route }: StackScreenProps<any>) => {
         const walletData: Wallet = {
             ...wallet,
             payfee,
-            // type: testnet ? "testnet":"bitcoin",
-            // network: testnet ? "testnet":"mainnet",
             name: walletName,
             default: defaultWallet
         }
@@ -77,7 +75,7 @@ const WalletSettings = ({ navigation, route }: StackScreenProps<any>) => {
             index: 1,
             routes: [
                 { name: 'core-stack' },
-                { name: 'wallet-stack', params: { wallet: walletData } }
+                { name: 'wallet', params: { wallet: walletData } }
             ]
         }) 
     }

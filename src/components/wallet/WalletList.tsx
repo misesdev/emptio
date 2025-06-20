@@ -24,7 +24,7 @@ const WalletList = ({ wallets, navigation }: Props) => {
     }, [wallets])
 
     const handleOpenWallet = useCallback((wallet: Wallet) => {
-        navigation.navigate("wallet-stack", { wallet })
+        navigation.navigate("wallet", { wallet })
     }, [navigation])
 
     const renderItem = useCallback(({ item }: { item: Wallet }) => {
@@ -33,7 +33,10 @@ const WalletList = ({ wallets, navigation }: Props) => {
                  <View style={[styles.wallet, {width: itemWidth, marginRight: spacing, backgroundColor: theme.colors.section, padding: 5 }]}> 
                      <Text style={styles.title}>{useTranslate("labels.wallet.add")}</Text>
                      <Text style={[styles.description, { color: theme.colors.gray }]}>{useTranslate("message.wallet.create")}</Text> 
-                     <TouchableOpacity style={[styles.button, { backgroundColor: theme.colors.blue }]} activeOpacity={.7} onPress={() => navigation.navigate("add-wallet-stack")}> 
+                     <TouchableOpacity activeOpacity={.7}
+                        style={[styles.button, { backgroundColor: theme.colors.blue }]}
+                        onPress={() => navigation.navigate("new-wallet")}
+                    > 
                          <Text style={styles.buttonText}> {useTranslate("commons.add")} </Text>
                      </TouchableOpacity> 
                 </View>

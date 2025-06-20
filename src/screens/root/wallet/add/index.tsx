@@ -15,8 +15,7 @@ import theme from "@src/theme"
 import { ScrollView } from "react-native-gesture-handler"
 import { walletService } from "@services/wallet"
 import { userService } from "@services/user"
-import { storageService } from "@/src/services/memory"
-
+import { storageService } from "@services/memory"
 
 const AddWalletScreen = ({ navigation }: StackScreenProps<any>) => {
 
@@ -47,7 +46,7 @@ const AddWalletScreen = ({ navigation }: StackScreenProps<any>) => {
         const response = await walletService.create({ 
             name: walletName, 
             password: walletPassword, 
-            type: walletType
+            network: "testnet"// walletType
         })
         
         if (response.success)

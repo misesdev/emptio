@@ -1,9 +1,10 @@
 import Clipboard from "@react-native-clipboard/clipboard"
 import { pushMessage } from "../services/notification"
 import { useTranslate } from "../services/translate"
-import { User, WalletType } from "@services/memory/types"
+import { User } from "@services/memory/types"
 import { hexToNpub } from "../services/converter"
 import theme from "../theme"
+import { BNetwork } from "bitcoin-tx-lib"
 
 export const copyToClipboard = (text: string) => {
     
@@ -56,17 +57,17 @@ export const replaceContentEvent = (content: string) => {
         //.replaceAll(/\[([^\]]+)\]\((https?:\/\/[^\s)]+)\)/g, "$1\n\n$2")
 }
 
-export const getDescriptionTypeWallet = async (type: WalletType) => {
+export const getDescriptionTypeWallet = async (type: BNetwork) => {
     switch(type)
     {
         case "testnet":
             return await useTranslate("wallet.bitcoin.testnet.tag")
-        case "bitcoin":
+        case "mainnet":
             return await useTranslate("wallet.bitcoin.tag")
-        case "lightning":
-            return await useTranslate("wallet.lightning.tag")
-        default:
-            return await useTranslate("wallet.bitcoin.tag")
+        // case "lightning":
+        //     return await useTranslate("wallet.lightning.tag")
+        // default:
+        //     return await useTranslate("wallet.bitcoin.tag")
     }
 }
 

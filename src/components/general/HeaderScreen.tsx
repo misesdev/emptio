@@ -29,7 +29,8 @@ export const HeaderScreen = ({ title, onClose, action, style }: HeaderProps) => 
 }
 
 const styles = StyleSheet.create({
-    header: { backgroundColor: theme.colors.black, flexDirection: "row", width: "100%" },
+    header: { backgroundColor: theme.colors.black, flexDirection: "row", width: "100%", 
+        zIndex: 999 },
     title: { color: theme.colors.white, fontSize: 20, fontWeight: "bold", marginLeft: 15 },
     button: { borderRadius: 10, paddingHorizontal: 6, paddingVertical: 2, marginRight: 10 }
 })

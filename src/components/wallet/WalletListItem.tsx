@@ -28,7 +28,7 @@ const WalletListItem = ({ wallet, handleOpen, style }: Props) => {
 
     useEffect(() => { 
         setTimeout(loadData, 20)
-        getDescriptionTypeWallet(wallet.type ?? "bitcoin").then(setTypeWallet)
+        getDescriptionTypeWallet(wallet.network ?? "mainnet").then(setTypeWallet)
     }, [wallets])
 
     const loadData = async () => {
@@ -55,9 +55,9 @@ const WalletListItem = ({ wallet, handleOpen, style }: Props) => {
         <TouchableOpacity key={wallet.key} activeOpacity={.7} 
             style={[styles.wallet,style]} onPress={() => handleOpen(walletData)}
         >
-            {walletData!.type === "bitcoin" && <Image source={require("@assets/images/bitcoin-wallet-header3.jpg")} style={{ position: "absolute", borderRadius: 18, width: "100%", height: "100%" }} />}
-            {walletData!.type === "testnet" && <Image source={require("@assets/images/bitcoin-wallet-header.jpg")} style={{ position: "absolute", borderRadius: 18, width: "100%", height: "100%" }} />}
-            {walletData!.type === "lightning" && <Image source={require("@assets/images/lightning-wallet-header.png")} style={{ position: "absolute", borderRadius: 18, width: "100%", height: "100%" }} />}
+            {walletData!.network === "mainnet" && <Image source={require("@assets/images/bitcoin-wallet-header3.jpg")} style={{ position: "absolute", borderRadius: 18, width: "100%", height: "100%" }} />}
+            {walletData!.network === "testnet" && <Image source={require("@assets/images/bitcoin-wallet-header.jpg")} style={{ position: "absolute", borderRadius: 18, width: "100%", height: "100%" }} />}
+            {/* {walletData!.network === "lightning" && <Image source={require("@assets/images/lightning-wallet-header.png")} style={{ position: "absolute", borderRadius: 18, width: "100%", height: "100%" }} />} */}
             <View style={{ position: "absolute", width: "100%", height: "100%", borderRadius: 18, backgroundColor: "rgba(0,55,55,.7)" }}></View>
 
             <Text style={styles.title}>{formatName}</Text>
@@ -75,14 +75,14 @@ const WalletListItem = ({ wallet, handleOpen, style }: Props) => {
                 </Text>
             </View> 
             <TouchableOpacity activeOpacity={.7} 
-                style={[styles.button, { backgroundColor: walletData.type == "bitcoin" ? 
+                style={[styles.button, { backgroundColor: walletData.network == "mainnet" ?
                     theme.colors.orange : theme.colors.blue 
                 }]} onPress={() => handleOpen(walletData)}
             >
                 <Text style={styles.buttonText}> {useTranslate("commons.open")} </Text>
             </TouchableOpacity>
 
-            <Text style={[styles.tagWallet, { backgroundColor:  walletData.type == "bitcoin" ? 
+            <Text style={[styles.tagWallet, { backgroundColor:  walletData.network == "mainnet" ?
                     theme.colors.orange : theme.colors.blue
                 }]}
             >

@@ -19,22 +19,22 @@ export const WalletHeader = ({ wallet, showOptions }: WalletProps) => {
     let balanceBTC = toBitcoin(wallet.lastBalance)
     let formatName = (!!wallet.name && wallet.name?.length >= 28) ? 
         `${wallet.name?.substring(0, 28)}..` : wallet?.name
-    let walletColor = wallet.type == "bitcoin" ? theme.colors.orange : theme.colors.blue
+    let walletColor = wallet.network == "mainnet" ? theme.colors.orange : theme.colors.blue
 
     return (
         <>
-            {wallet!.type == "bitcoin" && <Image source={require("@assets/images/bitcoin-wallet-header3.jpg")} style={{ width: "100%", height: 240 }} />}
-            {wallet!.type == "testnet" && <Image source={require("@assets/images/bitcoin-wallet-header.jpg")} style={{ width: "100%", height: 240 }} />}
-            {wallet!.type == "lightning" && <Image source={require("@assets/images/lightning-wallet-header.png")} style={{ width: "100%", height: 240 }} />}
+            {wallet!.network == "mainnet" && <Image source={require("@assets/images/bitcoin-wallet-header3.jpg")} style={{ width: "100%", height: 240 }} />}
+            {wallet!.network == "testnet" && <Image source={require("@assets/images/bitcoin-wallet-header.jpg")} style={{ width: "100%", height: 240 }} />}
+            {/* {wallet!.network == "lightning" && <Image source={require("@assets/images/lightning-wallet-header.png")} style={{ width: "100%", height: 240 }} />} */}
             <View style={styles.headerWallet}>
                 <View style={{ height: 50 }}></View>
                 <Text style={[{ fontSize: 18 }, styles.headerText]}>{formatName}</Text>
                 <Text style={[{ fontSize: 30 }, styles.headerText]}>{balanceSats} Sats</Text>
                 <Text style={[{ fontSize: 14 }, styles.headerText]}>{balanceBTC} BTC</Text>
                 <Text style={[styles.headerText, { fontSize: 12, backgroundColor: walletColor, padding: 10, borderRadius: 10, maxWidth: 130, textAlign: "center" }]}>
-                    {wallet?.type == "bitcoin" && useTranslate("wallet.bitcoin.tag") }
-                    {wallet?.type == "testnet" && useTranslate("wallet.bitcoin.testnet.tag") }
-                    {wallet?.type == "lightning" && useTranslate("wallet.lightning.tag") }
+                    {wallet?.network == "mainnet" && useTranslate("wallet.bitcoin.tag") }
+                    {wallet?.network == "testnet" && useTranslate("wallet.bitcoin.testnet.tag") }
+                    {/* {wallet?.network == "lightning" && useTranslate("wallet.lightning.tag") } */}
                 </Text>
             </View>
         </>
