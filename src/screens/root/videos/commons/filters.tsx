@@ -38,7 +38,7 @@ const VideosFilters = () => {
         if(!tagNameText) return;
         const hashtag = tagNameText.replaceAll("#", "").trim()
         if(filterTags.find(t => t == hashtag)) return
-        setFilterTags(prev => [hashtag, ...prev])
+        setFilterTags(prev => [hashtag.toLowerCase(), ...prev])
         setTagNameText("")
     }, [tagNameText, filterTags])
 
@@ -73,7 +73,7 @@ const VideosFilters = () => {
                                 returnKeyTipe="go"
                                 onSubmitEditing={handleAddTagfilter}
                                 label={useTranslate("feed.videos.addtag")}
-                                onChangeText={(value) => setTagNameText(value.toLowerCase())}
+                                onChangeText={setTagNameText}
                                 value={tagNameText}
                             />
                         </View>

@@ -24,9 +24,11 @@ const ChatsScreen = ({ navigation }: StackScreenProps<any>) => {
     return (
         <View style={theme.styles.container}>
             <HeaderChats navigation={navigation} />
-            <SearchBox delayTime={200} seachOnLenth={0}
-                label={useTranslate("commons.search")} onSearch={handleSearch} 
-            />
+            {!selectionMode &&
+                <SearchBox delayTime={200} seachOnLenth={0}
+                    label={useTranslate("commons.search")} onSearch={handleSearch} 
+                />
+            }
             {!selectionMode &&
                 <ChatFilters onFilter={handleFilter} activeSection={filterSection} />
             }

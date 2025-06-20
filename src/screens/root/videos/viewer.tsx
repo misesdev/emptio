@@ -30,7 +30,6 @@ const FeedVideoViewer = ({ event, paused }: VideoProps) => {
                 resizeMode="none"
                 onLoad={onLoadVideo}
                 onProgress={onProgressVideo}
-                playInBackground={false}
             />
             <View style={styles.controlsContainer}>
                 {error && 
