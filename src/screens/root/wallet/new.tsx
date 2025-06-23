@@ -16,7 +16,7 @@ const NewWalletScreen = ({ navigation }: StackScreenProps<any>) => {
     return (
         <ScrollView contentContainerStyle={theme.styles.container}>
             <HeaderScreen 
-                style={{ position: "absolute", top: 10 }}
+                style={{ position: "absolute", top: 5 }}
                 title={useTranslate("screen.title.addwallet")}
                 onClose={() => navigation.goBack()}
             />

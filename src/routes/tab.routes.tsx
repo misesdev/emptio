@@ -67,15 +67,6 @@ const TabRoutes = () => {
                     tabBarBadge: !!unreadChats.length ? unreadChats.length : undefined,
                 }}
             />
-
-            {/* <Tab.Screen */}
-            {/*     name="notifications" */}
-            {/*     component={() => <></>} */}
-            {/*     options={{ */}
-            {/*         tabBarLabel: useTranslate("menu.notifications"), */}
-            {/*         tabBarIcon: ({ color }) => <Ionicons name="notifications" color={color} size={theme.icons.medium} />, */}
-            {/*     }} */}
-            {/* /> */}
         </Tab.Navigator>
     )
 }

@@ -4,9 +4,9 @@ import { FormControl } from "@components/form/FormControl"
 import { ButtonPrimary } from "@components/form/Buttons"
 import { useTranslateService } from "@src/providers/translateProvider"
 import { StackScreenProps } from "@react-navigation/stack"
+import { ScrollView } from "react-native-gesture-handler"
 import { useState } from "react"
 import theme from "@src/theme"
-import { ScrollView } from "react-native-gesture-handler"
 
 const ImportWalletScreen = ({ navigation }: StackScreenProps<any>) => {
 
@@ -54,7 +54,8 @@ const ImportWalletScreen = ({ navigation }: StackScreenProps<any>) => {
 
 const styles = StyleSheet.create({
     container: { flex: 1, alignItems: 'center', backgroundColor: theme.colors.black },
-    title: { fontSize: 25, fontWeight: "bold", textAlign: "center", color: theme.colors.white, marginVertical: 20 },
+    title: { fontSize: 25, fontWeight: "bold", textAlign: "center", color: theme.colors.white, 
+        marginVertical: 20 },
     buttonArea: { width: '100%', justifyContent: 'center', marginVertical: 10, flexDirection: "row", marginTop: 50 }
 })
 
