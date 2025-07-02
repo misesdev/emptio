@@ -21,9 +21,9 @@ export class WalletStorage {
         let wallets = await this.list()
         wallets.forEach(item => {
             if(wallet.default && wallet.key != item.key) item.default = false
-            if(wallet.key === item.key) {
+            if(wallet.key === item.key)
+            {
                 item["name"] = wallet.name
-                item["type"] = wallet.type
                 item["lastBalance"] = wallet.lastBalance
                 item["lastReceived"] = wallet.lastReceived
                 item["lastSended"] = wallet.lastSended

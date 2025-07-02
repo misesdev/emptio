@@ -4,7 +4,7 @@ import { Tx } from "@mempool/mempool.js/lib/interfaces/bitcoin/transactions"
 import { createTransaction, createWallet, ValidateAddress, 
     sendTransaction, importWallet, BaseWallet } from "@services/bitcoin"
 import { getRandomKey } from "@services/bitcoin/signature"
-import { Transaction, Wallet, WalletInfo, WalletType } from "@services/memory/types"
+import { Transaction, Wallet, WalletInfo } from "@services/memory/types"
 import { AddressTxsUtxo } from "@mempool/mempool.js/lib/interfaces/bitcoin/addresses"
 import { Response, trackException } from "@services/telemetry"
 import { timeSeconds } from "@services/converter"
