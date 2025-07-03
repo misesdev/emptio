@@ -3,7 +3,7 @@ import { useEffect, useRef, useState } from "react"
 import { View, StyleSheet, TouchableOpacity, Text, Dimensions } from 'react-native';
 import Ionicons from 'react-native-vector-icons/Ionicons'
 import Slider from '@react-native-community/slider';
-import { blobService } from '@services/blob';
+import blobService from '@services/blob';
 import theme from '@src/theme';
 import LinkError from './LinkError';
 
@@ -66,7 +66,7 @@ const VideoViewer = ({ url, redute=180, fullScreen=false, hideFullscreen=false, 
 
     const handleDownload = async () => {
         if(url) {
-            blobService.downloadVideo({ 
+            blobService.download({ 
                 url, 
                 setDownloading, 
                 setDownloadProgress 

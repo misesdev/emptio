@@ -8,7 +8,7 @@ import { ScrollView } from "react-native-gesture-handler"
 import { storageService } from "@services/memory"
 import { useFeedVideosStore } from "@services/zustand/feedVideos"
 import { showVideoFilters } from "./filters"
-import { blobService } from "@services/blob"
+import blobService from "@services/blob"
 import { extractVideoUrl } from "@src/utils"
 import theme from "@src/theme"
 
@@ -65,7 +65,7 @@ const VideoOptionsBar = ({ event }: VideoOptionProps) => {
     const handleDownload = () => {
         const url = extractVideoUrl(event.content)
         if(url) { 
-            blobService.downloadVideo({ url, setDownloadProgress })
+            blobService.download({ url, setDownloadProgress })
         }
     }
 
