@@ -84,28 +84,6 @@ export interface Transaction {
     outputs?: TransactionOutput[]
 }
 
-export interface User {
-    name?: string,
-    pubkey?: string,
-    displayName?: string,
-    display_name?: string,
-    picture?: string,
-    image?: string,
-    about?: string,
-    bio?: string,
-    nip05?: string,
-    lud06?: string,
-    lud16?: string,
-    banner?: string,
-    zapService?: string,
-    website?: string,
-    keychanges?: string,
-    default_wallet?: string,
-    bitcoin_address?: string,
-    similarity?: number,
-    friend?: boolean
-}
-
 export interface FeedVideosSettings {
     VIDEOS_LIMIT: number,
     FETCH_LIMIT: number,

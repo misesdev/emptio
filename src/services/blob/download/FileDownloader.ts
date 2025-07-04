@@ -7,7 +7,9 @@ import * as FileSystem from "react-native-fs"
 
 export class FileDownloader implements IDownloadService 
 {
-    public async download({ url, setDownloading, setDownloadProgress }: DownloadProps) : Promise<void>
+    public async download({ 
+        url, setDownloading, setDownloadProgress 
+    }: DownloadProps) : Promise<void>
     {
         if(!(await getGaleryPermission())) return
 
@@ -21,8 +23,10 @@ export class FileDownloader implements IDownloadService
             fromUrl: url,
             toFile: filePath,
             progress: (res) => {
-                let percentage = (res.bytesWritten / res.contentLength) * 100
-                if(setDownloadProgress) setDownloadProgress(percentage)
+                if(setDownloadProgress) {
+                    let percentage = (res.bytesWritten / res.contentLength) * 100
+                    setDownloadProgress(percentage)
+                }
             }
         }).promise.then(() => {
             if(setDownloading) setDownloading(true)

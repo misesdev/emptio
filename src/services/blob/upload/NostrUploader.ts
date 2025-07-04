@@ -1,11 +1,15 @@
-import { NDKEvent, NDKPrivateKeySigner } from "@nostr-dev-kit/ndk-mobile";
+import { NDKEvent } from "@nostr-dev-kit/ndk-mobile";
 import { UploadProps, UploadService } from "./IUploadService";
+import { NostrPairKey } from "@services/nostr/pairkey/NostrPairKey";
 import * as FileSystem from "react-native-fs"
+import { timeSeconds } from "@services/converter";
 import axios from "axios"
 
 export class NostrUploader implements UploadService
 {
-    public async upload({ localUri, mimeType, destination, privateKey }: UploadProps): Promise<string> 
+    public async upload({ 
+        localUri, mimeType, destination, privateKey 
+    }: UploadProps): Promise<string> 
     {
         if(!privateKey)
             throw new Error("Missing the privateKey parameter")
@@ -24,12 +28,12 @@ export class NostrUploader implements UploadService
         return res.data.url || res.data.location;
     }
 
-    private async generateJwt(privateKey: string): Promise<string> 
+    private async generateJwt(privateKey: Uint8Array): Promise<string> 
     {
-        const signer = new NDKPrivateKeySigner(privateKey);
-        const pubkey = (await signer.user()).pubkey;
-        const createdAt = Math.floor(Date.now() / 1000);
-        const expiration = createdAt + 10;
+        const pairkey = new NostrPairKey(privateKey)
+        const pubkey = pairkey.getPublicKey();
+        const createdAt = timeSeconds.now() 
+        const expiration = createdAt + 60;
 
         const event = new NDKEvent();
         event.kind = 24242;
@@ -42,8 +46,8 @@ export class NostrUploader implements UploadService
             ['u', 'https://nostr.download/media'],
         ];
 
-        await event.sign(signer);
-        const raw = event.rawEvent();
+        const signedEvent = await pairkey.signEvent(event)
+        const raw = signedEvent.rawEvent();
         const jwt = Buffer.from(JSON.stringify(raw)).toString('base64');
         return `Nostr ${jwt}`;
     }

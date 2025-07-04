@@ -1,11 +1,12 @@
-import { FileDownloader } from "./download/DownloadFile"
+import { FileDownloader } from "./download/FileDownloader"
 import { NostrUploader } from "./upload/NostrUploader"
 import { UploadProps } from "./upload/IUploadService"
 import { DownloadProps } from "./download/IDownloadService"
 
-class BlobService {
-    private readonly _downloader: FileDownloader
+class BlobService 
+{
     private readonly _uploader: NostrUploader 
+    private readonly _downloader: FileDownloader
 
     constructor() {
         this._uploader = new NostrUploader()
@@ -21,6 +22,4 @@ class BlobService {
     }
 }
 
-const blobService = new BlobService()
-
-export default blobService
+export default BlobService

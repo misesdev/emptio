@@ -17,32 +17,26 @@ export const createPairKeys = (): PairKey => {
 }
 
 export const validatePrivateKey = (privateKey: string) => {
-    try {
+    try { 
         const { type } = nip19.decode(privateKey)
-
         return type === "nsec"
     } catch { return false }
 }
 
-export const derivatePublicKey = (privateKey: string): string => {
-    try {
-        const { type, data } = nip19.decode(privateKey)
-
-        if (type === "nsec")
-            return getPublicKey(data)
-        else
-            return ""
-    }
-    catch { return "" }
+export const derivatePublicKey = (nsec: string): string => {
+    const { type, data } = nip19.decode(nsec)
+    if (type === "nsec") return getPublicKey(data)
+    
+    throw new Error("Expected nsec format")
 }
 
-export const getHexKeys = (privateKey: string): PairKey => {
+export const getHexKeys = (nsec: string): PairKey => {
 
     const key = getRandomKey(15) 
 
     const response: PairKey = { key, privateKey: "", publicKey: "" }
 
-    const { type, data } = nip19.decode(privateKey)
+    const { type, data } = nip19.decode(nsec)
 
     if (type === "nsec") {
         response.publicKey = getPublicKey(data)

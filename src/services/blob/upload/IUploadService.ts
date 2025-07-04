@@ -3,7 +3,7 @@ export type UploadProps = {
     localUri: string;
     mimeType: string;
     destination: string;
-    privateKey?: string;
+    privateKey?: Uint8Array;
 }
 
 export interface UploadService {
