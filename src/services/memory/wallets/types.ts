@@ -1,4 +1,4 @@
-import { BNetwork, ECPairKey } from "bitcoin-tx-lib";
+import { BNetwork } from "bitcoin-tx-lib";
 
 export interface Wallet {
     name?: string;
@@ -8,7 +8,7 @@ export interface Wallet {
     lastReceived?: number;
     network?: BNetwork;
     payfee?: boolean;
-    pairkey: ECPairKey;
+    privateKey: Uint8Array;
 }
 
 export interface WalletInfo {

@@ -1,15 +1,15 @@
 import { BaseSecretStorage } from "../base/BaseSecretStorage"
-import { PrivateKey } from "../types"
 
-export class PrivateKeyStorage extends BaseSecretStorage<PrivateKey> 
+export class PrivateKeyStorage extends BaseSecretStorage<Uint8Array> 
 {
     constructor() {
         super("privatekey")
         super.notFoundMessage = "Private key not found"
     }
+
+    public async listEntities() : Promise<Uint8Array[]> {
+        const list = await this.list()
+        return list.map(item => item.entity)
+    }
 }
 
-export class NPairKey 
-{
-
-}

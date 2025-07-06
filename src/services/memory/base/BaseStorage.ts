@@ -1,7 +1,7 @@
 import AsyncStorage from "@react-native-async-storage/async-storage"
-import { BaseEntity } from "../types";
+import { StoredItem } from "../types";
 
-export abstract class BaseStorage<Entity extends BaseEntity> 
+export abstract class BaseStorage<Entity> 
 {
     private readonly _keyStorage: string;
     protected notFoundMessage: string = "item not found in storage";
@@ -14,30 +14,46 @@ export abstract class BaseStorage<Entity extends BaseEntity>
         const list = await this.list()
         let item = list.find(e => e.id == id)
         if(!item) throw new Error(this.notFoundMessage)
-        return item
+        return item.entity
     }
 
-    public async add(entity: Entity): Promise<void> {
+    public async add(entity: Entity): Promise<StoredItem<Entity>> {
         const list = await this.list()
-        entity.id = list.length
-        list.push(entity)
-        this.save(list)
+        let storeEntity: StoredItem<Entity> = { 
+            id: list.length, 
+            entity 
+        }
+        list.push(storeEntity)
+        await this.save(list)
+        return storeEntity
+    }
+    
+    public async update(id: number, entity: Entity): Promise<void> {
+        const list = await this.list();
+        const index = list.findIndex(item => item.id === id);
+        if (index === -1) throw new Error(this.notFoundMessage);
+        list[index].entity = entity;
+        await this.save(list);
     }
 
-    public async list(): Promise<Entity[]> {
-        let list: Entity[] = []
+    public async list(): Promise<StoredItem<Entity>[]> {
+        let list: StoredItem<Entity>[] = []
         let data = await AsyncStorage.getItem(this._keyStorage)
         if(data)
-            list = JSON.parse(data) as Entity[]
+            list = JSON.parse(data) as StoredItem<Entity>[]
         return list
     }
 
-    public async remove(entity: Entity): Promise<void> {
+    public async remove(id: number): Promise<void> {
         const list = await this.list()
-        this.save(list.filter(e => e.id != entity.id))
+        await this.save(list.filter(e => e.id != id))
     }
 
-    private async save(entities: Entity[]): Promise<void> {
+    private async save(entities: StoredItem<Entity>[]): Promise<void> {
         await AsyncStorage.setItem(this._keyStorage, JSON.stringify(entities))
+    }
+
+    public async clear(): Promise<void> {
+        await AsyncStorage.removeItem(this._keyStorage)
     }
 }

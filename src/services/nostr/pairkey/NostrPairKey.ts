@@ -31,17 +31,26 @@ class NostrPairKey implements INostrPairKey
         } catch { return false }
     }
 
-    public getPublicKey() : string {
+    public getPublicKey() : Uint8Array {
+        const publickKey = secp256k1.getPublicKey(this._privateKey)
+        return publickKey.slice(1)
+    }
+
+    public getPublicKeyHex() : string {
         const publickKey = secp256k1.getPublicKey(this._privateKey)
         return bytesToHex(publickKey.slice(1))
     }
-
-    public getPrivateKey() : string {
+    
+    public getPrivateKey() : Uint8Array {
+        return this._privateKey
+    }
+    
+    public getPrivateKeyHex() : string {
         return bytesToHex(this._privateKey)
     }
     
     public getNpub() : string {
-        const pubkey = this.getPublicKey()
+        const pubkey = this.getPublicKeyHex()
         return nip19.npubEncode(pubkey)
     }
 
