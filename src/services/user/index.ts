@@ -1,10 +1,10 @@
 import { storageService } from "@services/memory"
-import { getEvent, listenerEvents, publishEvent, NostrEvent } from "@services/nostr/events"
 import { NDKEvent, NDKFilter, NDKSubscriptionCacheUsage } from "@nostr-dev-kit/ndk-mobile"
 import { EventKinds } from "@src/constants/Events"
 import useNDKStore from "@services/zustand/ndk"
 import { nip19 } from "nostr-tools"
 import { timeSeconds } from "@services/converter"
+import { User } from "./types/User"
 
 interface UpdateProfileProps {
     user: User;
@@ -34,7 +34,6 @@ const updateProfile = async ({ user, setUser, upNostr = false }: UpdateProfilePr
             user.website = userData?.website
             user.about = userData?.about
             user.zapService = userData?.zapService
-            user.bitcoin_address = userData?.bitcoin_address
         }
     } else {
         const pairkey = await storageService.secrets.getPairKey(user.keychanges ?? "")

@@ -1,7 +1,8 @@
 import { EventKinds } from "@/src/constants/Events";
 import NoteService from "../nostr/note/NoteService";
-import { IUserService, ListFollowsProps, SearchUserProps, UpdateProfileProps } from "./IUserService";
-import NDK, { NDKEvent, NostrEvent } from "@nostr-dev-kit/ndk-mobile";
+import { IUserService, ListFollowsProps, SearchUserProps,
+    UpdateProfileProps } from "./IUserService";
+import NDK, { NostrEvent } from "@nostr-dev-kit/ndk-mobile";
 import { timeSeconds } from "../converter";
 import { User } from "./types/User";
 import useNDKStore from "../zustand/ndk";
@@ -71,8 +72,8 @@ class UserService implements IUserService
 
     public async updateFollows(follows: NostrEvent): Promise<void> {
         return await this._note.publish({ 
-            note: follows, 
-            replaceable: true 
+            replaceable: true, 
+            note: follows 
         })
     }
 

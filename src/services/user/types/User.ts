@@ -1,3 +1,9 @@
+import { BaseEntity } from "@services/memory/types";
+
+export interface UserEntity extends BaseEntity {
+    user: User;
+}
+
 export type User = {
     name?: string,
     pubkey?: string,

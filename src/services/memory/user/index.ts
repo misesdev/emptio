@@ -1,5 +1,5 @@
 import AsyncStorage from "@react-native-async-storage/async-storage"
-import { User } from "../types"
+import { User } from "@services/user/types/User"
 
 export class UserStorage {
     static async get() : Promise<User> {

@@ -1,6 +1,14 @@
 import EncryptedStorage from "react-native-encrypted-storage"
-import { PairKey, Secret } from "../types"
+import { PairKey, PrivateKey } from "../types"
 import { ECPairKey } from "bitcoin-tx-lib"
+import { BaseSecretStorage } from "../base/BaseSecretStorage"
+
+export class PrivateKeyStorage extends BaseSecretStorage<PrivateKey> {
+    constructor() {
+        super("privatekey")
+        super.notFoundMessage = "Private key not found"
+    }
+}
 
 export class SecretStorage {
 
