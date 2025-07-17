@@ -1,4 +1,4 @@
-import { User } from "@services/memory/types"
+import { User } from "@services/user/types/User";
 
 export interface NostrEvent {
     id?: string,

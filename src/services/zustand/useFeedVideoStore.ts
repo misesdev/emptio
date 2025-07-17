@@ -1,6 +1,4 @@
 import { create } from "zustand"
-import { FeedVideosSettings } from "../memory/types"
-import { storageService } from "../memory"
 import { NostrEvent } from "@nostr-dev-kit/ndk-mobile"
 
 interface FeedVideoStore {

@@ -1,3 +1,4 @@
+import { Language } from "@/src/services/translate/types"
 import { Currency } from "@src/constants/Currencies"
 
 export interface VideoSettings {
@@ -6,7 +7,8 @@ export interface VideoSettings {
     filterTags: string[],
 }
 
-export type Settings = {
-    useBiometrics?: boolean,
-    currency?: Currency
+export type AppSettings = {
+    useBiometrics: boolean,
+    language: Language,
+    currency: Currency
 }

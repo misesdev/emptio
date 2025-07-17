@@ -1,22 +1,22 @@
 import { ReactElement, ReactNode, createContext, useContext, useEffect, useState } from "react";
-import { User, Wallet } from "@services/memory/types"
-import { NostrEvent } from "@services/nostr/events";
-import { userService } from "@services/user";
-import { storageService } from "@services/memory";
+import { User } from "@services/user/types/User";
+import { Wallet } from "@storage/wallets/types";
+import { NostrEvent } from "@nostr-dev-kit/ndk-mobile";
+import UserService from "@services/user/UserService";
+import { WalletStorage } from "@storage/wallets/WalletStorage";
 
 interface AuthContextType {
-    user: User,
-    wallets: Wallet[],
-    follows: User[],
-    followsEvent?: NostrEvent,
-    setUser?: (user: User) => void,
-    setWallets?: (wallet: Wallet[]) => void,
-    setFollows?: (follows: User[]) => void,
-    setFollowsEvent?: (follows: NostrEvent) => void,
+    user?: User;
+    follows: User[];
+    wallets: Wallet[];
+    followsEvent?: NostrEvent;
+    setUser?: (user: User) => void;
+    setWallets?: (wallet: Wallet[]) => void;
+    setFollows?: (follows: User[]) => void;
+    setFollowsEvent?: (follows: NostrEvent) => void;
 }
 
 const AuthContext = createContext<AuthContextType>({ 
-    user: {},
     wallets: [], 
     follows: []
 })
@@ -25,21 +25,29 @@ const useAuth = (): AuthContextType => useContext(AuthContext)
 
 const AuthProvider = ({ children }: { children: ReactNode }): ReactElement => {
 
-    const [user, setUser] = useState<User>({})
-    const [wallets, setWallets] = useState<Wallet[]>([])
+    const _service = new UserService()
+    const _walletStorage = new WalletStorage()
+    const [user, setUser] = useState<User>()
     const [follows, setFollows] = useState<User[]>([])
+    const [wallets, setWallets] = useState<Wallet[]>([])
     const [followsEvent, setFollowsEvent] = useState<NostrEvent>()
 
     useEffect(() => {
-        storageService.wallets.list().then(setWallets)
-        userService.getUser().then(setUser)
+        handleUserData()
     }, [])
 
+    const handleUserData = async () => {
+        await _service.init()
+        const user = await _service.getProfile()
+        const wallets = await _walletStorage.listEntities()
+        setWallets(wallets)
+        setUser(user)
+    }
+
     useEffect(() => {
-        if(user.pubkey) 
+        if(user?.pubkey) 
         {
-            userService.listFollows(user, followsEvent as NostrEvent,true)
-                .then(followList => {
+            _service.listFollows({ follows: followsEvent }).then(followList => {
                 setFollows(followList)
             })
         }

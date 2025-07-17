@@ -1,7 +1,8 @@
 
+export type LanguageSelector = "pt" | "en"
 export type Language = { 
     label: string,
-    selector: "pt" | "en"
+    selector: LanguageSelector
 }
 
 export type TranslateWords = "initial.message"

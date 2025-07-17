@@ -11,6 +11,7 @@
             "@src/*": ["src/*"],
             "@components/*": ["src/components/*"],
             "@services/*": ["src/services/*"],
+            "@storage/*": ["src/storage/*"],
             "@screens/*": ["src/screens/*"],
         },
     },

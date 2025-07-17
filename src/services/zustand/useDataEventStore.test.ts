@@ -1,4 +1,4 @@
-import useDataEventStore from "./dataEvents"
+import useDataEventStore from "./useDataEventStore"
 import { NostrEvent } from "@nostr-dev-kit/ndk-mobile"
 
 const mockEvent = {

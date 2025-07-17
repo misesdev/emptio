@@ -1,16 +1,14 @@
 import NDK, { NDKEvent, NDKFilter, NDKSubscriptionCacheUsage, NostrEvent } from "@nostr-dev-kit/ndk-mobile"
 import { INoteService, ListCommentProps, ListReactionProps, PublishNoteProps, 
     ReactionProps } from "./INoteService"
-import { jsonContentKinds } from "@/src/constants/Events"
-import useNDKStore from "@services/zustand/ndk"
-import { timeSeconds } from "../../converter";
+import useNDKStore from "@services/zustand/useNDKStore"
 
 class NoteService implements INoteService
 {
     private readonly _ndk: NDK;
 
-    constructor(ndk?: NDK) {
-        this._ndk = ndk ?? useNDKStore.getState().ndk
+    constructor(ndk: NDK = useNDKStore.getState().ndk) {
+        this._ndk = ndk 
     }
 
     public async listReactions({ user, note }: ListReactionProps): Promise<NDKEvent[]> {
@@ -79,35 +77,25 @@ class NoteService implements INoteService
             cacheUsage: NDKSubscriptionCacheUsage.ONLY_RELAY
         })
 
-        return Array.from(events).map((event) : NostrEvent => {
-            let jsonContent = jsonContentKinds.includes(event.kind ?? 0)
-            return {
-                id: event.id,
-                kind: event.kind,
-                pubkey: event.pubkey,
-                content: jsonContent ? JSON.parse(event.content) : event.content,
-                created_at: event.created_at ?? timeSeconds.now(),
-                tags: event.tags
-            } 
-        })
+        return Array.from(events) as NostrEvent[]
+        //     .map((event) : NostrEvent => {
+        //     let jsonContent = jsonContentKinds.includes(event.kind ?? 0)
+        //     return {
+        //         id: event.id,
+        //         kind: event.kind,
+        //         pubkey: event.pubkey,
+        //         content: jsonContent ? JSON.parse(event.content) : event.content,
+        //         created_at: event.created_at ?? timeSeconds.now(),
+        //         tags: event.tags
+        //     } 
+        // })
     }
 
     public async getNote(filters: NDKFilter): Promise<NostrEvent|null> {
         const event = await this._ndk.fetchEvent(filters, {
             cacheUsage: NDKSubscriptionCacheUsage.ONLY_RELAY
         })
-        if(event) {
-            let jsonContent = jsonContentKinds.includes(event.kind ?? 0)
-            return { 
-                id: event.id,
-                kind: event.kind,
-                pubkey: event.pubkey,
-                content: jsonContent ? JSON.parse(event.content) : event.content,
-                created_at: event.created_at ?? 0,
-                tags: event.tags
-            } as NostrEvent
-        }
-        return null 
+        return event as NostrEvent 
     }
 
     public getPubkeyFromTags(event: NDKEvent) : string|null {

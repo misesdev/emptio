@@ -45,57 +45,57 @@ jest.mock("react-native-encrypted-storage", () => ({
     } 
 }))
 
-jest.mock("@services/user", () => ({
-    userService: {
-        signIn: jest.fn(),
-        signUp: jest.fn(),
-        signOut: jest.fn(),
-        isLogged: jest.fn(),
-        searchUsers: jest.fn(),
-    },
-    createFollowEvent: jest.fn(),
-}))
+// jest.mock("@services/user", () => ({
+//     userService: {
+//         signIn: jest.fn(),
+//         signUp: jest.fn(),
+//         signOut: jest.fn(),
+//         isLogged: jest.fn(),
+//         searchUsers: jest.fn(),
+//     },
+//     createFollowEvent: jest.fn(),
+// }))
 
-jest.mock("@services/auth", () => ({
-    authService: {
-        checkBiometric: jest.fn(),
-        signIn: jest.fn(),
-        signUp: jest.fn(),
-        isLogged: jest.fn(),
-        signOut: jest.fn()
-    }
-}))
+// jest.mock("@services/auth", () => ({
+//     authService: {
+//         checkBiometric: jest.fn(),
+//         signIn: jest.fn(),
+//         signUp: jest.fn(),
+//         isLogged: jest.fn(),
+//         signOut: jest.fn()
+//     }
+// }))
 
-jest.mock("@services/message", () => ({
-    messageService: {
-        listChats: jest.fn(),
-        listMessages: jest.fn(),
-        deleteChats: jest.fn(),
-    }
-}))
+// jest.mock("@services/message", () => ({
+//     messageService: {
+//         listChats: jest.fn(),
+//         listMessages: jest.fn(),
+//         deleteChats: jest.fn(),
+//     }
+// }))
 
-jest.mock("@services/wallet", () => ({
-    walletService: {
-        listTransactions: jest.fn(),
-        getBalance: jest.fn()
-    }
-}))
+// jest.mock("@services/wallet", () => ({
+//     walletService: {
+//         listTransactions: jest.fn(),
+//         getBalance: jest.fn()
+//     }
+// }))
 
-jest.mock("@services/memory", () => ({
-    storageService: {
-        wallets: {
-            add: jest.fn(),
-            get: jest.fn(),
-            list: jest.fn(),
-            update: jest.fn(),
-        },
-        secrets: {
-            getPairKey: jest.fn(),
-        },
-    }
-}))
+// jest.mock("@services/memory", () => ({
+//     storageService: {
+//         wallets: {
+//             add: jest.fn(),
+//             get: jest.fn(),
+//             list: jest.fn(),
+//             update: jest.fn(),
+//         },
+//         secrets: {
+//             getPairKey: jest.fn(),
+//         },
+//     }
+// }))
 
-jest.mock("@services/zustand/ndk", () => ({
+jest.mock("@services/zustand/useNDKStore", () => ({
     __esModule: true,
     default: () => ({
         setNDK: jest.fn(),
@@ -112,7 +112,7 @@ jest.mock("@services/zustand/ndk", () => ({
     }),
 }))
 
-jest.mock("@services/zustand/chats", () => ({
+jest.mock("@services/zustand/useChatStore", () => ({
     __esModule: true,
     default: jest.fn(() => ({
         setChats: jest.fn(),
@@ -124,7 +124,7 @@ jest.mock("@services/zustand/chats", () => ({
     }))
 }))
 
-jest.mock("@services/zustand/feedVideos", () => ({
+jest.mock("@services/zustand/useFeedVideoStore", () => ({
     __esModule: true,
     useFeedVideosStore: () => ({
         initialize: jest.fn(),

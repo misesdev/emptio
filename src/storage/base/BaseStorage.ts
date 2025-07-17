@@ -1,5 +1,6 @@
 import AsyncStorage from "@react-native-async-storage/async-storage"
 import { StoredItem } from "../types";
+import { v4 as uuid } from "uuid";
 
 export abstract class BaseStorage<Entity> 
 {
@@ -10,17 +11,22 @@ export abstract class BaseStorage<Entity>
         this._keyStorage = key
     }
 
-    public async get(id: number): Promise<Entity> {
+    public async get(id: string): Promise<StoredItem<Entity>> {
         const list = await this.list()
         let item = list.find(e => e.id == id)
         if(!item) throw new Error(this.notFoundMessage)
+        return item
+    }
+
+    public async getEntity(id: string): Promise<Entity> {
+        const item = await this.get(id)
         return item.entity
     }
 
     public async add(entity: Entity): Promise<StoredItem<Entity>> {
         const list = await this.list()
         let storeEntity: StoredItem<Entity> = { 
-            id: list.length, 
+            id: uuid(), 
             entity 
         }
         list.push(storeEntity)
@@ -28,7 +34,7 @@ export abstract class BaseStorage<Entity>
         return storeEntity
     }
     
-    public async update(id: number, entity: Entity): Promise<void> {
+    public async update(id: string, entity: Entity): Promise<void> {
         const list = await this.list();
         const index = list.findIndex(item => item.id === id);
         if (index === -1) throw new Error(this.notFoundMessage);
@@ -44,9 +50,15 @@ export abstract class BaseStorage<Entity>
         return list
     }
 
-    public async remove(id: number): Promise<void> {
+    public async listEntities(): Promise<Entity[]> {
         const list = await this.list()
-        await this.save(list.filter(e => e.id != id))
+        return list.map(e => e.entity)
+    }
+
+    public async delete(id: string): Promise<void> {
+        const list = await this.list()
+        const removed = list.filter(e => e.id != id)
+        await this.save(removed)
     }
 
     private async save(entities: StoredItem<Entity>[]): Promise<void> {

@@ -1,4 +1,4 @@
-import { Language } from "../../translate/types";
+import { Language } from "@services/translate/types";
 import { BaseStorage } from "../base/BaseStorage";
 import { StoredItem } from "../types";
 

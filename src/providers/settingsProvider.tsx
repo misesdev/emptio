@@ -1,32 +1,34 @@
-import { ReactElement, ReactNode, createContext, useContext, useEffect, useState } from "react"
-import { Settings } from "@services/memory/types"
-import { storageService } from "@services/memory"
+import { ReactElement, ReactNode, createContext, useContext, useEffect,
+    useState } from "react"
+import { AppSettingsStorage } from "@storage/settings/AppSettingsStorage"
+import { AppSettings } from "@storage/settings/types"
 import Currencies from "../constants/Currencies"
 
 interface SettingContextType {
-    settings: Settings,
-    setSettings?: (settings: Settings) => void
+    settings?: AppSettings,
+    setSettings?: (settings: AppSettings) => void
 }
 
-const SettingsContext = createContext<SettingContextType>({ settings: {} })
+const SettingsContext = createContext<SettingContextType>({ })
 
 const useSettings = (): SettingContextType => useContext(SettingsContext)
 
 const SettingsProvider = ({ children }: { children: ReactNode }): ReactElement => {
 
-    const [settings, setSettings] = useState<Settings>({})
+    const _storage = new AppSettingsStorage()
+    const [settings, setSettings] = useState<AppSettings>()
 
     useEffect(() => {
-        storageService.settings.get().then(conf => {
-            if(!conf.currency) {
-                conf.currency = Currencies[0]
-            }
-            setSettings(conf)
-        })
+        handleSettingsData()
     }, [])
 
-    const setSettingsOptions = (settings: Settings) => {
-        storageService.settings.save(settings)
+    const handleSettingsData = async () => {
+        const settings = await _storage.get()
+        if(settings) setSettings(settings)
+    }
+
+    const setSettingsOptions = (settings: AppSettings) => {
+        _storage.set(settings) 
         setSettings(settings)
     }
 
