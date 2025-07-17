@@ -84,7 +84,7 @@ export class TransactionService implements ITransactionService
 
         return {
             txid: tx.txid,
-            value: receiving ? outValue : inValue - outValue,
+            value: receiving ? outValue : (inValue - outValue - tx.fee),
             type: receiving ? "received" : "sent",
             confirmed: tx.status.confirmed,
             block_height: tx.status.block_height,
