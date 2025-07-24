@@ -18,8 +18,8 @@ export class LanguageStorage extends BaseStorage<Language>
     public async list(): Promise<StoredItem<Language>[]> {
         const list = await super.list()
         if(!list.length)
-            return this._defaults.map((entity, id) : StoredItem<Language> => {
-                return { id, entity }
+            return this._defaults.map((entity) : StoredItem<Language> => {
+                return { id: "", entity }
             })
         return list
     }

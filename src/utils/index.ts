@@ -1,10 +1,10 @@
 import Clipboard from "@react-native-clipboard/clipboard"
-import { pushMessage } from "../services/notification"
-import { useTranslate } from "../services/translate"
-import { User } from "@services/memory/types"
-import { hexToNpub } from "../services/converter"
+import { useTranslate } from "@services/translate/TranslateService"
+import { pushMessage } from "@services/notification"
+import { hexToNpub } from "@services/converter"
 import theme from "../theme"
 import { BNetwork } from "bitcoin-tx-lib"
+import { User } from "@services/user/types/User"
 
 export const copyToClipboard = (text: string) => {
     

@@ -1,5 +1,5 @@
+import { Wallet } from "@services/wallet/types/Wallet";
 import { BaseStorage } from "../base/BaseStorage";
-import { Wallet } from "./types";
 
 export class WalletStorage extends BaseStorage<Wallet> 
 {
