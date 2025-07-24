@@ -15,15 +15,22 @@ class UserService implements IUserService
     private readonly _note: NoteService;
     private readonly _storage: UserStorage;
         
-    constructor(ndk: NDK = useNDKStore.getState().ndk) {
+    constructor(
+        user: User|null = null,
+        ndk: NDK = useNDKStore.getState().ndk,
+        storage: UserStorage = new UserStorage(),
+        note: NoteService|null = null
+    ) {
+        this._note = note ?? new NoteService(ndk)
+        this._storage = storage 
+        this._profile = user
         this._ndk = ndk
-        this._note = new NoteService(ndk)
-        this._storage = new UserStorage()
     }
 
     public async init(): Promise<void> {
         const user = await this._storage.get();
-        if (!user?.pubkey) throw new Error("User not found or missing pubkey");
+        if (!user?.pubkey) 
+            throw new Error("User not found or missing pubkey");
         this._profile = user;
     }
 

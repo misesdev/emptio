@@ -2,20 +2,24 @@ import { WalletStorage } from "@storage/wallets/WalletStorage";
 import { PrivateKeyStorage } from "@storage/pairkeys/PrivateKeyStorage";
 import { CreateProps, IWalletService, ImportProps } from "./IWalletService";
 import { AppResponse, trackException } from "../telemetry";
-import { Wallet } from "@storage/wallets/types";
 import { StoredItem } from "@storage/types";
 import { HDWallet } from "bitcoin-tx-lib";
 import { TransactionService } from "./TransactionService";
+import { Wallet } from "./types/Wallet";
 
 export class WalletService implements IWalletService 
 {
     private readonly _storage: WalletStorage;
     private readonly _keyStorage: PrivateKeyStorage;
     private readonly _transaction: TransactionService;
-    constructor() {
-        this._storage = new WalletStorage()
-        this._keyStorage = new PrivateKeyStorage()
-        this._transaction = new TransactionService()
+    constructor(
+        storage: WalletStorage = new WalletStorage(),
+        keyStorage: PrivateKeyStorage = new PrivateKeyStorage(),
+        transaction: TransactionService = new TransactionService()
+    ) {
+        this._storage = storage 
+        this._keyStorage = keyStorage
+        this._transaction = transaction
     }
 
     public async create({ 

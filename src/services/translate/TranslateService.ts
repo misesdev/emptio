@@ -13,11 +13,14 @@ export class TranslateService implements ITranslateService
     private readonly _settingsStorage: AppSettingsStorage;
     private _languages: any = { pt, en }
     
-    constructor() 
-    {
-        this._languageStorage = new LanguageStorage()
-        this._settingsStorage = new AppSettingsStorage()
-        this._settings = null 
+    constructor(
+        storage: LanguageStorage = new LanguageStorage(),
+        settingsStorage: AppSettingsStorage = new AppSettingsStorage(),
+        settings: AppSettings|null = null
+    ) {
+        this._languageStorage = storage 
+        this._settingsStorage = settingsStorage
+        this._settings = settings
     }
 
     public async translate(key: TranslateWords): Promise<string> {

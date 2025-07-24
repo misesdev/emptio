@@ -11,20 +11,28 @@ import { UserStorage } from "@storage/user/UserStorage";
 import { useTranslate } from "../translate/TranslateService";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import EncryptedStorage from "react-native-encrypted-storage";
-import { DBEvents } from "@/src/storage/database/events";
+import { DataBaseEvents } from "@storage/database/DataBaseEvents";
 
 export class AuthService implements IAuthService 
 {
+    private readonly _dbEvents: DataBaseEvents;
     private readonly _noteService: NoteService;
     private readonly _userStorage: UserStorage;
     private readonly _privatekey: PrivateKeyStorage;
     private readonly _biometrics: ReactNativeBiometrics;
 
-    constructor() {
-        this._noteService = new NoteService()
-        this._userStorage = new UserStorage()
-        this._biometrics = new ReactNativeBiometrics()
-        this._privatekey = new PrivateKeyStorage()
+    constructor(
+        user: UserStorage = new UserStorage(),
+        note: NoteService = new NoteService(),
+        biometrics: ReactNativeBiometrics = new ReactNativeBiometrics(),
+        privatekey: PrivateKeyStorage = new PrivateKeyStorage(),
+        dbEvents: DataBaseEvents = new DataBaseEvents()
+    ) {
+        this._noteService = note
+        this._userStorage = user
+        this._biometrics = biometrics 
+        this._privatekey = privatekey
+        this._dbEvents = dbEvents
     }
 
     public async checkBiometrics(): Promise<boolean> {
@@ -46,7 +54,7 @@ export class AuthService implements IAuthService
                 name: userName.trim(),
                 display_name: userName.trim(),
                 pubkey: pairkey.getPublicKeyHex(),
-                keychanges: stored.id 
+                keyRef: stored.id 
             }
             const userService = new UserService(profile)
             await userService.publishProfile()
@@ -70,7 +78,7 @@ export class AuthService implements IAuthService
             })
             if(!event) throw new Error("profile event not found")
             const profile = JSON.parse(event.content) as User
-            profile.keychanges = stored.id
+            profile.keyRef = stored.id
             profile.pubkey = event.pubkey
             
             const userService = new UserService(profile)
@@ -89,10 +97,10 @@ export class AuthService implements IAuthService
             const profile = await this._userStorage.get()
             if(!profile) 
                 return { success: false, data: null }
-            const privateKey = await this._privatekey.get(profile.keychanges)
+            const privateKey = await this._privatekey.get(profile.keyRef)
             if(!privateKey) 
                 return { success: false, data: null }
-            const pairkey = new NostrPairKey(privateKey)
+            const pairkey = new NostrPairKey(privateKey.entity)
             profile.pubkey = pairkey.getPublicKeyHex()
             return { success: true, data: profile }
         } catch(ex) {
@@ -102,7 +110,7 @@ export class AuthService implements IAuthService
 
     public async signOut(): Promise<AppResponse<any>> {
         try {
-            await DBEvents.clear()
+            await this._dbEvents.clear() 
             await AsyncStorage.clear()
             await EncryptedStorage.clear()
             return { success: true }

@@ -1,6 +1,6 @@
 import { pushMessage } from "../../notification";
 import { getGaleryPermission } from "../../permissions";
-import { useTranslate } from "../../translate";
+import { useTranslate } from "../../translate/TranslateService";
 import { DownloadProps, IDownloadService } from "./IDownloadService";
 import { CameraRoll } from "@react-native-camera-roll/camera-roll"
 import * as FileSystem from "react-native-fs"

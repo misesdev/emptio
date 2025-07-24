@@ -1,8 +1,9 @@
 import { NDKEvent } from "@nostr-dev-kit/ndk-mobile";
 import { UploadProps, UploadService } from "./IUploadService";
-import { NostrPairKey } from "@services/nostr/pairkey/NostrPairKey";
 import * as FileSystem from "react-native-fs"
 import { timeSeconds } from "@services/converter";
+import NostrPairKey from "../../nostr/pairkey/NostrPairKey";
+import { bytesToHex } from "bitcoin-tx-lib";
 import axios from "axios"
 
 export class NostrUploader implements UploadService
@@ -37,7 +38,7 @@ export class NostrUploader implements UploadService
 
         const event = new NDKEvent();
         event.kind = 24242;
-        event.pubkey = pubkey;
+        event.pubkey = bytesToHex(pubkey);
         event.created_at = createdAt;
         event.tags = [
             ['expiration', expiration.toString()],

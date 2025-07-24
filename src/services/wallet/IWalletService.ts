@@ -1,7 +1,7 @@
 import { AppResponse } from "../telemetry";
 import { BNetwork } from "bitcoin-tx-lib";
-import { Wallet } from "@storage/wallets/types";
 import { StoredItem } from "@storage/types";
+import { Wallet } from "./types/Wallet";
 
 export type CreateProps = {
     name: string; network?: BNetwork; passphrase?: string;
