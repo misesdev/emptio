@@ -4,11 +4,13 @@ export abstract class Database
 {
     protected _table: string;
     protected _dbname: string;
+    protected _primary: string;
 
-    constructor(dbname: string, table: string) 
+    constructor(dbname: string, table: string, primary: string = "id") 
     {
         this._table = table
         this._dbname = dbname
+        this._primary = primary
     }
     
     public async getConnection(): Promise<SQLiteDatabase> {
@@ -20,11 +22,11 @@ export abstract class Database
         return await connection.runAsync(query, params)
     }
 
-    public async delete(id: string) : Promise<void> {
+    public async delete(primary: string) : Promise<void> {
         const connection = await this.getConnection()
         await connection.runAsync(`
-            DELETE FROM ${this._table} WHERE id = ?;  
-        `, [id])
+            DELETE FROM ${this._table} WHERE ${this._primary} = ?;  
+        `, [primary])
     }
     
     public async deleteByCondition(condition: string, args: any[]) : Promise<void> {

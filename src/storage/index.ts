@@ -1,10 +1,5 @@
 import AsyncStorage from "@react-native-async-storage/async-storage"
 import EncryptedStorage from "react-native-encrypted-storage"
-import { DBEvents } from "./database/events"
-
-const database = {
-    events: DBEvents
-}
 
 const clear = async () => {
     await AsyncStorage.clear()
@@ -12,7 +7,6 @@ const clear = async () => {
 }
 
 export const storageService = {
-    database,
     clear
 }
 

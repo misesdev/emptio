@@ -1,10 +1,11 @@
 
 export type UTXO = {
     txid: string;
+    address: string;
     value: number;
     vout: number;
     confirmed: boolean;
     block_height: number;
-    block_hash: string;
     block_time: number;
+    block_hash: string;
 }

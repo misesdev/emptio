@@ -92,7 +92,10 @@ export class DataBaseEvents extends Database
     public async listByCategory(category: TypeCategory, limit=100) : Promise<NDKEvent[]> {
         const connection = await this.getConnection()
         const rows = await connection.getAllAsync(`
-            SELECT * FROM ${this._table} WHERE category = ? AND deleted = 0 ORDER BY created_at DESC LIMIT ?;
+            SELECT * FROM ${this._table} 
+            WHERE category = ? 
+                AND deleted = 0 
+            ORDER BY created_at DESC LIMIT ?;
         `, [category as string, limit])
 
         try {
