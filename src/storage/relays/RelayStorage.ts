@@ -1,5 +1,5 @@
+import { NostrRelay } from "@services/relays/types/NostrRelay";
 import { BaseStorage } from "../base/BaseStorage";
-import { NostrRelay } from "./types";
 
 export class RelayStorage extends BaseStorage<NostrRelay>
 {

@@ -4,9 +4,10 @@ import { IUserService, ListFollowsProps, SearchUserProps,
     UpdateProfileProps } from "./IUserService";
 import NDK, { NostrEvent } from "@nostr-dev-kit/ndk-mobile";
 import { UserStorage } from "@storage/user/UserStorage";
-import { timeSeconds } from "../converter";
 import { User } from "./types/User";
 import useNDKStore from "../zustand/useNDKStore";
+import { TimeSeconds } from "../converter/TimeSeconds";
+import { Utilities } from "@/src/utils/Utilities";
 
 class UserService implements IUserService
 {
@@ -27,14 +28,16 @@ class UserService implements IUserService
         this._ndk = ndk
     }
 
-    public async init(): Promise<void> {
+    public async init(): Promise<void> 
+    {
         const user = await this._storage.get();
         if (!user?.pubkey) 
             throw new Error("User not found or missing pubkey");
         this._profile = user;
     }
 
-    public async fetchUser(pubkey: string): Promise<void> {
+    public async fetchUser(pubkey: string): Promise<void> 
+    {
         const event = await this._note.getNote({
             authors: [pubkey], 
             kinds: [EventKinds.metadata], 
@@ -47,12 +50,14 @@ class UserService implements IUserService
         } as User
     }
 
-    public async getProfile(): Promise<User> {
+    public async getProfile(): Promise<User> 
+    {
         if (!this._profile) throw new Error("UserService not initialized");
         return this._profile
     }
 
-    public async updateProfile({ user, setUser, upNostr }: UpdateProfileProps): Promise<void> {
+    public async updateProfile({ user, setUser, upNostr }: UpdateProfileProps): Promise<void> 
+    {
         if (!this._profile)
             throw new Error("UserService not initialized");
         this._profile = { ...this._profile, ...user }
@@ -61,13 +66,33 @@ class UserService implements IUserService
         if (setUser) setUser(this._profile)
     }
 
-    public async publishProfile(): Promise<void> {
-        if (!this._profile?.pubkey) throw new Error("UserService not initialized");
+    public async publishProfile(): Promise<void> 
+    {
+        if (!this._profile?.pubkey) 
+            throw new Error("UserService not initialized");
+
+        const profile: User = {
+            name: this._profile.name,
+            pubkey: this._profile.pubkey,
+            displayName: Utilities.getUserName(this._profile, 100),
+            display_name: Utilities.getUserName(this._profile, 100),
+            picture: this._profile.picture,
+            image: this._profile.image,
+            about: this._profile.about,
+            bio: this._profile.bio,
+            nip05: this._profile.nip05,
+            lud06: this._profile.lud06,
+            lud16: this._profile.lud16,
+            banner: this._profile.banner,
+            zapService: this._profile.zapService,
+            website: this._profile.website,
+            keyRef: ""
+        }
         const note: NostrEvent = {
             kind: EventKinds.metadata,
             pubkey: this._profile.pubkey as string,
-            content: JSON.stringify(this._profile),
-            created_at: timeSeconds.now(),
+            content: JSON.stringify(profile),
+            created_at: TimeSeconds.now(),
             tags: []
         }
         await this._note.publish({ 
@@ -76,8 +101,10 @@ class UserService implements IUserService
         })
     }
 
-    public async listFollows({ follows, iNot=true }: ListFollowsProps): Promise<User[]> {
-        if (!this._profile?.pubkey) throw new Error("UserService not initialized");
+    public async listFollows({ follows, iNot=true }: ListFollowsProps): Promise<User[]> 
+    {
+        if (!this._profile?.pubkey) 
+            throw new Error("UserService not initialized");
         const authors = follows?.tags?.filter(t => t[0] == "p").map(t => t[1])
         const events = await this._note.listNotes({ authors, kinds: [0], limit: authors?.length })
         let friends = Array.from(events??[])
@@ -91,26 +118,31 @@ class UserService implements IUserService
             : friends
     }
 
-    public async updateFollows(follows: NostrEvent): Promise<void> {
+    public async updateFollows(follows: NostrEvent): Promise<void> 
+    {
         return await this._note.publish({ 
             replaceable: true, 
             note: follows 
         })
     }
 
-    public createFollows(friends: [string[]]): NostrEvent {
-        if (!this._profile?.pubkey) throw new Error("UserService not initialized");
+    public createFollows(friends: [string[]]): NostrEvent 
+    {
+        if (!this._profile?.pubkey)
+            throw new Error("UserService not initialized");
         return {
             kind: EventKinds.followList,
             pubkey: this._profile.pubkey,
             content: JSON.stringify(this._ndk.explicitRelayUrls),
-            created_at: timeSeconds.now(),
+            created_at: TimeSeconds.now(),
             tags: friends
         } as NostrEvent 
     }
 
-    public async lastNotes(limit: number = 3): Promise<NostrEvent[]> {
-        if (!this._profile?.pubkey) throw new Error("UserService not initialized");
+    public async lastNotes(limit: number = 3): Promise<NostrEvent[]> 
+    {
+        if (!this._profile?.pubkey) 
+            throw new Error("UserService not initialized");
         const notes = await this._note.listNotes({
             kinds: [1],
             authors: [this._profile.pubkey as string],
@@ -119,7 +151,8 @@ class UserService implements IUserService
         return notes.filter(e => !e.tags.filter(t => t[0] == "e").length)
     }
 
-    public async listUsers(authors: string[]): Promise<User[]> {
+    public async listUsers(authors: string[]): Promise<User[]> 
+    {
         const notes = await this._note.listNotes({
             kinds: [1], authors, limit: authors.length
         })
@@ -135,7 +168,8 @@ class UserService implements IUserService
         return []
     }
 
-    public async searchUser({ searchTerm, limit }: SearchUserProps): Promise<User[]> {
+    public async searchUser({ searchTerm, limit }: SearchUserProps): Promise<User[]> 
+    {
         try 
         {
             if (!this._profile?.pubkey) 
@@ -171,10 +205,12 @@ class UserService implements IUserService
         }
     }
 
-    public async save(): Promise<void> {
+    public async save(): Promise<void> 
+    {
         if (!this._profile?.pubkey) 
             throw new Error("UserService not initialized");
         await this._storage.set(this._profile)
+        await this.publishProfile()
     }
 }
 

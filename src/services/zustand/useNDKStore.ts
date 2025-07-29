@@ -18,9 +18,9 @@ const useNDKStore = create<NDKStore>((set) => ({
     },
     setNdkSigner: async (user: User) => {
         const service = new PrivateKeyStorage()
-        const privateKey = await service.get(user.keychanges)
+        const stored = await service.get(user.keyRef)
         set((state) => {
-            state.ndk.signer = new NDKPrivateKeySigner(privateKey)
+            state.ndk.signer = new NDKPrivateKeySigner(stored.entity)
             return state
         })
     }

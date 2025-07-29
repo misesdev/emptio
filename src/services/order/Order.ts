@@ -1,10 +1,10 @@
-import { BNetwork, hash256, numberToHex } from "bitcoin-tx-lib"
-import { timeSeconds } from "../converter"
-import { User } from "../memory/types"
+import { BNetwork, bytesToHex, hash256, numberToHex } from "bitcoin-tx-lib"
 import NDK, { NDKEvent } from "@nostr-dev-kit/ndk-mobile"
 import { DataOrderReputation, SellOrder } from "../types/order"
-import useOrderStore from "../zustand/orders"
-import useNDKStore from "../zustand/ndk"
+import { User } from "../user/types/User"
+import useNDKStore from "../zustand/useNDKStore"
+import useOrderStore from "../zustand/useOrderStore"
+import { TimeSeconds } from "../converter/TimeSeconds"
 
 interface OrderProps {
     price: number,
@@ -15,7 +15,7 @@ interface OrderProps {
 }
 
 export class Order {
-    public user: User = {}
+    public user!: User
     public price: number = 0
     public amount: number = 0
     public closure: number = 0
@@ -53,7 +53,7 @@ export class Order {
                     })
                 ],
                 content: "{}",
-                created_at: timeSeconds.now()
+                created_at: TimeSeconds.now()
             })
         }
 
@@ -72,14 +72,16 @@ export class Order {
     }
 
     public getId() : string {
-        this.created_at = timeSeconds.now()
+        this.created_at = TimeSeconds.now()
         let pubkey_hex = this.user.pubkey ?? ""
-        let price_hex = numberToHex(this.price, 64, "hex")
-        let satoshis_hex = numberToHex(this.amount, 64, "hex")
-        let created_at_hex = numberToHex(this.created_at, 64, "hex")
-        let closure_hex = numberToHex(this.closure, 64, "hex")
-        let id = hash256(pubkey_hex+created_at_hex+satoshis_hex+price_hex+closure_hex)
-        return String(id)
+        let price_hex = numberToHex(this.price, 64)
+        let satoshis_hex = numberToHex(this.amount, 64)
+        let created_at_hex = numberToHex(this.created_at, 64)
+        let closure_hex = numberToHex(this.closure, 64)
+        let id = hash256(new Uint8Array([
+            ...pubkey_hex, ...created_at_hex, ...satoshis_hex, ...price_hex, ...closure_hex
+        ] as number[]))
+        return bytesToHex(id)
     }
 
     private serialize() : SellOrder {

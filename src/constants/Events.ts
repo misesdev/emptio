@@ -21,6 +21,8 @@ export const EventKinds = {
     delete: 5,
     repost: 6,
     reaction: 7,
+    relayList: 10002,
+    chatRelayList: 10050,
     classifiedListening: 30402,
     zap: 9734,    
 }

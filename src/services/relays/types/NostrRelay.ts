@@ -1,4 +1,5 @@
-export interface NostrRelay {
+
+export type NostrRelay = {
     url: string;
     name?: string,
     description?: string,

@@ -1,8 +1,8 @@
 import NDK, { NDKEvent, NDKFilter, NDKSubscriptionCacheUsage } from "@nostr-dev-kit/ndk-mobile"
 import { IVideoService, SubscriptionVideosProps, VideoControlsProps } from "./IVideoService"
-import useNDKStore from "@services/zustand/ndk";
 import { pushMessage } from "../../notification";
 import { extractVideoUrl } from "@/src/utils";
+import useNDKStore from "../../zustand/useNDKStore";
 
 class VideoService implements IVideoService 
 {

@@ -2,7 +2,7 @@ import { NDKEvent } from "@nostr-dev-kit/ndk-mobile";
 import { SellOrder, UserReputation } from "../types/order";
 import { create } from "zustand"
 
-interface OrderStore {
+export interface OrderStore {
     event: NDKEvent,
     setEvent: (event: NDKEvent) => void,
     orders: SellOrder[],

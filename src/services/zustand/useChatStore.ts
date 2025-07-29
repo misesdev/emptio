@@ -7,7 +7,7 @@ export interface ChatUser {
     lastMessage: NDKEvent
 }
 
-interface ChatStore {
+export interface ChatStore {
     chats: ChatUser[],
     unreadChats: string[],
     blackList: string[],

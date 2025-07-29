@@ -1,5 +1,6 @@
+import { VideoSettings } from "@services/nostr/types/VideoSettings";
 import { ItemStorage } from "../base/ItemStorage";
-import {  AppSettings, VideoSettings } from "./types"
+import { AppSettings } from "./types"
 
 export const defaultVideoSettings: VideoSettings = {
     FETCH_LIMIT: 500,

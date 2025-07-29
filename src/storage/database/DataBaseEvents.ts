@@ -4,7 +4,7 @@ import { ChatUser } from '@services/zustand/useChatStore';
 import { openDatabaseAsync } from 'expo-sqlite';
 import { Database } from './Database';
 
-export type dbEventProps = {
+export type DBEventProps = {
     event: NDKEvent,
     category: TypeCategory,
     chat_id?: string
@@ -16,7 +16,7 @@ export class DataBaseEvents extends Database
         super("emptio.db", "events")
     }
    
-    public async insert({ event, category, chat_id }: dbEventProps) : Promise<boolean> {
+    public async insert({ event, category, chat_id }: DBEventProps) : Promise<boolean> {
         let params: any[] = [
             event.id, 
             event.kind ?? 0,
@@ -39,7 +39,7 @@ export class DataBaseEvents extends Database
         return !!data.changes;
     }
 
-    public async insertInBatch(events: dbEventProps[]) : Promise<dbEventProps[]> {
+    public async insertInBatch(events: DBEventProps[]) : Promise<DBEventProps[]> {
         if(!events.length) return []
 
         const eventIds = events.map(e => e.event.id)

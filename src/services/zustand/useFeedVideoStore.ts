@@ -1,9 +1,12 @@
 import { create } from "zustand"
 import { NostrEvent } from "@nostr-dev-kit/ndk-mobile"
+import { VideoSettings } from "../nostr/types/VideoSettings"
+import { DataBaseEvents } from "@storage/database/DataBaseEvents"
+import { VideoSettingsStorage } from "@storage/settings/AppSettingsStorage"
 
 interface FeedVideoStore {
-    feedSettings: FeedVideosSettings,
-    setFeedSettings: (settings: FeedVideosSettings) => void,
+    feedSettings: VideoSettings,
+    setFeedSettings: (settings: VideoSettings) => void,
     blackList: Set<string>,
     savedEvents: Set<NostrEvent>,
     addOnBlackList: (pubkey: string) => void,
@@ -26,17 +29,17 @@ export const useFeedVideosStore = create<FeedVideoStore>((set) => ({
             return { blackList: state.blackList }
         })
     },
-    setFeedSettings: (settings: FeedVideosSettings) => {
+    setFeedSettings: (settings: VideoSettings) => {
         set(() => ({
             feedSettings: settings
         }))
     },
     initialize: async () => {
-        const blackList = await storageService.settings.blackList.get()
-        const feedSettings = await storageService.settings.feedVideos.get()
-        const savedEvents = await storageService.database.events.listByCategory("videos") as NostrEvent[]
+        const dbEvents = new DataBaseEvents()
+        const feedStorage = new VideoSettingsStorage()
+        const feedSettings = (await feedStorage.get()) as VideoSettings
+        const savedEvents = await dbEvents.listByCategory("videos") as NostrEvent[]
         set(() => ({
-            blackList,
             feedSettings,
             savedEvents: new Set(savedEvents) 
         }))
