@@ -114,7 +114,7 @@ export class DataBaseEvents extends Database
         catch { return [] }
     }
 
-    public async selecChats() : Promise<ChatUser[]> {
+    public async listChats() : Promise<ChatUser[]> {
         const connection = await this.getConnection()
         let rows = await connection.getAllAsync(`
             SELECT even.id, 
@@ -167,7 +167,7 @@ export class DataBaseEvents extends Database
         catch { return [] }
     }
 
-    public async selecMessages(chat_id: string) : Promise<NDKEvent[]> {
+    public async listMessages(chat_id: string) : Promise<NDKEvent[]> {
         const connection = await this.getConnection()
         let rows = await connection.getAllAsync(`
             UPDATE ${this._table} SET status = 'viewed' 

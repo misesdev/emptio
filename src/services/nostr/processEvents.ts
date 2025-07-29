@@ -1,13 +1,5 @@
 import { NDKEvent, NostrEvent } from "@nostr-dev-kit/ndk-mobile"
-import { User } from "../memory/types"
-import { messageService } from "@services/message"
-import { getPubkeyFromTags } from "./events"
-import useOrderStore from "../zustand/orders"
-import useChatStore from "../zustand/chats"
 import { SellOrder, UserReputation } from "../types/order"
-import { timeSeconds } from "../converter"
-import { DBEvents, dbEventProps } from "../memory/database/events"
-import useDataEventStore from "../zustand/dataEvents"
 import { EventKinds } from "@/src/constants/Events"
 
 var batchTimer: NodeJS.Timeout|null = null

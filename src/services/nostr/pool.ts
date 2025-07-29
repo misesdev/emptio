@@ -1,11 +1,7 @@
 import NDK, { NDKFilter, NDKPrivateKeySigner, 
     NDKSubscriptionCacheUsage } from "@nostr-dev-kit/ndk-mobile"
-import { PairKey, User } from "../memory/types"
-import { publishEvent, NostrEvent, getEvent } from "./events"
-import useNDKStore from "../zustand/ndk"
 import { EventKinds } from "@src/constants/Events"
 import { processDataEvents, processEventMessage, processEventOrders } from "./processEvents"
-import { storageService } from "../memory"
 import { getUserName } from "@src/utils"
 
 export const getUserData = async (publicKey: string): Promise<User> => {

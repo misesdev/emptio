@@ -76,19 +76,7 @@ class NoteService implements INoteService
         const events = await this._ndk.fetchEvents(filters, {
             cacheUsage: NDKSubscriptionCacheUsage.ONLY_RELAY
         })
-
         return Array.from(events) as NostrEvent[]
-        //     .map((event) : NostrEvent => {
-        //     let jsonContent = jsonContentKinds.includes(event.kind ?? 0)
-        //     return {
-        //         id: event.id,
-        //         kind: event.kind,
-        //         pubkey: event.pubkey,
-        //         content: jsonContent ? JSON.parse(event.content) : event.content,
-        //         created_at: event.created_at ?? timeSeconds.now(),
-        //         tags: event.tags
-        //     } 
-        // })
     }
 
     public async getNote(filters: NDKFilter): Promise<NostrEvent|null> {
