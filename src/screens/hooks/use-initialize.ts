@@ -1,17 +1,9 @@
 import { EventKinds } from "@src/constants/Events"
 import { useAuth } from "@src/providers/userProvider"
-import { DBEvents } from "@services/memory/database/events"
-import { messageService } from "@services/message"
-import { getEvent } from "@services/nostr/events"
-import { getNostrInstance, subscribeUser } from "@services/nostr/pool"
 import { getNotificationPermission } from "@services/permissions"
-import useChatStore from "@services/zustand/chats"
-import { useFeedVideosStore } from "@services/zustand/feedVideos"
-import useNDKStore from "@services/zustand/ndk"
-import { useEffect, useState } from "react"
-import { pushMessage } from "@services/notification"
 import { useTranslateService } from "@src/providers/translateProvider"
-import { authService } from "@services/auth"
+import { pushMessage } from "@services/notification"
+import { useEffect, useState } from "react"
 
 export const useInitialize = ({ navigation }: any) => {
 

@@ -1,22 +1,26 @@
 import { ReactElement, ReactNode, createContext, useContext, useEffect,
     useState } from "react"
-import { AppSettingsStorage } from "@storage/settings/AppSettingsStorage"
+import { AppSettingsStorage, defaultAppSettings } from "@storage/settings/AppSettingsStorage"
 import { AppSettings } from "@storage/settings/types"
-import Currencies from "../constants/Currencies"
 
 interface SettingContextType {
-    settings?: AppSettings,
-    setSettings?: (settings: AppSettings) => void
+    settings: AppSettings,
+    setSettings: (settings: AppSettings) => void
 }
 
-const SettingsContext = createContext<SettingContextType>({ })
+const SettingsContext = createContext<SettingContextType|null>(null)
 
-const useSettings = (): SettingContextType => useContext(SettingsContext)
+const useSettings = (): SettingContextType => {
+    const context = useContext(SettingsContext)
+    if(!context)
+        throw new Error("SettingsContext not found")
+    return context
+}
 
 const SettingsProvider = ({ children }: { children: ReactNode }): ReactElement => {
 
     const _storage = new AppSettingsStorage()
-    const [settings, setSettings] = useState<AppSettings>()
+    const [settings, setSettings] = useState<AppSettings>(defaultAppSettings)
 
     useEffect(() => {
         handleSettingsData()

@@ -10,20 +10,17 @@ import "./libs/global"
 import React from 'react';
 import { StyleSheet, View } from 'react-native'
 import { TranslateProvider } from './src/providers/translateProvider';
-import { SettingsProvider } from './src/providers/settingsProvider';
-import { AuthProvider } from './src/providers/userProvider';
-import AppRoutes from './src/routes';
+import { AuthProvider } from "./src/providers/userProvider";
+import AppNavigator from "./src/routes/AppNavigator";
 import theme from './src/theme';
 
 export default function App(): React.JSX.Element {
     return (
         <View style={styles.root}>
             <TranslateProvider>
-                <SettingsProvider>
-                    <AuthProvider>
-                        <AppRoutes />
-                    </AuthProvider>
-                </SettingsProvider>
+                <AuthProvider>
+                    <AppNavigator />
+                </AuthProvider>
             </TranslateProvider>
         </View>
     )

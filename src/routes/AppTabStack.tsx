@@ -4,14 +4,14 @@ import HomeScreen from "@screens/root/home"
 import FeedOrdersScreen from "@screens/root/orders"
 import ChatsScreen from '@screens/root/chats'
 import { useTranslateService } from '../providers/translateProvider'
-import useChatStore from '@services/zustand/chats'
 import VideosFeed from '@screens/root/videos'
 import { tabBarStyle } from '../constants/RouteSettings'
 import theme from "@src/theme"
+import useChatStore from '../services/zustand/useChatStore'
 
 const Tab = createBottomTabNavigator()
 
-const TabRoutes = () => {
+const AppTabStack = () => {
 
     const { useTranslate } = useTranslateService()
     const unreadChats = useChatStore((state) => state.unreadChats)
@@ -71,5 +71,5 @@ const TabRoutes = () => {
     )
 }
 
-export default TabRoutes
+export default AppTabStack
 

@@ -1,11 +1,12 @@
+
 import { ButtonDefault, ButtonSuccess } from "@components/form/Buttons"
 import { Image, StyleSheet, Text, View } from "react-native"
 import SplashScreen from "@components/general/SplashScreen"
-import { useTranslateService } from "../providers/translateProvider"
-import { useInitialize } from "./hooks/use-initialize"
+import { useInitialize } from "../hooks/use-initialize"
+import { useTranslateService } from "@/src/providers/translateProvider"
 import theme from "@src/theme"
 
-const InitializeScreen = ({ navigation }: any) => {
+const InitialScreen = ({ navigation }: any) => {
 
     const { useTranslate } = useTranslateService()
     const { loading } = useInitialize({ navigation })
@@ -21,11 +22,11 @@ const InitializeScreen = ({ navigation }: any) => {
             <View style={styles.buttonArea}>
                 <ButtonSuccess 
                     label={useTranslate("commons.signin")} 
-                    onPress={() => navigation.navigate("login-stack")} 
+                    onPress={() => navigation.navigate("login")} 
                 />
                 <ButtonDefault 
                     label={useTranslate("commons.signup")} 
-                    onPress={() => navigation.navigate("register-stack")}
+                    onPress={() => navigation.navigate("register")}
                 />
             </View>
         </View>
@@ -39,4 +40,4 @@ const styles = StyleSheet.create({
         marginBottom: 40, flexDirection: "row", bottom: 10 }
 })
 
-export default InitializeScreen;
+export default InitialScreen;

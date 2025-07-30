@@ -1,9 +1,9 @@
 import { ReactElement, ReactNode, createContext, useContext, useEffect, useState } from "react";
 import { User } from "@services/user/types/User";
-import { Wallet } from "@storage/wallets/types";
 import { NostrEvent } from "@nostr-dev-kit/ndk-mobile";
 import UserService from "@services/user/UserService";
 import { WalletStorage } from "@storage/wallets/WalletStorage";
+import { Wallet } from "@services/wallet/types/Wallet";
 
 interface AuthContextType {
     user?: User;

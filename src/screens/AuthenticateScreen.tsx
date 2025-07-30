@@ -4,7 +4,7 @@ import { ButtonPrimary } from "@components/form/Buttons";
 import SplashScreen from "@components/general/SplashScreen";
 import { useSettings } from "@src/providers/settingsProvider";
 import { useTranslateService } from "@src/providers/translateProvider";
-import { authService } from "@services/auth";
+import { AuthService } from "@services/auth/AuthService";
 import theme from "@src/theme";
 
 const AuthenticateScreen = ({ navigation }: any) => {
@@ -13,6 +13,7 @@ const AuthenticateScreen = ({ navigation }: any) => {
     const { useTranslate } = useTranslateService()
     const [loading, setLoading] = useState(true)
     const [biometrics, setBiometrics] = useState(true)
+    const authService = new AuthService()
 
     useEffect(() => {
         checkBiometric().then(() => setLoading(false))
@@ -22,14 +23,13 @@ const AuthenticateScreen = ({ navigation }: any) => {
         if (settings.useBiometrics)
             await authenticateWithBiometrics()
         else
-            navigation.reset({ index: 0, routes: [{ name: "core-stack" }] })
+            setBiometrics(false)
     }
 
     const authenticateWithBiometrics = async () => {
-        const success = await authService.checkBiometric() 
+        const success = await authService.checkBiometrics() 
         if (success)
             navigation.reset({ index: 0, routes: [{ name: "core-stack" }] })
-
         setBiometrics(success)
     }
 
@@ -41,10 +41,16 @@ const AuthenticateScreen = ({ navigation }: any) => {
 
     return (
         <View style={theme.styles.container}>
-            <Image style={styles.logo} source={require("@assets/emptio.png")} />
-
+            <Image 
+                style={styles.logo} 
+                source={require("@assets/emptio.png")} 
+            />
             <View style={styles.buttonArea}>
-                <ButtonPrimary label={useTranslate("commons.authenticate")} leftIcon="finger-print" onPress={authenticateWithBiometrics} />
+                <ButtonPrimary 
+                    label={useTranslate("commons.authenticate")} 
+                    leftIcon="finger-print" 
+                    onPress={authenticateWithBiometrics} 
+                />
             </View>
         </View>
     )
