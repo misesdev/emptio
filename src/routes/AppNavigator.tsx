@@ -5,7 +5,6 @@ import AuthStack from './AuthStack';
 
 const AppNavigator = () => {
     const { isLoggedIn } = useAuth();
-
     return (
         <NavigationContainer>
             {isLoggedIn ? <AppStack /> : <AuthStack />}

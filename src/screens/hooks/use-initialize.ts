@@ -9,23 +9,17 @@ export const useInitialize = ({ navigation }: any) => {
 
     const { setChats } = useChatStore()
     const { setFollowsEvent } = useAuth()
-    const { initialize } = useFeedVideosStore()
-    const { setNDK, setNdkSigner } = useNDKStore()
+    const { setNdkSigner } = useNDKStore()
     const [loading, setLoading] = useState(true)
     const { useTranslate } = useTranslateService()
 
     useEffect(() => {  
-        initialize()
         verifyLogon()
     }, [])
 
     const verifyLogon = async () => {
 
         try {
-            await DBEvents.initDatabase()
-            
-            setNDK(await getNostrInstance({ }))
-            
             await getNotificationPermission() 
             
             const result = await authService.isLogged()

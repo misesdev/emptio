@@ -2,13 +2,13 @@ import { Image, StyleSheet, Text, View } from "react-native";
 import { ButtonPrimary } from "@components/form/Buttons";
 import { useTranslateService } from "@src/providers/translateProvider";
 import { FormControl } from "@components/form/FormControl";
-import { useRegister } from "../../hooks/use-register";
 import theme from "@src/theme";
+import useRegister from "../../hooks/useRegister";
 
-const RegisterScreen = ({ navigation }: any) => {
+const RegisterScreen = () => {
 
     const { useTranslate } = useTranslateService()
-    const { loading, disabled, userName, setUserName, register } = useRegister({ navigation })
+    const { loading, disabled, userName, setUserName, onRegister } = useRegister()
 
     return (
         <View style={{ flex: 1 }}>
@@ -29,7 +29,7 @@ const RegisterScreen = ({ navigation }: any) => {
                 <View style={styles.buttonArea}>
                     <ButtonPrimary loading={loading} disabled={disabled}
                         label={useTranslate("commons.signup")} 
-                        onPress={register}
+                        onPress={onRegister}
                     />
                 </View>
             </View>

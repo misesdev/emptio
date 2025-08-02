@@ -3,7 +3,7 @@ import { PrivateKeyStorage } from "@storage/pairkeys/PrivateKeyStorage"
 import { User } from "../user/types/User"
 import { create } from "zustand"
 
-interface NDKStore {
+export interface NDKStore {
     ndk: NDK,
     setNDK: (ndk: NDK) => void
     setNdkSigner: (user: User) => Promise<void>

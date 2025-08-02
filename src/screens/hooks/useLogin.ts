@@ -1,21 +1,17 @@
 import { showMessage } from "@components/general/MessageBox"
-import { EventKinds } from "@src/constants/Events"
 import { useTranslateService } from "@src/providers/translateProvider"
-import { useAuth } from "@src/providers/userProvider"
-import { validatePrivateKey } from "@services/nostr"
-import { getEvent } from "@services/nostr/events"
-import { subscribeUser } from "@services/nostr/pool"
 import { pushMessage } from "@services/notification"
-import useNDKStore from "@services/zustand/ndk"
 import Clipboard from "@react-native-clipboard/clipboard"
 import { useEffect, useState } from "react"
 import { AppState } from "react-native"
-import { authService } from "@services/auth"
+import AuthService from "@services/auth/AuthService"
+import NostrPairKey from "@services/nostr/pairkey/NostrPairKey"
+import { useAuth } from "@src/context/AuthContext"
 
-export const useLogin = ({ navigation }: any) => {
-   
-    const { setNdkSigner } = useNDKStore()
-    const { setUser, setFollowsEvent } = useAuth()
+const useLogin = () => {
+ 
+    const { login } = useAuth()
+    const authService = new AuthService()
     const { useTranslate } = useTranslateService()
     const [loading, setLoading] = useState(false)
     const [disabled, setDisabled] = useState(true)
@@ -29,7 +25,7 @@ export const useLogin = ({ navigation }: any) => {
     }, [])
 
     const setSecretKey = (value: string) => {
-        setDisabled(!validatePrivateKey(value))
+        setDisabled(!NostrPairKey.validateNsec(value))
         setSecret(value)
     }
 
@@ -44,7 +40,7 @@ export const useLogin = ({ navigation }: any) => {
     }
 
     const handlerClipboard = (key: string) => {
-        if (validatePrivateKey(key)) {
+        if (NostrPairKey.validateNsec(key)) {
             showMessage({
                 title: useTranslate("commons.detectedkey"),
                 message: useTranslate("message.detectedkey"),
@@ -58,40 +54,23 @@ export const useLogin = ({ navigation }: any) => {
         }
     }
 
-    const login = async () => {
+    const onLogin = async () => {
         setLoading(true)
         setDisabled(true)
-        if (validatePrivateKey(secretKey))
+        if (NostrPairKey.validateNsec(secretKey))
         {
-            try 
-            {
-                const result = await authService.signIn({ secretKey, setUser })
-
-                if (result.success && result.data)
-                {
-                    setNdkSigner(result.data)
-                    subscribeUser(result.data)
-
-                    if(setFollowsEvent) 
-                    {
-                        const eventFollow = await getEvent({ 
-                            kinds:[EventKinds.followList], 
-                            authors: [result.data?.pubkey ?? ""], 
-                            limit: 1
-                        })
-
-                        if(eventFollow) setFollowsEvent(eventFollow)
-                    } 
-
-                    navigation.reset({ index: 0, routes: [{ name: "core-stack" }] })                  
-                } else {
-                    pushMessage(result.message??"")
-                }
-            } catch (ex) { 
-                pushMessage(ex as string)
+            const result = await authService.signIn(secretKey)
+            if(result.success) {
+                login()
+            } else {
+                pushMessage(result.message??"")
             }
-        } else
-            showMessage({ message: useTranslate("message.invalidkey"), infolog: secretKey })
+        } else {
+            showMessage({ 
+                message: useTranslate("message.invalidkey"), 
+                infolog: secretKey 
+            })
+        }
 
         setDisabled(false)
         setLoading(false)
@@ -101,7 +80,9 @@ export const useLogin = ({ navigation }: any) => {
         loading,
         disabled,
         secretKey,
-        login,
+        onLogin,
         setSecretKey
     }
 }
+
+export default useLogin

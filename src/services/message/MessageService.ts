@@ -9,7 +9,7 @@ import { User } from "../user/types/User";
 import { TimeSeconds } from "../converter/TimeSeconds";
 import { Utilities } from "@/src/utils/Utilities";
 
-export class MessageService implements IMessageService 
+class MessageService implements IMessageService 
 {
     private readonly _ndk: NDK;
     private readonly _user: User;
@@ -135,3 +135,4 @@ export class MessageService implements IMessageService
     }
 }
 
+export default MessageService

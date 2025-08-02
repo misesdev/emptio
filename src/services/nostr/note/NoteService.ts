@@ -3,35 +3,45 @@ import NDK, { NDKEvent, NDKFilter, NDKSubscriptionCacheUsage,
 import { INoteService, ListCommentProps, ListReactionProps, PublishNoteProps, 
     ReactionProps } from "./INoteService"
 import useNDKStore from "@services/zustand/useNDKStore"
+import { User } from "../../user/types/User";
 
 class NoteService implements INoteService
 {
     private readonly _ndk: NDK;
+    private readonly _user?: User;
 
-    constructor(ndk: NDK = useNDKStore.getState().ndk) {
+    constructor(
+        user: User|undefined = undefined,
+        ndk: NDK = useNDKStore.getState().ndk
+    ) {
+        this._user = user
         this._ndk = ndk 
     }
 
-    public async listReactions({ user, note }: ListReactionProps): Promise<NDKEvent[]> {
+    public async listReactions({ note }: ListReactionProps): Promise<NDKEvent[]> 
+    {
         const filter: NDKFilter = { kinds:[7], "#e": [note.id] }
-        if(user) filter.authors = [user.pubkey??""]
+        if(this._user) filter.authors = [this._user.pubkey??""]
         const events = await this._ndk.fetchEvents(filter, {
             cacheUsage: NDKSubscriptionCacheUsage.ONLY_RELAY
         })
         return Array.from(events)
     }
 
-    public async reactNote({ note, reaction }: ReactionProps) : Promise<NDKEvent> {
+    public async reactNote({ note, reaction }: ReactionProps) : Promise<NDKEvent> 
+    {
         if(!note.ndk) note.ndk = this._ndk
         return await note.react(reaction)
     }
 
-    public async deleteReact(note: NDKEvent): Promise<NDKEvent> {
+    public async deleteReact(note: NDKEvent): Promise<NDKEvent> 
+    {
         if(!note.ndk) note.ndk = this._ndk
         return await note.delete()
     }
 
-    public async listComments({ note, timeout=800 }: ListCommentProps): Promise<NDKEvent[]> {
+    public async listComments({ note, timeout=800 }: ListCommentProps): Promise<NDKEvent[]>
+    {
         return new Promise<NDKEvent[]>((resolve) => {
             try {
                 const events: NDKEvent[] = []
@@ -58,14 +68,17 @@ class NoteService implements INoteService
         })
     }
 
-    public async publish({ note, replaceable=false }: PublishNoteProps): Promise<void> {
-        const event = new NDKEvent(this._ndk);
-        event.kind = note.kind
-        event.pubkey = note.pubkey ?? ""
-        event.content = typeof(note.content) == "string" ? 
-            note.content : JSON.stringify(note.content)
-        event.created_at = note.created_at
-        event.tags = note.tags ?? [[]]
+    public async publish({ note, replaceable=false }: PublishNoteProps): Promise<void>
+    {
+        const content = typeof(note.content) == "string" ? 
+            note.content : JSON.stringify(note.content)  
+        const event = new NDKEvent(this._ndk, {
+            kind: note.kind,
+            pubkey: note.pubkey,
+            content: content,
+            created_at: note.created_at,
+            tags: note.tags ?? [[]]
+        });
         await event.sign()
         if(replaceable)
             await event.publishReplaceable()
@@ -73,21 +86,24 @@ class NoteService implements INoteService
         await event.publish()
     }
 
-    public async listNotes(filters: NDKFilter): Promise<NostrEvent[]> {
+    public async listNotes(filters: NDKFilter): Promise<NostrEvent[]> 
+    {
         const events = await this._ndk.fetchEvents(filters, {
             cacheUsage: NDKSubscriptionCacheUsage.ONLY_RELAY
         })
         return Array.from(events) as NostrEvent[]
     }
 
-    public async getNote(filters: NDKFilter): Promise<NostrEvent|null> {
+    public async getNote(filters: NDKFilter): Promise<NostrEvent|null> 
+    {
         const event = await this._ndk.fetchEvent(filters, {
             cacheUsage: NDKSubscriptionCacheUsage.ONLY_RELAY
         })
         return event as NostrEvent 
     }
 
-    public getPubkeyFromTags(event: NDKEvent) : string|null {
+    public getPubkeyFromTags(event: NDKEvent) : string|null
+    {
         const pubkeys = event.tags.filter(t => t[0] == "p").map(t => t[1])
         if(pubkeys.length)
             return pubkeys[0]

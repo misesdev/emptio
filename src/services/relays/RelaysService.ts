@@ -2,7 +2,7 @@ import { RelayStorage } from "@/src/storage/relays/RelayStorage";
 import { NostrRelay } from "./types/NostrRelay";
 import { IRelayService } from "./IRelayService";
 
-export class RelaysService implements IRelayService
+class RelaysService implements IRelayService
 {
     private readonly _storage: RelayStorage;
     constructor(
@@ -44,3 +44,5 @@ export class RelaysService implements IRelayService
         }
     }
 }
+
+export default RelaysService

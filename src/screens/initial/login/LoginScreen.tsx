@@ -3,13 +3,13 @@ import { Image, StyleSheet, Text, View } from "react-native";
 import { QRCodeTextBox } from "@components/form/TextBoxs";
 import { ButtonPrimary } from "@components/form/Buttons";
 import { useTranslateService } from "@src/providers/translateProvider";
-import { useLogin } from "../../hooks/use-login";
+import useLogin from "../../hooks/useLogin";
 import theme from "@src/theme";
 
-const LoginScreen = ({ navigation }: any) => {
+const LoginScreen = () => {
 
     const { useTranslate } = useTranslateService()
-    const { loading, disabled, secretKey, setSecretKey, login } = useLogin({ navigation })
+    const { loading, disabled, secretKey, setSecretKey, onLogin } = useLogin()
 
     return (
         <View style ={{ flex: 1 }}>
@@ -29,7 +29,7 @@ const LoginScreen = ({ navigation }: any) => {
                 <View style={styles.buttonArea}>
                     <ButtonPrimary disabled={disabled} loading={loading}
                         label={useTranslate("commons.signin")} 
-                        onPress={login} 
+                        onPress={onLogin} 
                     />
                 </View>
             </View>

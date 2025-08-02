@@ -1,4 +1,5 @@
-import { ReactElement, ReactNode, createContext, useContext, useEffect, useState } from "react";
+import { ReactElement, ReactNode, createContext, useContext, 
+    useEffect, useState } from "react";
 import { User } from "@services/user/types/User";
 import { NostrEvent } from "@nostr-dev-kit/ndk-mobile";
 import UserService from "@services/user/UserService";

@@ -2,15 +2,15 @@ import AsyncStorage from "@react-native-async-storage/async-storage"
 
 export abstract class ItemStorage<Entity> 
 {
-    private _defaultEntity: Entity|null;
+    private _defaultEntity: Entity;
     private readonly _keyStorage: string;
 
-    constructor(key: string, defaultEntity: Entity|null=null) {
+    constructor(key: string, defaultEntity: Entity) {
         this._defaultEntity = defaultEntity
         this._keyStorage = key
     }
 
-    public async get(): Promise<Entity|null> {
+    public async get(): Promise<Entity> {
         let data = await AsyncStorage.getItem(this._keyStorage)
         try {
             if(!data) return this._defaultEntity

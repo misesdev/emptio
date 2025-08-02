@@ -3,7 +3,7 @@ import { User } from "../user/types/User";
 import { RelayStorage } from "@storage/relays/RelayStorage";
 import { PrivateKeyStorage } from "@storage/pairkeys/PrivateKeyStorage";
 
-export class NostrFactory
+class NostrFactory
 {
     private readonly _relayStorage: RelayStorage;
     private readonly _keyStorage: PrivateKeyStorage;
@@ -31,3 +31,5 @@ export class NostrFactory
         return ndk
     }
 }
+
+export default NostrFactory

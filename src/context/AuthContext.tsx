@@ -1,5 +1,6 @@
-import { AuthService } from '@services/auth/AuthService';
-import { createContext, useContext, useState, useEffect, ReactNode, ReactElement } from 'react';
+import { createContext, useContext, useState, useEffect, ReactNode,
+    ReactElement } from 'react';
+import AuthService from '@services/auth/AuthService';
 
 type AuthContextType = {
     isLoggedIn: boolean;
@@ -16,10 +17,11 @@ const useAuth = (): AuthContextType => {
 }
 
 const AuthProvider = ({ children }: { children: ReactNode }): ReactElement => {
+    
+    const _service = new AuthService()
     const [isLoggedIn, setIsLoggedIn] = useState(false);
 
     useEffect(() => {
-        const _service = new AuthService()
         _service.isLogged().then(result => {
             setIsLoggedIn(result.success)
         })

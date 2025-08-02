@@ -1,5 +1,5 @@
 import ReactNativeBiometrics from "react-native-biometrics";
-import { IAuthService, SignInProps, SignUpProps } from "./IAuthService";
+import { IAuthService } from "./IAuthService";
 import { AppResponse, trackException } from "../telemetry";
 import { User } from "../user/types/User";
 import NostrPairKey from "../nostr/pairkey/NostrPairKey";
@@ -13,7 +13,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import EncryptedStorage from "react-native-encrypted-storage";
 import { DataBaseEvents } from "@storage/database/DataBaseEvents";
 
-export class AuthService implements IAuthService 
+class AuthService implements IAuthService 
 {
     private readonly _dbEvents: DataBaseEvents;
     private readonly _noteService: NoteService;
@@ -22,14 +22,14 @@ export class AuthService implements IAuthService
     private readonly _biometrics: ReactNativeBiometrics;
 
     constructor(
-        user: UserStorage = new UserStorage(),
-        note: NoteService = new NoteService(),
+        userStorage: UserStorage = new UserStorage(),
+        noteService: NoteService = new NoteService(),
         biometrics: ReactNativeBiometrics = new ReactNativeBiometrics(),
         privatekey: PrivateKeyStorage = new PrivateKeyStorage(),
-        dbEvents: DataBaseEvents = new DataBaseEvents()
+        dbEvents: DataBaseEvents = new DataBaseEvents(),
     ) {
-        this._noteService = note
-        this._userStorage = user
+        this._noteService = noteService
+        this._userStorage = userStorage
         this._biometrics = biometrics 
         this._privatekey = privatekey
         this._dbEvents = dbEvents
@@ -46,7 +46,7 @@ export class AuthService implements IAuthService
         return false
     }
 
-    public async signUp({ setUser, userName }: SignUpProps): Promise<AppResponse<User | null>> {
+    public async signUp(userName: string): Promise<AppResponse<User | null>> {
         try {
             const pairkey = NostrPairKey.create()
             const stored = await this._privatekey.add(pairkey.getPrivateKey())
@@ -59,15 +59,13 @@ export class AuthService implements IAuthService
             const userService = new UserService(profile)
             await userService.publishProfile()
             await userService.save()
-            if (setUser) 
-                setUser(profile)
             return { success: true, data: profile }
         } catch(ex) {
             return trackException(ex, null)
         }
     }
 
-    public async signIn({ setUser, secretKey }: SignInProps): Promise<AppResponse<User|null>> {
+    public async signIn(secretKey: string): Promise<AppResponse<User|null>> {
         try {  
             const pairkey = NostrPairKey.fromNsec(secretKey)
             const stored = await this._privatekey.add(pairkey.getPrivateKey())
@@ -84,8 +82,6 @@ export class AuthService implements IAuthService
             const userService = new UserService(profile)
             await userService.publishProfile()
             await userService.save()
-            if (setUser) 
-                setUser(profile)
             return { success: true, data: profile }
         } catch(ex) {
             return trackException(ex)
@@ -119,3 +115,5 @@ export class AuthService implements IAuthService
         }
     }
 }
+
+export default AuthService

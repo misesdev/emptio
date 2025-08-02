@@ -1,8 +1,7 @@
 import { NDKEvent, NDKFilter, NostrEvent } from "@nostr-dev-kit/ndk-mobile"
-import { User } from "@services/user/types/User";
 
 export type ReactionProps = { note: NDKEvent; reaction: string; }
-export type ListReactionProps = { user?: User; note: NDKEvent; }
+export type ListReactionProps = { note: NDKEvent; }
 export type ListCommentProps = { note: NDKEvent; timeout: number; }
 export type PublishNoteProps = { note: NostrEvent; replaceable: boolean; }
 

@@ -12,7 +12,7 @@ import { BNetwork } from "bitcoin-tx-lib";
 import { FeeRate } from "./types/FeeRate";
 import { UTXO } from "./types/Utxo";
 
-export class TransactionService implements ITransactionService
+export default class TransactionService implements ITransactionService
 {
     private readonly _utxoStorage: DataBaseUtxo;
     private readonly _storage: DataBaseTransaction; 

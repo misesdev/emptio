@@ -1,4 +1,3 @@
-
 import { stackOptions } from "../constants/RouteSettings"
 import { CardStyleInterpolators, createStackNavigator } from "@react-navigation/stack"
 import UserMenuScreen from "@screens/root/settings"
@@ -26,13 +25,13 @@ import ManageFriendsScreen from "@screens/root/friends"
 import RelayScreen from "@screens/root/settings/relays/relay"
 import AddRelayScreen from "@screens/root/settings/relays/add"
 import OrderClosureScreen from "@screens/root/orders/new/closure"
-import NewWalletScreen from "../screens/root/wallet/new"
-import CreateWalletScreen from "../screens/root/wallet/create"
-import CreateWalletNetwork from "../screens/root/wallet/create/network"
-import ImportWalletNetwork from "../screens/root/wallet/import/network"
-import ImportWalletMnemonic from "../screens/root/wallet/import/mnemonic"
+import NewWalletScreen from "@screens/root/wallet/new"
+import CreateWalletScreen from "@screens/root/wallet/create"
+import CreateWalletNetwork from "@screens/root/wallet/create/network"
+import ImportWalletNetwork from "@screens/root/wallet/import/network"
+import ImportWalletMnemonic from "@screens/root/wallet/import/mnemonic"
+import AuthenticateScreen from "@screens/AuthenticateScreen"
 import AppTabStack from "./AppTabStack"
-import AuthenticateScreen from "../screens/AuthenticateScreen"
 
 const Stack = createStackNavigator()
 

@@ -5,13 +5,13 @@ import { AppResponse, trackException } from "../telemetry";
 import { StoredItem } from "@storage/types";
 import { ECPairKey, HDKManager, HDTransaction, HDWallet,
     InputTransaction } from "bitcoin-tx-lib";
-import { TransactionService } from "./TransactionService";
+import TransactionService from "./TransactionService";
 import { Wallet } from "./types/Wallet";
 import { UTXO } from "./types/Utxo";
 import { BTransaction } from "./types/Transaction";
 import { FeeRate } from "./types/FeeRate";
 
-export class WalletService implements IWalletService 
+export default class WalletService implements IWalletService 
 {
     private _wallet!: HDWallet;
     private readonly _storage: WalletStorage;
@@ -28,7 +28,7 @@ export class WalletService implements IWalletService
         this._addresses = addresses
     }
 
-    public async init(id: string) : Promise<void> 
+    public async load(id: string) : Promise<void> 
     {
         const stored = await this._storage.get(id) 
         const masterSeed = await this._keyStorage.get(stored.entity.keyRef)

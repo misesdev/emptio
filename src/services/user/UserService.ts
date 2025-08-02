@@ -28,7 +28,7 @@ class UserService implements IUserService
         this._ndk = ndk
     }
 
-    public async init(): Promise<void> 
+    public async load(): Promise<void> 
     {
         const user = await this._storage.get();
         if (!user?.pubkey) 
