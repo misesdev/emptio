@@ -7,6 +7,7 @@ import { AppState } from "react-native"
 import AuthService from "@services/auth/AuthService"
 import NostrPairKey from "@services/nostr/pairkey/NostrPairKey"
 import { useAuth } from "@src/context/AuthContext"
+import { User } from "@services/user/types/User"
 
 const useLogin = () => {
  
@@ -61,7 +62,7 @@ const useLogin = () => {
         {
             const result = await authService.signIn(secretKey)
             if(result.success) {
-                login()
+                login(result.data as User)
             } else {
                 pushMessage(result.message??"")
             }

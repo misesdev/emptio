@@ -1,13 +1,12 @@
 import { RefreshControl, ScrollView, StyleSheet, View, } from "react-native"
 import { ActionHeader, SectionHeader } from "@components/general/section/headers"
-import { useTranslateService } from "@src/providers/translateProvider"
 import WalletList from "@components/wallet/WalletList"
 import { useEffect } from "react"
 import { HeaderHome } from "./header"
 import { StackScreenProps } from "@react-navigation/stack"
 import theme from "@src/theme"
 import { useHomeState } from "./hooks/useHomeState"
-import { useFocusEffect } from "@react-navigation/native"
+import { useTranslateService } from "@/src/providers/TranslateProvider"
 
 const HomeScreen = ({ navigation }: StackScreenProps<any>) => {
 
@@ -18,10 +17,6 @@ const HomeScreen = ({ navigation }: StackScreenProps<any>) => {
         navigation.setOptions({ header: () => <HeaderHome navigation={navigation} /> })
         setTimeout(loadData, 20) 
     }, [])
-
-    // useFocusEffect(() => {
-    //     setTimeout(loadData, 20) 
-    // })
 
     const actionWallet: ActionHeader = {
         icon: "add", action: () => navigation.navigate("new-wallet")

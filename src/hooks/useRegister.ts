@@ -4,6 +4,7 @@ import { pushMessage } from "@services/notification"
 import UserService from "@services/user/UserService"
 import { Utilities } from "@src/utils/Utilities"
 import AuthService from "@services/auth/AuthService"
+import { User } from "@services/user/types/User"
 import { useState } from "react"
 
 const useRegister = () => {
@@ -49,7 +50,7 @@ const useRegister = () => {
     const registerUser = async () => {
         const result = await authService.signUp(userName.trim())
 
-        if (result.success) login()
+        if (result.success) login(result.data as User)
         if (!result.success) { 
             pushMessage(`${useTranslate("message.request.error")} ${result.message}`)
         }

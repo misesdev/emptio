@@ -16,6 +16,7 @@ export interface IUserService {
     publishProfile(): Promise<void>;
     fetchUser(pubkey: string): Promise<void>;
     updateProfile(props: UpdateProfileProps): Promise<void>;
+    getFollowsEvent(): Promise<NostrEvent>;
     listFollows(props: ListFollowsProps): Promise<User[]>;
     updateFollows(follows: NostrEvent) : Promise<void>;
     createFollows(friends: [string[]]) : NostrEvent;

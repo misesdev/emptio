@@ -2,8 +2,8 @@ import MessageBox from "@components/general/MessageBox";
 import { Image, StyleSheet, Text, View } from "react-native";
 import { QRCodeTextBox } from "@components/form/TextBoxs";
 import { ButtonPrimary } from "@components/form/Buttons";
-import { useTranslateService } from "@src/providers/translateProvider";
-import useLogin from "../../hooks/useLogin";
+import { useTranslateService } from "@/src/providers/TranslateProvider";
+import useLogin from "@/src/hooks/useLogin";
 import theme from "@src/theme";
 
 const LoginScreen = () => {

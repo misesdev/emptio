@@ -3,14 +3,14 @@ import { StyleSheet, View, TouchableOpacity } from "react-native"
 import Ionicons from 'react-native-vector-icons/Ionicons'
 import { HeaderChats } from "./header"
 import { SearchBox } from "@components/form/SearchBox"
-import { useTranslateService } from "@src/providers/translateProvider"
 import { StackScreenProps } from "@react-navigation/stack"
 import ChatFilters from "./commons/filters"
 import ChatList from "./commons/list"
 import ChatGroupAction from "./commons/options"
 import MessageBox from "@components/general/MessageBox"
 import ProfileView from "./commons/profile"
-import useChatScreen from "./hooks/use-chats-screen"
+import { useTranslateService } from "@/src/providers/TranslateProvider"
+import useChatScreen from "./hooks/useChatScreen"
 
 const ChatsScreen = ({ navigation }: StackScreenProps<any>) => {
    

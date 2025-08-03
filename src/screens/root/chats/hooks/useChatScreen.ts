@@ -1,6 +1,3 @@
-import { useTranslateService } from "@src/providers/translateProvider"
-import useChatStore, { ChatUser } from "@services/zustand/chats"
-import { useAuth } from "@src/providers/userProvider"
 import { useCallback, useEffect, useRef, useState } from "react"
 import { BackHandler, FlatList } from "react-native"
 import { FilterChat } from "../commons/list"
@@ -8,17 +5,21 @@ import { ChatFilterType } from "../commons/filters"
 import { useFocusEffect } from "@react-navigation/native"
 import { ChatActionType } from "../commons/options"
 import { showMessage } from "@components/general/MessageBox"
-import { messageService } from "@services/message"
 import { ShowProfileView } from "../commons/profile"
-import { User } from "@services/memory/types"
+import { useAccount } from "@/src/context/AccountContext"
+import useChatStore, { ChatUser } from "@/src/services/zustand/useChatStore"
+import { useTranslateService } from "@/src/providers/TranslateProvider"
+import { useService } from "@/src/providers/ServiceProvider"
+import { User } from "@services/user/types/User"
 
 const useChatScreen = ({ navigation }: any) => {
     const timeout = useRef<any>(null)
     const listRef = useRef<FlatList>(null)
-    const { user, followsEvent } = useAuth()
+    const { user, followsEvent } = useAccount()
     const { 
         chats, markReadChat, setChats, selectionMode, toggleSelectionMode, removeChat 
     } = useChatStore()
+    const { messageService } = useService()
     const { useTranslate } = useTranslateService()
     const selectedItems = useRef<Set<ChatUser>>(new Set<ChatUser>())
     const filterChatsUsers = useRef<FilterChat[]>([])

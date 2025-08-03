@@ -1,9 +1,9 @@
 import { Image, StyleSheet, Text, View } from "react-native";
 import { ButtonPrimary } from "@components/form/Buttons";
-import { useTranslateService } from "@src/providers/translateProvider";
 import { FormControl } from "@components/form/FormControl";
+import { useTranslateService } from "@/src/providers/TranslateProvider";
+import useRegister from "@/src/hooks/useRegister";
 import theme from "@src/theme";
-import useRegister from "../../hooks/useRegister";
 
 const RegisterScreen = () => {
 

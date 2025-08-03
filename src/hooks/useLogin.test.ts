@@ -1,12 +1,8 @@
 import { renderHook, act } from "@testing-library/react-native"
-import { useLogin } from "./use-login" 
 import { showMessage } from "@components/general/MessageBox"
-import { validatePrivateKey } from "@services/nostr"
-import { getEvent } from "@services/nostr/events"
-import { subscribeUser } from "@services/nostr/pool"
 import { pushMessage } from "@services/notification"
 import Clipboard from "@react-native-clipboard/clipboard"
-import { authService } from "@services/auth"
+import useLogin from "./useLogin" 
 
 jest.mock("@services/nostr", () => ({
     validatePrivateKey: jest.fn()
@@ -111,7 +107,7 @@ describe("useLogin", () => {
         })
 
         await act(async () => {
-            await result.current.login()
+            await result.current.onLogin()
         })
 
         expect(subscribeUser).toHaveBeenCalled()

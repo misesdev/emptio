@@ -30,7 +30,7 @@ import CreateWalletScreen from "@screens/root/wallet/create"
 import CreateWalletNetwork from "@screens/root/wallet/create/network"
 import ImportWalletNetwork from "@screens/root/wallet/import/network"
 import ImportWalletMnemonic from "@screens/root/wallet/import/mnemonic"
-import AuthenticateScreen from "@screens/AuthenticateScreen"
+import AuthenticateScreen from "@screens/root/AuthenticateScreen"
 import AppTabStack from "./AppTabStack"
 
 const Stack = createStackNavigator()
@@ -46,7 +46,7 @@ const AppStack = () => {
         >
             <Stack.Screen name="authenticate" component={AuthenticateScreen} />
 
-            <Stack.Screen name="core-stack" component={AppTabStack} />
+            <Stack.Screen name="home" component={AppTabStack} />
             <Stack.Screen name="user-donate-stack" component={DonateScreen} options={ScreenCardOptions} />
             <Stack.Screen name="search-home-stack" component={HomeSearchScreen} options={ScreenCardOptions} />
             <Stack.Screen name="search-feed-stack" component={FeedSearchScreen} options={ScreenCardOptions} />

@@ -2,18 +2,18 @@ import { useEffect, useState } from "react";
 import { Image, StyleSheet, View } from "react-native";
 import { ButtonPrimary } from "@components/form/Buttons";
 import SplashScreen from "@components/general/SplashScreen";
-import { useSettings } from "@src/providers/settingsProvider";
-import { useTranslateService } from "@src/providers/translateProvider";
-import { AuthService } from "@services/auth/AuthService";
+import { useService } from "@src/providers/ServiceProvider";
+import { useTranslateService } from "@src/providers/TranslateProvider";
+import { useAccount } from "@src/context/AccountContext";
 import theme from "@src/theme";
 
 const AuthenticateScreen = ({ navigation }: any) => {
 
-    const { settings } = useSettings()
+    const { settings } = useAccount()
     const { useTranslate } = useTranslateService()
     const [loading, setLoading] = useState(true)
     const [biometrics, setBiometrics] = useState(true)
-    const authService = new AuthService()
+    const { authService } = useService()
 
     useEffect(() => {
         checkBiometric().then(() => setLoading(false))
@@ -29,12 +29,12 @@ const AuthenticateScreen = ({ navigation }: any) => {
     const authenticateWithBiometrics = async () => {
         const success = await authService.checkBiometrics() 
         if (success)
-            navigation.reset({ index: 0, routes: [{ name: "core-stack" }] })
+            navigation.reset({ index: 0, routes: [{ name: "home" }] })
         setBiometrics(success)
     }
 
     if (!biometrics)
-        navigation.reset({ index: 0, routes: [{ name: "core-stack" }] })
+        navigation.reset({ index: 0, routes: [{ name: "home" }] })
 
     if (loading)
         return <SplashScreen />

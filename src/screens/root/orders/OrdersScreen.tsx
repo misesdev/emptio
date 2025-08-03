@@ -1,20 +1,20 @@
 import { View, Text, FlatList, StyleSheet, TouchableOpacity } from "react-native"
 import { SectionContainer } from "@components/general/section"
 import { ButtonDanger, ButtonSuccess } from "@components/form/Buttons"
-import { useAuth } from "@src/providers/userProvider"
-import { useTranslateService } from "@src/providers/translateProvider"
 import Ionicons from 'react-native-vector-icons/Ionicons'
 import { StackScreenProps } from "@react-navigation/stack"
 import { pushMessage } from "@services/notification"
 import { HeaderFeed } from "./header"
-import useOrderStore from "@services/zustand/orders"
-import { SellOrder } from "@services/types/order"
 import theme from "@src/theme"
 import { memo } from "react"
+import { useAccount } from "@/src/context/AccountContext"
+import useOrderStore from "@services/zustand/useOrderStore"
+import { useTranslateService } from "@/src/providers/TranslateProvider"
+import { SellOrder } from "@services/order/types/SellOrder"
 
-const FeedOrdersScreen = ({ navigation }: StackScreenProps<any>) => {
+const OrdersScreen = ({ navigation }: StackScreenProps<any>) => {
 
-    const { wallets } = useAuth()
+    const { wallets } = useAccount()
     const { orders } = useOrderStore()
     const { useTranslate } = useTranslateService()
 
@@ -72,4 +72,4 @@ const styles = StyleSheet.create({
     empty: { width: "80%", color: theme.colors.gray, marginTop: 200, textAlign: "center" }
 })
 
-export default FeedOrdersScreen
+export default OrdersScreen

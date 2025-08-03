@@ -9,16 +9,16 @@ import "./libs/global"
 
 import React from 'react';
 import { StyleSheet, View } from 'react-native'
-import { TranslateProvider } from './src/providers/translateProvider';
-import { AuthProvider } from "./src/providers/userProvider";
 import AppNavigator from "./src/routes/AppNavigator";
-import useInitialize from "./src/hooks/useInitialize";
 import SplashScreen from "./src/components/general/SplashScreen";
+import useBootApp from "./src/hooks/useBootApp";
+import { TranslateProvider } from "./src/providers/TranslateProvider";
+import { AuthProvider } from "./src/context/AuthContext";
 import theme from './src/theme';
 
 export default function App(): React.JSX.Element {
 
-    const { loading } = useInitialize()
+    const { loading } = useBootApp()
 
     if(loading) return <SplashScreen />
 

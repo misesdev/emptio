@@ -1,13 +1,13 @@
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs'
 import Ionicons from "react-native-vector-icons/Ionicons"
-import HomeScreen from "@screens/root/home"
-import FeedOrdersScreen from "@screens/root/orders"
-import ChatsScreen from '@screens/root/chats'
-import { useTranslateService } from '../providers/translateProvider'
+import HomeScreen from "@screens/root/home/HomeScreen"
+import OrdersScreen from "@screens/root/orders/OrdersScreen"
+import ChatsScreen from '@screens/root/chats/ChatsScreen'
 import VideosFeed from '@screens/root/videos'
 import { tabBarStyle } from '../constants/RouteSettings'
-import theme from "@src/theme"
 import useChatStore from '../services/zustand/useChatStore'
+import { useTranslateService } from '../providers/TranslateProvider'
+import theme from "@src/theme"
 
 const Tab = createBottomTabNavigator()
 
@@ -39,7 +39,7 @@ const AppTabStack = () => {
             />
             <Tab.Screen
                 name="orders"
-                component={FeedOrdersScreen}
+                component={OrdersScreen}
                 options={{
                     headerShown: false,
                     tabBarLabel: useTranslate("menu.orders"),

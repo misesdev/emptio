@@ -1,14 +1,14 @@
-
-import { useTranslateService } from "@src/providers/translateProvider"
-import { useAuth } from "@src/providers/userProvider"
-import { storageService } from "@services/memory"
+import { useAccount } from "@/src/context/AccountContext"
+import { useService } from "@/src/providers/ServiceProvider"
+import { useTranslateService } from "@/src/providers/TranslateProvider"
 import { pushMessage } from "@services/notification"
 import { useState } from "react"
 import { Vibration } from "react-native"
 
 export const useHomeState = () => {
 
-    const { wallets, setWallets } = useAuth()
+    const { walletService } = useService()
+    const { wallets, setWallets } = useAccount()
     const { useTranslate } = useTranslateService()
     const [loading, setLoading] = useState(false)
 
@@ -17,7 +17,7 @@ export const useHomeState = () => {
         
         if(wallets.length) Vibration.vibrate(45)
 
-        if(setWallets) setWallets(await storageService.wallets.list())
+        if(setWallets) setWallets(await walletService.list())
 
         if (wallets.length <= 0)
             pushMessage(useTranslate("message.wallet.alertcreate"))

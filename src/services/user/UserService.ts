@@ -22,13 +22,13 @@ class UserService implements IUserService
         storage: UserStorage = new UserStorage(),
         note: NoteService|null = null
     ) {
-        this._note = note ?? new NoteService(ndk)
+        this._note = note ?? new NoteService()
         this._storage = storage 
         this._profile = user
         this._ndk = ndk
     }
 
-    public async load(): Promise<void> 
+    public async init(): Promise<void> 
     {
         const user = await this._storage.get();
         if (!user?.pubkey) 
@@ -99,6 +99,18 @@ class UserService implements IUserService
             replaceable: true, 
             note
         })
+    }
+    
+    public async getFollowsEvent(): Promise<NostrEvent>
+    {
+        if (!this._profile?.pubkey)
+            throw new Error("UserService not initialized");
+        const event = await this._note.getNote({
+            kinds:[EventKinds.followList], 
+            authors: [this._profile.pubkey], 
+            limit: 1
+        })
+        return event as NostrEvent
     }
 
     public async listFollows({ follows, iNot=true }: ListFollowsProps): Promise<User[]> 

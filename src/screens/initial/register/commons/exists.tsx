@@ -1,8 +1,7 @@
 import { Modal, StyleSheet, View, Text, TouchableOpacity } from "react-native"
-import { useTranslateService } from "@src/providers/translateProvider"
-import { User } from "@services/memory/types"
 import { UserList } from "@components/nostr/user/UserList"
 import { ButtonPrimary } from "@components/form/Buttons"
+import { User } from "@services/user/types/User"
 import { useState } from "react"
 import theme from "@src/theme"
 

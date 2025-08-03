@@ -6,16 +6,16 @@ import { DataBaseUtxo } from "@storage/database/DataBaseUtxo"
 import { DataBaseEvents } from "@storage/database/DataBaseEvents"
 import { DataBaseTransaction } from "@storage/database/DataBaseTransaction"
 
-const useInitialize = () => {
+const useBootApp = () => {
 
     const { setNDK } = useNDKStore()
     const [loading, setLoading] = useState(true)
 
     useEffect(() => {  
-        loadAppData()
+        bootApp()
     }, [])
 
-    const loadAppData = async () => {
+    const bootApp = async () => {
 
         const _factory = new NostrFactory()
 
@@ -35,4 +35,4 @@ const useInitialize = () => {
     }
 }
 
-export default useInitialize
+export default useBootApp

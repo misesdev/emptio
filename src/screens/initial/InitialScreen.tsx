@@ -1,17 +1,11 @@
-
-import { ButtonDefault, ButtonSuccess } from "@components/form/Buttons"
 import { Image, StyleSheet, Text, View } from "react-native"
-import SplashScreen from "@components/general/SplashScreen"
-import { useInitialize } from "../hooks/use-initialize"
-import { useTranslateService } from "@/src/providers/translateProvider"
+import { ButtonDefault, ButtonSuccess } from "@components/form/Buttons"
+import { useTranslateService } from "@src/providers/TranslateProvider"
 import theme from "@src/theme"
 
 const InitialScreen = ({ navigation }: any) => {
 
     const { useTranslate } = useTranslateService()
-    const { loading } = useInitialize({ navigation })
-
-    if (loading) return <SplashScreen />
 
     return (
         <View style={theme.styles.container}>
