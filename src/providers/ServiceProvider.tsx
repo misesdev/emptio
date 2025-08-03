@@ -7,6 +7,7 @@ import MessageService from '@services/message/MessageService';
 import NoteService from '../services/nostr/note/NoteService';
 import RelaysService from '../services/relays/RelaysService';
 import { User } from '@services/user/types/User';
+import { useAuth } from '../context/AuthContext';
 
 type ServiceContextType = {
     authService: AuthService;
@@ -26,10 +27,11 @@ const useService = (): ServiceContextType => {
     return context;
 }
 
-type Props = { user: User; children: ReactNode; }
+type Props = { children: ReactNode; }
 
-const ServiceProvider = ({ children, user }: Props): ReactElement => {
+const ServiceProvider = ({ children }: Props): ReactElement => {
 
+    const { user } = useAuth()
     const authService = new AuthService()
     const userService = new UserService(user)
     const walletService = new WalletService()

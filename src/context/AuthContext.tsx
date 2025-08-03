@@ -2,6 +2,7 @@ import { createContext, useContext, useState, useEffect, ReactNode,
     ReactElement } from 'react';
 import AuthService from '@services/auth/AuthService';
 import { User } from '@services/user/types/User';
+import SplashScreen from '@components/general/SplashScreen';
 
 type AuthContextType = {
     user: User,
@@ -21,12 +22,14 @@ const useAuth = (): AuthContextType => {
 const AuthProvider = ({ children }: { children: ReactNode }): ReactElement => {
     
     const _service = new AuthService()
-    const [user, setUser] = useState<User>({} as User)
+    const [loading, setLoading] = useState(true)
     const [isLoggedIn, setIsLoggedIn] = useState(false);
+    const [user, setUser] = useState<User>({} as User)
 
     useEffect(() => {
         _service.isLogged().then(result => {
             setIsLoggedIn(result.success)
+            setLoading(false)
         })
     }, []);
 
@@ -36,6 +39,8 @@ const AuthProvider = ({ children }: { children: ReactNode }): ReactElement => {
     }
 
     const logout = () => setIsLoggedIn(false)
+
+    if(loading) return <SplashScreen />
 
     return (
         <AuthContext.Provider value={{ user, isLoggedIn, login, logout }}>

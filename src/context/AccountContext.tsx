@@ -8,6 +8,7 @@ import { AppSettings } from '@storage/settings/types';
 import { NostrEvent } from '@nostr-dev-kit/ndk-mobile';
 import SplashScreen from '@components/general/SplashScreen';
 import useLoadNostrAccount from '../hooks/useLoadNostrAccount';
+import { useAuth } from './AuthContext';
 
 type UserContextType = {
     user: User,
@@ -29,10 +30,11 @@ const useAccount = (): UserContextType => {
     return context;
 }
 
-type Props = { user: User; children: ReactNode; }
+type Props = { children: ReactNode; }
 
-const AccountProvider = ({ children, user }: Props): ReactElement => {
+const AccountProvider = ({ children }: Props): ReactElement => {
 
+    const { user } = useAuth()
     const [follows, setFollows] = useState<User[]>([])
     const [wallets, setWallets] = useState<StoredItem<Wallet>[]>([])
     const [settings, setSettings] = useState<AppSettings>({} as AppSettings)

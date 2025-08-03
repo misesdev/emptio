@@ -6,12 +6,12 @@ import AuthStack from './AuthStack';
 import AppStack from './AppStack';
 
 const AppNavigator = () => {
-    const { isLoggedIn, user } = useAuth();
+    const { isLoggedIn } = useAuth();
 
     if(isLoggedIn) {
         return (
-            <AccountProvider user={user}>
-                <ServiceProvider user={user}>
+            <AccountProvider>
+                <ServiceProvider>
                     <NavigationContainer>
                         <AppStack />
                     </NavigationContainer>
