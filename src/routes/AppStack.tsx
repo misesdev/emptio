@@ -47,21 +47,21 @@ const AppStack = () => {
             <Stack.Screen name="authenticate" component={AuthenticateScreen} />
 
             <Stack.Screen name="home" component={AppTabStack} />
-            <Stack.Screen name="user-donate-stack" component={DonateScreen} options={ScreenCardOptions} />
-            <Stack.Screen name="search-home-stack" component={HomeSearchScreen} options={ScreenCardOptions} />
-            <Stack.Screen name="search-feed-stack" component={FeedSearchScreen} options={ScreenCardOptions} />
+            <Stack.Screen name="donate" component={DonateScreen} options={ScreenCardOptions} />
+            <Stack.Screen name="search-home" component={HomeSearchScreen} options={ScreenCardOptions} />
+            <Stack.Screen name="search-orders" component={FeedSearchScreen} options={ScreenCardOptions} />
 
-            <Stack.Screen name="new-chat-stack" component={NewChatScreen} options={ScreenCardOptions} />
-            <Stack.Screen name="conversation-chat-stack" component={ConversationChat} options={ScreenCardOptions} />
+            <Stack.Screen name="new-chat" component={NewChatScreen} options={ScreenCardOptions} />
+            <Stack.Screen name="conversation" component={ConversationChat} options={ScreenCardOptions} />
 
-            <Stack.Screen name="user-menu-stack" component={UserMenuScreen} options={{ headerShown: true }} />
-            <Stack.Screen name="manage-account-stack" component={UserEditScreen} options={{ headerShown: true }} />
+            <Stack.Screen name="user-menu" component={UserMenuScreen} options={{ headerShown: true }} />
+            <Stack.Screen name="manage-account" component={UserEditScreen} options={{ headerShown: true }} />
 
-            <Stack.Screen name="manage-relays-stack" component={ManageRelaysScreen} options={ScreenCardOptions} />
-            <Stack.Screen name="manage-relay-stack" component={RelayScreen} options={ScreenCardOptions} />
-            <Stack.Screen name="add-relay-stack" component={AddRelayScreen} options={ScreenCardOptions} />
-            <Stack.Screen name="manage-security-stack" component={ManageSecurityScreen} options={ScreenCardOptions} />
-            <Stack.Screen name="about-stack" component={AboutScreen} options={ScreenCardOptions} />
+            <Stack.Screen name="manage-relays" component={ManageRelaysScreen} options={ScreenCardOptions} />
+            <Stack.Screen name="manage-relay" component={RelayScreen} options={ScreenCardOptions} />
+            <Stack.Screen name="add-relay" component={AddRelayScreen} options={ScreenCardOptions} />
+            <Stack.Screen name="manage-security" component={ManageSecurityScreen} options={ScreenCardOptions} />
+            <Stack.Screen name="about" component={AboutScreen} options={ScreenCardOptions} />
 
             <Stack.Screen name="wallet" component={WalletManagerScreen} options={{ headerShown: true }} />
             <Stack.Screen name="new-wallet" component={NewWalletScreen} options={ScreenCardOptions} />
@@ -72,15 +72,15 @@ const AppStack = () => {
             <Stack.Screen name="import-wallet-network" component={ImportWalletNetwork} options={ScreenCardOptions} />
             <Stack.Screen name="import-wallet-mnemonic" component={ImportWalletMnemonic} options={ScreenCardOptions} />
             
-            <Stack.Screen name="wallet-receive-stack" component={WalletReceiveScreen} options={ScreenCardOptions} />
-            <Stack.Screen name="wallet-send-stack" component={SendScreen} options={ScreenCardOptions} />
-            <Stack.Screen name="wallet-send-receiver-stack" component={SendReceiverScreen} options={ScreenCardOptions} />
-            <Stack.Screen name="wallet-send-final-stack" component={SendFinalScreen} options={ScreenCardOptions} />
-            <Stack.Screen name="wallet-settings-stack" component={WalletSettings} options={ScreenCardOptions} />
-            <Stack.Screen name="wallet-transaction-stack" component={TransactionScreen} options={ScreenCardOptions} />
+            <Stack.Screen name="wallet-receive" component={WalletReceiveScreen} options={ScreenCardOptions} />
+            <Stack.Screen name="wallet-send" component={SendScreen} options={ScreenCardOptions} />
+            <Stack.Screen name="wallet-send-receiver" component={SendReceiverScreen} options={ScreenCardOptions} />
+            <Stack.Screen name="wallet-send-final" component={SendFinalScreen} options={ScreenCardOptions} />
+            <Stack.Screen name="wallet-settings" component={WalletSettings} options={ScreenCardOptions} />
+            <Stack.Screen name="wallet-transaction" component={TransactionScreen} options={ScreenCardOptions} />
 
-            <Stack.Screen name="add-follow-stack" component={AddFolowScreen} options={ScreenCardOptions} />
-            <Stack.Screen name="friends-list-stack" component={ManageFriendsScreen} options={ScreenCardOptions} />
+            <Stack.Screen name="add-follow" component={AddFolowScreen} options={ScreenCardOptions} />
+            <Stack.Screen name="friends-list" component={ManageFriendsScreen} options={ScreenCardOptions} />
 
             <Stack.Screen name="feed-order-new" component={NewOrderScreen} options={ScreenCardOptions} />
             <Stack.Screen name="feed-order-ndetails" component={OrderClosureScreen} options={ScreenCardOptions} />

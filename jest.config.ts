@@ -8,6 +8,7 @@ const jestConfig: JestConfigWithTsJest  = {
     moduleNameMapper: {
         "^@components/(.*)$": "<rootDir>/src/components/$1",
         "^@services/(.*)$": "<rootDir>/src/services/$1",
+        "^@storage/(.*)$": "<rootDir>/src/storage/$1",
         "^@src/(.*)$": "<rootDir>/src/$1",
         "^@assets/(.*)$": "<rootDir>/assets/$1",
     },

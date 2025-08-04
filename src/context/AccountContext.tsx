@@ -5,9 +5,9 @@ import { Wallet } from '@services/wallet/types/Wallet';
 import { StoredItem } from '@storage/types';
 import UserService from '@services/user/UserService';
 import { AppSettings } from '@storage/settings/types';
-import { NostrEvent } from '@nostr-dev-kit/ndk-mobile';
+import { NDKEvent } from '@nostr-dev-kit/ndk-mobile';
 import SplashScreen from '@components/general/SplashScreen';
-import useLoadNostrAccount from '../hooks/useLoadNostrAccount';
+import useLoadAccount from '../hooks/useLoadAccount';
 import { useAuth } from './AuthContext';
 
 type UserContextType = {
@@ -18,8 +18,8 @@ type UserContextType = {
     setWallets: (ws: StoredItem<Wallet>[]) => void;
     follows: User[];
     setFollows: (fs: User[]) => void;
-    followsEvent: NostrEvent;
-    setFollowsEvent: (e: NostrEvent) => void;
+    followsEvent: NDKEvent;
+    setFollowsEvent: (e: NDKEvent) => void;
 }
 
 const UserContext = createContext<UserContextType>({} as UserContextType);
@@ -38,14 +38,18 @@ const AccountProvider = ({ children }: Props): ReactElement => {
     const [follows, setFollows] = useState<User[]>([])
     const [wallets, setWallets] = useState<StoredItem<Wallet>[]>([])
     const [settings, setSettings] = useState<AppSettings>({} as AppSettings)
-    const [followsEvent, setFollowsEvent] = useState<NostrEvent>({} as NostrEvent)
+    const [followsEvent, setFollowsEvent] = useState<NDKEvent>({} as NDKEvent)
     const [_service, _] = useState(new UserService(user))
-    const { loading } = useLoadNostrAccount({ 
+    const { loading } = useLoadAccount({ 
         user,
         setSettings,
         setWallets,
         setFollowsEvent 
     })
+    
+    useEffect(() => {
+        _service.setSettings(settings)
+    },[settings])
 
     useEffect(() => { 
         if(user.pubkey && followsEvent.pubkey) loadFollowers() 

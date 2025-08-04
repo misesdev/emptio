@@ -3,7 +3,7 @@ import { Dimensions, StyleSheet, View } from "react-native"
 import NoteViewer from "../event/NoteViewer"
 import { useCallback, useRef, useState } from "react"
 import { NDKEvent } from "@nostr-dev-kit/ndk-mobile"
-import { User } from "@services/memory/types"
+import { User } from "@services/user/types/User"
 import theme from "@src/theme"
 
 interface NoteProps {

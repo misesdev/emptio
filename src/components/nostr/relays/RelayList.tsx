@@ -1,8 +1,8 @@
 import { View, FlatList, TouchableOpacity, StyleSheet, Text } from "react-native"
 import { useCallback } from "react"
 import theme from "@src/theme"
-import { getClipedContent } from "@src/utils"
-import { useTranslateService } from "@src/providers/translateProvider"
+import { Utilities } from "@/src/utils/Utilities"
+import { useTranslateService } from "@/src/providers/TranslateProvider"
 
 interface RelayItemProps {
     relay: string,
@@ -18,7 +18,7 @@ export const RelayItem = ({ relay, onPressRelay }: RelayItemProps) => {
         >
             <View style={{ padding: 5 }}>
                 <Text style={{ color: theme.colors.gray, fontSize: 16, fontWeight: "500" }}>
-                    {getClipedContent(relay, 40)}
+                    {Utilities.getClipedContent(relay, 40)}
                 </Text>
             </View>
         </TouchableOpacity>

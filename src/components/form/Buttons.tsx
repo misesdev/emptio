@@ -1,8 +1,8 @@
 import { TouchableOpacity, StyleSheet, Text, View, ViewStyle, StyleProp, TextStyle} from 'react-native';
 import { IconNames } from '@services/types/icons';
 import Ionicons from 'react-native-vector-icons/Ionicons'
-import theme from '@src/theme';
 import { ActivityIndicator } from 'react-native-paper';
+import theme from '@src/theme';
 
 interface Props {
     label: string,

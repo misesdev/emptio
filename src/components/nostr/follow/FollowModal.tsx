@@ -1,14 +1,14 @@
 import { useCallback, useState } from "react"
 import { Modal, StyleSheet, Text, TouchableOpacity, View } from "react-native"
-import { useTranslateService } from "@src/providers/translateProvider"
-import { User } from "@services/memory/types"
 import { NoteList } from "../user/NoteList"
 import { ActivityIndicator } from "react-native-paper"
 import Ionicons from "react-native-vector-icons/Ionicons"
-import { copyPubkey, getDisplayPubkey, getUserName } from "@src/utils"
 import { NDKEvent } from "@nostr-dev-kit/ndk-mobile"
 import { ProfilePicture } from "../user/ProfilePicture"
-import { userService } from "@services/user"
+import { User } from "@services/user/types/User"
+import { useTranslateService } from "@/src/providers/TranslateProvider"
+import { useService } from "@/src/providers/ServiceProvider"
+import { Utilities } from "@/src/utils/Utilities"
 import theme from "@src/theme"
 
 interface followModalProps {
@@ -41,15 +41,16 @@ interface FollowProps {
 
 const FollowModal = ({ handleAddFollow }: FollowProps) => {
 
+    const { userService } = useService()
     const { useTranslate } = useTranslateService()
-    const [user, setUser] = useState<User>({})
+    const [user, setUser] = useState<User>({} as User)
     const [visible, setVisible] = useState(false)
     const [loading, setloading] = useState(false)
     const [notes, setNotes] = useState<NDKEvent[]>([])
 
     const handleLoadData = useCallback(async (user: User) => {
         setloading(true)
-        const latestNotes = await userService.lastNotes(user, 10)
+        const latestNotes = await userService.lastNotes(10)
         setNotes(latestNotes)
         setloading(false)
     }, [setNotes, setloading, userService])
@@ -82,14 +83,14 @@ const FollowModal = ({ handleAddFollow }: FollowProps) => {
                         </TouchableOpacity>
                         <View style={{ paddingHorizontal: 12 }}>
                             <Text style={{ color: theme.colors.white, fontSize: 20, fontWeight: 'bold' }}>
-                                {getUserName(user ?? {})}
+                                {Utilities.getUserName(user ?? {})}
                             </Text>
                             <TouchableOpacity activeOpacity={.7}
-                                onPress={() => copyPubkey(user?.pubkey ?? "")}
+                                onPress={() => Utilities.copyPubkey(user?.pubkey ?? "")}
                                 style={{ flexDirection: "row" }}
                             >
                                 <Text style={{ fontSize: 14, fontWeight: "500", color: theme.colors.gray }}>
-                                    {getDisplayPubkey(user?.pubkey ?? "", 20)}
+                                    {Utilities.getDisplayPubkey(user?.pubkey ?? "", 20)}
                                 </Text>
                                 <Ionicons name="copy" size={10} style={{ padding: 5 }} color={theme.colors.gray} />
                             </TouchableOpacity>
@@ -99,7 +100,7 @@ const FollowModal = ({ handleAddFollow }: FollowProps) => {
                     {user?.friend && 
                         <Text style={styles.infolog}>
                             <Text style={{ color: theme.colors.blue, fontWeight: "500" }}>
-                                {getUserName(user)}  
+                                {Utilities.getUserName(user)}  
                             </Text> {' '}
                             {useTranslate("message.friend.already")}
                         </Text>

@@ -86,20 +86,20 @@ class NoteService implements INoteService
         await event.publish()
     }
 
-    public async listNotes(filters: NDKFilter): Promise<NostrEvent[]> 
+    public async listNotes(filters: NDKFilter): Promise<NDKEvent[]> 
     {
         const events = await this._ndk.fetchEvents(filters, {
             cacheUsage: NDKSubscriptionCacheUsage.ONLY_RELAY
         })
-        return Array.from(events) as NostrEvent[]
+        return Array.from(events) 
     }
 
-    public async getNote(filters: NDKFilter): Promise<NostrEvent|null> 
+    public async getNote(filters: NDKFilter): Promise<NDKEvent|null> 
     {
         const event = await this._ndk.fetchEvent(filters, {
             cacheUsage: NDKSubscriptionCacheUsage.ONLY_RELAY
         })
-        return event as NostrEvent 
+        return event 
     }
 
     public getPubkeyFromTags(event: NDKEvent) : string|null

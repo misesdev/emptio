@@ -147,10 +147,9 @@ jest.mock("@src/providers/translateProvider", () => ({
     })
 }))
 
-jest.mock("@src/providers/userProvider", () => ({
+jest.mock("@src/providers/AccountContext", () => ({
     useAuth: () => ({
         user: {},
-        setUser: jest.fn(),
         wallets: [],
         setWallets: jest.fn(),
         follows: [],

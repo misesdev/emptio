@@ -1,34 +1,35 @@
-import { walletService } from "@services/wallet"
-import { formatSats, toBitcoin } from "@services/converter"
-import { Wallet } from "@services/memory/types"
 import { useEffect, useRef, useState } from "react"
 import { TouchableOpacity, View, Text, StyleSheet, 
     Image, ViewStyle } from "react-native"
 import { ActivityIndicator } from "react-native-paper"
-import { getClipedContent, getDescriptionTypeWallet } from "@src/utils"
-import { useTranslateService } from "@src/providers/translateProvider"
+import { Wallet } from "@services/wallet/types/Wallet"
+import { useAccount } from "@src/context/AccountContext"
+import { useTranslateService } from "@src/providers/TranslateProvider"
+import { Utilities } from "@src/utils/Utilities"
+import { Formatter } from "@services/converter/Formatter"
+import { useService } from "@/src/providers/ServiceProvider"
+import { StoredItem } from "@/src/storage/types"
 import theme from "@src/theme"
-import { useAuth } from "@src/providers/userProvider"
-import { storageService } from "@services/memory"
 
 interface Props {
-    wallet: Wallet,
-    style: ViewStyle,
-    handleOpen: (wallet: Wallet) => void
+    wallet: StoredItem<Wallet>;
+    handleOpen: (wallet: Wallet) => void;
+    style: ViewStyle;
 }
 
 const WalletListItem = ({ wallet, handleOpen, style }: Props) => {
   
     const isFetching = useRef<boolean>(false)
-    const { wallets } = useAuth()
+    const { wallets } = useAccount()
+    const { walletService } = useService()
     const { useTranslate } = useTranslateService()
     const [loading, setLoading] = useState<boolean>()
     const [typeWallet, setTypeWallet] = useState<string>("")
-    const [walletData, setWalletData] = useState(wallet)
+    const [walletData, setWalletData] = useState(wallet.entity)
 
     useEffect(() => { 
         setTimeout(loadData, 20)
-        getDescriptionTypeWallet(wallet.network ?? "mainnet").then(setTypeWallet)
+        Utilities.getDescriptionTypeWallet(wallet.entity.network ?? "mainnet").then(setTypeWallet)
     }, [wallets])
 
     const loadData = async () => {
@@ -36,11 +37,12 @@ const WalletListItem = ({ wallet, handleOpen, style }: Props) => {
         {
             setLoading(true)
             isFetching.current = true
-            let balance = await walletService.getBalance(wallet)
+            await walletService.load(wallet.id)
+            let balance = await walletService.getBalance(false)
             if(walletData.lastBalance != balance)
             {
                 setWalletData(prev => ({ ...prev, lastBalance: balance }))
-                setTimeout(async () => await storageService.wallets.update({
+                setTimeout(async () => await walletService.update(wallet.id, {
                     ...walletData, lastBalance: balance
                 }), 20)
             }
@@ -49,10 +51,10 @@ const WalletListItem = ({ wallet, handleOpen, style }: Props) => {
         }
     }
 
-    let formatName = getClipedContent(walletData.name??"", 18)
+    let formatName = Utilities.getClipedContent(walletData.name??"", 18)
 
     return (
-        <TouchableOpacity key={wallet.key} activeOpacity={.7} 
+        <TouchableOpacity key={wallet.id} activeOpacity={.7} 
             style={[styles.wallet,style]} onPress={() => handleOpen(walletData)}
         >
             {walletData!.network === "mainnet" && <Image source={require("@assets/images/bitcoin-wallet-header3.jpg")} style={{ position: "absolute", borderRadius: 18, width: "100%", height: "100%" }} />}
@@ -63,7 +65,7 @@ const WalletListItem = ({ wallet, handleOpen, style }: Props) => {
             <Text style={styles.title}>{formatName}</Text>
             <View style={{ flexDirection: "row", width: "100%" }}>
                 <Text style={{ marginHorizontal: 10, marginVertical: 6, color: theme.colors.white, fontSize: 18, fontWeight: "bold" }}>
-                    {formatSats(walletData.lastBalance)} Sats
+                    {Formatter.formatSats(walletData.lastBalance??0)} Sats
                 </Text>
                 { loading &&
                     <ActivityIndicator size={18} color={theme.colors.white} />    
@@ -71,7 +73,7 @@ const WalletListItem = ({ wallet, handleOpen, style }: Props) => {
             </View>
             <View style={{ flexDirection: "row", width: "100%" }}>
                 <Text style={[styles.description, { color: theme.colors.white }]}>
-                    {toBitcoin(walletData.lastBalance)} BTC
+                    {Formatter.satsToBitcoin(walletData.lastBalance??0)} BTC
                 </Text>
             </View> 
             <TouchableOpacity activeOpacity={.7} 

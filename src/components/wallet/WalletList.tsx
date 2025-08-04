@@ -1,13 +1,14 @@
 import { SafeAreaView, TouchableOpacity, View, Text, StyleSheet, Dimensions } from "react-native"
-import { useTranslateService } from "@src/providers/translateProvider"
-import { Wallet } from "@services/memory/types"
 import WalletListItem from "./WalletListItem"
 import { FlatList } from "react-native-gesture-handler"
 import { useCallback, useEffect, useState } from "react"
 import theme from "@src/theme"
+import { Wallet } from "@services/wallet/types/Wallet"
+import { useTranslateService } from "@src/providers/TranslateProvider"
+import { StoredItem } from "@/src/storage/types"
 
 interface Props {
-    wallets: Wallet[],
+    wallets: StoredItem<Wallet>[],
     navigation: any
 }
 
@@ -17,18 +18,18 @@ const WalletList = ({ wallets, navigation }: Props) => {
     const spacing = width * .06
 
     const { useTranslate } = useTranslateService()
-    const [walletList, setWalletList] = useState<Wallet[]>([])
+    const [walletList, setWalletList] = useState<StoredItem<Wallet>[]>([])
 
     useEffect(() => {
-        setWalletList([...wallets, { key: "create" }])
+        setWalletList([...wallets, { id: "create", entity: {} as Wallet }])
     }, [wallets])
 
     const handleOpenWallet = useCallback((wallet: Wallet) => {
         navigation.navigate("wallet", { wallet })
     }, [navigation])
 
-    const renderItem = useCallback(({ item }: { item: Wallet }) => {
-        if(item.key === "create")
+    const renderItem = useCallback(({ item }: { item: StoredItem<Wallet> }) => {
+        if(item.id === "create")
             return (
                  <View style={[styles.wallet, {width: itemWidth, marginRight: spacing, backgroundColor: theme.colors.section, padding: 5 }]}> 
                      <Text style={styles.title}>{useTranslate("labels.wallet.add")}</Text>
@@ -61,7 +62,7 @@ const WalletList = ({ wallets, navigation }: Props) => {
                     paddingHorizontal: (width - itemWidth) / 2
                 }}
                 showsHorizontalScrollIndicator={false}
-                keyExtractor={(item) => item.key ?? Math.random().toString()}
+                keyExtractor={(item) => item.id ?? Math.random().toString()}
             />
         </SafeAreaView>
     )

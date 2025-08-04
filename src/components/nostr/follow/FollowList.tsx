@@ -1,13 +1,13 @@
 import { FlatList, View } from "react-native"
-import { useAuth } from "@src/providers/userProvider"
-import { User } from "@services/memory/types"
 import { memo, useCallback, useMemo, useRef, useState } from "react"
 import { FollowItem } from "./FollowItem"
 import theme from "@src/theme"
-import { getUserName } from "@src/utils"
 import { SearchBox } from "../../form/SearchBox"
-import { useTranslateService } from "@src/providers/translateProvider"
-import { walletService } from "@services/wallet"
+import { User } from "@services/user/types/User"
+import { useAccount } from "@/src/context/AccountContext"
+import { useTranslateService } from "@/src/providers/TranslateProvider"
+import { Address } from "bitcoin-tx-lib"
+import { Utilities } from "@/src/utils/Utilities"
 
 interface FriendListProps {
     labelAction?: string;
@@ -21,16 +21,16 @@ export const FollowList = ({
     onPressFollow, searchable, searchTimout=200, showButton=true, labelAction=""
 }: FriendListProps) => {
 
-    const { follows } = useAuth()
+    const { follows } = useAccount()
     const listRef = useRef<FlatList>(null)
     const { useTranslate } = useTranslateService()
     const [followList, setFollowList] = useState<User[]>(follows??[])
     const memorizedFollows = useMemo(() => followList, [followList])
     
     const handleSearch = (filter: string) => {
-        if (filter?.length && !walletService.address.validate(filter)) {
+        if (filter?.length && !Address.isValid(filter)) {
             const searchResult = follows?.filter(follow => {
-                let filterNameLower = getUserName(follow, 30).toLowerCase()
+                let filterNameLower = Utilities.getUserName(follow, 30).toLowerCase()
                 return filterNameLower.includes(filter.toLowerCase())
             })
 

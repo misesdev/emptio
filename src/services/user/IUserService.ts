@@ -1,4 +1,4 @@
-import { NostrEvent } from "@nostr-dev-kit/ndk-mobile";
+import { NDKEvent } from "@nostr-dev-kit/ndk-mobile";
 import { User } from "./types/User"
 
 export type SearchUserProps = {
@@ -8,19 +8,20 @@ export type UpdateProfileProps = {
     user: User, setUser?: (user: User) => void; upNostr?: boolean;
 }
 export type ListFollowsProps = {
-    follows?: NostrEvent; iNot?: boolean;
+    follows?: NDKEvent; iNot?: boolean;
 }
 
 export interface IUserService {
     getProfile(): Promise<User>;
     publishProfile(): Promise<void>;
-    fetchUser(pubkey: string): Promise<void>;
+    fetchProfile(pubkey: string): Promise<void>;
+    getUser(pubkey: string): Promise<User>;
     updateProfile(props: UpdateProfileProps): Promise<void>;
-    getFollowsEvent(): Promise<NostrEvent>;
+    getFollowsEvent(): Promise<NDKEvent>;
     listFollows(props: ListFollowsProps): Promise<User[]>;
-    updateFollows(follows: NostrEvent) : Promise<void>;
-    createFollows(friends: [string[]]) : NostrEvent;
-    lastNotes(limit: number) : Promise<NostrEvent[]>;
+    updateFollows(follows: NDKEvent) : Promise<void>;
+    createFollows(friends: [string[]]) : NDKEvent;
+    lastNotes(limit: number) : Promise<NDKEvent[]>;
     save(): Promise<void>;
 
     listUsers(pubkeys: string[]): Promise<User[]>;

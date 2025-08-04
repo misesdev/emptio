@@ -1,12 +1,12 @@
-import { ActivityIndicator, FlatList, View } from "react-native"
-import { userService } from "@services/user"
-import { useTranslate } from "@services/translate"
-import { useAuth } from "@src/providers/userProvider"
-import { User } from "@services/memory/types"
+import { FlatList, View } from "react-native"
 import { useCallback, useEffect, useState } from "react"
-import { walletService } from "@services/wallet"
 import { SectionHeader } from "../general/section/headers"
 import { FollowItem } from "./follow/FollowItem"
+import { User } from "@services/user/types/User"
+import { useAccount } from "@src/context/AccountContext"
+import { useTranslate } from "@services/translate/TranslateService"
+import { useService } from "@src/providers/ServiceProvider"
+import { Address } from "bitcoin-tx-lib"
 import theme from "@src/theme"
 
 interface FriendListProps {
@@ -18,15 +18,19 @@ interface FriendListProps {
     onPressFollow?: (user: User) => void,
 }
 
-export const FriendList = ({ searchTerm, onPressFollow, loadCombo=20, 
-    toFollow=false, toPayment=false, searchable }: FriendListProps) => {
+export const FriendList = ({
+    searchTerm, onPressFollow, loadCombo=20, 
+    toFollow=false, toPayment=false, searchable
+}: FriendListProps) => {
 
-    const { user, followsEvent } = useAuth()
+    const { followsEvent } = useAccount()
     const [listCounter, setListCounter] = useState(loadCombo)
     const [refreshing, setRefreshing] = useState(true)
     const [followList, setFollowList] = useState<User[]>([])
     const [labelFriends, setLabelFriends] = useState<string>("")
     const [followListData, setFollowListData] = useState<User[]>([])
+
+    const { userService } = useService()
 
     useEffect(() => {
         handleListFollows() 
@@ -36,7 +40,7 @@ export const FriendList = ({ searchTerm, onPressFollow, loadCombo=20,
     if (searchable) {
         useEffect(() => {
             // search and filter
-            if (searchTerm && !walletService.address.validate(searchTerm)) {
+            if (searchTerm && !Address.isValid(searchTerm)) {
                 const searchResult = followListData.filter(follow => {
                     let filterLower = searchTerm.toLowerCase()
                     let filterNameLower = `${follow.name}${follow.display_name}`.toLowerCase()
@@ -54,7 +58,7 @@ export const FriendList = ({ searchTerm, onPressFollow, loadCombo=20,
     const handleListFollows = async () => {
         setRefreshing(true)
 
-        var friends = await userService.listFollows(user, followsEvent)
+        var friends = await userService.listFollows({ follows: followsEvent })
 
         setFollowList(friends.slice(0, loadCombo))
 

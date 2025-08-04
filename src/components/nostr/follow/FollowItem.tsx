@@ -1,10 +1,10 @@
 import { TouchableOpacity, View, Text, StyleSheet } from "react-native"
-import { User } from "@services/memory/types"
 import { memo } from "react"
 import theme from "@src/theme"
 import Ionicons from "react-native-vector-icons/Ionicons"
-import { getDisplayPubkey, getUserName } from "@/src/utils"
 import { ProfilePicture } from "../user/ProfilePicture"
+import { User } from "@/src/services/user/types/User"
+import { Utilities } from "@/src/utils/Utilities"
 
 interface UserItemProps {
     follow: User;
@@ -38,12 +38,12 @@ export const FollowItem = memo(({
             <View style={{ width: showButton ? "56%" : "84%", minHeight: 70 }}>
                 <View style={{ width: "100%", flexDirection: "row" }}>
                     <Text style={styles.userName}>
-                        {getUserName(follow, 22)}
+                        {Utilities.getUserName(follow, 22)}
                     </Text>
                 </View>
                 <View style={{ flexDirection: "row", width: "100%" }}>
                     <Text style={styles.userAbout}>
-                        {getDisplayPubkey(follow.pubkey ?? "", 20)}
+                        {Utilities.getDisplayPubkey(follow.pubkey ?? "", 20)}
                     </Text>
                 </View>
             </View>    

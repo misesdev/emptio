@@ -1,21 +1,32 @@
 import { NDKEvent } from "@nostr-dev-kit/ndk-mobile";
 import { UploadProps, UploadService } from "./IUploadService";
+import { PrivateKeyStorage } from "@storage/pairkeys/PrivateKeyStorage";
 import * as FileSystem from "react-native-fs"
-import { timeSeconds } from "@services/converter";
 import NostrPairKey from "../../nostr/pairkey/NostrPairKey";
+import { TimeSeconds } from "../../converter/TimeSeconds";
+import { User } from "../../user/types/User";
 import { bytesToHex } from "bitcoin-tx-lib";
 import axios from "axios"
 
 export class NostrUploader implements UploadService
 {
-    public async upload({ 
-        localUri, mimeType, destination, privateKey 
-    }: UploadProps): Promise<string> 
+    private readonly _user: User;
+    private readonly _keyStorage: PrivateKeyStorage;
+    constructor(
+        user: User,
+        keyStorage: PrivateKeyStorage = new PrivateKeyStorage()
+    ) {
+        this._keyStorage = keyStorage 
+        this._user = user
+    }
+
+    public async upload({ localUri, mimeType, destination }: UploadProps): Promise<string> 
     {
-        if(!privateKey)
+        const storedKey = await this._keyStorage.get(this._user.keyRef)
+        if(!storedKey.entity)
             throw new Error("Missing the privateKey parameter")
 
-        const jwt = await this.generateJwt(privateKey);
+        const jwt = await this.generateJwt(storedKey.entity);
         const data = await FileSystem.readFile(localUri, "base64")
 
         const res = await axios.put(destination, data, {
@@ -33,7 +44,7 @@ export class NostrUploader implements UploadService
     {
         const pairkey = new NostrPairKey(privateKey)
         const pubkey = pairkey.getPublicKey();
-        const createdAt = timeSeconds.now() 
+        const createdAt = TimeSeconds.now() 
         const expiration = createdAt + 60;
 
         const event = new NDKEvent();

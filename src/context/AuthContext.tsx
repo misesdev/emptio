@@ -1,11 +1,11 @@
 import { createContext, useContext, useState, useEffect, ReactNode,
     ReactElement } from 'react';
 import AuthService from '@services/auth/AuthService';
-import { User } from '@services/user/types/User';
 import SplashScreen from '@components/general/SplashScreen';
+import { User } from '@services/user/types/User';
 
 type AuthContextType = {
-    user: User,
+    user: User;
     isLoggedIn: boolean;
     login: (u: User) => void;
     logout: () => void;

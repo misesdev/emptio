@@ -1,8 +1,8 @@
+import { useTranslateService } from "@/src/providers/TranslateProvider";
 import { FlatList, Text } from "react-native"
-import { User } from "@services/memory/types"
 import { FollowItem } from "../follow/FollowItem"
-import { useTranslateService } from "@src/providers/translateProvider"
 import { useCallback } from "react"
+import { User } from "@services/user/types/User";
 import theme from "@src/theme"
 
 interface FriendListProps {

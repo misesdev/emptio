@@ -15,6 +15,16 @@ class RelaysService implements IRelayService
     {
         return await this._storage.listEntities()
     }
+    
+    public async update(relay: NostrRelay): Promise<void> 
+    {
+        const relays = await this._storage.list()
+        for(let stored of relays) {
+            if(stored.entity.url == relay.url) {
+                await this._storage.update(stored.id, relay)
+            }
+        }
+    }
 
     public async search(searchTerm: string, limit: number = 100): Promise<NostrRelay[]>
     {

@@ -3,7 +3,7 @@
     "version": "0.0.1",
     "private": true,
     "scripts": {
-        "dev": "react-native run-android --no-packager && npm start",
+        "dev": "react-native run-android --no-packager && react-native start --reset-cache",
         "android": "react-native run-android",
         "ios": "react-native run-ios",
         "lint": "eslint .",

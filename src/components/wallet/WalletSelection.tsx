@@ -1,45 +1,45 @@
 import { useCallback, useState } from "react"
 import { Modal, StyleSheet, Text, TouchableOpacity, View } from "react-native"
 import Ionicons from 'react-native-vector-icons/Ionicons'
-import { Wallet } from "@services/memory/types"
-import { useAuth } from "@src/providers/userProvider"
-import { formatSats } from "@services/converter"
+import { StoredItem } from "@src/storage/types"
+import { Wallet } from "@services/wallet/types/Wallet"
+import { useAccount } from "@src/context/AccountContext"
+import { Utilities } from "@src/utils/Utilities"
+import { Formatter } from "@services/converter/Formatter"
 import theme from "@src/theme"
-import { getClipedContent } from "@src/utils"
 
 var showWalletsFunction: () => void
 
 interface Props {
-    wallet: Wallet,
-    setWallet: (wallet:Wallet) => void,
+    wallet: StoredItem<Wallet>;
+    setWallet: (w: StoredItem<Wallet>) => void;
 }
 
 const SelectWalletBox = ({ wallet, setWallet }: Props) => {
 
-    const { wallets } = useAuth()
+    const { wallets } = useAccount()
     const [visible, setVisible] = useState(false)
 
     showWalletsFunction = useCallback(() => {
         setVisible(true)
     }, [setVisible])
 
-    const changeWallet = (item: Wallet) => {
-        if (setWallet)
-            setWallet(item)
+    const changeWallet = (item: StoredItem<Wallet>) => {
+        setWallet(item)
         setVisible(false)
     }
 
-    const renderWalletOption = (item: Wallet, key: number) => {
+    const renderWalletOption = (item: StoredItem<Wallet>, key: number) => {
 
-        var selected = item.key == wallet.key
+        var selected = item.id == wallet.id
 
         return (
             <TouchableOpacity key={key} onPress={() => changeWallet(item)} style={[styles.option]} >
                 <View style={{ width: "50%", height: "100%", alignItems: "center" }}>
-                    <Text style={styles.labelOption}>{getClipedContent(item.name??"", 15)}</Text>
+                    <Text style={styles.labelOption}>{Utilities.getClipedContent(item.entity.name??"", 15)}</Text>
                 </View>
                 <View style={{ width: "40%", height: "100%", alignItems: "center" }}>
-                    <Text style={styles.labelAmount}>{formatSats(item.lastBalance)} sats</Text>
+                    <Text style={styles.labelAmount}>{Formatter.formatSats(item.entity.lastBalance??0)} sats</Text>
                 </View>
                 <View style={{ width: "10%", height: "100%", flexDirection: "row-reverse", alignItems: "center" }}>
                     {selected && <Ionicons name="checkmark-circle" size={18} color={theme.colors.green} />}

@@ -1,11 +1,11 @@
 import { StyleSheet, TextInput, View, Text, TouchableOpacity } from "react-native"
-import { formatSats, toNumber } from "@services/converter"
 import Ionicons from "react-native-vector-icons/Ionicons"
 import SelectWalletBox, { showSelectWallet } from "./WalletSelection"
-import { useTranslateService } from "@src/providers/translateProvider"
-import { Wallet } from "@services/memory/types"
+import { Wallet } from "@services/wallet/types/Wallet"
+import { useTranslateService } from "@src/providers/TranslateProvider"
+import { Formatter } from "@services/converter/Formatter"
+import { Utilities } from "@src/utils/Utilities"
 import theme from "@src/theme"
-import { getClipedContent } from "@src/utils"
 
 interface AmountBoxProps {
     value?: string | "",
@@ -23,9 +23,9 @@ export const AmountBox = ({ value, placeholder, onChangeText, isValidHandle, wal
 
     const hadleValidateFormat = (text: string) => {
 
-        const textNumbers = toNumber(text)
+        const textNumbers = Formatter.textToNumber(text)
 
-        onChangeText(formatSats(textNumbers))
+        onChangeText(Formatter.formatSats(textNumbers))
 
         if (isValidHandle) 
         {
@@ -39,7 +39,7 @@ export const AmountBox = ({ value, placeholder, onChangeText, isValidHandle, wal
     const walletSelection = (item: Wallet) => {
         if(setWallet) setWallet(item)
 
-        const textNumbers = toNumber(value ?? "0")
+        const textNumbers = Formatter.textToNumber(value ?? "0")
 
         if(isValidHandle)
             isValidHandle(textNumbers >= (wallet?.lastBalance ?? 0))
@@ -68,7 +68,7 @@ export const AmountBox = ({ value, placeholder, onChangeText, isValidHandle, wal
                 </View>
             </View>
             <Text style={styles.balance}>
-                {`${useTranslate("wallet.subtitle.balance")}${formatSats(wallet.lastBalance)} sats.`}
+                {`${useTranslate("wallet.subtitle.balance")}${Formatter.formatSats(wallet.lastBalance??0)} sats.`}
             </Text>
             
             {manageWallet &&
@@ -76,7 +76,7 @@ export const AmountBox = ({ value, placeholder, onChangeText, isValidHandle, wal
                     <TouchableOpacity style={styles.wallets} onPress={showSelectWallet}>
                         <Ionicons style={{ marginHorizontal: 8 }} size={20} name="wallet" color={theme.colors.white} />
                         <Text style={{ fontSize: 14, fontWeight: "600", color: theme.colors.white }}>
-                            {getClipedContent(wallet.name??"", 15)}
+                            {Utilities.getClipedContent(wallet.name??"", 15)}
                         </Text>
                         <Ionicons style={{ marginHorizontal: 4 }} size={20} name="chevron-forward" color={theme.colors.white} />
                     </TouchableOpacity>

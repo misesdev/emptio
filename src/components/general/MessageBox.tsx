@@ -1,6 +1,6 @@
 import { useState } from "react"
 import { Modal, StyleSheet, Text, TouchableOpacity, View } from "react-native"
-import { useTranslateService } from "@src/providers/translateProvider"
+import { useTranslateService } from "@/src/providers/TranslateProvider"
 import theme from "@src/theme"
 
 type typeMessage = "alert" | "error" | "success"

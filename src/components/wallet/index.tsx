@@ -1,9 +1,12 @@
 import { View, Text, TouchableOpacity, Image } from "react-native";
-import { Transaction, Wallet } from "@services/memory/types";
-import { formatSats, toBitcoin } from "@services/converter";
-import { useTranslateService } from "@src/providers/translateProvider";
 import { IconNames } from "@services/types/icons";
 import Ionicons from 'react-native-vector-icons/Ionicons'
+import { Wallet } from "@services/wallet/types/Wallet";
+import { useTranslateService } from "@/src/providers/TranslateProvider";
+import { Formatter } from "@services/converter/Formatter";
+import { BTransaction } from "@services/wallet/types/Transaction";
+import { useService } from "@/src/providers/ServiceProvider";
+import { useEffect, useState } from "react";
 import { styles } from "./style"
 import theme from "@src/theme";
 
@@ -15,8 +18,8 @@ interface WalletProps {
 export const WalletHeader = ({ wallet, showOptions }: WalletProps) => {
 
     const { useTranslate } = useTranslateService()
-    let balanceSats = formatSats(wallet.lastBalance)
-    let balanceBTC = toBitcoin(wallet.lastBalance)
+    let balanceSats = Formatter.formatSats(wallet.lastBalance??0)
+    let balanceBTC = Formatter.satsToBitcoin(wallet.lastBalance??0)
     let formatName = (!!wallet.name && wallet.name?.length >= 28) ? 
         `${wallet.name?.substring(0, 28)}..` : wallet?.name
     let walletColor = wallet.network == "mainnet" ? theme.colors.orange : theme.colors.blue
@@ -42,18 +45,26 @@ export const WalletHeader = ({ wallet, showOptions }: WalletProps) => {
 }
 
 interface WalletTransactionsProps {
-    transactions: Transaction[],
-    onPressTransaction: (transaction: Transaction) => void
+    transactions: BTransaction[],
+    onPressTransaction: (transaction: BTransaction) => void
 }
 
 export const WalletTransactions = ({ transactions, onPressTransaction }: WalletTransactionsProps) => {
 
+    const { walletService } = useService()
     const { useTranslate } = useTranslateService()
+    const [blockHeight, setBlockHeight] = useState<number>()
 
-    const AmmountText = ({ type, amount }: Transaction) => {
+    useEffect(() => {
+        walletService.getBlockHeight().then(result => {
+            if(result.success) setBlockHeight(result.data??undefined)
+        })
+    }, [])
+
+    const AmmountText = ({ type, value }: Pick<BTransaction, 'type'|'value'>) => {
 
         let operator = type == "received" ? "+" : "-"
-        let ammountSatoshis = operator + formatSats(amount)
+        let ammountSatoshis = operator + Formatter.formatSats(value)
         let color = type == "received" ? theme.colors.green : theme.colors.red
 
         return <Text style={{ color: color, margin: 2, fontWeight: "bold" }}>
@@ -61,7 +72,7 @@ export const WalletTransactions = ({ transactions, onPressTransaction }: WalletT
         </Text>
     }
 
-    const TransactionIcon = ({ type, confirmed }: Transaction) => {
+    const TransactionIcon = ({ type, confirmed }: Pick<BTransaction, 'type'|'confirmed'>) => {
 
         let color = theme.colors.red
         let rotate = type == "received" ? "90deg" : "-90deg"
@@ -87,18 +98,23 @@ export const WalletTransactions = ({ transactions, onPressTransaction }: WalletT
                             <View style={{ width: "50%", minHeight: 75 }}>
                                 <View style={{ width: "100%" }}>
                                     <Text style={{ color: theme.colors.white, fontFamily: "", fontSize: 14, fontWeight: "600", margin: 2, marginTop: 12 }}>
-                                        {transaction.description}
+                                        {transaction.confirmed && blockHeight && 
+                                            `${blockHeight-transaction.block_height} ${useTranslate("wallet.transaction.confirmations")}`
+                                        }
+                                        {!transaction.confirmed &&
+                                            `${useTranslate("wallet.transaction.notconfirmed")}`
+                                        }
                                     </Text>
                                 </View>
                                 <View style={{ width: "100%" }}>
                                     <Text style={{ fontSize: 12, color: theme.colors.gray, margin: 2, fontWeight: "bold" }}>
-                                        {transaction.confirmed ? transaction.date : '-- -- --'}
+                                        {transaction.confirmed ? transaction.block_time : '-- -- --'}
                                     </Text>
                                 </View>
                             </View>
                             {/* Transaction Ammount */}
                             <View style={{ width: "32%", minHeight: 75, justifyContent: "center", alignItems: "center" }}>
-                                <AmmountText type={transaction.type} amount={transaction.amount} />
+                                <AmmountText type={transaction.type} value={transaction.value} />
                                 <Text style={{ color: theme.colors.gray, margin: 0 }}>sats</Text>
                             </View>
                         </TouchableOpacity>

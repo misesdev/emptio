@@ -1,6 +1,7 @@
 import { ScrollView, StyleSheet, Text, TouchableOpacity, View } from "react-native"
+import { useTranslateService } from "@/src/providers/TranslateProvider"
 import Ionicons from 'react-native-vector-icons/Ionicons'
-import { useTranslateService } from "@src/providers/translateProvider"
+import { useService } from "@/src/providers/ServiceProvider"
 import { useEffect, useState } from "react"
 import theme from "@src/theme"
 import axios from "axios"
@@ -20,6 +21,7 @@ interface RelayMetadata {
 
 export const RelayItem = ({ relay, onDelete }: RelayProps) => {
 
+    const { relayService } = useService()
     const { useTranslate } = useTranslateService()
     const [metadata, setMetadata] = useState<RelayMetadata>()
 
@@ -32,8 +34,15 @@ export const RelayItem = ({ relay, onDelete }: RelayProps) => {
             const response = await httpClient.get(relay.replace("wss", "https"))
 
             if (response.status == 200) setMetadata(response.data as RelayMetadata)
-
-            console.log(response.data)
+            
+            await relayService.update({
+                url: relay,
+                name: metadata?.name,
+                contact: metadata?.contact,
+                description: metadata?.description,
+                supported_nips: metadata?.supported_nips,
+                version: metadata?.version
+            })
         } 
         catch { }
     }

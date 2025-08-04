@@ -179,6 +179,7 @@ export default {
     "wallet.transaction.outputs": "Outputs",
     "wallet.transaction.block-hight": "Block Hight",
     "wallet.transaction.confirmations": "Confirmations",
+    "wallet.transaction.notconfirmed": "Not Confirmed",
     "wallet.transaction.view-web": "View in Browser",
     "wallet.address.not-contains": "does not have a wallet",
     "wallet.title.transfer": "Transfer",

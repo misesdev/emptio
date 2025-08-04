@@ -7,7 +7,7 @@ import EventViewer from './EventViewer';
 import ProfileViewer from './ProfileViewer';
 import HashTagViewer from './HashTagViewer';
 import VideoViewer from './VideoViewer';
-import { replaceContentEvent } from '@src/utils';
+import { Utilities } from '@src/utils/Utilities';
 
 interface Props { 
     content: string 
@@ -67,7 +67,7 @@ const ContentViewer = ({ content }: Props) => {
                             renderText: renderHashTag
                     }]}
                 >
-                    {replaceContentEvent(content)}
+                    {Utilities.replaceContentEvent(content)}
                 </ParsedText>
             </View>
         </View>

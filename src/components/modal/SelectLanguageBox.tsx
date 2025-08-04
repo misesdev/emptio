@@ -1,10 +1,10 @@
 import { useState } from "react"
 import { Modal, StyleSheet, Text, TouchableOpacity, View } from "react-native"
-import { useTranslateService } from "@src/providers/translateProvider"
 import Ionicons from 'react-native-vector-icons/Ionicons'
 import { Language } from "@services/translate/types"
+import { useTranslateService } from "@/src/providers/TranslateProvider"
+import { useService } from "@/src/providers/ServiceProvider"
 import theme from "@src/theme"
-import { storageService } from "@services/memory"
 
 var showLanguagesFunction: () => void
 
@@ -14,21 +14,22 @@ interface Props {
 
 const SelectLanguageBox = ({ forceUpdate }: Props) => {
 
+    const { translateService } = useService()
     const { useTranslate, setLanguage, language } = useTranslateService()
     const [visible, setVisible] = useState(false)
     const [languagesList, setLanguageList] = useState<Language[]>()
 
     showLanguagesFunction = () => {
-        setLanguageList(storageService.language.list())
+        translateService.listLanguages().then(setLanguageList)
         setVisible(true)
     }
 
     const changeLanguage = (language: Language) => {
         if (setLanguage)
             setLanguage(language)
-        setVisible(false)
-        storageService.language.add(language)
+        translateService.setLanguage(language)
         forceUpdate(Math.random())
+        setVisible(false)
     }
 
     const renderLanguageOption = (item: Language, key: number) => {

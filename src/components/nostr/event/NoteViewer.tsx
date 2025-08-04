@@ -7,14 +7,14 @@ import ImagePreview from './ImagePreview';
 import EventViewer from './EventViewer';
 import { NDKEvent } from '@nostr-dev-kit/ndk-mobile';
 import Ionicons from "react-native-vector-icons/Ionicons"
-import { copyPubkey, getDisplayPubkey, getUserName, replaceContentEvent } from '@src/utils';
 import ProfileViewer from './ProfileViewer';
 import HashTagViewer from './HashTagViewer';
-import { User } from '@services/memory/types';
 import { useEffect, useState } from 'react';
 import { ProfilePicture } from '../user/ProfilePicture';
-import { useAuth } from '@src/providers/userProvider';
-import { userService } from '@services/user';
+import { User } from '@/src/services/user/types/User';
+import { useAccount } from '@/src/context/AccountContext';
+import { useService } from '@/src/providers/ServiceProvider';
+import { Utilities } from '@/src/utils/Utilities';
 
 interface Props { 
     author?: User,
@@ -27,9 +27,10 @@ interface Props {
 }
 
 const NoteViewer = ({ author, showUser=true, note, videoMuted=true, videoPaused=true, videoFullScreen=false, setMutedVideo }: Props) => {
-   
-    const { user, follows } = useAuth()
-    const [eventAuthor, setEventAutor] = useState<User>(author ?? {})
+  
+    const { userService } = useService()
+    const { user, follows } = useAccount()
+    const [eventAuthor, setEventAutor] = useState<User>(author ?? {} as User)
     const hashTagRegex = /#\w+/g
     const seeMoreReex = /<seemore>/g
     const urlRegex = /(https?:\/\/[^\s]+)/g
@@ -45,7 +46,7 @@ const NoteViewer = ({ author, showUser=true, note, videoMuted=true, videoPaused=
             const author = follows.find(f => f.pubkey == note.pubkey)
             if(author) return setEventAutor(author)
 
-            const userData = await userService.getProfile(note.pubkey ?? "")
+            const userData = await userService.getUser(note.pubkey ?? "")
             if(userData) setEventAutor(userData)
         }
     }
@@ -112,14 +113,14 @@ const NoteViewer = ({ author, showUser=true, note, videoMuted=true, videoPaused=
                     </View>
                     <View style={{ width: "80%", paddingHorizontal: 15 }}>
                         <Text style={styles.profileName}>
-                            {getUserName(eventAuthor)}
+                            {Utilities.getUserName(eventAuthor)}
                         </Text>
                         <TouchableOpacity activeOpacity={.7} 
-                            onPress={() => copyPubkey(note.pubkey)}
+                            onPress={() => Utilities.copyPubkey(note.pubkey)}
                             style={{ flexDirection: "row" }}
                         >
                             <Text style={{ color: theme.colors.gray }}>
-                                {getDisplayPubkey(note.pubkey, 15)}
+                                {Utilities.getDisplayPubkey(note.pubkey, 15)}
                             </Text>
                             <Ionicons name="copy" size={10} style={{ padding: 5 }} color={theme.colors.gray} />
                         </TouchableOpacity>
@@ -148,7 +149,7 @@ const NoteViewer = ({ author, showUser=true, note, videoMuted=true, videoPaused=
                     }]}
                 >
                     {note.content &&
-                        replaceContentEvent(note.content)
+                        Utilities.replaceContentEvent(note.content)
                     }
                 </ParsedText>
             </View>

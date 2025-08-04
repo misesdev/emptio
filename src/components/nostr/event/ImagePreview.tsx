@@ -1,14 +1,15 @@
-import { useEffect, useRef, useState } from "react"
+import { useEffect, useState } from "react"
 import { View, Image, StyleSheet, Dimensions, TouchableOpacity } from "react-native"
+import { useService } from "@/src/providers/ServiceProvider"
 import Ionicons from 'react-native-vector-icons/Ionicons'
 import LinkError from "./LinkError"
 import theme from "@src/theme"
-import { blobService } from "@services/blob"
 
 interface ScreenProps { url: string, redute?: number }
 
 const ImagePreview = ({ url, redute=180 }: ScreenProps) => {
-  
+ 
+    const { downloader } = useService()
     const { width } = Dimensions.get("window")
     const [error, setError] = useState<boolean>(false)
     const [imageHeight, setImageHeight] = useState<number>(200)
@@ -23,7 +24,7 @@ const ImagePreview = ({ url, redute=180 }: ScreenProps) => {
     }, [])
 
     const handleDownload = async() => {
-        blobService.downloadImage({
+        downloader.download({
             url,
             setDownloading
         })

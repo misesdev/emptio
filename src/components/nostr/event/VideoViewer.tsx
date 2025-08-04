@@ -3,9 +3,9 @@ import { useEffect, useRef, useState } from "react"
 import { View, StyleSheet, TouchableOpacity, Text, Dimensions } from 'react-native';
 import Ionicons from 'react-native-vector-icons/Ionicons'
 import Slider from '@react-native-community/slider';
-import blobService from '@services/blob';
 import theme from '@src/theme';
 import LinkError from './LinkError';
+import { useService } from '@/src/providers/ServiceProvider';
 
 interface VideoProps { 
     url: string,
@@ -19,6 +19,7 @@ interface VideoProps {
 
 const VideoViewer = ({ url, redute=180, fullScreen=false, hideFullscreen=false, muted=false, paused=true, setMuted }: VideoProps) => {
 
+    const { blobService } = useService()
     const { width, height } = Dimensions.get("window")
     const timeoutRef:any = useRef(null)
     const videoRef = useRef<VideoRef>(null)

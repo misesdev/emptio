@@ -13,7 +13,8 @@ import { FeeRate } from "./types/FeeRate";
 
 export default class WalletService implements IWalletService 
 {
-    private _wallet!: HDWallet;
+    private _hdwallet!: HDWallet;
+    private _wallet!: StoredItem<Wallet>;
     private readonly _storage: WalletStorage;
     private readonly _keyStorage: PrivateKeyStorage;
     private _transaction!: TransactionService;
@@ -30,13 +31,13 @@ export default class WalletService implements IWalletService
 
     public async load(id: string) : Promise<void> 
     {
-        const stored = await this._storage.get(id) 
-        const masterSeed = await this._keyStorage.get(stored.entity.keyRef)
+        this._wallet = await this._storage.get(id) 
+        const masterSeed = await this._keyStorage.get(this._wallet.entity.keyRef)
         const hdkManager = HDKManager.fromMasterSeed(masterSeed.entity)
-        this._wallet = new HDWallet(hdkManager, { 
-            network: stored.entity.network ?? "mainnet" 
+        this._hdwallet = new HDWallet(hdkManager, { 
+            network: this._wallet.entity.network ?? "mainnet" 
         })
-        this._transaction = new TransactionService(this._wallet.network)
+        this._transaction = new TransactionService(this._hdwallet.network)
     }
 
     public async add({ name, masterKey, network="mainnet" }: AddWalletProps): Promise<AppResponse<string>> 
@@ -129,9 +130,9 @@ export default class WalletService implements IWalletService
             if(!this._wallet)
                 throw new Error("Please start this class with .init(id)")
             const addresses: string[] = []
-            this._wallet.listReceiveAddresses(this._addresses)
+            this._hdwallet.listReceiveAddresses(this._addresses)
                 .forEach(address => addresses.push(address))
-            this._wallet.listChangeAddresses(this._addresses)
+            this._hdwallet.listChangeAddresses(this._addresses)
                 .forEach(address => addresses.push(address))
 
             const utxoResults = await Promise.all(
@@ -157,9 +158,9 @@ export default class WalletService implements IWalletService
             if(!this._wallet)
                 throw new Error("Please start this class with .init(id)")
             const addresses: string[] = []
-            this._wallet.listReceiveAddresses(this._addresses)
+            this._hdwallet.listReceiveAddresses(this._addresses)
                 .forEach(address => addresses.push(address))
-            this._wallet.listChangeAddresses(this._addresses)
+            this._hdwallet.listChangeAddresses(this._addresses)
                 .forEach(address => addresses.push(address))
 
             const txResults = await Promise.all(
@@ -176,6 +177,19 @@ export default class WalletService implements IWalletService
         } catch(ex) {
             return trackException(ex)
         }
+    }
+
+    public async getBalance(cached: boolean = true): Promise<number>
+    {
+        const result = await this.listUtxos(cached)
+        if(!result.success || !result.data) 
+            return 0
+        const lastBalance = result.data.reduce((sum, u) => u.value + sum, 0)
+        this._storage.update(this._wallet.id, {
+            ...this._wallet.entity,
+            lastBalance
+        })
+        return lastBalance 
     }
 
     public async getFeeRate(): Promise<AppResponse<FeeRate>> 
@@ -219,7 +233,7 @@ export default class WalletService implements IWalletService
             transaction.addOutput({ address, amount: value })
             // change output
             transaction.addOutput({
-                address: this._wallet.getAddress(1),
+                address: this._hdwallet.getAddress(1),
                 amount: 0
             })
             
@@ -245,7 +259,7 @@ export default class WalletService implements IWalletService
 
     private getPairKey(address: string): ECPairKey
     {
-        const pairkeys = this._wallet?.listPairKeys(this._addresses)
+        const pairkeys = this._hdwallet.listPairKeys(this._addresses)
         const pairkey = pairkeys?.find(p => p.getAddress() == address)
         if(!pairkey) 
             throw new Error("Pair key not found")

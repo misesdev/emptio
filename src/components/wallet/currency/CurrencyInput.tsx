@@ -4,10 +4,9 @@ import { Currency } from "@src/constants/Currencies"
 import Ionicons from "react-native-vector-icons/Ionicons"
 import theme from "@src/theme"
 import { CurrencyList } from "./CurrencyList"
-import { toNumber } from "@services/converter"
-import { formatCurrency } from "@services/converter/currency"
-import { useSettings } from "@src/providers/settingsProvider"
-import { storageService } from "@services/memory"
+import { useAccount } from "@/src/context/AccountContext"
+import { Formatter } from "@/src/services/converter/Formatter"
+import { useService } from "@/src/providers/ServiceProvider"
 
 interface CurrencySelectorProps {
     visible: boolean;
@@ -38,13 +37,14 @@ interface CurrencyInputProps {
 }
 
 export const CurrencyInput = ({ label, value, onChange, autoFocus=false }: CurrencyInputProps) => {
-  
-    const { settings, setSettings } = useSettings()
+ 
+    const { settings, setSettings } = useAccount()
     const [selectorVisible, setSelectorVisible] = useState<boolean>(false)
 
     const changeFormat = (text: string) => {
-        const textNumbers = toNumber(text)
-        onChange(formatCurrency(textNumbers, settings.currency?.code))
+        const value = Formatter.textToNumber(text)
+        const money = Formatter.formatMoney(value, settings.currency.code)
+        onChange(money)
     }
 
     const openCurrencySelector = () => {
@@ -52,12 +52,10 @@ export const CurrencyInput = ({ label, value, onChange, autoFocus=false }: Curre
     }
 
     const onSelectCurrency = (currency: Currency) => {
-        if(setSettings) setSettings({...settings, currency })
-        onChange(formatCurrency(toNumber(value), currency?.code))
-        storageService.settings.save({
-            ...settings,
-            currency
-        })
+        setSettings({...settings, currency })
+        const number = Formatter.textToNumber(value)
+        const money = Formatter.formatMoney(number, currency.code)
+        onChange(money)
         setSelectorVisible(false)
     }
 

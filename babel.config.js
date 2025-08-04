@@ -14,7 +14,8 @@ module.exports = {
                     '@src': './src',
                     '@components': './src/components',
                     '@screens': './src/screens',
-                    '@services': './src/services'
+                    '@services': './src/services',
+                    '@storage': './src/storage'
                 },
             },
         ]

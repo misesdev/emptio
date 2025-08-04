@@ -2,12 +2,14 @@ import { EventKinds } from "@/src/constants/Events";
 import NoteService from "../nostr/note/NoteService";
 import { IUserService, ListFollowsProps, SearchUserProps,
     UpdateProfileProps } from "./IUserService";
-import NDK, { NostrEvent } from "@nostr-dev-kit/ndk-mobile";
+import NDK, { NDKEvent } from "@nostr-dev-kit/ndk-mobile";
 import { UserStorage } from "@storage/user/UserStorage";
 import { User } from "./types/User";
 import useNDKStore from "../zustand/useNDKStore";
 import { TimeSeconds } from "../converter/TimeSeconds";
 import { Utilities } from "@/src/utils/Utilities";
+import { AppSettingsStorage } from "@/src/storage/settings/AppSettingsStorage";
+import { AppSettings } from "@/src/storage/settings/types";
 
 class UserService implements IUserService
 {
@@ -15,17 +17,20 @@ class UserService implements IUserService
     private _profile: User|null = null;
     private readonly _note: NoteService;
     private readonly _storage: UserStorage;
+    private readonly _settings: AppSettingsStorage;
         
     constructor(
         user: User|null = null,
         ndk: NDK = useNDKStore.getState().ndk,
         storage: UserStorage = new UserStorage(),
-        note: NoteService|null = null
+        note: NoteService|null = null,
+        settings: AppSettingsStorage = new AppSettingsStorage()
     ) {
         this._note = note ?? new NoteService()
         this._storage = storage 
         this._profile = user
         this._ndk = ndk
+        this._settings = settings
     }
 
     public async init(): Promise<void> 
@@ -36,7 +41,7 @@ class UserService implements IUserService
         this._profile = user;
     }
 
-    public async fetchUser(pubkey: string): Promise<void> 
+    public async fetchProfile(pubkey: string): Promise<void> 
     {
         const event = await this._note.getNote({
             authors: [pubkey], 
@@ -54,6 +59,20 @@ class UserService implements IUserService
     {
         if (!this._profile) throw new Error("UserService not initialized");
         return this._profile
+    }
+
+    public async getUser(pubkey: string): Promise<User>
+    {
+        const event = await this._note.getNote({
+            authors: [pubkey], 
+            kinds: [EventKinds.metadata], 
+            limit: 1 
+        })
+        if(!event) throw new Error("profile event not found")
+        return {
+            pubkey: event.pubkey,
+            ...JSON.parse(event.content)
+        } as User
     }
 
     public async updateProfile({ user, setUser, upNostr }: UpdateProfileProps): Promise<void> 
@@ -88,20 +107,18 @@ class UserService implements IUserService
             website: this._profile.website,
             keyRef: ""
         }
-        const note: NostrEvent = {
+        const note = new NDKEvent(this._ndk, {
             kind: EventKinds.metadata,
             pubkey: this._profile.pubkey as string,
             content: JSON.stringify(profile),
             created_at: TimeSeconds.now(),
             tags: []
-        }
-        await this._note.publish({ 
-            replaceable: true, 
-            note
         })
+
+        await note.publishReplaceable()
     }
     
-    public async getFollowsEvent(): Promise<NostrEvent>
+    public async getFollowsEvent(): Promise<NDKEvent>
     {
         if (!this._profile?.pubkey)
             throw new Error("UserService not initialized");
@@ -110,7 +127,7 @@ class UserService implements IUserService
             authors: [this._profile.pubkey], 
             limit: 1
         })
-        return event as NostrEvent
+        return event as NDKEvent 
     }
 
     public async listFollows({ follows, iNot=true }: ListFollowsProps): Promise<User[]> 
@@ -120,8 +137,8 @@ class UserService implements IUserService
         const authors = follows?.tags?.filter(t => t[0] == "p").map(t => t[1])
         const events = await this._note.listNotes({ authors, kinds: [0], limit: authors?.length })
         let friends = Array.from(events??[])
-            .filter((u: NostrEvent) => u.pubkey != this._profile?.pubkey)
-            .map((event: NostrEvent): User => {
+            .filter((u: NDKEvent) => u.pubkey != this._profile?.pubkey)
+            .map((event: NDKEvent): User => {
                 const follow = JSON.parse(event.content) as User
                 follow.pubkey = event.pubkey
                 return follow
@@ -130,28 +147,25 @@ class UserService implements IUserService
             : friends
     }
 
-    public async updateFollows(follows: NostrEvent): Promise<void> 
+    public async updateFollows(follows: NDKEvent): Promise<void> 
     {
-        return await this._note.publish({ 
-            replaceable: true, 
-            note: follows 
-        })
+        await follows.publishReplaceable()
     }
 
-    public createFollows(friends: [string[]]): NostrEvent 
+    public createFollows(friends: [string[]]): NDKEvent 
     {
         if (!this._profile?.pubkey)
             throw new Error("UserService not initialized");
-        return {
+        return new NDKEvent(this._ndk, {
             kind: EventKinds.followList,
             pubkey: this._profile.pubkey,
             content: JSON.stringify(this._ndk.explicitRelayUrls),
             created_at: TimeSeconds.now(),
             tags: friends
-        } as NostrEvent 
+        }) 
     }
 
-    public async lastNotes(limit: number = 3): Promise<NostrEvent[]> 
+    public async lastNotes(limit: number = 3): Promise<NDKEvent[]> 
     {
         if (!this._profile?.pubkey) 
             throw new Error("UserService not initialized");
@@ -215,6 +229,11 @@ class UserService implements IUserService
         catch {
             return [] 
         }
+    }
+
+    public async setSettings(settings: AppSettings): Promise<void>
+    {
+        await this._settings.set(settings)
     }
 
     public async save(): Promise<void> 

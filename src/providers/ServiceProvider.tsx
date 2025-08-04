@@ -4,10 +4,11 @@ import UserService from '@services/user/UserService';
 import WalletService from '@services/wallet/WalletService';
 import WalletFactory from '@services/wallet/WalletFactory';
 import MessageService from '@services/message/MessageService';
-import NoteService from '../services/nostr/note/NoteService';
-import RelaysService from '../services/relays/RelaysService';
-import { User } from '@services/user/types/User';
+import NoteService from '@services/nostr/note/NoteService';
+import RelaysService from '@services/relays/RelaysService';
 import { useAuth } from '../context/AuthContext';
+import { TranslateService } from '@services/translate/TranslateService';
+import BlobService from '@services/blob/BlobService';
 
 type ServiceContextType = {
     authService: AuthService;
@@ -17,6 +18,8 @@ type ServiceContextType = {
     messageService: MessageService;
     noteService: NoteService;
     relayService: RelaysService;
+    translateService: TranslateService;
+    blobService: BlobService;
 }
 
 const ServiceContext = createContext<ServiceContextType>({} as ServiceContextType);
@@ -39,6 +42,8 @@ const ServiceProvider = ({ children }: Props): ReactElement => {
     const messageService = new MessageService(user)
     const noteService = new NoteService(user)
     const relayService = new RelaysService()
+    const translateService = new TranslateService()
+    const blobService = new BlobService(user)
 
     return (
         <ServiceContext.Provider value={{ 
@@ -48,7 +53,9 @@ const ServiceProvider = ({ children }: Props): ReactElement => {
                 walletFactory,
                 messageService,
                 noteService,
-                relayService
+                relayService,
+                translateService,
+                blobService
             }}
         >
             {children}

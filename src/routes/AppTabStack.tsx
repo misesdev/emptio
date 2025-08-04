@@ -5,7 +5,7 @@ import OrdersScreen from "@screens/root/orders/OrdersScreen"
 import ChatsScreen from '@screens/root/chats/ChatsScreen'
 import VideosFeed from '@screens/root/videos'
 import { tabBarStyle } from '../constants/RouteSettings'
-import useChatStore from '../services/zustand/useChatStore'
+import useChatStore from '@services/zustand/useChatStore'
 import { useTranslateService } from '../providers/TranslateProvider'
 import theme from "@src/theme"
 

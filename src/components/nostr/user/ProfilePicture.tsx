@@ -1,7 +1,7 @@
-import { User } from "@services/memory/types"
-import { getColorFromPubkey } from "@src/utils"
 import { useEffect, useState } from "react"
 import { StyleSheet, Image } from "react-native"
+import { User } from "@services/user/types/User"
+import { Utilities } from "@src/utils/Utilities"
 import theme from "@src/theme"
 
 interface PictureProps {
@@ -17,7 +17,7 @@ export const ProfilePicture = ({ user, size, withBorder=true }: PictureProps) =>
 
     useEffect(() => {
         if(withBorder) {
-            setProfileColor(getColorFromPubkey(user.pubkey??""))
+            setProfileColor(Utilities.getColorFromPubkey(user.pubkey??""))
         }
     }, [user])
 

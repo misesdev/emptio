@@ -1,11 +1,12 @@
-import { useAuth } from "@src/providers/userProvider"
 import { TouchableOpacity, View, Text, StyleSheet } from "react-native"
 import Ionicons from 'react-native-vector-icons/Ionicons'
-import { useTranslateService } from "@src/providers/translateProvider"
 import { pushMessage } from "@services/notification"
-import { Wallet } from "@services/memory/types"
 import { StackNavigationProp } from "@react-navigation/stack"
 import { ProfilePicture } from "@components/nostr/user/ProfilePicture"
+import { Wallet } from "@services/wallet/types/Wallet"
+import { StoredItem } from "@src/storage/types"
+import { useAccount } from "@src/context/AccountContext"
+import { useTranslateService } from "@src/providers/TranslateProvider"
 import theme from "@src/theme"
 
 type Props = {
@@ -14,16 +15,18 @@ type Props = {
 
 export const HeaderHome = ({ navigation }: Props) => {
 
-    const { user, wallets } = useAuth()
+    const { user, wallets } = useAccount()
     const { useTranslate } = useTranslateService()
 
-    const goToDonate = (items: Wallet[]) => {
+    const goToDonate = (items: StoredItem<Wallet>[]) => {
         if(!items.length)
             return  pushMessage(useTranslate("message.wallet.alertcreate")) 
 
-        let wallet = items.filter(w => w.default).length ? items.filter(w => w.default)[0] : items[0]
+        let wallet = items.find(w => w.entity.default)
 
-        navigation.navigate("user-donate-stack", { wallet })
+        if(!wallet) wallet = items[0]
+
+        navigation.navigate("donate", { id: wallet.id })
     }
 
     return (

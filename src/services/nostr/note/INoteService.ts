@@ -11,7 +11,7 @@ export interface INoteService {
     deleteReact(note: NDKEvent) : Promise<NDKEvent>;
     listComments(props: ListCommentProps) : Promise<NDKEvent[]>;
     publish(props: PublishNoteProps) : Promise<void>;
-    listNotes(filters: NDKFilter) : Promise<NostrEvent[]>;
-    getNote(filters: NDKFilter) : Promise<NostrEvent|null>;
+    listNotes(filters: NDKFilter): Promise<NDKEvent[]>;
+    getNote(filters: NDKFilter) : Promise<NDKEvent|null>;
     getPubkeyFromTags(event: NDKEvent) : string|null;
 }

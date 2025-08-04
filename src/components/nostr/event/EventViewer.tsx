@@ -1,9 +1,6 @@
-import { User } from "@services/memory/types"
 import { NDKEvent, NDKSubscriptionCacheUsage } from "@nostr-dev-kit/ndk-mobile"
 import { StyleSheet, TouchableOpacity, View, Image, Text } from "react-native"
 import { useEffect, useState } from "react"
-import useNDKStore from "@services/zustand/ndk"
-import { getUserName, replaceContentEvent } from "@src/utils"
 import theme from "@src/theme"
 import { nip19 } from "nostr-tools"
 import ParsedText from "react-native-parsed-text"
@@ -12,7 +9,10 @@ import ImagePreview from "./ImagePreview"
 import VideoViewer from "./VideoViewer"
 import ProfileViewer from "./ProfileViewer"
 import HashTagViewer from "./HashTagViewer"
-import { userService } from "@services/user"
+import useNDKStore from "@services/zustand/useNDKStore"
+import { User } from "@services/user/types/User"
+import { useService } from "@src/providers/ServiceProvider"
+import { Utilities } from "@src/utils/Utilities"
 
 interface ScreenProps {
     event?: NDKEvent | null,
@@ -27,9 +27,10 @@ interface ScreenProps {
 const EventViewer = ({ event, nevent, note, videoMuted=true, videoPaused=true, videoFullScreen=false, setMutedVideo }: ScreenProps) => {
 
     const { ndk } = useNDKStore()
+    const { userService } = useService()
     const [pictureError, setPictureError] = useState(false)
     const [contentEvent, setContentEvent] = useState<NDKEvent>()
-    const [eventAuthor, setEventAuthor] = useState<User>({ })
+    const [eventAuthor, setEventAuthor] = useState<User>({ } as User)
     const hashTagRegex = /#\w+/g
     const urlRegex = /(https?:\/\/[^\s]+)/g
     const nostrRegex = /(npub|nprofile|nevent|note|naddr)1[023456789acdefghjklmnpqrstuvwxyz]+/g
@@ -58,7 +59,7 @@ const EventViewer = ({ event, nevent, note, videoMuted=true, videoPaused=true, v
                 author = nostrEvent?.pubkey ?? ""
             }
             if(author.length)
-                setEventAuthor(await userService.getProfile(author))
+                setEventAuthor(await userService.getUser(author))
         } 
         catch { }
     }
@@ -120,7 +121,7 @@ const EventViewer = ({ event, nevent, note, videoMuted=true, videoPaused=true, v
                 </View>
                 <View style={{ width: "70%", paddingHorizontal: 10 }}>
                     <Text style={styles.profileName}>
-                        {getUserName(eventAuthor)}
+                        {Utilities.getUserName(eventAuthor)}
                     </Text>
                 </View>
                 <View style={{ width: "15%" }}>
@@ -145,7 +146,7 @@ const EventViewer = ({ event, nevent, note, videoMuted=true, videoPaused=true, v
                     }]}
                 >
                     {contentEvent.content &&
-                        replaceContentEvent(contentEvent.content)
+                        Utilities.replaceContentEvent(contentEvent.content)
                     }
                 </ParsedText>
             </View>

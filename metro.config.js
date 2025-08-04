@@ -12,6 +12,7 @@ const config = {
             '@src': path.resolve(__dirname, './src'), 
             '@screens': path.resolve(__dirname, './src/screens'), 
             '@services': path.resolve(__dirname, './src/services'), 
+            '@storage': path.resolve(__dirname, './src/storage'), 
             '@components': path.resolve(__dirname, 'src/components'), 
         },
         blockList: [

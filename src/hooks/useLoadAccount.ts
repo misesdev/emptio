@@ -5,7 +5,7 @@ import useNDKStore from "@services/zustand/useNDKStore"
 import MessageService from "@services/message/MessageService"
 import { SubscriptionService } from "@services/nostr/SubscriptionService"
 import { User } from "@services/user/types/User"
-import { NostrEvent } from "@nostr-dev-kit/ndk-mobile"
+import { NDKEvent } from "@nostr-dev-kit/ndk-mobile"
 import { WalletStorage } from "@storage/wallets/WalletStorage"
 import { AppSettingsStorage } from "@storage/settings/AppSettingsStorage"
 import { Wallet } from "@services/wallet/types/Wallet"
@@ -16,10 +16,10 @@ type Props = {
     user: User;
     setSettings: (s: AppSettings) => void;
     setWallets: (ws: StoredItem<Wallet>[]) => void;
-    setFollowsEvent: (e: NostrEvent) => void;
+    setFollowsEvent: (e: NDKEvent) => void;
 }
 
-const useLoadNostrAccount = ({ 
+const useLoadAccount = ({ 
     user, setSettings, setWallets, setFollowsEvent 
 }: Props) => {
     const { setChats } = useChatStore()
@@ -59,4 +59,4 @@ const useLoadNostrAccount = ({
     }
 }
 
-export default useLoadNostrAccount
+export default useLoadAccount
