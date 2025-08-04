@@ -1,6 +1,6 @@
 import { DataBaseEvents } from "@storage/database/DataBaseEvents";
 import { PrivateKeyStorage } from "@storage/pairkeys/PrivateKeyStorage";
-import { IMessageService, MessageProps } from "./IMessageService";
+import { IMessageService, SendMessageProps } from "./IMessageService";
 import { AppResponse, trackException } from "../telemetry";
 import { ChatUser } from "../zustand/useChatStore";
 import NDK, { NDKEvent } from "@nostr-dev-kit/ndk-mobile";
@@ -119,10 +119,15 @@ class MessageService implements IMessageService
         return event
     }
 
-    public async send({ pubkey, message, forward=false }: MessageProps): Promise<NDKEvent> 
+
+    public async send({ message, receiver, replyEvent, forward=false }: SendMessageProps): Promise<NDKEvent> 
     {
-        const tags = [["p", pubkey]]
-        if(forward) tags.push(["f", "forward"])
+        const tags = [["p", receiver]]
+        if(forward)    
+            tags.push(["f", "forward"])
+        if(!!replyEvent) 
+            tags.push(["e", replyEvent.id])
+        
         const event = new NDKEvent(this._ndk, {
             kind: 4,
             pubkey: this._user.pubkey,
@@ -130,6 +135,7 @@ class MessageService implements IMessageService
             content: message,
             tags
         })
+        await event.encrypt()
         await event.publishReplaceable()
         return event
     }

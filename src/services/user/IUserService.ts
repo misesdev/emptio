@@ -1,5 +1,6 @@
 import { NDKEvent } from "@nostr-dev-kit/ndk-mobile";
 import { User } from "./types/User"
+import NostrPairKey from "../nostr/pairkey/NostrPairKey";
 
 export type SearchUserProps = {
     searchTerm: string; limit: number;
@@ -26,4 +27,6 @@ export interface IUserService {
 
     listUsers(pubkeys: string[]): Promise<User[]>;
     searchUser(props: SearchUserProps): Promise<User[]>;
+
+    getNostrPairKey(): Promise<NostrPairKey>;
 }

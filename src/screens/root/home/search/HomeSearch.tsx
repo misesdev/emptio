@@ -1,4 +1,4 @@
-import { StyleSheet, View, Text } from "react-native"
+import { StyleSheet, View } from "react-native"
 import { HeaderScreen } from "@components/general/HeaderScreen"
 import { SearchBox } from "@components/form/SearchBox"
 import { useTranslateService } from "@src/providers/TranslateProvider"

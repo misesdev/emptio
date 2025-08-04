@@ -1,12 +1,12 @@
 import { RefreshControl, ScrollView, StyleSheet, View, } from "react-native"
 import { ActionHeader, SectionHeader } from "@components/general/section/headers"
+import { useTranslateService } from "@src/providers/TranslateProvider"
 import WalletList from "@components/wallet/WalletList"
-import { useEffect } from "react"
-import { HeaderHome } from "./header"
 import { StackScreenProps } from "@react-navigation/stack"
-import theme from "@src/theme"
 import { useHomeState } from "./hooks/useHomeState"
-import { useTranslateService } from "@/src/providers/TranslateProvider"
+import { HeaderHome } from "./header/HeaderHome"
+import { useEffect } from "react"
+import theme from "@src/theme"
 
 const HomeScreen = ({ navigation }: StackScreenProps<any>) => {
 

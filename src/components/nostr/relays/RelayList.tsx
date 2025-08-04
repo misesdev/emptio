@@ -1,12 +1,13 @@
 import { View, FlatList, TouchableOpacity, StyleSheet, Text } from "react-native"
+import { useTranslateService } from "@src/providers/TranslateProvider"
+import { NostrRelay } from "@services/relays/types/NostrRelay"
+import { Utilities } from "@src/utils/Utilities"
 import { useCallback } from "react"
 import theme from "@src/theme"
-import { Utilities } from "@/src/utils/Utilities"
-import { useTranslateService } from "@/src/providers/TranslateProvider"
 
 interface RelayItemProps {
-    relay: string,
-    onPressRelay: (relay: string) => void
+    relay: NostrRelay;
+    onPressRelay: (relay: NostrRelay) => void;
 }
 
 export const RelayItem = ({ relay, onPressRelay }: RelayItemProps) => {
@@ -18,7 +19,7 @@ export const RelayItem = ({ relay, onPressRelay }: RelayItemProps) => {
         >
             <View style={{ padding: 5 }}>
                 <Text style={{ color: theme.colors.gray, fontSize: 16, fontWeight: "500" }}>
-                    {Utilities.getClipedContent(relay, 40)}
+                    {Utilities.getClipedContent(relay.url, 40)}
                 </Text>
             </View>
         </TouchableOpacity>
@@ -26,15 +27,15 @@ export const RelayItem = ({ relay, onPressRelay }: RelayItemProps) => {
 }
 
 interface Props {
-    relays: string[],
-    onPressRelay: (relay: string) => void
+    relays: NostrRelay[];
+    onPressRelay: (relay: NostrRelay) => void;
 }
 
 export const RelayList = ({ relays, onPressRelay }: Props) => {
 
     const { useTranslate } = useTranslateService()
 
-    const renderItem = useCallback(({ item }: { item: string }) => {
+    const renderItem = useCallback(({ item }: { item: NostrRelay }) => {
         return <RelayItem relay={item} onPressRelay={onPressRelay} />
     }, [onPressRelay])
 

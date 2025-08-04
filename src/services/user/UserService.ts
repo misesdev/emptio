@@ -10,6 +10,8 @@ import { TimeSeconds } from "../converter/TimeSeconds";
 import { Utilities } from "@/src/utils/Utilities";
 import { AppSettingsStorage } from "@/src/storage/settings/AppSettingsStorage";
 import { AppSettings } from "@/src/storage/settings/types";
+import { PrivateKeyStorage } from "@/src/storage/pairkeys/PrivateKeyStorage";
+import NostrPairKey from "../nostr/pairkey/NostrPairKey";
 
 class UserService implements IUserService
 {
@@ -18,19 +20,22 @@ class UserService implements IUserService
     private readonly _note: NoteService;
     private readonly _storage: UserStorage;
     private readonly _settings: AppSettingsStorage;
+    private readonly _keyStorage: PrivateKeyStorage;
         
     constructor(
         user: User|null = null,
         ndk: NDK = useNDKStore.getState().ndk,
         storage: UserStorage = new UserStorage(),
         note: NoteService|null = null,
-        settings: AppSettingsStorage = new AppSettingsStorage()
+        settings: AppSettingsStorage = new AppSettingsStorage(),
+        keyStorage: PrivateKeyStorage = new PrivateKeyStorage()
     ) {
         this._note = note ?? new NoteService()
         this._storage = storage 
         this._profile = user
         this._ndk = ndk
         this._settings = settings
+        this._keyStorage = keyStorage
     }
 
     public async init(): Promise<void> 
@@ -234,6 +239,14 @@ class UserService implements IUserService
     public async setSettings(settings: AppSettings): Promise<void>
     {
         await this._settings.set(settings)
+    }
+
+    public async getNostrPairKey(): Promise<NostrPairKey>
+    {
+        if (!this._profile?.pubkey) 
+            throw new Error("UserService not initialized");
+        const stored = await this._keyStorage.get(this._profile?.keyRef)
+        return new NostrPairKey(stored.entity)
     }
 
     public async save(): Promise<void> 

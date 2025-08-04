@@ -11,7 +11,8 @@ import useLoadAccount from '../hooks/useLoadAccount';
 import { useAuth } from './AuthContext';
 
 type UserContextType = {
-    user: User,
+    user: User;
+    setUser: (u: User) => void;
     settings: AppSettings;
     setSettings: (s: AppSettings) => void;
     wallets: StoredItem<Wallet>[];
@@ -35,6 +36,7 @@ type Props = { children: ReactNode; }
 const AccountProvider = ({ children }: Props): ReactElement => {
 
     const { user } = useAuth()
+    const [userData, setUser] = useState(user)
     const [follows, setFollows] = useState<User[]>([])
     const [wallets, setWallets] = useState<StoredItem<Wallet>[]>([])
     const [settings, setSettings] = useState<AppSettings>({} as AppSettings)
@@ -50,6 +52,10 @@ const AccountProvider = ({ children }: Props): ReactElement => {
     useEffect(() => {
         _service.setSettings(settings)
     },[settings])
+
+    // useEffect(() => {
+    //     _service.init()
+    // }, [userData])
 
     useEffect(() => { 
         if(user.pubkey && followsEvent.pubkey) loadFollowers() 
@@ -67,7 +73,8 @@ const AccountProvider = ({ children }: Props): ReactElement => {
 
     return (
         <UserContext.Provider value={{
-                user,
+                user: userData,
+                setUser,
                 wallets,
                 setWallets,
                 settings,

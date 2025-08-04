@@ -2,8 +2,8 @@ import { NDKEvent } from "@nostr-dev-kit/ndk-mobile";
 import { AppResponse } from "../telemetry";
 import { ChatUser } from "../zustand/useChatStore";
 
-export type MessageProps = {
-    pubkey: string; message: string; forward?: boolean;
+export type SendMessageProps = {
+    message: string; receiver: string; replyEvent?: NDKEvent|null; forward?: boolean;
 }
 
 export interface IMessageService 
@@ -16,5 +16,5 @@ export interface IMessageService
 
     encrypt(pubkey: string, event: NDKEvent): Promise<NDKEvent>;
     decrypt(event: NDKEvent): Promise<NDKEvent>;
-    send(props: MessageProps): Promise<NDKEvent>;
+    send(props: SendMessageProps): Promise<NDKEvent>;
 }

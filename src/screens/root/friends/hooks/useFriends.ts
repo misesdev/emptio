@@ -1,19 +1,20 @@
-import { useAuth } from "@src/providers/userProvider"
-import { User } from "@services/memory/types"
-import { userService } from "@services/user"
-import { walletService } from "@services/wallet"
-import { getUserName } from "@src/utils"
+import { useAccount } from "@src/context/AccountContext"
+import { useService } from "@src/providers/ServiceProvider"
+import { User } from "@services/user/types/User"
+import { Utilities } from "@src/utils/Utilities"
+import { Address } from "bitcoin-tx-lib"
 import { useState } from "react"
 
 export const useFriends = () => {
 
-    const { user, follows, setFollows, followsEvent } = useAuth()
+    const { userService } = useService()
+    const { follows, setFollows, followsEvent } = useAccount()
     const [friends, setFriends] = useState<User[]>(follows)
   
     const search = (filter: string) => {
-        if (filter?.length && !walletService.address.validate(filter)) {
+        if (filter?.length && !Address.isValid(filter)) {
             const searchResult = follows?.filter(follow => {
-                let filterNameLower = getUserName(follow, 30).toLowerCase()
+                let filterNameLower = Utilities.getUserName(follow, 30).toLowerCase()
                 return filterNameLower.includes(filter.toLowerCase())
             })
 
@@ -33,7 +34,7 @@ export const useFriends = () => {
 
         followsEvent!.tags = followsEvent?.tags?.filter(t => t[0] == "p" && t[1] != follow.pubkey) ?? []
     
-        await userService.updateFollows({ user, follows: followsEvent })
+        await userService.updateFollows(followsEvent)
     }
 
     return {

@@ -11,6 +11,13 @@ class RelaysService implements IRelayService
         this._storage = storage
     }
 
+    public async add(relayUrl: string): Promise<void>
+    {
+        await this._storage.add({
+            url: relayUrl
+        })
+    }
+
     public async list(): Promise<NostrRelay[]>
     {
         return await this._storage.listEntities()
@@ -22,6 +29,16 @@ class RelaysService implements IRelayService
         for(let stored of relays) {
             if(stored.entity.url == relay.url) {
                 await this._storage.update(stored.id, relay)
+            }
+        }
+    }
+
+    public async delete(relayUrl: string): Promise<void> 
+    {
+        const relays = await this._storage.list()
+        for(let stored of relays) {
+            if(stored.entity.url == relayUrl) {
+                await this._storage.delete(stored.id)
             }
         }
     }

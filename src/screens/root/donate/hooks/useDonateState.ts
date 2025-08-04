@@ -1,19 +1,21 @@
-import { useAuth } from "@src/providers/userProvider"
-import { userService } from "@services/user"
-import { User, Wallet } from "@services/memory/types"
+import { useAccount } from "@src/context/AccountContext"
+import { useService } from "@src/providers/ServiceProvider"
+import { User } from "@services/user/types/User"
+import { Wallet } from "@services/wallet/types/Wallet"
 import { useEffect, useState } from "react"
 
 export const useDonateState = ({ navigation, route }: any) => {
    
-    const { wallets } = useAuth()
+    const { wallets } = useAccount()
+    const { userService } = useService()
     const [amount, setAmount] = useState<string>("0")
     const [disabled, setDisabled] = useState(true)
-    const [receiver, setReceiver] = useState<User>({})
+    const [receiver, setReceiver] = useState<User>({} as User)
     const [wallet, setWallet] = useState<Wallet>(route?.params?.wallet as Wallet)
 
     useEffect(() => {
         let pubkey: string = process.env.EMPTIO_PUBKEY ?? ""
-        userService.getProfile(pubkey.trim()).then(receiver => {
+        userService.getUser(pubkey.trim()).then(receiver => {
             setReceiver(receiver)
         }).catch(console.log)
     }, [])

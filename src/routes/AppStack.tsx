@@ -1,30 +1,30 @@
 import { stackOptions } from "../constants/RouteSettings"
 import { CardStyleInterpolators, createStackNavigator } from "@react-navigation/stack"
-import UserMenuScreen from "@screens/root/settings"
+import UserMenuScreen from "@screens/root/settings/UserMenuScreen"
 import HomeSearchScreen from "@screens/root/home/search/HomeSearch"
 import FeedSearchScreen from "@screens/root/orders/search/FeedSearch"
-import UserEditScreen from "@screens/root/settings/user"
-import ManageRelaysScreen from "@screens/root/settings/relays"
-import AboutScreen from "@screens/root/settings/about"
-import ManageSecurityScreen from "@screens/root/settings/security"
+import UserEditScreen from "@screens/root/settings/user/UserEditScreen"
+import ManageRelaysScreen from "@screens/root/settings/relays/ManageRelaysScreen"
+import AboutScreen from "@screens/root/settings/about/AboutScreen"
+import ManageSecurityScreen from "@screens/root/settings/security/ManageSecurityScreen"
 import WalletManagerScreen from "@screens/root/wallet"
 import SendScreen from "@screens/root/wallet/send"
 import SendReceiverScreen from "@screens/root/wallet/send/receiver"
 import SendFinalScreen from "@screens/root/wallet/send/final"
 import WalletSettings from "@screens/root/wallet/settings"
-import AddFolowScreen from "@screens/root/friends/add"
-import DonateScreen from "@screens/root/donate"
-import NewChatScreen from "@screens/root/chats/new"
+import AddFolowScreen from "@screens/root/friends/AddFollowScreen"
+import DonateScreen from "@screens/root/donate/DonateScreen"
+import NewChatScreen from "@screens/root/chats/new/NewChatScreen"
 import WalletReceiveScreen from "@screens/root/wallet/receive"
 import ImportWalletScreen from "@screens/root/wallet/import"
 import CreatedSeedScren from "@screens/root/wallet/create/seed"
 import TransactionScreen from "@screens/root/wallet/transaction"
-import NewOrderScreen from "@screens/root/orders/new"
-import ConversationChat from "@screens/root/chats/conversation"
-import ManageFriendsScreen from "@screens/root/friends"
-import RelayScreen from "@screens/root/settings/relays/relay"
-import AddRelayScreen from "@screens/root/settings/relays/add"
-import OrderClosureScreen from "@screens/root/orders/new/closure"
+import NewOrderScreen from "@screens/root/orders/new/NewOrderScreen"
+import ConversationScreen from "@screens/root/chats/conversation/ConversationScreen"
+import ManageFriendsScreen from "@screens/root/friends/ManageFriendsScreen"
+import RelayScreen from "@screens/root/settings/relays/RelayScreen"
+import AddRelayScreen from "@screens/root/settings/relays/AddRelayScreen"
+import OrderClosureScreen from "@screens/root/orders/new/OrderClosureScreen"
 import NewWalletScreen from "@screens/root/wallet/new"
 import CreateWalletScreen from "@screens/root/wallet/create"
 import CreateWalletNetwork from "@screens/root/wallet/create/network"
@@ -52,7 +52,7 @@ const AppStack = () => {
             <Stack.Screen name="search-orders" component={FeedSearchScreen} options={ScreenCardOptions} />
 
             <Stack.Screen name="new-chat" component={NewChatScreen} options={ScreenCardOptions} />
-            <Stack.Screen name="conversation" component={ConversationChat} options={ScreenCardOptions} />
+            <Stack.Screen name="conversation" component={ConversationScreen} options={ScreenCardOptions} />
 
             <Stack.Screen name="user-menu" component={UserMenuScreen} options={{ headerShown: true }} />
             <Stack.Screen name="manage-account" component={UserEditScreen} options={{ headerShown: true }} />

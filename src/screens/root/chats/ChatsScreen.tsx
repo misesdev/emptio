@@ -1,15 +1,15 @@
 import theme from "@src/theme"
 import { StyleSheet, View, TouchableOpacity } from "react-native"
+import { useTranslateService } from "@src/providers/TranslateProvider"
 import Ionicons from 'react-native-vector-icons/Ionicons'
-import { HeaderChats } from "./header"
+import HeaderChats from "./header/HeaderChats"
 import { SearchBox } from "@components/form/SearchBox"
 import { StackScreenProps } from "@react-navigation/stack"
-import ChatFilters from "./commons/filters"
-import ChatList from "./commons/list"
-import ChatGroupAction from "./commons/options"
+import ChatFilters from "./commons/ChatFilters"
+import ChatList from "./commons/ChatList"
+import ChatGroupAction from "./commons/ChatGroupAction"
 import MessageBox from "@components/general/MessageBox"
-import ProfileView from "./commons/profile"
-import { useTranslateService } from "@/src/providers/TranslateProvider"
+import ProfileView from "./commons/ProfileView"
 import useChatScreen from "./hooks/useChatScreen"
 
 const ChatsScreen = ({ navigation }: StackScreenProps<any>) => {

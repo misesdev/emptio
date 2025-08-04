@@ -1,11 +1,12 @@
-import { useAuth } from "@src/providers/userProvider"
-import { User } from "@services/memory/types"
-import { userService } from "@services/user"
+import { useAccount } from "@src/context/AccountContext"
+import { User } from "@services/user/types/User"
 import { useState } from "react"
+import { useService } from "@/src/providers/ServiceProvider"
 
 export const useAddFriend = () => {
-    
-    const { user, follows, setFollows, followsEvent } = useAuth()
+   
+    const { userService } = useService()
+    const { follows, setFollows, followsEvent } = useAccount()
     const [users, setUsers] = useState<User[]>([])
     const [loading, setLoading] = useState(false)
    
@@ -15,7 +16,7 @@ export const useAddFriend = () => {
             
         setLoading(true)
         try {
-            const users = await userService.searchUsers(user, searchTerm, 100)
+            const users = await userService.searchUser({ searchTerm, limit: 100 })
 
             const friends = followsEvent?.tags?.filter(t => t[0] == "p").map(t => t[1]) ?? []
             
@@ -48,7 +49,7 @@ export const useAddFriend = () => {
 
         // if(setFollowsEvent && followsEvent) setFollowsEvent(followsEvent)
 
-        await userService.updateFollows({ user, follows: followsEvent })
+        await userService.updateFollows(followsEvent)
     }
 
     return {

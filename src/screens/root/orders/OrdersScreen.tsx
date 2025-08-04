@@ -4,13 +4,13 @@ import { ButtonDanger, ButtonSuccess } from "@components/form/Buttons"
 import Ionicons from 'react-native-vector-icons/Ionicons'
 import { StackScreenProps } from "@react-navigation/stack"
 import { pushMessage } from "@services/notification"
-import { HeaderFeed } from "./header"
-import theme from "@src/theme"
-import { memo } from "react"
+import HeaderOrders from "./header/HeaderOrders"
 import { useAccount } from "@/src/context/AccountContext"
 import useOrderStore from "@services/zustand/useOrderStore"
 import { useTranslateService } from "@/src/providers/TranslateProvider"
 import { SellOrder } from "@services/order/types/SellOrder"
+import theme from "@src/theme"
+import { memo } from "react"
 
 const OrdersScreen = ({ navigation }: StackScreenProps<any>) => {
 
@@ -46,7 +46,7 @@ const OrdersScreen = ({ navigation }: StackScreenProps<any>) => {
 
     return (
         <View style={{ flex: 1, backgroundColor: theme.colors.black }}>
-            <HeaderFeed navigation={navigation} />
+            <HeaderOrders navigation={navigation} />
             <FlatList
                 data={orders}
                 renderItem={({ item }) => <ListItem item={item}/>}
