@@ -1,15 +1,15 @@
 import { Video } from 'react-native-video'
+import { useTranslateService } from '@src/providers/TranslateProvider'
 import { View, StyleSheet, Text } from 'react-native'
 import Slider from '@react-native-community/slider'
-import { useTranslateService } from '@src/providers/translateProvider'
-import { NostrEvent } from '@nostr-dev-kit/ndk-mobile'
+import { NDKEvent } from '@nostr-dev-kit/ndk-mobile'
 import { ActivityIndicator } from 'react-native-paper'
-import VideoFooter from './commons/footer'
-import { useVideoViewer } from './hooks/use-video-viewer'
+import VideoFooter from './commons/VideoFooter'
+import useVideoViewer from './hooks/useVideoViewer'
 import theme from '@src/theme'
 
 interface VideoProps { 
-    event: NostrEvent,
+    event: NDKEvent,
     paused: boolean
 }
 

@@ -1,35 +1,35 @@
 
-import { NDKEvent, NostrEvent } from "@nostr-dev-kit/ndk-mobile"
+import { NDKEvent } from "@nostr-dev-kit/ndk-mobile"
 import { Modal, StyleSheet, View, Text, TouchableOpacity } from "react-native"
 import { FollowList } from "@components/nostr/follow/FollowList"
-import { User } from "@services/memory/types"
-import { useTranslateService } from "@/src/providers/translateProvider"
-import { messageService } from "@services/message"
-import { useAuth } from "@src/providers/userProvider"
 import { pushMessage } from "@services/notification"
-import { getUserName } from "@src/utils"
 import theme from "@src/theme"
+import { useAccount } from "@/src/context/AccountContext"
+import { useTranslateService } from "@/src/providers/TranslateProvider"
+import { User } from "@/src/services/user/types/User"
+import { useService } from "@/src/providers/ServiceProvider"
+import { Utilities } from "@/src/utils/Utilities"
 
 type ChatProps = {
-    event: NostrEvent,
+    event: NDKEvent,
     visible: boolean,
     setVisible: (state: boolean) => void
 }
 
 const VideoShareBar = ({ event, visible, setVisible }: ChatProps) => {
 
-    const { user } = useAuth()
+    const { messageService } = useService()
     const { useTranslate } = useTranslateService()
 
     const handleSend = (follow: User) => {
 
-        const message = (event as NDKEvent).encode(2)
+        const message = (event).encode(2)
 
         setTimeout(() => { 
-            messageService.sendMessage({ user, follow, message })
+            messageService.send({ message, receiver: follow.pubkey })
         }, 20)
         
-        pushMessage(`${useTranslate("feed.videos.shared-for")} ${getUserName(follow, 20)}`)
+        pushMessage(`${useTranslate("feed.videos.shared-for")} ${Utilities.getUserName(follow, 20)}`)
     }
 
     return (
@@ -47,9 +47,10 @@ const VideoShareBar = ({ event, visible, setVisible }: ChatProps) => {
                     </View>
 
                     {visible && 
-                        <FollowList searchable toSend 
+                        <FollowList searchable 
                             searchTimout={200}
-                            onPressFollow={handleSend} 
+                            onPressFollow={handleSend}
+                            labelAction={useTranslate("commons.send")}
                         />
                     }
                 </View>

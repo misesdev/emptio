@@ -1,25 +1,25 @@
-import { NDKEvent, NostrEvent } from "@nostr-dev-kit/ndk-mobile"
+import { NDKEvent } from "@nostr-dev-kit/ndk-mobile"
+import { useAccount } from "@src/context/AccountContext"
+import useNDKStore from "@services/zustand/useNDKStore"
+import { useTranslateService } from "@src/providers/TranslateProvider"
+import { TimeSeconds } from "@services/converter/TimeSeconds"
 import { memo, useCallback, useMemo, useState } from "react"
 import { Modal, StyleSheet, View, Text, TouchableOpacity, 
     TextInput, FlatList } from "react-native"
 import Ionicons from 'react-native-vector-icons/Ionicons'
-import { useTranslateService } from "@src/providers/translateProvider"
-import useNDKStore from "@services/zustand/ndk"
-import { useAuth } from "@src/providers/userProvider"
-import { timeSeconds } from "@services/converter"
+import VideoComment from "./VideoComment"
 import theme from "@src/theme"
-import CommentItem from "./comment"
 
 interface VideoCommentsProps {
-    event: NostrEvent,
-    comments: NostrEvent[],
+    event: NDKEvent,
+    comments: NDKEvent[],
     visible: boolean,
     setVisible: (state: boolean) => void
 }
 
 const VideoComments = ({ event, visible, comments, setVisible }: VideoCommentsProps) => {
 
-    const { user } = useAuth()
+    const { user } = useAccount()
     const { ndk } = useNDKStore()
     const { useTranslate } = useTranslateService()
     const [comment, setComment] = useState<string>("")
@@ -41,7 +41,7 @@ const VideoComments = ({ event, visible, comments, setVisible }: VideoCommentsPr
                 ["e", event.id??"", "", "root"],
                 ["p", event.pubkey]
             ],
-            created_at: timeSeconds.now()
+            created_at: TimeSeconds.now()
         })
 
         await myComment.sign()
@@ -51,14 +51,14 @@ const VideoComments = ({ event, visible, comments, setVisible }: VideoCommentsPr
 
     }, [comment, user, event])
 
-    const getReplies = useCallback((event: NostrEvent) => {
+    const getReplies = useCallback((event: NDKEvent) => {
         return comments.filter(comment => {
             return comment.tags.some(t => t[0] == "e" && t[1] == event.id)
         })
     }, [comments])
 
-    const renderItem = useCallback(({ item }: { item: NostrEvent }) => {
-        return <CommentItem event={item} replies={getReplies(item)} />
+    const renderItem = useCallback(({ item }: { item: NDKEvent }) => {
+        return <VideoComment event={item} replies={getReplies(item)} />
     }, [getReplies])
 
     const EmptyComponent = () => {

@@ -1,9 +1,9 @@
-import { extractVideoUrl } from "@src/utils"
-import { NostrEvent } from "@nostr-dev-kit/ndk-mobile"
+import { Utilities } from "@/src/utils/Utilities"
+import { NDKEvent } from "@nostr-dev-kit/ndk-mobile"
 import { useEffect, useRef, useState } from "react"
 import { Dimensions } from "react-native"
 
-export const useVideoViewer = (event: NostrEvent) => {
+const useVideoViewer = (event: NDKEvent) => {
 
     const videoRef = useRef<any>(null)
     const { width, height } = Dimensions.get("window")
@@ -11,7 +11,7 @@ export const useVideoViewer = (event: NostrEvent) => {
     const [currentTime, setCurrentTime] = useState<number>(0)
     const [error, setError] = useState<boolean>(false)
     const [loading, setLoading] = useState<boolean>(true)
-    const url = useRef(extractVideoUrl(event.content)??"").current
+    const url = useRef(Utilities.extractVideoUrl(event.content)??"").current
 
     useEffect(() => {
         const unsubscribe = () => {
@@ -54,3 +54,5 @@ export const useVideoViewer = (event: NostrEvent) => {
         handleSeek
     }
 }
+
+export default useVideoViewer

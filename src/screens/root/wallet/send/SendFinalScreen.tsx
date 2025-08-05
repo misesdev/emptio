@@ -1,16 +1,14 @@
 import { View, Text, StyleSheet, TouchableOpacity } from "react-native"
-import { FeesRecommended } from "@mempool/mempool.js/lib/interfaces/bitcoin/fees"
 import { ButtonPrimary } from "@components/form/Buttons"
-import { toNumber } from "@services/converter"
 import { HeaderScreen } from "@components/general/HeaderScreen"
+import { useTranslateService } from "@src/providers/TranslateProvider"
+import { useService } from "@src/providers/ServiceProvider"
+import { FeeRate } from "@services/wallet/types/FeeRate"
 import { pushMessage } from "@services/notification"
-import { useTranslateService } from "@src/providers/translateProvider"
 import { useEffect, useState } from "react"
-import { walletService } from "@services/wallet"
-import { getUserName, shortenString } from "@src/utils"
-import { getFee } from "@services/bitcoin/mempool"
 import { ActivityIndicator } from "react-native-paper"
 import theme from "@src/theme"
+import { Utilities } from "@/src/utils/Utilities"
 
 type FeeType = "high" | "medium" | "low" | "minimun"
 
@@ -49,14 +47,16 @@ const SendFinalScreen = ({ navigation, route }: any) => {
     const [fetching, setFetching] = useState(false)
     const [nextDisabled, setNextDisabled] = useState(true)
     const [selectedFee, setSelectedFee] = useState<FeeType>()
-    const [recomendedFee, setRecomendedFee] = useState<FeesRecommended>()
+    const [recomendedFee, setRecomendedFee] = useState<FeeRate>()
     const [feeValue, setFeeValue] = useState<number>(0)
+    const { walletService } = useService()
    
     useEffect(() => { loadRecomendedFee() }, []) 
 
     const loadRecomendedFee = async () => {
-        const recomendedFees = await getFee(wallet.type == "bitcoin" ? "mainnet":"testnet")
-        setRecomendedFee(recomendedFees)
+        const result = await walletService.getFeeRate()
+        if(result.success && result.data)
+            setRecomendedFee(result.data)
     }
 
     const handleSelectFee = (type: FeeType) => {
@@ -76,32 +76,32 @@ const SendFinalScreen = ({ navigation, route }: any) => {
     const handleSend = async () => {
         setLoading(true)
         setNextDisabled(true)
-        const result = await walletService.transaction.build({ 
-            amount: toNumber(amount), 
-            destination: address, 
-            wallet,
-            recomendedFee: feeValue
-        }) 
+        // const result = await walletService.transaction.build({ 
+        //     amount: toNumber(amount), 
+        //     destination: address, 
+        //     wallet,
+        //     recomendedFee: feeValue
+        // }) 
 
-        if (result.success) {
-            const response = await walletService.transaction.send(result.data, wallet.network)
-            if(response.success) {
-                navigation.reset({
-                    index: origin == "donation" ? 0 : 1,
-                    routes: [
-                        { name: 'core-stack' },
-                        { name: 'wallet-stack', params: { wallet } }
-                    ]
-                })
-            }
+        // if (result.success) {
+        //     const response = await walletService.transaction.send(result.data, wallet.network)
+        //     if(response.success) {
+        //         navigation.reset({
+        //             index: origin == "donation" ? 0 : 1,
+        //             routes: [
+        //                 { name: 'core-stack' },
+        //                 { name: 'wallet-stack', params: { wallet } }
+        //             ]
+        //         })
+        //     }
 
-            if (!result.success && result.message) {
-                pushMessage(result.message)
-            }
-        }
+        //     if (!result.success && result.message) {
+        //         pushMessage(result.message)
+        //     }
+        // }
 
-        if (!result.success && result.message)
-            pushMessage(result.message)
+        // if (!result.success && result.message)
+        //     pushMessage(result.message)
 
         setNextDisabled(false)
         setLoading(false)
@@ -119,12 +119,12 @@ const SendFinalScreen = ({ navigation, route }: any) => {
                 <Text style={styles.label}>
                     {useTranslate("commons.to")} {" "}
                     <Text style={styles.username}>
-                        {!!receiver?.pubkey ? getUserName(receiver) : useTranslate("chat.unknown")}
+                        {!!receiver?.pubkey ? Utilities.getUserName(receiver) : useTranslate("chat.unknown")}
                     </Text>
                 </Text>
                 <Text style={styles.label}>
                     {useTranslate("wallet.transfer.address")} {" "}
-                    <Text style={styles.username}>{shortenString(address, 20)}</Text>
+                    <Text style={styles.username}>{Utilities.shortenString(address, 20)}</Text>
                 </Text>
             </View>
 

@@ -1,21 +1,18 @@
-import { formatSats } from "@services/converter"
-import { TransactionInfo, Transaction, Wallet } from "@services/memory/types"
 import { IconNames } from "@services/types/icons"
 import { HeaderScreen } from "@components/general/HeaderScreen"
-import { useEffect, useState } from "react"
 import { Linking, ScrollView, StyleSheet, Text, View } from "react-native"
 import Ionicons from 'react-native-vector-icons/Ionicons'
 import { SectionHeader } from "@components/general/section/headers"
+import { BTransaction } from "@services/wallet/types/Transaction"
+import { useTranslateService } from "@src/providers/TranslateProvider"
+import { Formatter } from "@services/converter/Formatter"
 import { ActivityIndicator } from "react-native-paper"
 import { SectionContainer } from "@components/general/section"
 import { ButtonPrimary } from "@components/form/Buttons"
-import { useTranslateService } from "@src/providers/translateProvider"
-import { StackScreenProps } from "@react-navigation/stack"
-import { walletService } from "@services/wallet"
-import { BNetwork } from "bitcoin-tx-lib"
+import { useEffect, useState } from "react"
 import theme from "@src/theme"
 
-const TransactionIcon = ({ type, confirmed }: TransactionInfo) => {
+const TransactionIcon = ({ type, confirmed }: Pick<BTransaction,'type'|'confirmed'>) => {
     let color = theme.colors.red
     let rotate = type == "received" ? "90deg" : "-90deg"
     let icon: IconNames = type == "received" ? "enter" : "exit"
@@ -26,32 +23,33 @@ const TransactionIcon = ({ type, confirmed }: TransactionInfo) => {
     return <Ionicons name={icon} size={60} color={color} style={{ margin: 10, transform: [{ rotate: rotate }] }} />
 }
 
-const TransactionScreen = ({ navigation, route }: StackScreenProps<any>) => {
+const TransactionScreen = ({ navigation, route }: any) => {
 
     const { useTranslate } = useTranslateService()
     const [loading, setLoading] = useState<boolean>(true)
-    const [txDetails, setTxDetails] = useState<Transaction>({})
-    const { wallet, transaction } = route.params as { wallet: Wallet, transaction: TransactionInfo }
+    const transaction = route.params.transaction as BTransaction
+    const inputs = transaction.participants.filter(p => p.type == "input")
+    const outputs = transaction.participants.filter(p => p.type == "output")
 
     useEffect(() => { loadData() }, [])
 
     const loadData = async () => {
         
-        const network: BNetwork = wallet.type == "bitcoin" ? "mainnet" : "testnet"
+        // const network: BNetwork = .type == "bitcoin" ? "mainnet" : "testnet"
 
-        const transactionDetails = await walletService.transaction.details(
-            transaction.txid ?? "", network, wallet.address ?? "")
+        // const transactionDetails = await walletService.transaction.details(
+        //     transaction.txid ?? "", network, wallet.address ?? "")
 
-        setTxDetails(transactionDetails)
+        // setTxDetails(transactionDetails)
 
         setLoading(false)
     }
 
     const handleToWeb = () => { 
 
-        const directory = wallet.network == "mainnet" ? "tx/" : "testnet/tx/"
+        const directory = ""//wallet.network == "mainnet" ? "tx/" : "testnet/tx/"
 
-        Linking.openURL(`https://${process.env.MEMPOOL_API_URL}/${directory}${txDetails.txid}`)
+        Linking.openURL(`https://${process.env.MEMPOOL_API_URL}/${directory}${transaction.txid}`)
     }
 
     return (
@@ -62,8 +60,8 @@ const TransactionScreen = ({ navigation, route }: StackScreenProps<any>) => {
                 <TransactionIcon type={transaction.type} confirmed={transaction.confirmed} /> 
                 
                 <Text style={styles.amount}>
-                    {transaction.type == "sended" ? '-' : '+'}
-                    {formatSats(transaction.amount)} Sats
+                    {transaction.type == "sent" ? '-' : '+'}
+                    {Formatter.formatSats(transaction.value)} Sats
                 </Text>
             </View>
             
@@ -81,55 +79,55 @@ const TransactionScreen = ({ navigation, route }: StackScreenProps<any>) => {
                             <View style={{ flexDirection: "row" }}>
                                 <Text style={[styles.infoLabels, { width: "50%"}]}>{useTranslate("wallet.transaction.balance")}</Text>
                                 <Text style={[styles.infoLabels, {width: "50%"}]}>
-                                    {formatSats(txDetails.amount)} Sats
+                                    {Formatter.formatSats(transaction.value)} Sats
                                 </Text>
                             </View>
                             
                             <View style={{ flexDirection: "row" }}>
                                 <Text style={[styles.infoLabels, { width: "50%"}]}>{useTranslate("wallet.transaction.fee")}</Text>
                                 <Text style={[styles.infoLabels, {width: "50%"}]}>
-                                    {formatSats(txDetails.fee)} Sats
+                                    {Formatter.formatSats(transaction.fee)} Sats
                                 </Text>
                             </View>
 
                             <View style={{ flexDirection: "row" }}>
                                 <Text style={[styles.infoLabels, { width: "50%"}]}>{useTranslate("wallet.transaction.date")}</Text>
                                 <Text style={[styles.infoLabels, {width: "50%"}]}>
-                                    {txDetails.date ?? "--/--/--"}
+                                    {transaction.block_time ?? "--/--/--"}
                                 </Text>
                             </View>
-                            <View style={{ flexDirection: "row" }}>
-                                <Text style={[styles.infoLabels, { width: "50%"}]}>{useTranslate("wallet.transaction.size")}</Text>
-                                <Text style={[styles.infoLabels, {width: "50%"}]}>
-                                    {formatSats(txDetails.size)} bytes
-                                </Text>
-                            </View>
+                            {/* <View style={{ flexDirection: "row" }}> */}
+                            {/*     <Text style={[styles.infoLabels, { width: "50%"}]}>{useTranslate("wallet.transaction.size")}</Text> */}
+                            {/*     <Text style={[styles.infoLabels, {width: "50%"}]}> */}
+                            {/*         {Formatter.formatSats(transaction.size)} bytes */}
+                            {/*     </Text> */}
+                            {/* </View> */}
 
                             <View style={{ flexDirection: "row" }}>
                                 <Text style={[styles.infoLabels, { width: "50%"}]}>{useTranslate("wallet.transaction.block-hight")}</Text>
                                 <Text style={[styles.infoLabels, {width: "50%"}]}>
-                                    {formatSats(txDetails.block_height)}
+                                    {Formatter.formatSats(transaction.block_height)}
                                 </Text>
                             </View>
 
                             
                             <Text style={[styles.title, {marginTop: 10}]}>Tx Id</Text>
                             <Text style={[styles.infoLabels]}>
-                                {txDetails.txid}
+                                {transaction.txid}
                             </Text>
 
                         </SectionContainer>
 
                         <SectionContainer style={{ width: "94%", padding: 14 }}>
                             <Text style={styles.title}>
-                                {useTranslate("wallet.transaction.inputs")} ({txDetails.inputs?.length})
+                                {useTranslate("wallet.transaction.inputs")} ({inputs?.length})
                             </Text>
                             {
-                                txDetails.inputs?.map((tx, key) => {
+                                inputs?.map((tx, key) => {
                                     return (
                                         <Text key={key} style={styles.infoLabels}>
                                             <Text style={[styles.infoLabels, { fontWeight: "500" }]}>
-                                                {formatSats(tx.amount)} sats
+                                                {Formatter.formatSats(tx.value)} sats
                                             </Text> - {tx.address}
                                         </Text>
                                     )
@@ -139,14 +137,14 @@ const TransactionScreen = ({ navigation, route }: StackScreenProps<any>) => {
 
                         <SectionContainer style={{ width: "94%", padding: 14 }}>
                             <Text style={styles.title}>
-                                {useTranslate("wallet.transaction.outputs")} ({txDetails.outputs?.length})
+                                {useTranslate("wallet.transaction.outputs")} ({outputs?.length})
                             </Text>
                             {
-                                txDetails.outputs?.map((tx, key) => {
+                                outputs?.map((tx, key) => {
                                     return (
                                         <Text key={key} style={styles.infoLabels}>
                                             <Text style={[styles.infoLabels, { fontWeight: "500" }]}>
-                                                {formatSats(tx.amount)} sats
+                                                {Formatter.formatSats(tx.value)} sats
                                             </Text> - {tx.address}
                                         </Text>
                                     )

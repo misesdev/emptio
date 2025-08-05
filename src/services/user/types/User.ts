@@ -17,5 +17,6 @@ export type User = {
     similarity?: number;
     friend?: boolean;
     keyRef: string;
+    bitcoin_address?: string;
 }
 

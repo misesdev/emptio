@@ -1,25 +1,25 @@
-import { useTranslateService } from "@src/providers/translateProvider"
-import { timeSeconds } from "@services/converter"
-import { NDKFilter, NDKKind, NDKSubscription, NDKSubscriptionCacheUsage, 
-    NostrEvent } from "@nostr-dev-kit/ndk-mobile"
-import useNDKStore from "@services/zustand/ndk"
+import { NDKEvent, NDKFilter, NDKKind, NDKSubscription, NDKSubscriptionCacheUsage, 
+    } from "@nostr-dev-kit/ndk-mobile"
 import { useCallback, useEffect, useMemo, useRef, useState } from "react"
-import { VideoSource } from "../commons/header"
-import { useFeedVideosStore } from "@services/zustand/feedVideos"
+import { VideoSource } from "../commons/VideosHeader"
 import { useFocusEffect } from "@react-navigation/native"
 import { pushMessage } from "@services/notification"
-import { extractVideoUrl } from "@src/utils"
+import useNDKStore from "@services/zustand/useNDKStore"
+import { useTranslateService } from "@src/providers/TranslateProvider"
+import { TimeSeconds } from "@services/converter/TimeSeconds"
+import { useFeedVideosStore } from "@services/zustand/useFeedVideoStore"
+import { Utilities } from "@/src/utils/Utilities"
 
-export const useVideos =({ navigation }: any) => {
+const useFeedVideos =({ navigation }: any) => {
    
     const { ndk } = useNDKStore()
     const timeout = useRef<any>()
     const events = useRef(new Set())
     const { useTranslate } = useTranslateService()
     const subscription = useRef<NDKSubscription>()
-    const lastTimestamp = useRef<number>(timeSeconds.now())
+    const lastTimestamp = useRef<number>(TimeSeconds.now())
     const isFetching = useRef<boolean>(false) 
-    const [videos, setVideos] = useState<NostrEvent[]>([])
+    const [videos, setVideos] = useState<NDKEvent[]>([])
     const [paused, setPaused] = useState<boolean>(false)
     const [playingIndex, setPlayingIndex] = useState<number>(0)
     const [source, setSource] = useState<VideoSource>("relays")
@@ -41,7 +41,7 @@ export const useVideos =({ navigation }: any) => {
     const loadResetFeed = () => {
         setVideos([])
         events.current.clear()
-        lastTimestamp.current = timeSeconds.now() 
+        lastTimestamp.current = TimeSeconds.now() 
         fetchVideos()
     }
 
@@ -79,17 +79,9 @@ export const useVideos =({ navigation }: any) => {
             { 
                 if(event.created_at) lastTimestamp.current = event.created_at
                 if(founds >= feedSettings.VIDEOS_LIMIT) return subscription.current?.stop()
-                if(extractVideoUrl(event.content)) 
+                if(Utilities.extractVideoUrl(event.content)) 
                 {
-                    setVideos(prev => [...prev, { 
-                        id: event.id,
-                        kind: event.kind,
-                        pubkey: event.pubkey,
-                        tags: event.tags,
-                        content: event.content,
-                        created_at: event.created_at,
-                        sig: event.sig
-                    } as NostrEvent])
+                    setVideos(prev => [...prev, event])
                     events.current.add(event.id)
                     founds ++
                 }
@@ -121,3 +113,5 @@ export const useVideos =({ navigation }: any) => {
         fetchVideos
     }
 }
+
+export default useFeedVideos

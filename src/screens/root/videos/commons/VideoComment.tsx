@@ -1,29 +1,30 @@
 import NoteViewer from "@components/nostr/event/NoteViewer"
-import { NDKEvent, NDKFilter, NDKKind, NDKSubscription, NDKSubscriptionCacheUsage, NostrEvent } from "@nostr-dev-kit/ndk-mobile"
+import { NDKEvent, NDKFilter, NDKKind, NDKSubscription, NDKSubscriptionCacheUsage } from "@nostr-dev-kit/ndk-mobile"
 import { TouchableOpacity, View, Text, StyleSheet } from "react-native"
+import { useAccount } from "@src/context/AccountContext"
+import useNDKStore from "@services/zustand/useNDKStore"
+import { useTranslateService } from "@src/providers/TranslateProvider"
+import { useEffect, useRef, useState } from "react"
+import { useService } from "@src/providers/ServiceProvider"
 import Ionicons from "react-native-vector-icons/Ionicons"
 import theme from "@src/theme"
-import { useTranslateService } from "@src/providers/translateProvider"
-import useNDKStore from "@services/zustand/ndk"
-import { useEffect, useRef, useState } from "react"
-import { useAuth } from "@src/providers/userProvider"
-import { noteService } from "@services/nostr/noteService"
 
 interface CommentItemProps {
-    event: NostrEvent,
-    replies: NostrEvent[]
+    event: NDKEvent,
+    replies: NDKEvent[]
 }
 
-const CommentItem = ({ event, replies }: CommentItemProps) => {
+const VideoComment = ({ event, replies }: CommentItemProps) => {
    
-    const { user } = useAuth()
+    const { user } = useAccount()
     const { ndk } = useNDKStore()
     const timeout = useRef<any>(null)
     const subscription = useRef<NDKSubscription>()
     const { useTranslate } = useTranslateService()
     const [showReplies, setShowReplies] = useState(false)
     const [reacted, setReacted] = useState<boolean>(false)
-    const [reactions, setReactions] = useState<NostrEvent[]>([])
+    const [reactions, setReactions] = useState<NDKEvent[]>([])
+    const { noteService } = useService()
 
     useEffect(() => { 
         setTimeout(fetchReactions, 20)
@@ -45,15 +46,7 @@ const CommentItem = ({ event, replies }: CommentItemProps) => {
             cacheUsage: NDKSubscriptionCacheUsage.ONLY_RELAY
         })  
 
-        subscription.current.on("event", note => setReactions(prev => [...prev, {
-            id: note.id,
-            kind: note.kind,
-            pubkey: note.pubkey,
-            tags: note.tags,
-            content: note.content,
-            created_at: note.created_at,
-            sig: note.sig
-        } as NostrEvent]))
+        subscription.current.on("event", note => setReactions(prev => [...prev, note]))
 
         timeout.current = setTimeout(() => {
             subscription.current?.stop()
@@ -66,11 +59,11 @@ const CommentItem = ({ event, replies }: CommentItemProps) => {
     const handleReact = () => {
         setReacted(prev => !prev)
         setTimeout(() => {
-            const reaction = reactions.find(r => r.pubkey == user.pubkey) as NostrEvent
+            const reaction = reactions.find(r => r.pubkey == user.pubkey) 
             if(!reaction) {
-                setReactions(prev => [...prev, user as NostrEvent])
+                setReactions(prev => [...prev, { pubkey: user.pubkey } as NDKEvent])
                 noteService.reactNote({ note: event as NDKEvent, reaction:"❣️" }).then(reaction => {
-                    setReactions(prev => [...prev.filter(r => r.pubkey != user.pubkey), reaction as NostrEvent])
+                    setReactions(prev => [...prev.filter(r => r.pubkey != user.pubkey), reaction])
                 })
             }
             if(reaction) {
@@ -136,4 +129,4 @@ const styles = StyleSheet.create({
     iconButton: { marginVertical: 3 }
 })
 
-export default CommentItem
+export default VideoComment

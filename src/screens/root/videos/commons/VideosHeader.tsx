@@ -1,7 +1,6 @@
-import { useTranslateService } from "@/src/providers/translateProvider"
 import theme from "@src/theme"
 import { useState } from "react"
-import { StyleSheet, View, TouchableOpacity, Text } from "react-native"
+import { StyleSheet, View, TouchableOpacity } from "react-native"
 import Ionicons from 'react-native-vector-icons/Ionicons'
 
 export type VideoSource = "relays" | "saved"

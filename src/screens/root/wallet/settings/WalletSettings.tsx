@@ -1,31 +1,27 @@
-import { useAuth } from "@src/providers/userProvider"
 import { ScrollView, StyleSheet, View } from "react-native"
 import { ButtonLink, ButtonPrimary } from "@components/form/Buttons"
 import MessageBox, { showMessage } from "@components/general/MessageBox"
 import { FormControl, FormControlSwitch } from "@components/form/FormControl"
+import { useAccount } from "@src/context/AccountContext"
+import { useTranslateService } from "@src/providers/TranslateProvider"
+import { Wallet } from "@services/wallet/types/Wallet"
+import { useService } from "@src/providers/ServiceProvider"
 import { HeaderScreen } from "@components/general/HeaderScreen"
 import { pushMessage } from "@services/notification"
-import { useTranslateService } from "@src/providers/translateProvider"
-import { Wallet } from "@services/memory/types"
 import { useState } from "react"
-import { StackScreenProps } from "@react-navigation/stack"
-import { walletService } from "@services/wallet"
-import { userService } from "@services/user"
 import theme from "@src/theme"
-import { storageService } from "@services/memory"
 
-interface ScreenParams { wallet: Wallet }
 
-const WalletSettings = ({ navigation, route }: StackScreenProps<any>) => {
+const WalletSettings = ({ navigation, route }: any) => {
 
-    const { wallet } = route.params as ScreenParams
+    const { wallet } = route.params
+    const { walletService } = useService()
     const { useTranslate } = useTranslateService()
-    const { setWallets, user, setUser } = useAuth()
+    const { setWallets, user, setUser } = useAccount()
     const [loading, setLoading] = useState(false)
     const [walletName, setWalletName] = useState(wallet.name)
     const [defaultWallet, setDefaultWallet] = useState<boolean>(wallet.default ?? false)
     const [payfee, setPayfee] = useState<boolean>(wallet.payfee ?? false)
-    //const [testnet, setTestnet] = useState<boolean>(wallet.type=="testnet")
 
     const hadleDeleteWallet = async () => {
         showMessage({
@@ -37,9 +33,9 @@ const WalletSettings = ({ navigation, route }: StackScreenProps<any>) => {
 
                     await walletService.delete(wallet ?? {})
 
-                    if(setWallets) setWallets(await storageService.wallets.list())
+                    if(setWallets) setWallets(await walletService.list())
 
-                    navigation.reset({ index: 0, routes: [{ name: "core-stack" }] })
+                    navigation.reset({ index: 0, routes: [{ name: "home" }] })
                 }
             }
         })
@@ -48,26 +44,15 @@ const WalletSettings = ({ navigation, route }: StackScreenProps<any>) => {
     const handleSave = async () => {
 
         setLoading(true)
-        const walletData: Wallet = {
+
+        await walletService.update("id", {
             ...wallet,
-            payfee,
             name: walletName,
-            default: defaultWallet
-        }
+            default: defaultWallet,
+            payfee
+        })
 
-        if(walletData.default && walletData.key != user.default_wallet) 
-        {           
-            user.default_wallet = walletData.key
-            user.bitcoin_address = walletData.address   
-
-            await userService.updateProfile({ 
-                user, setUser, upNostr: true 
-            })
-        }
-
-        await storageService.wallets.update({ ...walletData })
-
-        if(setWallets) setWallets(await storageService.wallets.list())
+        if(setWallets) setWallets(await walletService.list())
 
         pushMessage(useTranslate("message.wallet.saved"))
 
@@ -75,7 +60,7 @@ const WalletSettings = ({ navigation, route }: StackScreenProps<any>) => {
             index: 1,
             routes: [
                 { name: 'core-stack' },
-                { name: 'wallet', params: { wallet: walletData } }
+                { name: 'wallet', params: { id: "id" } }
             ]
         }) 
     }

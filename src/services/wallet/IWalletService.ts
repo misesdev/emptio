@@ -15,10 +15,10 @@ export type SendTransactionProps = {
 
 export interface IWalletService {
     add(props: AddWalletProps): Promise<AppResponse<string>>;
-    get(id: string): Promise<AppResponse<Wallet>>;
     update(id: string, wallet: Wallet): Promise<AppResponse<string>>;
     delete(id: string): Promise<AppResponse<string>>;
     list(): Promise<StoredItem<Wallet>[]>;
+    get(id: string): Promise<Wallet>;
 
     getFeeRate(): Promise<AppResponse<FeeRate>>;
     getBlockHeight(): Promise<AppResponse<number>>;

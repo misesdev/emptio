@@ -29,7 +29,7 @@ export default class WalletService implements IWalletService
         this._addresses = addresses
     }
 
-    public async load(id: string) : Promise<void> 
+    public async init(id: string) : Promise<void> 
     {
         this._wallet = await this._storage.get(id) 
         const masterSeed = await this._keyStorage.get(this._wallet.entity.keyRef)
@@ -60,17 +60,13 @@ export default class WalletService implements IWalletService
         }
     }
 
-    public async get(id: string): Promise<AppResponse<Wallet>> 
+    public async get(id: string): Promise<Wallet> 
     {
-        try {
-            const list = await this.list()
-            const entity = list.find(e => e.id == id)?.entity
-            if(!entity)
-                throw new Error("Wallet not found")
-            return { success: true, data: entity } 
-        } catch(ex) {
-            return trackException(ex)
-        }
+        const list = await this.list()
+        const entity = list.find(e => e.id == id)?.entity
+        if(!entity)
+            throw new Error("Wallet not found")
+        return entity 
     }
     
     public async list(): Promise<StoredItem<Wallet>[]> 
@@ -124,6 +120,16 @@ export default class WalletService implements IWalletService
         }
     }
 
+    public async listReceiveAddresses(quantity: number=10)
+    {
+        return this._hdwallet.listReceiveAddresses(quantity)
+    }
+
+    public async listChangeAddresses(quantity: number=10)
+    {
+        return this._hdwallet.listChangeAddresses(quantity)
+    }
+    
     public async listUtxos(cached: boolean = false): Promise<AppResponse<UTXO[]>> 
     {
         try {

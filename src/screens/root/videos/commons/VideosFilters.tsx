@@ -1,11 +1,10 @@
 import { ButtonPrimary } from "@components/form/Buttons"
-import { useTranslateService } from "@src/providers/translateProvider"
 import { StyleSheet, Modal, View, TouchableOpacity, FlatList, Text } from "react-native"
+import { useFeedVideosStore } from "@services/zustand/useFeedVideoStore"
+import { useTranslateService } from "@src/providers/TranslateProvider"
 import { FormControl } from "@components/form/FormControl"
 import Ionicons from 'react-native-vector-icons/Ionicons'
-import { useFeedVideosStore } from "@services/zustand/feedVideos"
 import { memo, useCallback, useState } from "react"
-import { storageService } from "@services/memory"
 import theme from "@src/theme"
 
 var showFiltersFunction: () => void
@@ -26,8 +25,8 @@ const TagItem = memo(({ tag, handlePress }: TagItemProps) => {
 
 const VideosFilters = () => {
     
-    const { feedSettings, setFeedSettings } = useFeedVideosStore()
     const { useTranslate } = useTranslateService()
+    const { feedSettings, setFeedSettings } = useFeedVideosStore()
     const [tagNameText, setTagNameText] = useState<string>("")
     const [filterTags, setFilterTags] = useState<string[]>(feedSettings.filterTags)
     const [visible, setVisible] = useState<boolean>(false)
@@ -49,7 +48,7 @@ const VideosFilters = () => {
 
     const handleSave = () => {
         setFeedSettings({...feedSettings, filterTags})
-        storageService.settings.feedVideos.save({...feedSettings, filterTags})
+        //storageService.settings.feedVideos.save({...feedSettings, filterTags})
         setVisible(false)
     }
 

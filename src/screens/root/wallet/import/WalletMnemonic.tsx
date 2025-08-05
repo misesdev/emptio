@@ -1,18 +1,13 @@
 import { ButtonPrimary } from "@components/form/Buttons"
 import { FormControl } from "@components/form/FormControl"
 import { HeaderScreen } from "@components/general/HeaderScreen"
-import { useTranslateService } from "@src/providers/translateProvider"
+import { useTranslateService } from "@src/providers/TranslateProvider"
 import { StyleSheet, View, Text } from "react-native"
-import { pushMessage } from "@services/notification"
-import { walletService } from "@services/wallet"
-import { storageService } from "@services/memory"
-import { useAuth } from "@src/providers/userProvider"
 import { useState } from "react"
 import theme from "@src/theme"
 
-const ImportWalletMnemonic = ({ navigation, route }: any) => {
+const WalletMnemonic = ({ navigation, route }: any) => {
 
-    const { setWallets } = useAuth()
     const { name, network } = route.params
     const [mnemonic, setMnemonic] = useState<string>("")
     const [password, setPassword] = useState<string>("")
@@ -34,24 +29,24 @@ const ImportWalletMnemonic = ({ navigation, route }: any) => {
         setLoading(true)
         setDisabled(true)
 
-        setTimeout(async () => {
-            const response = await walletService.import({ 
-                name,
-                network,
-                mnemonic: mnemonic.trim(), 
-                password: password?.trim() 
-            })
+        // setTimeout(async () => {
+        //     const response = await walletService.import({ 
+        //         name,
+        //         network,
+        //         mnemonic: mnemonic.trim(), 
+        //         password: password?.trim() 
+        //     })
 
-            if(setWallets) setWallets(await storageService.wallets.list())
+        //     if(setWallets) setWallets(await storageService.wallets.list())
 
-            if (response.success)
-                navigation.reset({ index: 0, routes: [{ name: "core-stack" }] })
-            else if(response.message)
-                pushMessage(response.message)
-            
-            setDisabled(false)
-            setLoading(false)
-        }, 20)
+        //     if (response.success)
+        //         navigation.reset({ index: 0, routes: [{ name: "core-stack" }] })
+        //     else if(response.message)
+        //         pushMessage(response.message)
+        //     
+        //     setDisabled(false)
+        //     setLoading(false)
+        // }, 20)
     }
 
     return (
@@ -95,4 +90,4 @@ const styles = StyleSheet.create({
     buttonArea: { width: '100%', justifyContent: 'center', marginVertical: 10, flexDirection: "row", marginTop: 50 },
 })
 
-export default ImportWalletMnemonic
+export default WalletMnemonic

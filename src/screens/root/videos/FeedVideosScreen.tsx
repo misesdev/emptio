@@ -1,19 +1,19 @@
-import { NostrEvent } from "@nostr-dev-kit/ndk-mobile"
+import { NDKEvent, NostrEvent } from "@nostr-dev-kit/ndk-mobile"
 import { StackScreenProps } from "@react-navigation/stack"
 import { View, FlatList, SafeAreaView } from "react-native"
 import { ActivityIndicator } from "react-native-paper"
-import FeedVideoViewer from "./viewer"
-import VideosHeader from "./commons/header"
-import { useVideos } from "./hooks/use-videos"
+import useFeedVideos from "./hooks/useFeedVideos"
+import FeedVideoViewer from "./FeedVideoViewer"
+import VideosHeader from "./commons/VideosHeader"
 import { useCallback } from "react"
 import theme from "@src/theme"
 
-const VideosFeed = ({ navigation }: StackScreenProps<any>) => {
+const FeedVideosScreen = ({ navigation }: StackScreenProps<any>) => {
 
     const { 
         savedVideos, paused, playingIndex, setPlayingIndex, 
         setSource, fetchVideos 
-    } = useVideos({ navigation })
+    } = useFeedVideos({ navigation })
 
     const onViewableItemsChanged = useCallback(({ viewableItems }: any) => {
         if(viewableItems.length > 0 && viewableItems[0].index != null) {
@@ -21,7 +21,7 @@ const VideosFeed = ({ navigation }: StackScreenProps<any>) => {
         }
     }, [])
 
-    const renderItem = useCallback(({ item, index }:{ item: NostrEvent, index: number }) => {
+    const renderItem = useCallback(({ item, index }:{ item: NDKEvent, index: number }) => {
         return <FeedVideoViewer event={item} paused={index !== playingIndex || paused} />
     }, [playingIndex, paused])
 
@@ -37,7 +37,7 @@ const VideosFeed = ({ navigation }: StackScreenProps<any>) => {
                 data={savedVideos}
                 style={{ flex: 1 }}
                 renderItem={renderItem}
-                keyExtractor={(item: NostrEvent) => item.id??""}
+                keyExtractor={(item: NDKEvent) => item.id??""}
                 showsVerticalScrollIndicator={false}
                 viewabilityConfig={{ viewAreaCoveragePercentThreshold: 80 }} 
                 onViewableItemsChanged={onViewableItemsChanged}
@@ -56,4 +56,4 @@ const VideosFeed = ({ navigation }: StackScreenProps<any>) => {
     )
 }
 
-export default VideosFeed
+export default FeedVideosScreen

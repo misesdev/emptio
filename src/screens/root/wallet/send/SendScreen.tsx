@@ -1,20 +1,14 @@
 import { StyleSheet, Text, TouchableOpacity, View } from "react-native"
 import { HeaderScreen } from "@components/general/HeaderScreen"
+import { useTranslateService } from "@src/providers/TranslateProvider"
 import { AmountBox } from "@components/wallet/inputs"
 import Ionicons from 'react-native-vector-icons/Ionicons'
-import { useTranslateService } from "@src/providers/translateProvider"
 import { useState } from "react"
-import { StackScreenProps } from "@react-navigation/stack"
-import { Wallet } from "@services/memory/types"
 import theme from "@src/theme"
 
-interface ScreenParams {
-    wallet: Wallet
-}
+const SendScreen = ({ navigation, route }: any) => {
 
-const SendScreen = ({ navigation, route }: StackScreenProps<any>) => {
-
-    const { wallet } = route.params as ScreenParams
+    const { wallet } = route.params 
     const { useTranslate } = useTranslateService()
     const [amount, setAmount] = useState<string>("0")
     const [nextDisabled, setNextDisabled] = useState(true)

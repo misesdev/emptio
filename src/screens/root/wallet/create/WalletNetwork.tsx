@@ -1,56 +1,56 @@
 import { ButtonPrimary } from "@components/form/Buttons"
 import { HeaderScreen } from "@components/general/HeaderScreen"
-import { useTranslateService } from "@src/providers/translateProvider"
 import { StyleSheet, View, Text, TouchableOpacity } from "react-native"
+import { ScrollView } from "react-native-gesture-handler"
+import { useTranslateService } from "@src/providers/TranslateProvider"
+import { useService } from "@src/providers/ServiceProvider"
 import Ionicons from "react-native-vector-icons/Ionicons"
-import { useAuth } from "@src/providers/userProvider"
-import { walletService } from "@services/wallet"
-import { userService } from "@services/user"
-import { BaseWallet } from "@services/bitcoin"
-import { pushMessage } from "@services/notification"
-import { storageService } from "@services/memory"
 import { BNetwork } from "bitcoin-tx-lib"
 import { useState } from "react"
 import theme from "@src/theme"
-import { ScrollView } from "react-native-gesture-handler"
 
-const CreateWalletNetwork = ({ navigation, route }: any) => {
+const WalletNetwork = ({ navigation, route }: any) => {
 
-    const { user, setWallets } = useAuth()
-    const { name, password } = route.params
+    const { name } = route.params
     const [network, setNetwork] = useState<BNetwork>("mainnet")
     const [disabled, setDisabled] = useState<boolean>(false)
     const [loading, setLoading] = useState<boolean>(false)
     const { useTranslate } = useTranslateService()
+    const { walletFactory } = useService()
 
-    const createWallet = async () => {
+    const continueToPassPhrase = async () => {
         setLoading(true)
         setDisabled(true)
+        const mnemonic = walletFactory.generateMnemonic()
+        navigation.navigate("create-wallet-mnemonic", { 
+            name, 
+            network, 
+            mnemonic 
+        })
+        // const response = await walletService.create({ name, password, network })
+        // 
+        // if (response.success)
+        // {
+        //     let base = response.data as BaseWallet
+        //     if (base.wallet.default) {
+        //         user.default_wallet = base.wallet.key
+        //         user.bitcoin_address = base.wallet.address
+        //         await userService.updateProfile({ user, upNostr: true })
+        //     }
 
-        const response = await walletService.create({ name, password, network })
-        
-        if (response.success)
-        {
-            let base = response.data as BaseWallet
-            if (base.wallet.default) {
-                user.default_wallet = base.wallet.key
-                user.bitcoin_address = base.wallet.address
-                await userService.updateProfile({ user, upNostr: true })
-            }
+        //     if(setWallets) setWallets(await storageService.wallets.list())
 
-            if(setWallets) setWallets(await storageService.wallets.list())
+        //     navigation.navigate("seed-wallet", { 
+        //         wallet: base.wallet,
+        //         mnemonic: base.mnemonic.split(" ")
+        //     })
+        // }
+        // else if(response.message) {
+        //     pushMessage(response.message)
+        // }
 
-            navigation.navigate("seed-wallet", { 
-                wallet: base.wallet,
-                mnemonic: base.mnemonic.split(" ")
-            })
-        }
-        else if(response.message) {
-            pushMessage(response.message)
-        }
-
-        setLoading(false)
         setDisabled(false)
+        setLoading(false)
     }
 
     return (
@@ -108,8 +108,8 @@ const CreateWalletNetwork = ({ navigation, route }: any) => {
                 <ButtonPrimary
                     loading={loading}
                     disabled={disabled}
-                    onPress={createWallet}
-                    label={useTranslate("commons.create")} 
+                    onPress={continueToPassPhrase}
+                    label={useTranslate("commons.continue")} 
                 />
             </View>
         </ScrollView>    
@@ -125,4 +125,4 @@ const styles = StyleSheet.create({
     typeDescription: { marginBottom: 15, color: theme.colors.gray },
 })
 
-export default CreateWalletNetwork
+export default WalletNetwork

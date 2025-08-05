@@ -2,26 +2,25 @@ import { HeaderScreen } from "@components/general/HeaderScreen"
 import { StyleSheet, View, Text } from "react-native"
 import { FormControl } from "@components/form/FormControl"
 import { ButtonPrimary } from "@components/form/Buttons"
-import { useTranslateService } from "@src/providers/translateProvider"
+import { useTranslateService } from "@src/providers/TranslateProvider"
 import { StackScreenProps } from "@react-navigation/stack"
 import { ScrollView } from "react-native-gesture-handler"
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import theme from "@src/theme"
 
-const ImportWalletScreen = ({ navigation }: StackScreenProps<any>) => {
+const WalletName = ({ navigation }: StackScreenProps<any>) => {
 
+    const { useTranslate } = useTranslateService()
     const [disabled, setDisabled] = useState(true)
     const [name, setName] = useState<string>("")
-    const { useTranslate } = useTranslateService()
 
-    const handleSetName = (value: string) => {
-        setName(value)
-        setTimeout(validateFields, 20)
-    }
+    useEffect(() => {
+        setDisabled(name.length <= 2)
+    }, [name])
 
-    const validateFields = () => setDisabled(name.length <= 2)
-
-    const continueToNetwork = () => navigation.navigate("import-wallet-network", { name })
+    const continueToNetwork = () => navigation.navigate("create-wallet-network", { 
+        name 
+    })
 
     return (
         <ScrollView contentContainerStyle={theme.styles.container}>
@@ -37,7 +36,7 @@ const ImportWalletScreen = ({ navigation }: StackScreenProps<any>) => {
 
             <FormControl  
                 value={name} 
-                onChangeText={handleSetName}                 
+                onChangeText={setName}                 
                 label={useTranslate("labels.wallet.name")}
             />
 
@@ -54,9 +53,8 @@ const ImportWalletScreen = ({ navigation }: StackScreenProps<any>) => {
 
 const styles = StyleSheet.create({
     container: { flex: 1, alignItems: 'center', backgroundColor: theme.colors.black },
-    title: { fontSize: 25, fontWeight: "bold", textAlign: "center", color: theme.colors.white, 
-        marginVertical: 20 },
+    title: { fontSize: 25, fontWeight: "bold", textAlign: "center", color: theme.colors.white, marginVertical: 20 },
     buttonArea: { width: '100%', justifyContent: 'center', marginVertical: 10, flexDirection: "row", marginTop: 50 }
 })
 
-export default ImportWalletScreen
+export default WalletName

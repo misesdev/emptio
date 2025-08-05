@@ -1,25 +1,24 @@
-import { User } from "@services/memory/types"
 import Ionicons from 'react-native-vector-icons/Ionicons'
-import { copyPubkey, getDisplayPubkey, getUserName } from "@src/utils"
-import { NDKEvent, NDKFilter, NDKKind, NDKSubscription, NDKSubscriptionCacheUsage, 
-    NostrEvent } from "@nostr-dev-kit/ndk-mobile"
+import { NDKEvent, NDKFilter, NDKKind, NDKSubscription, NDKSubscriptionCacheUsage
+    } from "@nostr-dev-kit/ndk-mobile"
 import { useEffect, useState, useCallback, useMemo, useRef } from "react"
 import { StyleSheet, View, Text, TouchableOpacity } from "react-native"
-import VideoDescription from "./description"
-import { useTranslateService } from "@src/providers/translateProvider"
 import { ProfilePicture } from "@components/nostr/user/ProfilePicture"
-import { useAuth } from "@src/providers/userProvider"
-import VideoComments from "./comments"
-import VideoShareBar from "./share"
-import { noteService } from "@services/nostr/noteService"
-import useNDKStore from "@services/zustand/ndk"
+import VideoOptionsBar, { showVideoOptions } from "./VideoOptionsBar"
+import useNDKStore from '@/src/services/zustand/useNDKStore'
+import { useTranslateService } from '@/src/providers/TranslateProvider'
+import { useAccount } from '@/src/context/AccountContext'
+import { User } from '@/src/services/user/types/User'
+import { useService } from '@/src/providers/ServiceProvider'
+import { Utilities } from '@/src/utils/Utilities'
+import VideoDescription from "./VideoDescription"
+import VideoComments from './VideoComments'
+import VideosFilters from './VideosFilters'
+import VideoShareBar from "./VideoShareBar"
 import theme from "@src/theme"
-import { userService } from "@services/user"
-import VideoOptionsBar, { showVideoOptions } from "./options"
-import VideosFilters from "./filters"
 
 interface FooterVideoProps { 
-    event: NostrEvent, 
+    event: NDKEvent, 
     url: string,
 }
 
@@ -28,14 +27,15 @@ const VideoFooter = ({ event, url }: FooterVideoProps) => {
     const { ndk } = useNDKStore()
     const timeout = useRef<any>(null)
     const subscription = useRef<NDKSubscription>()
-    const { user, follows, followsEvent } = useAuth()
+    const { user, follows, followsEvent } = useAccount()
     const { useTranslate } = useTranslateService()
-    const [profile, setProfile] = useState<User>({})
+    const [profile, setProfile] = useState<User>({} as User)
     const [commentsVisible, setCommentsVisible] = useState<boolean>(false)
     const [shareVisible, setShareVisible] = useState<boolean>(false)
     const [reacted, setReacted] = useState<boolean>(false)
-    const [reactions, setReactions] = useState<NostrEvent[]>([])
-    const [comments, setComments] = useState<NostrEvent[]>([])
+    const [reactions, setReactions] = useState<NDKEvent[]>([])
+    const [comments, setComments] = useState<NDKEvent[]>([])
+    const { noteService, userService } = useService()
 
     const isFriend = useMemo(() => follows?.some(f => f.pubkey == event.pubkey), [follows, event.pubkey])
     
@@ -73,25 +73,9 @@ const VideoFooter = ({ event, url }: FooterVideoProps) => {
                 user.pubkey = note.pubkey
                 setProfile(user)
             } else if(note.kind == NDKKind.Text && isComment(note)) { 
-                setComments(prev => [...prev, {
-                    id: note.id,
-                    kind: note.kind,
-                    pubkey: note.pubkey,
-                    tags: note.tags,
-                    content: note.content,
-                    created_at: note.created_at,
-                    sig: note.sig
-                } as NostrEvent])
+                setComments(prev => [...prev, note])
             } else if(note.kind == NDKKind.Reaction) { 
-                setReactions(prev => [...prev, {
-                    id: note.id,
-                    kind: note.kind,
-                    pubkey: note.pubkey,
-                    tags: note.tags,
-                    content: note.content,
-                    created_at: note.created_at,
-                    sig: note.sig
-                } as NostrEvent])
+                setReactions(prev => [...prev, note])
             }
         })
 
@@ -105,23 +89,23 @@ const VideoFooter = ({ event, url }: FooterVideoProps) => {
 
     const handleReact = () => {
         setReacted(prev => !prev)
-        const reaction: NostrEvent = reactions.find(r => r.pubkey == user.pubkey) as NostrEvent
+        const reaction = reactions.find(r => r.pubkey == user.pubkey)
         if(!reaction) {
-            setReactions(prev => [...prev, user as NostrEvent])
+            setReactions(prev => [...prev, { pubkey: user.pubkey } as NDKEvent])
             noteService.reactNote({ note: event as NDKEvent, reaction:"❣️" }).then(reaction => {
-                setReactions(prev => [...prev.filter(r => r.pubkey != user.pubkey), reaction as NostrEvent])
+                setReactions(prev => [...prev.filter(r => r.pubkey != user.pubkey), reaction])
             })
         }
         if(reaction) {
             setReactions(prev => [...prev.filter(r => r.id != reaction.id)])
-            noteService.deleteReact(reaction as NDKEvent)
+            noteService.deleteReact(reaction)
         }
     }
 
     const handleFollow = () => {
         follows.push(profile)
         followsEvent?.tags?.push(["p", event.pubkey])
-        userService.updateFollows({ user, follows: followsEvent })
+        userService.updateFollows(followsEvent)
     }
 
     return (
@@ -134,14 +118,14 @@ const VideoFooter = ({ event, url }: FooterVideoProps) => {
                         </View>
                         <View style={{ width: "60%", paddingHorizontal: 6 }}>
                             <Text style={[styles.profileName, styles.shadow]}>
-                                {getUserName(profile, 20)}
+                                {Utilities.getUserName(profile, 20)}
                             </Text>
                             <TouchableOpacity activeOpacity={.7} 
-                                onPress={() => copyPubkey(event.pubkey)}
+                                onPress={() => Utilities.copyPubkey(event.pubkey)}
                                 style={{ flexDirection: "row" }}
                             >
                                 <Text style={[styles.profilePubkey, styles.shadow]}>
-                                    {getDisplayPubkey(event.pubkey ?? "", 18)}
+                                    {Utilities.getDisplayPubkey(event.pubkey ?? "", 18)}
                                 </Text>
                                 <Ionicons name="copy" size={10} style={{ padding: 5 }} color={theme.colors.white} />
                             </TouchableOpacity>

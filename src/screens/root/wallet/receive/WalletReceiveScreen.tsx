@@ -2,31 +2,43 @@ import { Image, TouchableOpacity, View, Text, StyleSheet } from "react-native"
 import QRCode from "react-native-qrcode-svg"
 import { HeaderScreen } from "@components/general/HeaderScreen"
 import { ButtonPrimary } from "@components/form/Buttons"
-import { useAuth } from "@src/providers/userProvider"
-import { useTranslateService } from "@src/providers/translateProvider"
-import { StackScreenProps } from "@react-navigation/stack"
-import { Wallet } from "@services/memory/types"
-import { copyToClipboard } from "@src/utils"
-import { useState } from "react"
+import { useTranslateService } from "@src/providers/TranslateProvider"
+import { useService } from "@src/providers/ServiceProvider"
+import { useAccount } from "@src/context/AccountContext"
+import { Utilities } from "@src/utils/Utilities"
+import { useEffect, useState } from "react"
 import theme from "@src/theme"
 
-type ScreenProps = { wallet: Wallet }
+const WalletReceiveScreen = ({ navigation, route }: any) => {
 
-const WalletReceiveScreen = ({ navigation, route }: StackScreenProps<any>) => {
-
-    const { user } = useAuth()
-    const { wallet } = route.params as ScreenProps
+    const { user } = useAccount()
     const { useTranslate } = useTranslateService()
-    const [valueText, setValueText] = useState(wallet?.address ?? "")
+    const [address, setAddress] = useState("")
     const [pictureError, setPictureError] = useState<boolean>(false)
+    const { walletService } = useService()
+
+    useEffect(() => {
+        loadAddress()
+    }, [])
+
+    const loadAddress = async () => {
+        await walletService.init(route.params?.id as string)
+        const addresses = await walletService.listReceiveAddresses(15)
+        // const result = await walletService.listTransactions(true)
+        // if(result.success && result.data) {
+        //     const received = result.data.filter(t => t.type == "received")
+        //         .map(t => t.participants)
+        // }
+        setAddress(addresses[0])
+    }
 
     const handleCopyValue = async () => {
 
-        copyToClipboard(valueText) 
+        Utilities.copyToClipboard(address) 
 
-        setValueText(useTranslate("commons.copied"))
+        setAddress(useTranslate("commons.copied"))
 
-        setTimeout(() => setValueText(valueText), 1000)
+        setTimeout(() => loadAddress(), 1000)
     }
 
     return (
@@ -54,7 +66,7 @@ const WalletReceiveScreen = ({ navigation, route }: StackScreenProps<any>) => {
                 <View style={styles.qrcode}>
                     <QRCode
                         size={240}
-                        value={wallet.address??""}
+                        value={address}
                         logoSize={75}
                         logoBorderRadius={12}
                         logo={require("@assets/icon.png")}
@@ -63,7 +75,7 @@ const WalletReceiveScreen = ({ navigation, route }: StackScreenProps<any>) => {
                 </View>
 
                 <TouchableOpacity activeOpacity={.7} onPress={handleCopyValue} style={styles.copycontent}>
-                    <Text style={styles.copytext}>{valueText}</Text>
+                    <Text style={styles.copytext}>{}</Text>
                 </TouchableOpacity>
 
             </View>

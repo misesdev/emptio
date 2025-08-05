@@ -1,11 +1,12 @@
+
 import { HeaderScreen } from "@components/general/HeaderScreen"
 import { ScrollView, StyleSheet, Text, View } from "react-native"
+import { useTranslateService } from "@src/providers/TranslateProvider"
 import { ButtonPrimary } from "@components/form/Buttons"
-import { useTranslateService } from "@src/providers/translateProvider"
 import { useEffect, useState } from "react"
 import theme from "@src/theme"
 
-const CreatedSeedScren = ({ navigation, route }: any) => {
+const WalletMnemonic = ({ navigation, route }: any) => {
 
     const { mnemonic } = route.params
     const { useTranslate } = useTranslateService()
@@ -23,7 +24,7 @@ const CreatedSeedScren = ({ navigation, route }: any) => {
     }, [])
 
     const handleClose = () => {
-        navigation.reset({ index: 0, routes: [{ name: "core-stack" }] })
+        navigation.reset({ index: 0, routes: [{ name: "home" }] })
     }
 
     return (
@@ -59,4 +60,4 @@ const styles = StyleSheet.create({
         textAlign: "center", padding: 15, paddingVertical: 20, borderRadius: 10 }
 })
 
-export default CreatedSeedScren
+export default WalletMnemonic

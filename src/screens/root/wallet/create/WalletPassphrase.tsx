@@ -2,29 +2,24 @@ import { HeaderScreen } from "@components/general/HeaderScreen"
 import { StyleSheet, View, Text } from "react-native"
 import { FormControl } from "@components/form/FormControl"
 import { ButtonPrimary } from "@components/form/Buttons"
-import { useTranslateService } from "@src/providers/translateProvider"
+import { useTranslateService } from "@src/providers/TranslateProvider"
 import { StackScreenProps } from "@react-navigation/stack"
+import { ScrollView } from "react-native-gesture-handler"
 import { useState } from "react"
 import theme from "@src/theme"
-import { ScrollView } from "react-native-gesture-handler"
 
-const CreateWalletScreen = ({ navigation }: StackScreenProps<any>) => {
+const WalletPassphrase = ({ navigation }: StackScreenProps<any>) => {
 
     const [disabled, setDisabled] = useState(true)
-    const [name, setName] = useState<string>("")
-    const [password, setPassword] = useState<string>("")
+    const [passphrase, setPassphrase] = useState<string>("")
     const { useTranslate } = useTranslateService()
 
-    const handleSetName = (value: string) => {
-        setName(value)
+    const handleSetPassphrase = (value: string) => {
+        setPassphrase(value)
         setTimeout(validateFields, 20)
     }
 
-    const validateFields = () => setDisabled(name.length <= 2)
-
-    const continueToNetwork = () => navigation.navigate("create-wallet-network", { 
-        name, password 
-    })
+    const validateFields = () => setDisabled(passphrase.length <= 2)
 
     return (
         <ScrollView contentContainerStyle={theme.styles.container}>
@@ -36,25 +31,19 @@ const CreateWalletScreen = ({ navigation }: StackScreenProps<any>) => {
 
             <View style={{ height: 20 }}></View>
 
-            <Text style={styles.title}>Defina um nome para a sua carteira</Text>
-
-            <FormControl  
-                value={name} 
-                onChangeText={handleSetName}                 
-                label={useTranslate("labels.wallet.name")}
-            />
+            <Text style={styles.title}>Defina uma passphrase para a sua carteira</Text>
 
             <FormControl type="password"
-                value={password}
+                value={passphrase}
                 label={useTranslate("labels.wallet.password")} 
-                onChangeText={setPassword} 
+                onChangeText={handleSetPassphrase} 
             /> 
          
             <View style={styles.buttonArea}>
                 <ButtonPrimary 
                     disabled={disabled} 
-                    label={useTranslate("commons.continue")} 
-                    onPress={continueToNetwork} 
+                    label={useTranslate("commons.create")} 
+                    onPress={() => {}} 
                 />
             </View>
         </ScrollView>
@@ -67,4 +56,4 @@ const styles = StyleSheet.create({
     buttonArea: { width: '100%', justifyContent: 'center', marginVertical: 10, flexDirection: "row", marginTop: 50 }
 })
 
-export default CreateWalletScreen
+export default WalletPassphrase

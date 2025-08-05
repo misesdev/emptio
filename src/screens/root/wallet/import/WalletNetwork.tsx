@@ -1,6 +1,6 @@
 import { ButtonPrimary } from "@components/form/Buttons"
 import { HeaderScreen } from "@components/general/HeaderScreen"
-import { useTranslateService } from "@src/providers/translateProvider"
+import { useTranslateService } from "@src/providers/TranslateProvider"
 import { StyleSheet, View, Text, TouchableOpacity } from "react-native"
 import Ionicons from "react-native-vector-icons/Ionicons"
 import { BNetwork } from "bitcoin-tx-lib"
@@ -8,7 +8,7 @@ import { useState } from "react"
 import theme from "@src/theme"
 import { ScrollView } from "react-native-gesture-handler"
 
-const ImportWalletNetwork = ({ navigation, route }: any) => {
+const WalletNetwork = ({ navigation, route }: any) => {
 
     const { name } = route.params
     const [network, setNetwork] = useState<BNetwork>("mainnet")
@@ -87,4 +87,4 @@ const styles = StyleSheet.create({
     typeDescription: { marginBottom: 15, color: theme.colors.gray },
 })
 
-export default ImportWalletNetwork
+export default WalletNetwork

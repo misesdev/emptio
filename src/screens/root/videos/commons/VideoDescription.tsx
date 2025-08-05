@@ -1,12 +1,12 @@
 import HashTagViewer from "@components/nostr/event/HashTagViewer"
+import { useTranslateService } from "@src/providers/TranslateProvider"
 import LinkPreview from "@components/nostr/event/LinkPreview"
 import ProfileViewer from "@components/nostr/event/ProfileViewer"
 import ImagePreview from "@components/nostr/event/ImagePreview"
-import { replaceContentEvent } from "@src/utils"
 import { memo, useEffect, useState } from "react"
 import { StyleSheet, ScrollView, Text } from "react-native"
+import { Utilities } from "@src/utils/Utilities"
 import ParsedText from "react-native-parsed-text"
-import { useTranslateService } from "@src/providers/translateProvider"
 import theme from "@src/theme"
 
 interface DescriptionProps { content: string, url: string }
@@ -85,7 +85,7 @@ const VideoDescription = ({ content, url }: DescriptionProps) => {
                     renderText: renderSeeButton
                 }]}
             >
-                {replaceContentEvent(text)} 
+                {Utilities.replaceContentEvent(text)} 
             </ParsedText>
         )
     })

@@ -1,7 +1,7 @@
 import { StyleSheet, View, Text, TouchableOpacity } from "react-native"
+import { useTranslateService } from "@src/providers/TranslateProvider"
 import Ionicons from 'react-native-vector-icons/Ionicons'
 import { HeaderScreen } from "@components/general/HeaderScreen"
-import { useTranslateService } from "@src/providers/translateProvider"
 import { StackScreenProps } from "@react-navigation/stack"
 import { ScrollView } from "react-native-gesture-handler"
 import theme from "@src/theme"

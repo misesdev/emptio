@@ -5,15 +5,15 @@ import { TextBox } from "@components/form/TextBoxs"
 import Ionicons from 'react-native-vector-icons/Ionicons'
 import { SectionHeader } from "@components/general/section/headers"
 import { HeaderScreen } from "@components/general/HeaderScreen"
-import { useTranslateService } from "@src/providers/translateProvider"
-import { User } from "@services/memory/types"
 import { pushMessage } from "@services/notification"
-import { getUserName } from "@src/utils"
 import { Address } from "bitcoin-tx-lib"
 import { useState } from "react"
 import theme from "@src/theme"
+import { useTranslateService } from "@src/providers/TranslateProvider"
+import { User } from "@/src/services/user/types/User"
+import { Utilities } from "@/src/utils/Utilities"
 
-const SendReceiverScreen = ({ navigation, route }: any) => {
+const ReceiverScreen = ({ navigation, route }: any) => {
 
     const { wallet, amount } = route.params
     const { useTranslate } = useTranslateService()
@@ -39,9 +39,9 @@ const SendReceiverScreen = ({ navigation, route }: any) => {
 
     const handleSelectUser = (user: User) => {
         if(!Address.isValid(user.bitcoin_address??"")) 
-            return pushMessage(`${getUserName(user)} ${useTranslate("wallet.address.not-contains")}`)
+            return pushMessage(`${Utilities.getUserName(user)} ${useTranslate("wallet.address.not-contains")}`)
        
-        navigation.navigate("wallet-send-final-stack", {
+        navigation.navigate("wallet-send-final", {
             address: user.bitcoin_address, 
             amount, wallet, receiver: user 
         })
@@ -67,7 +67,7 @@ const SendReceiverScreen = ({ navigation, route }: any) => {
 
             <SectionHeader label={useTranslate("labels.friends")} icon="people" />
 
-            <FollowList searchable toPayment onPressFollow={handleSelectUser} />
+            <FollowList searchable labelAction={useTranslate("commons.send")} onPressFollow={handleSelectUser} />
 
             <View style={styles.buttonArea}>
                 <TouchableOpacity activeOpacity={.7} onPress={() => handleSend(address)} disabled={nextDisabled}
@@ -87,4 +87,4 @@ const styles = StyleSheet.create({
     buttonArea: { position: "absolute", bottom: 30, padding: 10, width: "100%", flexDirection: "row-reverse" }
 })
 
-export default SendReceiverScreen
+export default ReceiverScreen
