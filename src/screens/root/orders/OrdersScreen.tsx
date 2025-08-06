@@ -41,7 +41,7 @@ const OrdersScreen = ({ navigation }: StackScreenProps<any>) => {
     const newOrder = () => {
         if(!wallets.length)
             return pushMessage(useTranslate("message.wallet.alertcreate"))
-        navigation.navigate("feed-order-new")
+        navigation.navigate("orders-new")
     }
 
     return (

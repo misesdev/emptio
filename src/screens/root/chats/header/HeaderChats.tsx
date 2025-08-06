@@ -18,7 +18,7 @@ const HeaderChats = ({ navigation }: ScreenProps) => {
     return (
         <View style={styles.header}>
             <View style={{ width: "15%", alignItems: "center", justifyContent: "center" }}>
-                <TouchableOpacity onPress={() => navigation.navigate("user-menu-stack")}>
+                <TouchableOpacity onPress={() => navigation.navigate("user-menu")}>
                     <ProfilePicture user={user} size={34} withBorder={false} />
                 </TouchableOpacity>
             </View>
@@ -29,7 +29,7 @@ const HeaderChats = ({ navigation }: ScreenProps) => {
                 </Text>
             </View>
             <View style={{ width: "15%", alignItems: "center", justifyContent: "center" }}>
-                <TouchableOpacity onPress={() => navigation.navigate("add-follow-stack")}>
+                <TouchableOpacity onPress={() => navigation.navigate("add-follow")}>
                     <Ionicons name="person-add-sharp" color={theme.colors.gray} size={theme.icons.large} />
                 </TouchableOpacity>
             </View>

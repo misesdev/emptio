@@ -1,16 +1,16 @@
 import { useCallback, useEffect, useRef, useState } from "react"
 import { BackHandler, FlatList } from "react-native"
-import { FilterChat } from "../commons/list"
-import { ChatFilterType } from "../commons/filters"
 import { useFocusEffect } from "@react-navigation/native"
-import { ChatActionType } from "../commons/options"
 import { showMessage } from "@components/general/MessageBox"
-import { ShowProfileView } from "../commons/profile"
 import { useAccount } from "@/src/context/AccountContext"
 import useChatStore, { ChatUser } from "@/src/services/zustand/useChatStore"
 import { useTranslateService } from "@/src/providers/TranslateProvider"
 import { useService } from "@/src/providers/ServiceProvider"
 import { User } from "@services/user/types/User"
+import { FilterChat } from "../commons/ChatList"
+import { ChatFilterType } from "../commons/ChatFilters"
+import { ChatActionType } from "../commons/ChatGroupAction"
+import { ShowProfileView } from "../commons/ProfileView"
 
 const useChatScreen = ({ navigation }: any) => {
     const timeout = useRef<any>(null)
@@ -117,7 +117,7 @@ const useChatScreen = ({ navigation }: any) => {
     }, [selectedItems, markReadChat, setChats, useTranslate])
 
     const handleOpenChat = useCallback((chat_id: string, follow: User) => {
-        navigation.navigate("conversation-chat-stack", { chat_id, follow })
+        navigation.navigate("conversation", { chat_id, follow })
     }, [navigation])
 
     const showProfile = useCallback((profile: User) => {

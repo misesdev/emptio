@@ -112,9 +112,9 @@ const RelayScreen = ({ navigation, route }: any) => {
                     navigation.reset({
                         index: 1,
                         routes: [
-                            { name: "core-stack" },
-                            { name: "user-menu-stack" },
-                            { name: "manage-relays-stack" }
+                            { name: "home" },
+                            { name: "user-menu" },
+                            { name: "manage-relays" }
                         ]
                     })
                 }

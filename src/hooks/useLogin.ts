@@ -1,5 +1,5 @@
 import { showMessage } from "@components/general/MessageBox"
-import { useTranslateService } from "@src/providers/translateProvider"
+import { useTranslateService } from "@src/providers/TranslateProvider"
 import { pushMessage } from "@services/notification"
 import Clipboard from "@react-native-clipboard/clipboard"
 import { useEffect, useState } from "react"

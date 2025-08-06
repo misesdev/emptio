@@ -16,8 +16,10 @@ const AuthenticateScreen = ({ navigation }: any) => {
     const { authService } = useService()
 
     useEffect(() => {
-        checkBiometric().then(() => setLoading(false))
-    }, [settings])
+        //checkBiometric().then(() => setLoading(false))
+        const authenticate = async () => authenticateWithBiometrics()
+        authenticate()
+    }, [])
 
     const checkBiometric = async () => {
         if (settings.useBiometrics)
@@ -30,14 +32,14 @@ const AuthenticateScreen = ({ navigation }: any) => {
         const success = await authService.checkBiometrics() 
         if (success)
             navigation.reset({ index: 0, routes: [{ name: "home" }] })
-        setBiometrics(success)
+        //setBiometrics(success)
     }
 
-    if (!biometrics)
-        navigation.reset({ index: 0, routes: [{ name: "home" }] })
+    // if (!biometrics)
+    //     navigation.reset({ index: 0, routes: [{ name: "home" }] })
 
-    if (loading)
-        return <SplashScreen />
+    // if (loading)
+    //     return <SplashScreen />
 
     return (
         <View style={theme.styles.container}>

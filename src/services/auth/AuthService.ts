@@ -12,6 +12,7 @@ import { useTranslate } from "../translate/TranslateService";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import EncryptedStorage from "react-native-encrypted-storage";
 import { DataBaseEvents } from "@storage/database/DataBaseEvents";
+import useNDKStore, { NDKStore } from "../zustand/useNDKStore";
 
 class AuthService implements IAuthService 
 {
@@ -20,22 +21,27 @@ class AuthService implements IAuthService
     private readonly _userStorage: UserStorage;
     private readonly _privatekey: PrivateKeyStorage;
     private readonly _biometrics: ReactNativeBiometrics;
+    private readonly _ndkStore: NDKStore;
 
     constructor(
+        ndkStore: NDKStore = useNDKStore.getState(),
         userStorage: UserStorage = new UserStorage(),
         noteService: NoteService = new NoteService(),
         biometrics: ReactNativeBiometrics = new ReactNativeBiometrics(),
         privatekey: PrivateKeyStorage = new PrivateKeyStorage(),
-        dbEvents: DataBaseEvents = new DataBaseEvents(),
+        dbEvents: DataBaseEvents = new DataBaseEvents()
     ) {
+        this._ndkStore = ndkStore
         this._noteService = noteService
         this._userStorage = userStorage
-        this._biometrics = biometrics 
+        this._biometrics = biometrics
         this._privatekey = privatekey
         this._dbEvents = dbEvents
     }
 
-    public async checkBiometrics(): Promise<boolean> {
+    public async checkBiometrics(): Promise<boolean> 
+    {
+        try {
         const { available } = await this._biometrics.isSensorAvailable()
         if(available) {
             const { success } = await this._biometrics.simplePrompt({
@@ -43,19 +49,22 @@ class AuthService implements IAuthService
             })
             return success
         }
-        return false
+        } catch(ex) { console.log(ex) }
+        return true
     }
 
-    public async signUp(userName: string): Promise<AppResponse<User | null>> {
+    public async signUp(userName: string): Promise<AppResponse<User | null>> 
+    {
         try {
             const pairkey = NostrPairKey.create()
-            const stored = await this._privatekey.add(pairkey.getPrivateKey())
+            const stored = await pairkey.save() 
             const profile: User = {
                 name: userName.trim(),
                 display_name: userName.trim(),
                 pubkey: pairkey.getPublicKeyHex(),
                 keyRef: stored.id 
             }
+            await this._ndkStore.setNdkSigner(profile)
             const userService = new UserService(profile)
             await userService.publishProfile()
             await userService.save()
@@ -65,20 +74,23 @@ class AuthService implements IAuthService
         }
     }
 
-    public async signIn(secretKey: string): Promise<AppResponse<User|null>> {
+    public async signIn(secretKey: string): Promise<AppResponse<User|null>> 
+    {
         try {  
             const pairkey = NostrPairKey.fromNsec(secretKey)
-            const stored = await this._privatekey.add(pairkey.getPrivateKey())
+            const stored = await pairkey.save() 
             const event = await this._noteService.getNote({
                 authors: [pairkey.getPublicKeyHex()], 
                 kinds: [EventKinds.metadata], 
                 limit: 1 
             })
-            if(!event) throw new Error("profile event not found")
+            if(!event)
+                throw new Error("profile not found")
             const profile = JSON.parse(event.content) as User
-            profile.keyRef = stored.id
             profile.pubkey = event.pubkey
+            profile.keyRef = stored.id
             
+            await this._ndkStore.setNdkSigner(profile)
             const userService = new UserService(profile)
             await userService.publishProfile()
             await userService.save()
@@ -88,7 +100,8 @@ class AuthService implements IAuthService
         }
     }
 
-    public async isLogged(): Promise<AppResponse<User|null>> {
+    public async isLogged(): Promise<AppResponse<User|null>> 
+    {
         try {
             const profile = await this._userStorage.get()
             if(!profile) 
@@ -104,10 +117,11 @@ class AuthService implements IAuthService
         }
     }
 
-    public async signOut(): Promise<AppResponse<any>> {
+    public async signOut(): Promise<AppResponse<any>> 
+    {
         try {
-            await this._dbEvents.clear() 
             await AsyncStorage.clear()
+            await this._dbEvents.clear() 
             await EncryptedStorage.clear()
             return { success: true }
         } catch(ex) {

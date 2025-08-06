@@ -3,13 +3,20 @@ import { secp256k1 } from "@noble/curves/secp256k1";
 import { bytesToHex } from "bitcoin-tx-lib";
 import { NDKEvent, NDKPrivateKeySigner } from "@nostr-dev-kit/ndk-mobile";
 import { INostrPairKey } from "./INostrPairKey";
+import { PrivateKeyStorage } from "@/src/storage/pairkeys/PrivateKeyStorage";
+import { StoredItem } from "@/src/storage/types";
 
 class NostrPairKey implements INostrPairKey
 {
-    private readonly _privateKey: Uint8Array
+    private readonly _privateKey: Uint8Array;
+    private readonly _storage: PrivateKeyStorage;
 
-    constructor(privateKey: Uint8Array) {
+    constructor(
+        privateKey: Uint8Array,
+        storage?: PrivateKeyStorage
+    ) {
         this._privateKey = privateKey 
+        this._storage = storage ?? new PrivateKeyStorage()
     }
 
     public static create() : NostrPairKey {
@@ -62,6 +69,11 @@ class NostrPairKey implements INostrPairKey
         const signer = new NDKPrivateKeySigner(this._privateKey)
         await event.sign(signer)
         return event
+    }
+
+    public async save(): Promise<StoredItem<Uint8Array>>
+    {
+        return await this._storage.add(this._privateKey)
     }
 }
 

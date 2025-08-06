@@ -34,7 +34,7 @@ const ManageFriendsScreen = ({ navigation }: StackScreenProps<any>) => {
                 title={useTranslate("section.title.managefriends")}
                 action={
                     <TouchableOpacity style={styles.addperson}
-                        onPress={() => navigation.navigate("add-follow-stack")}
+                        onPress={() => navigation.navigate("add-follow")}
                     >
                         <Ionicons name="person-add" size={20} color={theme.colors.white} />
                     </TouchableOpacity>

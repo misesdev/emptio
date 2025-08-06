@@ -17,7 +17,7 @@ const useNewOrder = ({ navigation }: any) => {
     }, [wallets, settings])
 
     const goToClosure = () => {
-        navigation.navigate("order-ndetails", { 
+        navigation.navigate("orders-ndetails", { 
             currency: settings.currency?.code,
             satoshis,
             wallet, 

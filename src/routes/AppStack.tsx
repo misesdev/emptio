@@ -1,7 +1,6 @@
 import { stackOptions } from "../constants/RouteSettings"
 import { CardStyleInterpolators, createStackNavigator } from "@react-navigation/stack"
 import UserMenuScreen from "@screens/root/settings/UserMenuScreen"
-import HomeSearchScreen from "@screens/root/home/search/HomeSearch"
 import FeedSearchScreen from "@screens/root/orders/search/FeedSearch"
 import UserEditScreen from "@screens/root/settings/user/UserEditScreen"
 import ManageRelaysScreen from "@screens/root/settings/relays/ManageRelaysScreen"
@@ -49,7 +48,6 @@ const AppStack = () => {
 
             <Stack.Screen name="home" component={AppTabStack} />
             <Stack.Screen name="donate" component={DonateScreen} options={ScreenCardOptions} />
-            <Stack.Screen name="search-home" component={HomeSearchScreen} options={ScreenCardOptions} />
             <Stack.Screen name="search-orders" component={FeedSearchScreen} options={ScreenCardOptions} />
 
             <Stack.Screen name="new-chat" component={NewChatScreen} options={ScreenCardOptions} />

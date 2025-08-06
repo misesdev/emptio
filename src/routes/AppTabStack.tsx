@@ -3,7 +3,7 @@ import Ionicons from "react-native-vector-icons/Ionicons"
 import HomeScreen from "@screens/root/home/HomeScreen"
 import OrdersScreen from "@screens/root/orders/OrdersScreen"
 import ChatsScreen from '@screens/root/chats/ChatsScreen'
-import VideosFeed from '@screens/root/videos'
+import VideosFeed from '@screens/root/videos/FeedVideosScreen'
 import { tabBarStyle } from '../constants/RouteSettings'
 import useChatStore from '@services/zustand/useChatStore'
 import { useTranslateService } from '../providers/TranslateProvider'
@@ -18,7 +18,7 @@ const AppTabStack = () => {
 
     return (
         <Tab.Navigator
-            initialRouteName="home"
+            initialRouteName="wallet"
             screenOptions={{
                 tabBarActiveTintColor: theme.colors.blue,
                 tabBarInactiveTintColor: theme.colors.gray,
@@ -29,7 +29,7 @@ const AppTabStack = () => {
             }}
         >
             <Tab.Screen
-                name="home"
+                name="wallet"
                 component={HomeScreen}                
                 options={{                    
                     tabBarLabel: useTranslate("menu.wallet"),

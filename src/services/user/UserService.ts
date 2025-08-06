@@ -12,6 +12,8 @@ import { AppSettingsStorage } from "@/src/storage/settings/AppSettingsStorage";
 import { AppSettings } from "@/src/storage/settings/types";
 import { PrivateKeyStorage } from "@/src/storage/pairkeys/PrivateKeyStorage";
 import NostrPairKey from "../nostr/pairkey/NostrPairKey";
+import { useTranslate } from "../translate/TranslateService";
+import { trackException } from "../telemetry";
 
 class UserService implements IUserService
 {
@@ -203,21 +205,19 @@ class UserService implements IUserService
     {
         try 
         {
-            if (!this._profile?.pubkey) 
-                throw new Error("UserService not initialized");
             let defaultPubkey = process.env.DEFAULT_PUBKEY 
             const response = await fetch(`${process.env.NOSBOOK_API_URL}/search`, {
                 method: "post",
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
-                    pubkey: this._profile.pubkey ?? defaultPubkey,
+                    pubkey: this._profile?.pubkey ?? defaultPubkey,
                     searchTerm,
                     limit
                 })
             })
 
             if(!response.ok) 
-                throw new Error("an unexpected error occurred during the request")
+                throw new Error(await useTranslate("message.request.error"))
             
             const users: any = await response.json()
             return users.filter((u: any) => u.pubkey != this._profile?.pubkey)
@@ -231,7 +231,8 @@ class UserService implements IUserService
                     }
                 })
         }
-        catch {
+        catch(ex) {
+            trackException(ex)
             return [] 
         }
     }

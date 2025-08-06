@@ -5,8 +5,7 @@ import theme from "../theme"
 
 export const tabBarStyle: ViewStyle = {
     backgroundColor: theme.colors.transparent,
-    borderTopWidth: 0,
-    //paddingBottom: 5,
+    borderTopWidth: 0
 }
 
 export const stackOptions: StackNavigationOptions = {

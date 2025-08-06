@@ -42,7 +42,7 @@ const ChatsScreen = ({ navigation }: StackScreenProps<any>) => {
             />
 
             <View style={styles.rightButton}>
-                <TouchableOpacity activeOpacity={.7} style={styles.newChatButton} onPress={() => navigation.navigate("new-chat-stack")}>
+                <TouchableOpacity activeOpacity={.7} style={styles.newChatButton} onPress={() => navigation.navigate("new-chat")}>
                     <Ionicons name="pencil" size={theme.icons.medium} color={theme.colors.white} />
                 </TouchableOpacity>
             </View>

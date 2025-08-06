@@ -3,7 +3,7 @@ import { Modal, StyleSheet, Text, TouchableOpacity, View } from "react-native"
 import Ionicons from 'react-native-vector-icons/Ionicons'
 import { Language } from "@services/translate/types"
 import { useTranslateService } from "@/src/providers/TranslateProvider"
-import { useService } from "@/src/providers/ServiceProvider"
+import { useService } from "@src/providers/ServiceProvider"
 import theme from "@src/theme"
 
 var showLanguagesFunction: () => void
@@ -15,18 +15,13 @@ interface Props {
 const SelectLanguageBox = ({ forceUpdate }: Props) => {
 
     const { translateService } = useService()
-    const { useTranslate, setLanguage, language } = useTranslateService()
+    const { useTranslate, setLanguage, language, languages } = useTranslateService()
     const [visible, setVisible] = useState(false)
-    const [languagesList, setLanguageList] = useState<Language[]>()
 
-    showLanguagesFunction = () => {
-        translateService.listLanguages().then(setLanguageList)
-        setVisible(true)
-    }
+    showLanguagesFunction = () => setVisible(true)
 
     const changeLanguage = (language: Language) => {
-        if (setLanguage)
-            setLanguage(language)
+        setLanguage(language)
         translateService.setLanguage(language)
         forceUpdate(Math.random())
         setVisible(false)
@@ -52,8 +47,8 @@ const SelectLanguageBox = ({ forceUpdate }: Props) => {
         <Modal animationType="fade" onRequestClose={() => setVisible(false)} visible={visible} transparent >
             <View style={{ flex: 1, alignItems: "center", justifyContent: "center", backgroundColor: "rgba(0,0,0, .6)" }}>
                 <View style={styles.box}>
-                    {languagesList &&
-                        languagesList.map((item, key) => renderLanguageOption(item, key))
+                    {languages &&
+                        languages.map((item, key) => renderLanguageOption(item, key))
                     }
                 </View>
             </View>
@@ -62,7 +57,7 @@ const SelectLanguageBox = ({ forceUpdate }: Props) => {
 }
 
 export const showSelectLanguage = () => {
-    setTimeout(() => { showLanguagesFunction() }, 10)
+    setTimeout(showLanguagesFunction, 10)
 }
 
 const styles = StyleSheet.create({

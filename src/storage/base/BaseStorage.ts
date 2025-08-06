@@ -4,11 +4,26 @@ import { v4 as uuid } from "uuid";
 
 export abstract class BaseStorage<Entity> 
 {
+    protected readonly _defaults: Entity[];
     private readonly _keyStorage: string;
     protected notFoundMessage: string = "item not found in storage";
 
-    constructor(key: string) {
+    constructor(key: string, defaults: Entity[] = []) 
+    {
         this._keyStorage = key
+        this._defaults = defaults
+    }
+
+    public async init(): Promise<void>
+    {
+        const list = await this.list()
+        if(!list.length && this._defaults.length) 
+        {
+            for(let item of this._defaults) 
+            {
+                await this.add(item)
+            }
+        }
     }
 
     public async get(id: string): Promise<StoredItem<Entity>> {
@@ -37,7 +52,8 @@ export abstract class BaseStorage<Entity>
     public async update(id: string, entity: Entity): Promise<void> {
         const list = await this.list();
         const index = list.findIndex(item => item.id === id);
-        if (index === -1) throw new Error(this.notFoundMessage);
+        if (index === -1) 
+            throw new Error(this.notFoundMessage);
         list[index].entity = entity;
         await this.save(list);
     }
@@ -52,7 +68,8 @@ export abstract class BaseStorage<Entity>
 
     public async listEntities(): Promise<Entity[]> {
         const list = await this.list()
-        return list.map(e => e.entity)
+        const entities = list.map(e => e.entity)
+        return entities
     }
 
     public async delete(id: string): Promise<void> {

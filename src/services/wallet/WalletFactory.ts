@@ -1,15 +1,23 @@
-import { BNetwork, HDWallet, MnemonicUtils } from "bitcoin-tx-lib";
+import IWalletFactory, { CreateProps } from "./IWalletFactory";
+import { HDWallet, MnemonicUtils } from "bitcoin-tx-lib";
 
-export default class WalletFactory 
-{    
+class WalletFactory implements IWalletFactory
+{   
+    constructor() {
+
+    }
+
     public generateMnemonic(strength: 128|256 = 128): string 
     {
         return MnemonicUtils.generateMnemonic(strength)
     }
 
-    public create(mnemonic: string, network: BNetwork, passphrase:string): Uint8Array
+    public async create({ mnemonic, passphrase, network="mainnet" }: CreateProps): Promise<Uint8Array> 
     {
         const { wallet } = HDWallet.import(mnemonic, passphrase, { network })
-        return wallet.getMasterPrivateKey()
+        const masterKey = wallet.getMasterPrivateKey()
+        return masterKey
     }
-} 
+}
+
+export default WalletFactory

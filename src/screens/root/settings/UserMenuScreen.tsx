@@ -16,6 +16,7 @@ const UserMenuScreen = ({ navigation }: StackScreenProps<any>) => {
         user, appVersion, poolstats, forceUpdate, setForceUpdate, shareVisible, setShareVisible,
         copyPublicKey, copySecretKey, deleteAccount
     } = useMenu()
+
     const { useTranslate } = useTranslateService()
 
     return (
@@ -27,7 +28,7 @@ const UserMenuScreen = ({ navigation }: StackScreenProps<any>) => {
                 <View style={styles.area}>
                     <View style={styles.profileArea}>
                         <TouchableOpacity activeOpacity={.7} 
-                            onPress={() => navigation.navigate("manage-account-stack")}
+                            onPress={() => navigation.navigate("manage-account")}
                         >
                             <ProfilePicture user={user} size={100} />
                         </TouchableOpacity>                
@@ -37,7 +38,7 @@ const UserMenuScreen = ({ navigation }: StackScreenProps<any>) => {
 
                 <View style={styles.sectiontop}>
                     <TouchableOpacity style={styles.mediumsection} activeOpacity={.7} 
-                        onPress={() => navigation.navigate("friends-list-stack")}
+                        onPress={() => navigation.navigate("friends-list")}
                     >
                         <SectionContainer style={styles.mediumcontainer}>
                             <Ionicons name="people" color={theme.colors.white} size={theme.icons.large} />
@@ -57,7 +58,7 @@ const UserMenuScreen = ({ navigation }: StackScreenProps<any>) => {
                 </View>
 
                 <SectionContainer style={{ backgroundColor: theme.colors.blueOpacity }}>
-                    <LinkSection label={useTranslate("settings.account.edit")} icon="person" onPress={() => navigation.navigate("manage-account-stack")} />
+                    <LinkSection label={useTranslate("settings.account.edit")} icon="person" onPress={() => navigation.navigate("manage-account")} />
                     <LinkSection label={useTranslate("settings.nostrkey.copy")} icon="document-lock-outline" onPress={copyPublicKey} />
                     <LinkSection label={useTranslate("settings.secretkey.copy")} icon="document-lock-outline" onPress={copySecretKey} />
                 </SectionContainer>
@@ -69,16 +70,16 @@ const UserMenuScreen = ({ navigation }: StackScreenProps<any>) => {
                     />
                     <LinkSection icon="earth"
                         label={useTranslate("settings.relays")+` (${poolstats?.connected}/${poolstats?.total})`} 
-                        onPress={() => navigation.navigate("manage-relays-stack")} 
+                        onPress={() => navigation.navigate("manage-relays")} 
                     />
                     <LinkSection icon="settings" 
                         label={useTranslate("settings.security")} 
-                        onPress={() => navigation.navigate("manage-security-stack")} 
+                        onPress={() => navigation.navigate("manage-security")} 
                     />
                 </SectionContainer>
 
                 <SectionContainer style={{ backgroundColor: theme.colors.blueOpacity }}>
-                    <LinkSection label={useTranslate("settings.about")} icon="settings" onPress={() => navigation.navigate("about-stack")} />
+                    <LinkSection label={useTranslate("settings.about")} icon="settings" onPress={() => navigation.navigate("about")} />
                     <LinkSection label={useTranslate("commons.signout")} icon="exit" onPress={deleteAccount} />
                 </SectionContainer>
 

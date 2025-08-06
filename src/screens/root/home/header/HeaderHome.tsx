@@ -1,7 +1,6 @@
 import { TouchableOpacity, View, Text, StyleSheet } from "react-native"
 import Ionicons from 'react-native-vector-icons/Ionicons'
 import { pushMessage } from "@services/notification"
-import { StackNavigationProp } from "@react-navigation/stack"
 import { ProfilePicture } from "@components/nostr/user/ProfilePicture"
 import { Wallet } from "@services/wallet/types/Wallet"
 import { StoredItem } from "@src/storage/types"
@@ -9,11 +8,7 @@ import { useAccount } from "@src/context/AccountContext"
 import { useTranslateService } from "@src/providers/TranslateProvider"
 import theme from "@src/theme"
 
-type Props = {
-    navigation: StackNavigationProp<any>
-}
-
-export const HeaderHome = ({ navigation }: Props) => {
+export const HeaderHome = ({ navigation }: any) => {
 
     const { user, wallets } = useAccount()
     const { useTranslate } = useTranslateService()
@@ -32,7 +27,7 @@ export const HeaderHome = ({ navigation }: Props) => {
     return (
         <View style={styles.header}>
             <View style={{ width: "15%", alignItems: "center", justifyContent: "center" }}>
-                <TouchableOpacity onPress={() => navigation.navigate("user-menu-stack")}>
+                <TouchableOpacity onPress={() => navigation.navigate("user-menu")}>
                     <ProfilePicture user={user} size={34} withBorder={false} />
                 </TouchableOpacity>
             </View>

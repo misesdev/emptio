@@ -1,11 +1,12 @@
 import { Language, TranslateWords } from "@services/translate/types"
-import { ReactElement, ReactNode, createContext, useContext, useEffect, useState } from "react"
-import { TranslateService } from "../services/translate/TranslateService"
+import { ReactElement, ReactNode, createContext, useContext } from "react"
+import useLoadLanguage from "../hooks/useLoadLanguage"
 
 type TranslateContextType = {
-    language: Language,
-    setLanguage: (language: Language) => void,
-    useTranslate: (wordKey: TranslateWords) => string
+    language: Language;
+    languages: Language[];
+    setLanguage: (language: Language) => void;
+    useTranslate: (wordKey: TranslateWords) => string;
 }
 
 const TranslateContext =  createContext<TranslateContextType|null>(null)
@@ -19,17 +20,15 @@ const useTranslateService = (): TranslateContextType => {
 
 const TranslateProvider = ({ children }: { children: ReactNode }): ReactElement => {
 
-    const [_service,_] = useState(new TranslateService())
-    const [language, setLanguage] = useState<Language>({ label: "English", selector: "en" })
-
-    useEffect(() => {
-        _service.getLanguage().then(setLanguage)
-    }, [])
-  
-    const useTranslate = (wordKey: TranslateWords) => _service.translate(language, wordKey)
+    const { language, setLanguage, useTranslate, languages } = useLoadLanguage()
 
     return (
-        <TranslateContext.Provider value={{ language, setLanguage, useTranslate }}>
+        <TranslateContext.Provider value={{ 
+            language,
+            setLanguage, 
+            useTranslate,
+            languages 
+        }}>
             {children}
         </TranslateContext.Provider>
     )

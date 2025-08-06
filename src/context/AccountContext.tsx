@@ -1,18 +1,17 @@
-import { createContext, useContext, useState, useEffect, 
-    ReactNode, ReactElement } from 'react';
+import { createContext, useContext, ReactNode, ReactElement } from 'react';
+import useLoadSubscription from '../hooks/useLoadSubscription';
 import { User } from '@services/user/types/User';
 import { Wallet } from '@services/wallet/types/Wallet';
 import { StoredItem } from '@storage/types';
-import UserService from '@services/user/UserService';
 import { AppSettings } from '@storage/settings/types';
 import { NDKEvent } from '@nostr-dev-kit/ndk-mobile';
-import SplashScreen from '@components/general/SplashScreen';
-import useLoadAccount from '../hooks/useLoadAccount';
+import useLoadFollows from '../hooks/useLoadFollows';
+import useLoadSettings from '../hooks/useLoadSettings';
+import useLoadWallets from '../hooks/useLoadWallets';
 import { useAuth } from './AuthContext';
 
 type UserContextType = {
     user: User;
-    setUser: (u: User) => void;
     settings: AppSettings;
     setSettings: (s: AppSettings) => void;
     wallets: StoredItem<Wallet>[];
@@ -21,6 +20,7 @@ type UserContextType = {
     setFollows: (fs: User[]) => void;
     followsEvent: NDKEvent;
     setFollowsEvent: (e: NDKEvent) => void;
+    loading: boolean;
 }
 
 const UserContext = createContext<UserContextType>({} as UserContextType);
@@ -36,45 +36,16 @@ type Props = { children: ReactNode; }
 const AccountProvider = ({ children }: Props): ReactElement => {
 
     const { user } = useAuth()
-    const [userData, setUser] = useState(user)
-    const [follows, setFollows] = useState<User[]>([])
-    const [wallets, setWallets] = useState<StoredItem<Wallet>[]>([])
-    const [settings, setSettings] = useState<AppSettings>({} as AppSettings)
-    const [followsEvent, setFollowsEvent] = useState<NDKEvent>({} as NDKEvent)
-    const [_service, _] = useState(new UserService(user))
-    const { loading } = useLoadAccount({ 
-        user,
-        setSettings,
-        setWallets,
-        setFollowsEvent 
-    })
+    const { loading } = useLoadSubscription(user)
+    const { 
+        follows, setFollows, followsEvent, setFollowsEvent
+    } = useLoadFollows(user)
+    const { settings, setSettings } = useLoadSettings()
+    const { wallets, setWallets } = useLoadWallets()
     
-    useEffect(() => {
-        _service.setSettings(settings)
-    },[settings])
-
-    // useEffect(() => {
-    //     _service.init()
-    // }, [userData])
-
-    useEffect(() => { 
-        if(user.pubkey && followsEvent.pubkey) loadFollowers() 
-    }, [followsEvent]);
-
-    const loadFollowers = async () => {
-        const follows = await _service.listFollows({
-            follows: followsEvent, iNot: true
-        })
-        setFollows(follows)
-    } 
-
-    if(loading)
-        return <SplashScreen message='Loading account' />
-
     return (
         <UserContext.Provider value={{
-                user: userData,
-                setUser,
+                user,
                 wallets,
                 setWallets,
                 settings,
@@ -82,7 +53,8 @@ const AccountProvider = ({ children }: Props): ReactElement => {
                 follows,
                 setFollows,
                 followsEvent,
-                setFollowsEvent
+                setFollowsEvent,
+                loading
             }}
         >
             {children}

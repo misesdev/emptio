@@ -1,11 +1,10 @@
-import { createContext, useContext, useState, useEffect, ReactNode,
-    ReactElement } from 'react';
-import AuthService from '@services/auth/AuthService';
-import SplashScreen from '@components/general/SplashScreen';
+import { createContext, useContext, useState, ReactNode, ReactElement } from 'react';
 import { User } from '@services/user/types/User';
+import useLoadUser from '../hooks/useLoadUser';
 
 type AuthContextType = {
     user: User;
+    loading: boolean;
     isLoggedIn: boolean;
     login: (u: User) => void;
     logout: () => void;
@@ -20,18 +19,9 @@ const useAuth = (): AuthContextType => {
 }
 
 const AuthProvider = ({ children }: { children: ReactNode }): ReactElement => {
-    
-    const _service = new AuthService()
-    const [loading, setLoading] = useState(true)
-    const [isLoggedIn, setIsLoggedIn] = useState(false);
-    const [user, setUser] = useState<User>({} as User)
-
-    useEffect(() => {
-        _service.isLogged().then(result => {
-            setIsLoggedIn(result.success)
-            setLoading(false)
-        })
-    }, []);
+   
+    const { loading, user, setUser } = useLoadUser()
+    const [isLoggedIn, setIsLoggedIn] = useState(!!user)
 
     const login = (user: User) => {
         setIsLoggedIn(true)
@@ -40,10 +30,8 @@ const AuthProvider = ({ children }: { children: ReactNode }): ReactElement => {
 
     const logout = () => setIsLoggedIn(false)
 
-    if(loading) return <SplashScreen />
-
     return (
-        <AuthContext.Provider value={{ user, isLoggedIn, login, logout }}>
+        <AuthContext.Provider value={{ loading, user, isLoggedIn, login, logout }}>
             {children}
         </AuthContext.Provider>
     )

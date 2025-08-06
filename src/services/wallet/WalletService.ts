@@ -6,9 +6,9 @@ import { StoredItem } from "@storage/types";
 import { ECPairKey, HDKManager, HDTransaction, HDWallet,
     InputTransaction } from "bitcoin-tx-lib";
 import TransactionService from "./TransactionService";
+import { BTransaction } from "./types/Transaction";
 import { Wallet } from "./types/Wallet";
 import { UTXO } from "./types/Utxo";
-import { BTransaction } from "./types/Transaction";
 import { FeeRate } from "./types/FeeRate";
 
 export default class WalletService implements IWalletService 
@@ -40,18 +40,20 @@ export default class WalletService implements IWalletService
         this._transaction = new TransactionService(this._hdwallet.network)
     }
 
-    public async add({ name, masterKey, network="mainnet" }: AddWalletProps): Promise<AppResponse<string>> 
+    public async add({ name, masterKey, network="mainnet" }: AddWalletProps): Promise<AppResponse<StoredItem<Wallet>>> 
     {
         try {
+            const storeds = await this._storage.list()
             const storedKey = await this._keyStorage.add(masterKey)
-            await this._storage.add({
+            const storedWallet = await this._storage.add({
                 name: name,
                 keyRef: storedKey.id,
+                default: storeds.length <= 0,
                 network: network,
                 payfee: false
             })
             return { 
-                data: "Wallet saved successfully", 
+                data: storedWallet, 
                 success: true
             }
         } 

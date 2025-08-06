@@ -17,6 +17,7 @@ class NostrFactory
 
     public async getNostrInstance(user?: User): Promise<NDK>
     {
+        await this._relayStorage.init()
         const relays = await this._relayStorage.listEntities()
         const ndk = new NDK({ 
             explicitRelayUrls: relays.map(r => r.url), 

@@ -15,12 +15,17 @@ export class TranslateService implements ITranslateService
     
     constructor(
         settings: AppSettings|null = null,
-        storage: LanguageStorage = new LanguageStorage(),
+        languageStorage: LanguageStorage = new LanguageStorage(),
         settingsStorage: AppSettingsStorage = new AppSettingsStorage()
     ) {
-        this._languageStorage = storage 
+        this._languageStorage = languageStorage 
         this._settingsStorage = settingsStorage
         this._settings = settings
+    }
+
+    public async init() 
+    {
+        this._languageStorage.init()
     }
 
     public translate(language: Language, key: TranslateWords): string
@@ -33,7 +38,7 @@ export class TranslateService implements ITranslateService
         if(this._settings) 
             return this._settings.language
         this._settings = await this._settingsStorage.get()
-        return (this._settings as AppSettings).language
+        return this._settings.language
     }
 
     public async setLanguage(language: Language): Promise<void> 

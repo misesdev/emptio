@@ -5,33 +5,38 @@ export abstract class ItemStorage<Entity>
     private _defaultEntity: Entity;
     private readonly _keyStorage: string;
 
-    constructor(key: string, defaultEntity: Entity) {
+    constructor(key: string, defaultEntity: Entity) 
+    {
         this._defaultEntity = defaultEntity
         this._keyStorage = key
     }
 
-    public async get(): Promise<Entity> {
+    public async get(): Promise<Entity>
+    {
+        let result: Entity = this._defaultEntity
         let data = await AsyncStorage.getItem(this._keyStorage)
-        try {
-            if(!data) return this._defaultEntity
-            return JSON.parse(data) as Entity
-        } 
-        catch { return this._defaultEntity }
+        if(data) 
+             result = JSON.parse(data) as Entity
+        return result
     }
 
-    public async set(entity: Entity): Promise<void> {
+    public async set(entity: Entity): Promise<void> 
+    {
         await AsyncStorage.setItem(this._keyStorage, JSON.stringify(entity))
     }
 
-    public async delete(): Promise<void> {
+    public async delete(): Promise<void> 
+    {
         await AsyncStorage.removeItem(this._keyStorage)
     }
 
-    public setDefaultEntity(entity: Entity): void {
+    public setDefaultEntity(entity: Entity): void 
+    {
         this._defaultEntity = entity;
     }
 
-    public async clear(): Promise<void> {
+    public async clear(): Promise<void> 
+    {
         await AsyncStorage.removeItem(this._keyStorage)
     }
 }

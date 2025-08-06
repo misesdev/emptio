@@ -13,12 +13,12 @@ const HeaderOrders = ({ navigation }: any) => {
     return (
         <View style={styles.header}>
             <View style={{ width: "15%", alignItems: "center", justifyContent: "center" }}>
-                <TouchableOpacity onPress={() => navigation.navigate("user-menu-stack")}>
+                <TouchableOpacity onPress={() => navigation.navigate("user-menu")}>
                     <ProfilePicture user={user} size={34} withBorder={false} />
                 </TouchableOpacity>
             </View>
             <View style={{ width: "70%", alignItems: "center", justifyContent: "center" }}>
-                <SearchButton label={useTranslate("commons.search")} onPress={() => navigation.navigate("search-feed-stack")} />
+                <SearchButton label={useTranslate("commons.search")} onPress={() => navigation.navigate("search-orders")} />
             </View>
             {/* <View style={{ width: "15%", alignItems: "center", justifyContent: "center" }}> */}
             {/*     <TouchableOpacity onPress={() => navigation.navigate("user-menu-stack")}> */}

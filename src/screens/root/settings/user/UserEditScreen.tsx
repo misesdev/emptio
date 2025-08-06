@@ -14,7 +14,7 @@ import theme from "@src/theme"
 
 const UserEditScreen = () => {
 
-    const { user, setUser } = useAccount()
+    const { user } = useAccount()
     const { userService } = useService()
     const [loading, setLoading] = useState(false)
     const [about, setAbout] = useState(user.about)
@@ -67,7 +67,7 @@ const UserEditScreen = () => {
 
         }
 
-        await userService.updateProfile({ user, setUser, upNostr: true })
+        //await userService.updateProfile({ user, setUser, upNostr: true })
 
         setLoading(false)
 

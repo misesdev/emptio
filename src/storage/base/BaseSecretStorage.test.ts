@@ -47,14 +47,14 @@ describe("BaseSecretStorage", () => {
 
     test("get(): should return credential by ID", async () => {
         const data = { username: "john", password: "1234" };
-        await storage.add(data);
+        let stored = await storage.add(data);
 
-        const result = await storage.get(0);
+        const result = await storage.get(stored.id);
         expect(result).toEqual(data);
     });
 
     test("get(): should throw error if not found", async () => {
-        await expect(storage.get(123)).rejects.toThrow("Credential not found");
+        await expect(storage.get("")).rejects.toThrow("Credential not found");
     });
 
     test("list(): should return all credentials", async () => {

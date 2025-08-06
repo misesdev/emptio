@@ -35,8 +35,8 @@ const useClosureOrder = ({ navigation, route }: any) => {
         navigation.reset({ 
             index: 1, 
             routes: [
-                { name: "core-stack" },
-                { name: "orders-stack" },
+                { name: "home" },
+                { name: "orders" },
             ] 
         })
 

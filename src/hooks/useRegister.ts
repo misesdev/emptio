@@ -1,4 +1,4 @@
-import { useTranslateService } from "@src/providers/translateProvider"
+import { useTranslateService } from "@src/providers/TranslateProvider"
 import { useAuth } from "@src/context/AuthContext"
 import { pushMessage } from "@services/notification"
 import UserService from "@services/user/UserService"

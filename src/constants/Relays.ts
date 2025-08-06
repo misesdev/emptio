@@ -1,5 +1,6 @@
 
 export const DefaultRelays = [
+    "wss://relay.primal.net",
     "wss://relay.damus.io",
     "wss://nostr.liberty.fans",
     "wss://filter.nostr.wine",

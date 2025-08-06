@@ -24,7 +24,7 @@ export const useDonateState = ({ navigation, route }: any) => {
         const address = wallet.network == "testnet" ? process.env.EMPTIO_TESTNET_ADDRESS
             : process.env.EMPTIO_MAINNET_ADDRESS
 
-        navigation.navigate("wallet-send-final-stack", { 
+        navigation.navigate("wallet-send-final", { 
             origin: "donation",
             receiver,
             wallet,

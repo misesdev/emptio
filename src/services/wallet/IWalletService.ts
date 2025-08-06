@@ -14,7 +14,7 @@ export type SendTransactionProps = {
 }
 
 export interface IWalletService {
-    add(props: AddWalletProps): Promise<AppResponse<string>>;
+    add(props: AddWalletProps): Promise<AppResponse<StoredItem<Wallet>>>;
     update(id: string, wallet: Wallet): Promise<AppResponse<string>>;
     delete(id: string): Promise<AppResponse<string>>;
     list(): Promise<StoredItem<Wallet>[]>;
