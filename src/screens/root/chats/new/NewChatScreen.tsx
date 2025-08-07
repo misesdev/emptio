@@ -14,13 +14,12 @@ const NewChatScreen = ({ navigation }: StackScreenProps<any>) => {
     const { useTranslate } = useTranslateService()
 
     const handleChatFollow = (follow: User) => {
-        var chat_id: string = ChatUtilities.chatIdFromPubkeys([user.pubkey, follow.pubkey])
-        navigation.navigate("conversation", { follow, chat_id })
+        const chat_id = ChatUtilities.chatIdFromPubkeys([user.pubkey, follow.pubkey])
+        navigation.replace("conversation", { follow, chat_id })
     }
 
     return (
         <View style={theme.styles.container}>
-
             <HeaderScreen 
                 title={useTranslate("screen.title.newchat")}
                 onClose={() => navigation.goBack()} 
@@ -32,7 +31,6 @@ const NewChatScreen = ({ navigation }: StackScreenProps<any>) => {
                 onPressFollow={handleChatFollow} 
                 labelAction={useTranslate("commons.talk")}
             />
-
         </View>
     )
 }

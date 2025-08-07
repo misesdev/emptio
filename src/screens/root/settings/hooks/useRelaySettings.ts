@@ -8,7 +8,6 @@ interface RelayData {
     disconected: NDKRelay[]
 }
 
-
 const useRelaySettings = ({ navigation }: any) => {
     
     const { ndk } = useNDKStore()
@@ -16,11 +15,9 @@ const useRelaySettings = ({ navigation }: any) => {
 
     useEffect(() => {
         const relays: NDKRelay[] = Array.from(ndk.pool.relays.values())
-        let connected_relays = relays.filter(r => r.connected) 
-        let disconnected_relays = relays.filter(r => !r.connected)
         setRelayData({
-            connected: connected_relays,
-            disconected: disconnected_relays,
+            connected: relays.filter(r => r.connected),
+            disconected: relays.filter(r => !r.connected),
             all: relays
         })
     }, [])

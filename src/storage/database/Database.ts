@@ -1,6 +1,7 @@
 import { SQLiteDatabase, openDatabaseAsync, SQLiteRunResult } from 'expo-sqlite';
+import IDataBase from './IDataBase';
 
-export abstract class Database 
+export abstract class Database implements IDataBase 
 {
     protected _table: string;
     protected _dbname: string;
@@ -13,31 +14,36 @@ export abstract class Database
         this._primary = primary
     }
     
-    public async getConnection(): Promise<SQLiteDatabase> {
+    public async getConnection(): Promise<SQLiteDatabase> 
+    {
         return await openDatabaseAsync(this._dbname)
     }
 
-    protected async insertEntity(query: string, params: any[]):  Promise<SQLiteRunResult> {
+    protected async insertEntity(query: string, params: any[]):  Promise<SQLiteRunResult> 
+    {
         const connection = await this.getConnection()
         return await connection.runAsync(query, params)
     }
 
-    public async delete(primary: string) : Promise<void> {
+    public async delete(primary: string): Promise<void> 
+    {
         const connection = await this.getConnection()
         await connection.runAsync(`
-            DELETE FROM ${this._table} WHERE ${this._primary} = ?;  
+            UPDATE ${this._table} SET deleted = 1 WHERE ${this._primary} = ?;  
         `, [primary])
     }
     
-    public async deleteByCondition(condition: string, args: any[]) : Promise<void> {
+    public async deleteByCondition(condition: string, args: any[]): Promise<void> 
+    {
         const connection = await this.getConnection()
         await connection.runAsync(`
             UPDATE ${this._table} SET deleted = 1 WHERE ${condition};  
         `, args)
     }
         
-    public async clear() : Promise<void> {
+    public async clear() : Promise<void> 
+    {
         const connection = await this.getConnection()
-        await connection.execAsync(`DELETE FROM ${this._table};`)
+        await connection.runAsync(`DELETE FROM ${this._table};`, [])
     }
 }

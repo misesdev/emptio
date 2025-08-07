@@ -12,6 +12,7 @@ import { useAuth } from './AuthContext';
 
 type UserContextType = {
     user: User;
+    setUser: (u: User) => void;
     settings: AppSettings;
     setSettings: (s: AppSettings) => void;
     wallets: StoredItem<Wallet>[];
@@ -35,7 +36,7 @@ type Props = { children: ReactNode; }
 
 const AccountProvider = ({ children }: Props): ReactElement => {
 
-    const { user } = useAuth()
+    const { user, setUser } = useAuth()
     const { loading } = useLoadSubscription(user)
     const { 
         follows, setFollows, followsEvent, setFollowsEvent
@@ -46,6 +47,7 @@ const AccountProvider = ({ children }: Props): ReactElement => {
     return (
         <UserContext.Provider value={{
                 user,
+                setUser,
                 wallets,
                 setWallets,
                 settings,

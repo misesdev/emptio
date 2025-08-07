@@ -8,7 +8,7 @@ import NoteService from '@services/nostr/note/NoteService';
 import RelaysService from '@services/relays/RelaysService';
 import { TranslateService } from '@services/translate/TranslateService';
 import BlobService from '@services/blob/BlobService';
-import { useAuth } from '../context/AuthContext';
+import { useAccount } from '../context/AccountContext';
 
 type ServiceContextType = {
     authService: AuthService;
@@ -34,39 +34,40 @@ type Props = { children: ReactNode; }
 
 const ServiceProvider = ({ children }: Props): ReactElement => {
 
-    const { user } = useAuth()
+    const { user, settings } = useAccount()
     const authService = useMemo(() => new AuthService(), [])
-    const userService = useMemo(() => new UserService(user), [])
+    const userService = useMemo(() => new UserService(user), [user])
     const walletService = useMemo(() => new WalletService(), [])
     const walletFactory = useMemo(() => new WalletFactory(), [])
-    const messageService = useMemo(() => new MessageService(user), [])
-    const noteService = useMemo(() => new NoteService(user), [])
+    const messageService = useMemo(() => new MessageService(user), [user])
+    const noteService = useMemo(() => new NoteService(user), [user])
     const relayService = useMemo(() => new RelaysService(), [])
     const translateService = useMemo(() => new TranslateService(), [])
-    const blobService = useMemo(() => new BlobService(user), [])
+    const blobService = useMemo(() => 
+        new BlobService(user, settings.uploadServer)
+    , [user, settings])
 
     useEffect(() => {
-        const load = async () => loadServices()
-        load()
-    }, [])
+        const start = async () => initServices()
+        start()
+    }, [settings])
 
-    const loadServices = async () => {
+    const initServices = async () => {
         await translateService.init()
     }
 
     return (
         <ServiceContext.Provider value={{ 
-                authService, 
-                userService, 
-                walletService,
-                walletFactory,
-                messageService,
-                noteService,
-                relayService,
-                translateService,
-                blobService
-            }}
-        >
+            authService, 
+            userService, 
+            walletService,
+            walletFactory,
+            messageService,
+            noteService,
+            relayService,
+            translateService,
+            blobService
+        }}>
             {children}
         </ServiceContext.Provider>
     )

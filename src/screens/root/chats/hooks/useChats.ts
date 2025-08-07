@@ -6,13 +6,13 @@ import { useAccount } from "@/src/context/AccountContext"
 import useChatStore, { ChatUser } from "@/src/services/zustand/useChatStore"
 import { useTranslateService } from "@/src/providers/TranslateProvider"
 import { useService } from "@/src/providers/ServiceProvider"
-import { User } from "@services/user/types/User"
-import { FilterChat } from "../commons/ChatList"
 import { ChatFilterType } from "../commons/ChatFilters"
 import { ChatActionType } from "../commons/ChatGroupAction"
 import { ShowProfileView } from "../commons/ProfileView"
+import { User } from "@services/user/types/User"
+import { FilterChat } from "../commons/ChatList"
 
-const useChatScreen = ({ navigation }: any) => {
+const useChats = ({ navigation }: any) => {
     const timeout = useRef<any>(null)
     const listRef = useRef<FlatList>(null)
     const { user, followsEvent } = useAccount()
@@ -148,4 +148,4 @@ const useChatScreen = ({ navigation }: any) => {
     }
 }
 
-export default useChatScreen
+export default useChats

@@ -10,6 +10,7 @@ class NostrPairKey implements INostrPairKey
 {
     private readonly _privateKey: Uint8Array;
     private readonly _storage: PrivateKeyStorage;
+    private readonly _signer: NDKPrivateKeySigner;
 
     constructor(
         privateKey: Uint8Array,
@@ -17,6 +18,7 @@ class NostrPairKey implements INostrPairKey
     ) {
         this._privateKey = privateKey 
         this._storage = storage ?? new PrivateKeyStorage()
+        this._signer = new NDKPrivateKeySigner(privateKey)
     }
 
     public static create() : NostrPairKey {
@@ -65,9 +67,9 @@ class NostrPairKey implements INostrPairKey
         return nip19.nsecEncode(this._privateKey)
     }
 
-    public async signEvent(event: NDKEvent) : Promise<NDKEvent> {
-        const signer = new NDKPrivateKeySigner(this._privateKey)
-        await event.sign(signer)
+    public async signEvent(event: NDKEvent) : Promise<NDKEvent> 
+    {
+        await event.sign(this._signer)
         return event
     }
 

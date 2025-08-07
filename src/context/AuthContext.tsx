@@ -4,6 +4,7 @@ import useLoadUser from '../hooks/useLoadUser';
 
 type AuthContextType = {
     user: User;
+    setUser: (u: User) => void;
     loading: boolean;
     isLoggedIn: boolean;
     login: (u: User) => void;
@@ -31,7 +32,7 @@ const AuthProvider = ({ children }: { children: ReactNode }): ReactElement => {
     const logout = () => setIsLoggedIn(false)
 
     return (
-        <AuthContext.Provider value={{ loading, user, isLoggedIn, login, logout }}>
+        <AuthContext.Provider value={{ loading, user, setUser, isLoggedIn, login, logout }}>
             {children}
         </AuthContext.Provider>
     )

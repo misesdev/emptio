@@ -1,10 +1,10 @@
+import { AppResponse } from "../../telemetry";
 
 export type UploadProps = {
     localUri: string;
     mimeType: string;
-    destination: string;
 }
 
 export interface UploadService {
-    upload(props: UploadProps): Promise<string>;
+    upload(props: UploadProps): Promise<AppResponse<string>>;
 }

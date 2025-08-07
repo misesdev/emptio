@@ -10,7 +10,7 @@ import ChatList from "./commons/ChatList"
 import ChatGroupAction from "./commons/ChatGroupAction"
 import MessageBox from "@components/general/MessageBox"
 import ProfileView from "./commons/ProfileView"
-import useChatScreen from "./hooks/useChatScreen"
+import useChats from "./hooks/useChats"
 
 const ChatsScreen = ({ navigation }: StackScreenProps<any>) => {
    
@@ -19,7 +19,7 @@ const ChatsScreen = ({ navigation }: StackScreenProps<any>) => {
         user, listRef, selectionMode, selectedItems, filteredChats, filterChatsUsers,
         handleFilter, filterSection, handleSearch, showProfile, handleFriend,
         handleOpenChat, handleGroupAction
-    } = useChatScreen({ navigation }) 
+    } = useChats({ navigation }) 
 
     return (
         <View style={theme.styles.container}>

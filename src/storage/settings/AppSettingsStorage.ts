@@ -20,6 +20,7 @@ export class VideoSettingsStorage extends ItemStorage<VideoSettings>
 export const defaultAppSettings: AppSettings = {
     useBiometrics: false,
     language: { label: "English", selector: "en" },
+    uploadServer: { name: "nostr.build", url: "https://nostr.build/api/v2/nip96/upload" },
     currency: {
         code: "USD", 
         label: "currency.label.usd", 

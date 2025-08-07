@@ -3,17 +3,18 @@ import { LinkSection, SectionContainer } from "@components/general/section"
 import SelectLanguageBox, { showSelectLanguage } from "@components/modal/SelectLanguageBox"
 import { ProfilePicture } from "@components/nostr/user/ProfilePicture"
 import { useTranslateService } from "@src/providers/TranslateProvider"
-import { StackScreenProps } from "@react-navigation/stack"
 import Ionicons from 'react-native-vector-icons/Ionicons'
 import MessageBox from "@components/general/MessageBox"
+import { useAccount } from "@src/context/AccountContext"
 import ShareAppBar from "./commons/ShareAppBar"
 import useMenu from "./hooks/useMenu"
 import theme from "@src/theme"
 
-const UserMenuScreen = ({ navigation }: StackScreenProps<any>) => {
+const UserMenuScreen = ({ navigation }: any) => {
 
+    const { user } = useAccount()
     const { 
-        user, appVersion, poolstats, forceUpdate, setForceUpdate, shareVisible, setShareVisible,
+        appVersion, poolstats, forceUpdate, setForceUpdate, shareVisible, setShareVisible,
         copyPublicKey, copySecretKey, deleteAccount
     } = useMenu()
 

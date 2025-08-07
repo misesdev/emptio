@@ -1,7 +1,6 @@
 import ReactNativeBiometrics from "react-native-biometrics";
 import { IAuthService } from "./IAuthService";
 import { AppResponse, trackException } from "../telemetry";
-import { User } from "../user/types/User";
 import NostrPairKey from "../nostr/pairkey/NostrPairKey";
 import { PrivateKeyStorage } from "@storage/pairkeys/PrivateKeyStorage";
 import UserService from "../user/UserService";
@@ -13,10 +12,15 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import EncryptedStorage from "react-native-encrypted-storage";
 import { DataBaseEvents } from "@storage/database/DataBaseEvents";
 import useNDKStore, { NDKStore } from "../zustand/useNDKStore";
+import { DataBaseTransaction } from "@storage/database/DataBaseTransaction";
+import { DataBaseUtxo } from "@storage/database/DataBaseUtxo";
+import { User } from "../user/types/User";
 
 class AuthService implements IAuthService 
 {
+    private readonly _dbUtxos: DataBaseUtxo;
     private readonly _dbEvents: DataBaseEvents;
+    private readonly _dbTransactions: DataBaseTransaction;
     private readonly _noteService: NoteService;
     private readonly _userStorage: UserStorage;
     private readonly _privatekey: PrivateKeyStorage;
@@ -29,27 +33,34 @@ class AuthService implements IAuthService
         noteService: NoteService = new NoteService(),
         biometrics: ReactNativeBiometrics = new ReactNativeBiometrics(),
         privatekey: PrivateKeyStorage = new PrivateKeyStorage(),
-        dbEvents: DataBaseEvents = new DataBaseEvents()
+        dbEvents: DataBaseEvents = new DataBaseEvents(),
+        dbTransactios: DataBaseTransaction = new DataBaseTransaction(),
+        dbUtxos: DataBaseUtxo = new DataBaseUtxo()
     ) {
         this._ndkStore = ndkStore
         this._noteService = noteService
         this._userStorage = userStorage
         this._biometrics = biometrics
         this._privatekey = privatekey
+        this._dbTransactions = dbTransactios
         this._dbEvents = dbEvents
+        this._dbUtxos = dbUtxos
     }
 
     public async checkBiometrics(): Promise<boolean> 
     {
         try {
-        const { available } = await this._biometrics.isSensorAvailable()
-        if(available) {
-            const { success } = await this._biometrics.simplePrompt({
-                promptMessage: await useTranslate("commons.authenticate.message")
-            })
-            return success
+            const { available } = await this._biometrics.isSensorAvailable()
+            if(available) {
+                const { success } = await this._biometrics.simplePrompt({
+                    promptMessage: await useTranslate("commons.authenticate.message")
+                })
+                return success
+            }
+        } 
+        catch(ex) { 
+            trackException(ex)
         }
-        } catch(ex) { console.log(ex) }
         return true
     }
 
@@ -111,6 +122,7 @@ class AuthService implements IAuthService
                 return { success: false, data: null }
             const pairkey = new NostrPairKey(privateKey.entity)
             profile.pubkey = pairkey.getPublicKeyHex()
+            await this._ndkStore.setNdkSigner(profile)
             return { success: true, data: profile }
         } catch(ex) {
             return trackException(ex)
@@ -120,9 +132,11 @@ class AuthService implements IAuthService
     public async signOut(): Promise<AppResponse<any>> 
     {
         try {
-            await AsyncStorage.clear()
-            await this._dbEvents.clear() 
+            await this._dbEvents.clear()
+            await this._dbTransactions.clear()
+            await this._dbUtxos.clear()
             await EncryptedStorage.clear()
+            await AsyncStorage.clear()
             return { success: true }
         } catch(ex) {
             return trackException(ex)

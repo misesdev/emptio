@@ -1,4 +1,5 @@
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs'
+import { useTranslateService } from '../providers/TranslateProvider'
 import Ionicons from "react-native-vector-icons/Ionicons"
 import HomeScreen from "@screens/root/home/HomeScreen"
 import OrdersScreen from "@screens/root/orders/OrdersScreen"
@@ -6,7 +7,6 @@ import ChatsScreen from '@screens/root/chats/ChatsScreen'
 import VideosFeed from '@screens/root/videos/FeedVideosScreen'
 import { tabBarStyle } from '../constants/RouteSettings'
 import useChatStore from '@services/zustand/useChatStore'
-import { useTranslateService } from '../providers/TranslateProvider'
 import theme from "@src/theme"
 
 const Tab = createBottomTabNavigator()

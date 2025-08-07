@@ -1,85 +1,31 @@
 import { StyleSheet, View, TouchableOpacity, Image } from "react-native"
 import { useTranslateService } from "@src/providers/TranslateProvider"
 import { useAccount } from "@src/context/AccountContext"
-import { useService } from "@src/providers/ServiceProvider"
-import { Utilities } from "@src/utils/Utilities"
-import { launchImageLibrary } from "react-native-image-picker"
 import { ButtonPrimary } from "@components/form/Buttons"
 import { FormControl } from "@components/form/FormControl"
 import { ScrollView } from "react-native-gesture-handler"
 import Ionicons from 'react-native-vector-icons/Ionicons'
-import { pushMessage } from "@services/notification"
-import { useEffect, useState } from "react"
+import useUpdateUser from "../hooks/useUpdateUser"
 import theme from "@src/theme"
+import { useState } from "react"
 
 const UserEditScreen = () => {
 
-    const { user } = useAccount()
-    const { userService } = useService()
-    const [loading, setLoading] = useState(false)
-    const [about, setAbout] = useState(user.about)
-    const [banner, setBanner] = useState(user.banner)
-    const [userName, setUserName] = useState(user.name)
-    const [myWebsite, setMyWebsite] = useState(user.website)
-    const [lnAddress, setLnAddress] = useState(user.lud16)
-    const [profile, setProfile] = useState(user.picture)
-    const [profileColor, setProfileColor] = useState(theme.colors.green)
-    const [pictureError, setPictureError] = useState(false)
-    const [disabled, setDisabled] = useState(false)
     const { useTranslate } = useTranslateService()
-    
-    useEffect(() => {
-        setProfileColor(Utilities.getColorFromPubkey(user.pubkey??""))
-    },[])
-
-    const handlePickImage = async (location: "profile" | "banner") => {
-        // allow to user select a image of your galery
-        launchImageLibrary({
-            mediaType: "photo",
-            selectionLimit: 1
-        }, (result) => {
-            if (!result.didCancel) {
-                if (location == "banner" && result.assets)
-                    setBanner(result.assets[0].uri)
-                else if(result.assets)
-                    setProfile(result.assets[0].uri)
-
-            //await uploadImage(result.assets[0].uri)
-        }})
-    }
-
-    const handleSave = async () => {
-
-        user.about = about
-        user.name = userName
-        user.website = myWebsite
-        user.lud16 = lnAddress
-
-        setLoading(true)
-
-        // upload image of banner
-        if (banner && banner != user.banner) {
-
-        }
-
-        // upload image of profile
-        if (profile && profile != user.picture) {
-
-        }
-
-        //await userService.updateProfile({ user, setUser, upNostr: true })
-
-        setLoading(false)
-
-        pushMessage(useTranslate("message.profile.saved"))
-    }
+    const { user, setUser } = useAccount()
+    const [pictureError, setPictureError] = useState(false)
+    const { 
+        name, setName, profileColor, profileUri, bannerUri, 
+        about, setAbout, website, setWebsite, lnAddress, setLnAddress,
+        loading, disabled, pickImage, onSave
+    } = useUpdateUser({ user, setUser })
 
     return (
         <ScrollView contentContainerStyle={[theme.styles.scroll_container, { paddingVertical: 20 }]} >
             <View style={styles.banner}>
-                {banner && <Image style={{ flex: 1 }} source={{ uri: banner }} />}
+                {bannerUri && <Image style={{ flex: 1 }} source={{ uri: bannerUri }} />}
                 <TouchableOpacity
-                    onPress={() => handlePickImage("banner")}
+                    onPress={() => pickImage("banner")}
                     style={styles.buttonBanner}
                 >
                     <Ionicons name="pencil" color={theme.colors.white} size={theme.icons.mine} />
@@ -88,12 +34,12 @@ const UserEditScreen = () => {
             <View style={{ height: 60 }}></View>
             <View style={styles.profileArea}>
                 <View style={styles.imageArea}>
-                    <TouchableOpacity activeOpacity={.7} onPress={() => handlePickImage("profile")}>
+                    <TouchableOpacity activeOpacity={.7} onPress={() => pickImage("profile")}>
                         <View style={[styles.image,{borderColor:profileColor}]}>
                             <Image style={{ width: 96, height: 96 }}
                                 onError={() => setPictureError(true)}
-                                source={(pictureError || !profile) ? require("@assets/images/defaultProfile.png")
-                                    : { uri: profile }
+                                source={(pictureError || !profileUri) ? require("@assets/images/defaultProfile.png")
+                                    : { uri: profileUri }
                                 }  
                             />
                         </View>
@@ -107,15 +53,34 @@ const UserEditScreen = () => {
                 </View>
             </View>
 
-            <FormControl label={useTranslate("labels.username")} value={userName} onChangeText={setUserName} />
-            <FormControl label={useTranslate("labels.about")} value={about} onChangeText={setAbout} isTextArea />
-            <FormControl label={useTranslate("labels.mywebsite")} value={myWebsite} onChangeText={setMyWebsite} />
-            <FormControl label={useTranslate("labels.lnaddress")} value={lnAddress} onChangeText={setLnAddress} />
+            <FormControl 
+                value={name} 
+                onChangeText={setName}
+                label={useTranslate("labels.username")}
+            />
+            <FormControl 
+                isTextArea
+                value={about} 
+                onChangeText={setAbout} 
+                label={useTranslate("labels.about")} 
+            />
+            <FormControl
+                value={website}
+                onChangeText={setWebsite}
+                label={useTranslate("labels.mywebsite")}
+            />
+            <FormControl 
+                value={lnAddress} 
+                onChangeText={setLnAddress}
+                label={useTranslate("labels.lnaddress")} 
+            />
 
             <ButtonPrimary
                 style={{ marginTop: 50 }} 
                 label={useTranslate("commons.save")}
-                onPress={handleSave} loading={loading} disabled={disabled}
+                onPress={onSave} 
+                disabled={disabled}
+                loading={loading} 
             />
         </ScrollView>
     )

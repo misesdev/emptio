@@ -7,7 +7,7 @@ import NDK, { NDKEvent } from "@nostr-dev-kit/ndk-mobile";
 import useNDKStore from "../zustand/useNDKStore";
 import { User } from "../user/types/User";
 import { TimeSeconds } from "../converter/TimeSeconds";
-import { Utilities } from "@/src/utils/Utilities";
+import { Utilities } from "@src/utils/Utilities";
 
 class MessageService implements IMessageService 
 {
@@ -82,14 +82,16 @@ class MessageService implements IMessageService
             Promise.all(myEvents.map(event => {
                 return new Promise<void>(async (resolve) => {
                     try {
-                        const deleteEvent = new NDKEvent(this._ndk, {
-                            kind: 5,
-                            pubkey: this._user.pubkey,
-                            content: "deleting event",
-                            tags: [["e", event.id]],
-                            created_at: TimeSeconds.now()
-                        })
-                        await deleteEvent.publish()
+                        event.ndk = this._ndk
+                        await event.delete()
+                        // const deleteEvent = new NDKEvent(this._ndk, {
+                        //     kind: 5,
+                        //     pubkey: this._user.pubkey,
+                        //     content: "deleting event",
+                        //     tags: [["e", event.id]],
+                        //     created_at: TimeSeconds.now()
+                        // })
+                        // await deleteEvent.publish()
                         resolve()
                     }
                     catch { resolve() }

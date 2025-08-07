@@ -1,8 +1,10 @@
-import { Language } from "@/src/services/translate/types"
+import { Language } from "@services/translate/types"
 import { Currency } from "@src/constants/Currencies"
+import { UploadServer } from "../servers/types";
 
 export type AppSettings = {
-    useBiometrics: boolean,
-    language: Language,
-    currency: Currency
+    useBiometrics: boolean;
+    language: Language;
+    uploadServer: UploadServer;
+    currency: Currency;
 }
