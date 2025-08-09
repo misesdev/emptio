@@ -1,4 +1,4 @@
-import { createContext, useContext, ReactNode, ReactElement } from 'react';
+import { createContext, useContext, ReactNode, ReactElement, useEffect } from 'react';
 import useLoadSubscription from '../hooks/useLoadSubscription';
 import { User } from '@services/user/types/User';
 import { Wallet } from '@services/wallet/types/Wallet';
@@ -9,6 +9,7 @@ import useLoadFollows from '../hooks/useLoadFollows';
 import useLoadSettings from '../hooks/useLoadSettings';
 import useLoadWallets from '../hooks/useLoadWallets';
 import { useAuth } from './AuthContext';
+import useDataEventStore from '../services/zustand/useDataEventStore';
 
 type UserContextType = {
     user: User;
@@ -43,7 +44,15 @@ const AccountProvider = ({ children }: Props): ReactElement => {
     } = useLoadFollows(user)
     const { settings, setSettings } = useLoadSettings()
     const { wallets, setWallets } = useLoadWallets()
-    
+    const { dataEvents } = useDataEventStore()
+   
+    useEffect(() => {
+        if(dataEvents["follows"]) {
+            console.log("received follows event")
+            setFollowsEvent(dataEvents["follows"])
+        }
+    }, [dataEvents])
+
     return (
         <UserContext.Provider value={{
                 user,

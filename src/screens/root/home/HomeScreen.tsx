@@ -7,6 +7,7 @@ import { useHomeState } from "./hooks/useHomeState"
 import { HeaderHome } from "./header/HeaderHome"
 import { useEffect } from "react"
 import theme from "@src/theme"
+import NewWalletModal, { showNewWaleltModal } from "../wallet/new/NewWalletModal"
 
 const HomeScreen = ({ navigation }: StackScreenProps<any>) => {
 
@@ -19,7 +20,7 @@ const HomeScreen = ({ navigation }: StackScreenProps<any>) => {
     }, [])
 
     const actionWallet: ActionHeader = {
-        icon: "add", action: () => navigation.navigate("new-wallet")
+        icon: "add", action: showNewWaleltModal
     }
 
     return (
@@ -39,9 +40,10 @@ const HomeScreen = ({ navigation }: StackScreenProps<any>) => {
                 <WalletList wallets={wallets} navigation={navigation} />
 
                 {/* Sales and Shopping section*/}
-                <SectionHeader icon="cash-outline" label={useTranslate("section.title.sales")} />
+                {/* <SectionHeader icon="cash-outline" label={useTranslate("section.title.sales")} /> */}
 
             </ScrollView>
+            <NewWalletModal navigation={navigation} />
         </View>
     )
 }

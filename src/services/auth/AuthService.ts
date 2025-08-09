@@ -78,6 +78,10 @@ class AuthService implements IAuthService
             await this._ndkStore.setNdkSigner(profile)
             const userService = new UserService(profile)
             await userService.publishProfile()
+            const followsEvent = userService.createFollows([
+                ["p", "55472e9c01f37a35f6032b9b78dade386e6e4c57d80fd1d0646abb39280e5e27"]
+            ])
+            await userService.updateFollows(followsEvent)
             await userService.save()
             return { success: true, data: profile }
         } catch(ex) {

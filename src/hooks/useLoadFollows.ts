@@ -11,15 +11,15 @@ const useLoadFollows = (user: User) => {
     const [loading, setLoading] = useState(true)
 
     useEffect(() => { 
-        if(user.pubkey || followsEvent.pubkey) return;
+        if(!followsEvent.pubkey) return;
         const load = async () => await loadFollows()
         load()
-    }, [user.pubkey, followsEvent.pubkey])
+    }, [followsEvent])
 
     const loadFollows = async () => {
-        const followsEvent = await userService.getFollowsEvent()
-        if(followsEvent)
-            setFollowsEvent(followsEvent)
+        // const followsEvent = await userService.getFollowsEvent()
+        // if(followsEvent)
+        //     setFollowsEvent(followsEvent)
         const follows = await userService.listFollows({ follows: followsEvent })
         if(follows)
             setFollows(follows)

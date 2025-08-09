@@ -1,18 +1,19 @@
 import { SafeAreaView, TouchableOpacity, View, Text, StyleSheet, Dimensions } from "react-native"
+import { showNewWaleltModal } from "@screens/root/wallet/new/NewWalletModal"
+import { useTranslateService } from "@src/providers/TranslateProvider"
 import WalletListItem from "./WalletListItem"
 import { FlatList } from "react-native-gesture-handler"
 import { useCallback, useEffect, useState } from "react"
-import theme from "@src/theme"
 import { Wallet } from "@services/wallet/types/Wallet"
-import { useTranslateService } from "@src/providers/TranslateProvider"
-import { StoredItem } from "@/src/storage/types"
+import { StoredItem } from "@storage/types"
+import theme from "@src/theme"
 
-interface Props {
-    wallets: StoredItem<Wallet>[],
-    navigation: any
+export type WalletListProps = {
+    wallets: StoredItem<Wallet>[];
+    navigation: any;
 }
 
-const WalletList = ({ wallets, navigation }: Props) => {
+const WalletList = ({ wallets, navigation }: WalletListProps) => {
     const { width } = Dimensions.get("window")
     const itemWidth = width * .82
     const spacing = width * .06
@@ -32,14 +33,20 @@ const WalletList = ({ wallets, navigation }: Props) => {
         if(item.id === "create")
             return (
                  <View style={[styles.wallet, {width: itemWidth, marginRight: spacing, backgroundColor: theme.colors.section, padding: 5 }]}> 
-                     <Text style={styles.title}>{useTranslate("labels.wallet.add")}</Text>
-                     <Text style={[styles.description, { color: theme.colors.gray }]}>{useTranslate("message.wallet.create")}</Text> 
-                     <TouchableOpacity activeOpacity={.7}
+                    <Text style={styles.title}>
+                        {useTranslate("labels.wallet.add")}
+                    </Text>
+                    <Text style={[styles.description, { color: theme.colors.gray }]}>
+                        {useTranslate("message.wallet.create")}
+                    </Text> 
+                    <TouchableOpacity activeOpacity={.7}
                         style={[styles.button, { backgroundColor: theme.colors.blue }]}
-                        onPress={() => navigation.navigate("new-wallet")}
+                        onPress={() => showNewWaleltModal()}
                     > 
-                         <Text style={styles.buttonText}> {useTranslate("commons.add")} </Text>
-                     </TouchableOpacity> 
+                        <Text style={styles.buttonText}> 
+                            {useTranslate("commons.add")} 
+                        </Text>
+                    </TouchableOpacity> 
                 </View>
             )
 
