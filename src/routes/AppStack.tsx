@@ -16,8 +16,8 @@ import RelayScreen from "@screens/root/settings/relays/RelayScreen"
 import AddRelayScreen from "@screens/root/settings/relays/AddRelayScreen"
 import OrderClosureScreen from "@screens/root/orders/new/OrderClosureScreen"
 import AuthenticateScreen from "@screens/root/AuthenticateScreen"
+import WalletStackNavigation from "./WalletStackNavigation"
 import AppTabStack from "./AppTabStack"
-import WalletStackNavigation from "./WalletStack"
 
 const Stack = createStackNavigator()
 
@@ -53,7 +53,7 @@ const AppStack = () => {
             <Stack.Screen name="manage-security" component={ManageSecurityScreen} options={ScreenCardOptions} />
 
             {/* Wallet  */}
-            {/* <WalletStackNavigation Stack={Stack} /> */}
+            <Stack.Screen name="wallet-stack" component={WalletStackNavigation} /> 
 
             {/* Manage Friends */}
             <Stack.Screen name="add-follow" component={AddFolowScreen} options={ScreenCardOptions} />

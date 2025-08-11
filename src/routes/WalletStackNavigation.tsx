@@ -1,4 +1,3 @@
-import { TypedNavigator } from "@react-navigation/native";
 import WalletScreen from "@screens/root/wallet/WalletScreen";
 import NewWalletScreen from "@screens/root/wallet/new/NewWalletScreen";
 import WalletNameScreen from "@screens/root/wallet/new/WalletNameScreen"
@@ -10,19 +9,17 @@ import WalletSettings from "@screens/root/wallet/settings/WalletSettings";
 import SendFinalScreen from "@screens/root/wallet/send/SendFinalScreen";
 import ReceiverScreen from "@screens/root/wallet/send/ReceiverScreen";
 import SendScreen from "@screens/root/wallet/send/SendScreen";
-import { CardStyleInterpolators } from "@react-navigation/stack";
+import { CardStyleInterpolators, createStackNavigator } from "@react-navigation/stack";
 import WalletReceiveScreen from "@screens/root/wallet/receive/WalletReceiveScreen";
 import MnemonicConfirmationScreen from "@screens/root/wallet/new/MnemonicConfirmationScreen";
 import ImportationScreen from "@screens/root/wallet/new/ImportationScreen";
 
-type Props = {
-    Stack: TypedNavigator<any>
-}
+const Stack = createStackNavigator()
 
-const WalletStackNavigation = ({ Stack }: Props) => {
+const WalletStackNavigation = () => {
     const ScreenCardOptions = { cardStyleInterpolator: CardStyleInterpolators.forVerticalIOS }
     return (
-        <>
+        <Stack.Navigator screenOptions={ScreenCardOptions} initialRouteName="wallet">
             <Stack.Screen 
                 name="wallet" 
                 component={WalletScreen} 
@@ -93,7 +90,7 @@ const WalletStackNavigation = ({ Stack }: Props) => {
                 component={TransactionScreen} 
                 options={ScreenCardOptions} 
             />
-        </>
+        </Stack.Navigator>
     )
 }
 
