@@ -21,13 +21,13 @@ export const styles = StyleSheet.create({
     sectionTransactions: {
         padding: 10,
         width: "100%",
-        borderRadius: 25,
+        borderRadius: theme.design.borderRadius,
     },
     sectionTransaction: {
         width: "100%",
         minHeight: 75,
         maxHeight: 120,
-        borderRadius: 23,
+        borderRadius: theme.design.borderRadius,
         marginVertical: 4,
         flexDirection: "row",
         backgroundColor: "rgba(0, 55, 55, .2)"
@@ -53,5 +53,4 @@ export const styles = StyleSheet.create({
         textAlign: "center",
         fontWeight: "600"
     }
-
 })

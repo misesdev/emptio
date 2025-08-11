@@ -37,7 +37,7 @@ const WalletListItem = ({ wallet, handleOpen, style }: Props) => {
         {
             setLoading(true)
             isFetching.current = true
-            await walletService.load(wallet.id)
+            await walletService.init(wallet.id)
             let balance = await walletService.getBalance(false)
             if(walletData.lastBalance != balance)
             {
@@ -95,16 +95,16 @@ const WalletListItem = ({ wallet, handleOpen, style }: Props) => {
 }
 
 const styles = StyleSheet.create({
-    wallet: { marginVertical: 10, marginHorizontal: 6, borderRadius: 10 },
+    wallet: { marginVertical: 10, marginHorizontal: 6, borderRadius: theme.design.borderRadius },
     title: { color: theme.colors.white, fontSize: 24, fontWeight: "bold", marginTop: 20,
         marginHorizontal: 10 },
     description: { fontSize: 12, marginHorizontal: 10, marginVertical: 6 },
-    button: { margin: 10, maxWidth: 150, paddingVertical: 14, borderRadius: 10 },
+    button: { margin: 10, maxWidth: 150, paddingVertical: 14, borderRadius: theme.design.borderRadius },
     buttonText: { color: theme.colors.white, fontSize: 13, fontWeight: "bold", 
         textAlign: 'center', marginHorizontal: 28 },
-    tagWallet: { color: theme.colors.white, margin: 10, borderRadius: 10, fontSize: 10, 
-        fontWeight: "bold", paddingHorizontal: 10, paddingVertical: 4, position: "absolute", 
-        top: -18, right: 14 }
+    tagWallet: { color: theme.colors.white, margin: 10, borderRadius: theme.design.borderRadius,
+        fontSize: 10, fontWeight: "bold", paddingHorizontal: 10, paddingVertical: 4,
+        position: "absolute", top: -18, right: 14 }
 })
 
 export default WalletListItem

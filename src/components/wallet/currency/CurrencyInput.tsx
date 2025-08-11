@@ -4,9 +4,8 @@ import { Currency } from "@src/constants/Currencies"
 import Ionicons from "react-native-vector-icons/Ionicons"
 import theme from "@src/theme"
 import { CurrencyList } from "./CurrencyList"
-import { useAccount } from "@/src/context/AccountContext"
-import { Formatter } from "@/src/services/converter/Formatter"
-import { useService } from "@/src/providers/ServiceProvider"
+import { useAccount } from "@src/context/AccountContext"
+import { Formatter } from "@services/converter/Formatter"
 
 interface CurrencySelectorProps {
     visible: boolean;
@@ -103,15 +102,15 @@ const styles = StyleSheet.create({
     overlayer: { flex: 1, justifyContent: "flex-end", backgroundColor: theme.colors.transparent,
         padding: 6 },
     modalContainer: { height: "65%", backgroundColor: theme.colors.semitransparentdark,
-        borderRadius: 10, padding: 12 },
+        borderRadius: theme.design.borderRadius, padding: 12 },
     
-    container: { width: "90%", paddingHorizontal: 20, paddingVertical: 15, borderRadius: 10, 
-        margin: 10, padding: 10, backgroundColor: "rgba(0, 55, 55, .2)" },
+    container: { width: "90%", paddingHorizontal: 20, paddingVertical: 15,margin: 10, padding: 10, 
+        borderRadius: theme.design.borderRadius, backgroundColor: "rgba(0, 55, 55, .2)" },
     input: { padding: 10, fontSize: 26, fontWeight: "bold", borderBottomWidth: 1, 
         borderBottomColor: theme.colors.gray, color: theme.colors.white },
 
-    buttonMoney: { borderRadius: 10, overflow: "hidden", width: "100%", height: 55,
-       alignItems: "center", justifyContent: "center"  },
+    buttonMoney: { borderRadius: theme.design.borderRadius, overflow: "hidden", 
+        width: "100%", height: 55, alignItems: "center", justifyContent: "center"  },
     label: { fontSize: 14, marginVertical: 10, color: theme.colors.gray },
     currencyCode: { color: theme.colors.white, fontSize: 16, fontWeight: "500",
         textAlign: "center" },

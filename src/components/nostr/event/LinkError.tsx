@@ -14,8 +14,8 @@ const LinkError = ({ url }: ScreenProps) => {
 }
 
 const styles = StyleSheet.create({
-    webContainer: { width: "100%", padding: 4, borderRadius: 10, overflow: "hidden", 
-        backgroundColor: theme.colors.blueOpacity },
+    webContainer: { width: "100%", padding: 4, borderRadius: theme.design.borderRadius,
+        overflow: "hidden", backgroundColor: theme.colors.blueOpacity },
     subSection: { width: "100%", padding: 6 },
     description: { textAlign: "center", color: theme.colors.gray, fontSize: 13 }
 })

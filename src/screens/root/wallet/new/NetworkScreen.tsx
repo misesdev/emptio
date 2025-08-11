@@ -1,114 +1,90 @@
 import { ButtonPrimary } from "@components/form/Buttons"
-import { HeaderScreen } from "@components/general/HeaderScreen"
-import { StyleSheet, View, Text, TouchableOpacity } from "react-native"
+import { StyleSheet, View, Text } from "react-native"
 import { ScrollView } from "react-native-gesture-handler"
 import { useTranslateService } from "@src/providers/TranslateProvider"
 import { useService } from "@src/providers/ServiceProvider"
-import Ionicons from "react-native-vector-icons/Ionicons"
+import NetworkOption from "../commons/NetworkOption"
+import { useAccount } from "@src/context/AccountContext"
+import { pushMessage } from "@services/notification"
 import { BNetwork } from "bitcoin-tx-lib"
 import { useState } from "react"
 import theme from "@src/theme"
 
-const WalletNetwork = ({ navigation, route }: any) => {
+const NetworkScreen = ({ navigation, route }: any) => {
 
-    const { name } = route.params
+    const { wallets, setWallets } = useAccount()
+    const { name, mnemonic, passphrase } = route.params
     const [network, setNetwork] = useState<BNetwork>("mainnet")
     const [disabled, setDisabled] = useState<boolean>(false)
     const [loading, setLoading] = useState<boolean>(false)
+    const { walletFactory, walletService } = useService()
     const { useTranslate } = useTranslateService()
-    const { walletFactory } = useService()
 
-    const continueToPassPhrase = async () => {
+    const createWallet = async () => {
         setLoading(true)
         setDisabled(true)
-        const mnemonic = walletFactory.generateMnemonic()
-        navigation.navigate("create-wallet-mnemonic", { 
-            name, 
-            network, 
-            mnemonic 
-        })
-        // const response = await walletService.create({ name, password, network })
-        // 
-        // if (response.success)
-        // {
-        //     let base = response.data as BaseWallet
-        //     if (base.wallet.default) {
-        //         user.default_wallet = base.wallet.key
-        //         user.bitcoin_address = base.wallet.address
-        //         await userService.updateProfile({ user, upNostr: true })
-        //     }
-
-        //     if(setWallets) setWallets(await storageService.wallets.list())
-
-        //     navigation.navigate("seed-wallet", { 
-        //         wallet: base.wallet,
-        //         mnemonic: base.mnemonic.split(" ")
-        //     })
-        // }
-        // else if(response.message) {
-        //     pushMessage(response.message)
-        // }
-
-        setDisabled(false)
-        setLoading(false)
+        setTimeout(async () => {
+            const masterKey = await walletFactory.create({ 
+                mnemonic: mnemonic.join(" "), passphrase, network 
+            })
+            const result = await walletService.add({
+                name, 
+                masterKey,
+                network
+            })
+            if(result.success && result.data) {
+                setWallets([...wallets, result.data])
+                navigation.reset({ 
+                    routes: [{ name: "home" }], 
+                    index: 0
+                })
+            }   
+            if(!!result.success && result.message)
+                pushMessage(result.message)
+            setDisabled(false)
+            setLoading(false)
+        }, 20)
     }
 
     return (
-        <ScrollView contentContainerStyle={theme.styles.container}>
-            <HeaderScreen 
-                style={{ position: "absolute", top: 5 }}
-                title={useTranslate("screen.title.addwallet")}
-                onClose={() => navigation.goBack()}
-            />
+        <ScrollView contentContainerStyle={{ flex: 1 }}>
 
-            <View style={{ height: 20 }}></View>
+            <View style={styles.content}>
+                <View style={styles.titleContainer}>
+                    <Text style={styles.title}>
+                        Escolha a rede da carteira?
+                    </Text>
+                </View>
+               
+                <View style={styles.descriptionContainer}>
+                    <Text style={styles.description} >
+                        Esta será a rede a qual a carteira irá interagir, enviar e receber transações.  
+                    </Text>
+                </View>
 
-            <Text style={styles.title}>Defina a rede da carteira?</Text>
-           
-            <View style={{ width: "100%", alignItems: "center", marginVertical: 30 }}>
-                <TouchableOpacity activeOpacity={.7}
-                    style={[styles.selection, { borderColor: network == "mainnet" ? 
-                        theme.colors.white : theme.colors.transparent }]}
-                    onPress={() => setNetwork("mainnet")}
-                >
-                    <View style={{ width: "15%", height: "100%", alignItems: "center", justifyContent: "center" }}>
-                        <Ionicons name="logo-bitcoin" size={theme.icons.large} color={theme.colors.orange} />
-                    </View>
-                    <View style={{ width: "85%" }}>
-                        <Text style={[styles.typeTitle, { color: theme.colors.white }]}>
-                            {useTranslate("wallet.bitcoin.tag")}
-                        </Text>
-                        <Text style={styles.typeDescription}>
-                            {useTranslate("wallet.bitcoin.description")}
-                        </Text>
-                    </View>
-                </TouchableOpacity>
-
-                <TouchableOpacity activeOpacity={.7}
-                    style={[styles.selection, { borderColor: network == "testnet" ? 
-                        theme.colors.white : theme.colors.transparent }
-                    ]}
-                    onPress={() => setNetwork("testnet")}
-                >
-                    <View style={{ width: "15%", height: "100%", alignItems: "center", justifyContent: "center" }}>
-                        <Ionicons name="logo-bitcoin" size={theme.icons.large} color={theme.colors.green} />
-                    </View>
-                    <View style={{ width: "85%" }}>
-                        <Text style={[styles.typeTitle, { color: theme.colors.white }]}>
-                            {useTranslate("wallet.bitcoin.testnet.tag")}
-                        </Text>
-                        <Text style={styles.typeDescription}>
-                            {useTranslate("wallet.bitcoin.testnet.description")}
-                        </Text>
-                    </View>
-                </TouchableOpacity>
+                <View style={styles.optionContent}>
+                    <NetworkOption
+                        title={useTranslate("wallet.bitcoin.tag")}
+                        description={"A Mainnet é a rede oficial do Bitcoin, usada para transações reais."}
+                        chageNetwork={setNetwork}
+                        networkOption="mainnet"
+                        network={network} 
+                    />
+                    <NetworkOption
+                        title={useTranslate("wallet.bitcoin.testnet.tag")}
+                        description={"A Testnet é a rede de testes, onde as moedas não têm valor real — ideal para experimentar com segurança."}
+                        chageNetwork={setNetwork}
+                        networkOption="testnet"
+                        network={network} 
+                    />
+                </View>
             </View>
-            
+
             <View style={styles.buttonArea}>
                 <ButtonPrimary
                     loading={loading}
                     disabled={disabled}
-                    onPress={continueToPassPhrase}
+                    onPress={createWallet}
                     label={useTranslate("commons.continue")} 
                 />
             </View>
@@ -117,12 +93,14 @@ const WalletNetwork = ({ navigation, route }: any) => {
 }
 
 const styles = StyleSheet.create({
-    title: { fontSize: 25, fontWeight: "bold", textAlign: "center", color: theme.colors.white, marginVertical: 20 },
-    buttonArea: { width: '100%', justifyContent: 'center', marginVertical: 10, flexDirection: "row", marginTop: 50 },
-    selection: { width: "90%", minHeight: 20, maxHeight: 100, borderRadius: 10, 
-        marginVertical: 10, flexDirection: "row", borderWidth: 1 },
-    typeTitle: { fontSize: 16, fontWeight: "bold", marginTop: 15, color: theme.colors.white },
-    typeDescription: { marginBottom: 15, color: theme.colors.gray },
+    content: { width: "100%", paddingVertical: 50 },
+    titleContainer: { width: "100%", padding: 10, paddingVertical: 10 },
+    title: { fontSize: 32, fontWeight: "bold", textAlign: "center", color: theme.colors.white },
+    descriptionContainer: { width: "100%", padding: 20 },
+    description: { fontSize: 14, color: theme.colors.gray },
+    optionContent: { width: "100%", padding: 10, marginVertical: 15 },
+    buttonArea: { width: '100%', position: "absolute", bottom: 0, marginVertical: 20, 
+        paddingHorizontal: 30 },
 })
 
-export default WalletNetwork
+export default NetworkScreen

@@ -66,11 +66,15 @@ export const showSelectWallet = () => {
 }
 
 const styles = StyleSheet.create({
-    box: { padding: 10, width: "85%", borderRadius: 8, backgroundColor: theme.colors.section },
-    option: { width: "100%", flexDirection: "row", padding: 5, borderRadius: 10, marginVertical: 2 },
+    box: { padding: 10, width: "85%", borderRadius: theme.design.borderRadius, 
+        backgroundColor: theme.colors.section },
+    option: { width: "100%", flexDirection: "row", padding: 5, borderRadius: theme.design.borderRadius, 
+        marginVertical: 2 },
     labelOption: { width: "100%", color: theme.colors.white, padding: 10 },
-    labelAmount: { width: "100%", color: theme.colors.white, paddingVertical: 12, fontSize: 11, fontWeight: "500" },
-    absolute: { position: "absolute", width: "100%", height: "100%", top: 0, left: 0, bottom: 0, right: 0 }
+    labelAmount: { width: "100%", color: theme.colors.white, paddingVertical: 12, 
+        fontSize: 11, fontWeight: "500" },
+    absolute: { position: "absolute", width: "100%", height: "100%", top: 0, left: 0, 
+        bottom: 0, right: 0 }
 })
 
 export default SelectWalletBox

@@ -10,17 +10,14 @@ import { useTranslateService } from "@/src/providers/TranslateProvider"
 import { useService } from "@/src/providers/ServiceProvider"
 import { Utilities } from "@/src/utils/Utilities"
 import theme from "@src/theme"
-
-interface followModalProps {
-    user: User
-}
-
-interface ButtonProps {
-    label: string,
-    onPress: () => void,
-}
+import { TimeSeconds } from "@/src/services/converter/TimeSeconds"
 
 var showFollowModalFunction: (config: followModalProps) => void
+
+type ButtonProps = {
+    label: string;
+    onPress: () => void;
+}
 
 const ButtonLight = ({ label, onPress }: ButtonProps) => {
     const [backColor, setBackColor] = useState(theme.colors.transparent)
@@ -35,13 +32,13 @@ const ButtonLight = ({ label, onPress }: ButtonProps) => {
     )
 }
 
-interface FollowProps {
-    handleAddFollow: (user: User) => Promise<void>
+type FollowProps = {
+    handleAddFollow: (user: User) => Promise<void>;
 }
 
 const FollowModal = ({ handleAddFollow }: FollowProps) => {
 
-    const { userService } = useService()
+    const { noteService } = useService()
     const { useTranslate } = useTranslateService()
     const [user, setUser] = useState<User>({} as User)
     const [visible, setVisible] = useState(false)
@@ -50,10 +47,15 @@ const FollowModal = ({ handleAddFollow }: FollowProps) => {
 
     const handleLoadData = useCallback(async (user: User) => {
         setloading(true)
-        const latestNotes = await userService.lastNotes(10)
-        setNotes(latestNotes)
+        const notes = await noteService.listNotes({
+            kinds: [1],
+            authors: [user.pubkey as string],
+            until: TimeSeconds.now(),
+            limit: 10
+        })
+        setNotes(notes.filter(e => !e.tags.find(t => t[0] == "e")))
         setloading(false)
-    }, [setNotes, setloading, userService])
+    }, [setNotes, setloading, noteService])
 
     showFollowModalFunction = useCallback(async ({ user }: followModalProps) => {
         setUser(user)
@@ -129,15 +131,21 @@ const FollowModal = ({ handleAddFollow }: FollowProps) => {
     )
 }
 
+export type followModalProps = {
+    user: User;
+}
+
 export const showFollowModal = (props: followModalProps) => {
      showFollowModalFunction(props)
 }
 
 const styles = StyleSheet.create({
-    box: { padding: 15, width: "90%", borderRadius: 10, backgroundColor: theme.colors.section },
+    box: { padding: 15, width: "90%", borderRadius: theme.design.borderRadius, 
+        backgroundColor: theme.colors.section },
     message: { fontSize: 14, color: theme.colors.gray },
-    infolog: { paddingHorizontal: 15, paddingVertical: 8, marginVertical: 18, borderRadius: 10,
-        backgroundColor: theme.colors.semitransparent, color: theme.colors.gray },
+    infolog: { paddingHorizontal: 15, paddingVertical: 8, marginVertical: 18, 
+        borderRadius: theme.design.borderRadius, backgroundColor: theme.colors.semitransparent, 
+        color: theme.colors.gray },
     image: { width: 60, height: 60, borderRadius: 50, overflow: "hidden", borderWidth: 2, 
         borderColor: theme.colors.blue },
     sectionButtons: { width: "100%", flexDirection: "row-reverse" },

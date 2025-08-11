@@ -53,9 +53,9 @@ const styles = StyleSheet.create({
     container: { flex: 1, flexDirection: 'column', justifyContent: 'flex-end',
         backgroundColor: theme.colors.black },
     scanner: { justifyContent: 'center', alignItems: 'center' },
-    frameCode: { width: 185, height: 185, borderRadius: 10,
+    frameCode: { width: 185, height: 185, borderRadius: theme.design.borderRadius,
         backgroundColor: "rgba(255, 255, 255, .2)" },
-    closeButton: { bottom: 80, borderRadius: 50, position: 'absolute',  
+    closeButton: { bottom: 80, borderRadius: theme.design.borderRadius, position: 'absolute',  
         backgroundColor: "rgba(0,0,0,.5)" }
 })
 

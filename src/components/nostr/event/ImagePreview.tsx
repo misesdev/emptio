@@ -9,7 +9,7 @@ interface ScreenProps { url: string, redute?: number }
 
 const ImagePreview = ({ url, redute=180 }: ScreenProps) => {
  
-    const { downloader } = useService()
+    const { blobService } = useService()
     const { width } = Dimensions.get("window")
     const [error, setError] = useState<boolean>(false)
     const [imageHeight, setImageHeight] = useState<number>(200)
@@ -24,7 +24,7 @@ const ImagePreview = ({ url, redute=180 }: ScreenProps) => {
     }, [])
 
     const handleDownload = async() => {
-        downloader.download({
+        blobService.download({
             url,
             setDownloading
         })
@@ -53,11 +53,11 @@ const ImagePreview = ({ url, redute=180 }: ScreenProps) => {
 }
 
 const styles = StyleSheet.create({
-    image: { width: "100%", marginVertical: 10, resizeMode: "contain", borderRadius: 10,
-        overflow: "hidden" },
+    image: { width: "100%", marginVertical: 10, resizeMode: "contain", overflow: "hidden",
+        borderRadius: theme.design.borderRadius },
     controlsHeader: { width: "100%", position: "absolute", top: 0, flexDirection: "row-reverse", 
         backgroundColor: theme.colors.transparent },
-    controlsHeaderButton: { padding: 4, borderRadius: 10, margin: 4,
+    controlsHeaderButton: { padding: 4, borderRadius: theme.design.borderRadius, margin: 4,
         backgroundColor: theme.colors.blueOpacity },
 })
 

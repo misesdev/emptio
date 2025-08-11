@@ -61,7 +61,10 @@ const theme = {
             width: "100%",
             flexDirection: "row"
         }
-    })
+    }),
+    design: {
+        borderRadius: 15
+    }
 };
 
 export default theme;

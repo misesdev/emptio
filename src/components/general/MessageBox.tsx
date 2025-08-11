@@ -31,7 +31,8 @@ const ButtonLight = ({ label, onPress }: ButtonProps) => {
         <TouchableOpacity onPress={onPress}
             onPressIn={() => setBackColor("rgba(255, 255, 255, .2)")}
             onPressOut={() => setBackColor(theme.colors.transparent)}
-            style={{ padding: 10, paddingHorizontal: 15, borderRadius: 8, backgroundColor: backColor }}
+            style={{ padding: 10, paddingHorizontal: 15, borderRadius: theme.design.borderRadius, 
+                backgroundColor: backColor }}
         >
             <Text style={{ fontSize: 14, fontWeight: "bold", color: theme.colors.white }}>{label}</Text>
         </TouchableOpacity>
@@ -94,9 +95,12 @@ export const showMessage = (props: alertBoxProps) => {
 }
 
 const styles = StyleSheet.create({
-    box: { padding: 10, paddingHorizontal: 15, width: "85%", borderRadius: 8, backgroundColor: theme.colors.section },
+    box: { padding: 10, paddingHorizontal: 15, width: "85%", borderRadius: theme.design.borderRadius, 
+        backgroundColor: theme.colors.section },
     message: { fontSize: 14, color: theme.colors.gray },
-    infolog: { paddingHorizontal: 15, paddingVertical: 8, marginVertical: 18, borderRadius: 10, backgroundColor: theme.colors.semitransparent, color: theme.colors.gray },
+    infolog: { paddingHorizontal: 15, paddingVertical: 8, marginVertical: 18, 
+        borderRadius: theme.design.borderRadius, backgroundColor: theme.colors.semitransparent, 
+        color: theme.colors.gray },
     sectionButtons: { width: "100%", flexDirection: "row-reverse" },
     close: { top: 20, left: 20, position: "absolute" },
     absolute: {

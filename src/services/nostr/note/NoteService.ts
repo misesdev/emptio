@@ -1,5 +1,4 @@
-import NDK, { NDKEvent, NDKFilter, NDKSubscriptionCacheUsage,
-    NostrEvent } from "@nostr-dev-kit/ndk-mobile"
+import NDK, { NDKEvent, NDKFilter, NDKSubscriptionCacheUsage } from "@nostr-dev-kit/ndk-mobile"
 import { INoteService, ListCommentProps, ListReactionProps, PublishNoteProps, 
     ReactionProps } from "./INoteService"
 import useNDKStore from "@services/zustand/useNDKStore"
@@ -8,7 +7,7 @@ import { User } from "../../user/types/User";
 class NoteService implements INoteService
 {
     private readonly _ndk: NDK;
-    private readonly _user?: User;
+    private _user?: User;
 
     constructor(
         user: User|undefined = undefined,
@@ -16,6 +15,11 @@ class NoteService implements INoteService
     ) {
         this._user = user
         this._ndk = ndk 
+    }
+
+    public init(user: User) 
+    {
+        this._user = user;
     }
 
     public async listReactions({ note }: ListReactionProps): Promise<NDKEvent[]> 

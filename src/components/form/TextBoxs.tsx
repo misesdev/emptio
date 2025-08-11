@@ -67,10 +67,11 @@ export const QRCodeTextBox = ({ value, placeholder, onChangeText }: TextBoxProps
 
 const styles = StyleSheet.create({
     container: { width: "90%", color: theme.colors.white, backgroundColor: theme.input.backGround,
-        paddingHorizontal: 24, paddingVertical: 10, borderRadius: 10, margin: 10 },
+        paddingHorizontal: 24, paddingVertical: 10, borderRadius: theme.design.borderRadius, 
+        margin: 10 },
     input: { color: theme.input.textColor },
     pastButton: { width: "18%", position: "absolute", right: 0, top: 0, textAlign: "center",
-        borderTopRightRadius: 10, borderBottomRightRadius: 10, backgroundColor: theme.input.backGround,
-        paddingVertical: 18 },
+        borderTopRightRadius: 10, borderBottomRightRadius: 10, paddingVertical: 18,
+        backgroundColor: theme.input.backGround },
     pastIcon: { textAlign: "center" }
 })

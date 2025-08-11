@@ -167,25 +167,21 @@ const VideoViewer = ({ url, redute=180, fullScreen=false, hideFullscreen=false, 
 }
 
 const styles = StyleSheet.create({
-    contentVideo: {
-        width: "100%",
-        borderRadius: 10,
-        overflow: "hidden",
-        backgroundColor: theme.colors.black
-    },
-    video: { flex: 1, borderRadius: 10, backgroundColor: theme.colors.blueOpacity },
-    controlsContainer: { 
-        position: "absolute", width: "100%", height: "100%", alignItems: "center", 
-        justifyContent: "center" },
+    contentVideo: { width: "100%", borderRadius: theme.design.borderRadius,
+        overflow: "hidden", backgroundColor: theme.colors.black },
+    video: { flex: 1, borderRadius: theme.design.borderRadius, 
+        backgroundColor: theme.colors.blueOpacity },
+    controlsContainer: { position: "absolute", width: "100%", height: "100%", 
+        alignItems: "center", justifyContent: "center" },
     controlsHeader: { position: "absolute", top: 0, width: "100%", flexDirection: "row-reverse" },
     controlsHeaderFull: { position: "absolute", top: 0, padding: 10, width: "100%",
         paddingTop: 30, flexDirection: "row-reverse" },
-    controlsHeaderButton: { padding: 4, borderRadius: 10, margin: 4,
+    controlsHeaderButton: { padding: 4, borderRadius: theme.design.borderRadius, margin: 4,
         backgroundColor: theme.colors.blueOpacity },
     controlsSliderContainer: { width: "90%", position: "absolute", padding: 1, 
-        borderRadius: 5, bottom: 5 },
+        borderRadius: theme.design.borderRadius, bottom: 5 },
     controlsSliderContainerFull: { width: "90%", position: "absolute", padding: 1, 
-        borderRadius: 5, bottom: 45 },
+        borderRadius: theme.design.borderRadius, bottom: 45 },
     controlsSlider: { width: "100%" }
 })
 

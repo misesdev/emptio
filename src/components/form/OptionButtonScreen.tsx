@@ -7,7 +7,7 @@ export type OptionButtonProps = {
     label: string;
     description: string;
     onPress: () => void|Promise<void>;
-    icon: IconNames
+    icon: IconNames;
 }
 
 const OptionButtonScreen = ({ icon, label, description, onPress }: OptionButtonProps) => (
@@ -36,9 +36,8 @@ const OptionButtonScreen = ({ icon, label, description, onPress }: OptionButtonP
 
 const styles = StyleSheet.create({
     row: { width: "100%", padding: 10, marginVertical: 5 },
-    selection: { minHeight: 20, maxHeight: 100, borderRadius: 10, 
-        flexDirection: "row", borderWidth: 1,
-        backgroundColor: theme.colors.blueOpacity },
+    selection: { minHeight: 20, maxHeight: 100, borderRadius: theme.design.borderRadius, 
+        flexDirection: "row", borderWidth: 1, backgroundColor: theme.colors.blueOpacity },
     typeTitle: { marginLeft: 6, fontSize: 16, fontWeight: "bold", marginTop: 15, 
         color: theme.colors.white },
     typeDescription: { marginBottom: 15, padding: 6, color: theme.colors.gray },

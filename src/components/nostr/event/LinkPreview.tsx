@@ -71,9 +71,10 @@ const LinkPreview = ({ link }: Props) => {
 }
 
 const styles = StyleSheet.create({
-    webContainer: { width: "100%", padding: 4, borderRadius: 10, overflow: "hidden", 
+    webContainer: { width: "100%", padding: 4, borderRadius: theme.design.borderRadius, overflow: "hidden", 
         backgroundColor: theme.colors.blueOpacity },
-    imageView: { width: "100%", borderTopLeftRadius: 10, borderTopRightRadius: 10, height: 150 },
+    imageView: { width: "100%", borderTopLeftRadius: theme.design.borderRadius, height: 150,
+        borderTopRightRadius: theme.design.borderRadius },
     subSection: { width: "100%", padding: 10 },
     domain: { color: theme.colors.gray, fontSize: 11 },
     title: { color: theme.colors.white },

@@ -77,11 +77,13 @@ const WalletList = ({ wallets, navigation }: WalletListProps) => {
 
 const styles = StyleSheet.create({
     scroll: { },
-    wallet: { marginVertical: 10, marginHorizontal: 6, borderRadius: 10 },
-    title: { color: theme.colors.white, fontSize: 24, fontWeight: "bold", marginTop: 20, marginHorizontal: 10 },
+    wallet: { marginVertical: 10, marginHorizontal: 6, borderRadius: theme.design.borderRadius },
+    title: { color: theme.colors.white, fontSize: 24, fontWeight: "bold", marginTop: 20, 
+        marginHorizontal: 10 },
     description: { fontSize: 12, marginHorizontal: 10, marginVertical: 6 },
-    button: { margin: 10, maxWidth: 150, paddingVertical: 14, borderRadius: 10, },
-    buttonText: { color: theme.colors.white, fontSize: 13, fontWeight: "bold", textAlign: 'center', marginHorizontal: 28 },
+    button: { margin: 10, maxWidth: 150, paddingVertical: 14, borderRadius: theme.design.borderRadius },
+    buttonText: { color: theme.colors.white, fontSize: 13, fontWeight: "bold", textAlign: 'center',
+        marginHorizontal: 28 },
 })
 
 export default WalletList

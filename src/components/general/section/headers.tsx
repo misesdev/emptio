@@ -47,8 +47,8 @@ const styles = StyleSheet.create({
     container: { width: "100%", flexDirection: "row", marginTop: 38, paddingHorizontal: 20,
         marginVertical: 10 },
     label: { fontSize: 20, fontWeight: "bold", color: theme.colors.gray, paddingVertical: 5 },
-    action: { padding: 8, borderRadius: 10, flexDirection: "row", marginHorizontal: 5,
-        backgroundColor: theme.colors.blue },
+    action: { padding: 8, borderRadius: theme.design.borderRadius, flexDirection: "row", 
+        marginHorizontal: 5, backgroundColor: theme.colors.blue },
     actionLabel: { fontSize: 16, marginHorizontal: 5, color: theme.colors.white },
     actionIcon: { fontSize: 20, color: theme.colors.white },
     labelIcon: { color: theme.colors.gray, marginHorizontal: 10, marginVertical: 7 }

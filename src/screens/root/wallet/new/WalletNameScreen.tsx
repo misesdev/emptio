@@ -1,44 +1,62 @@
-import { HeaderScreen } from "@components/general/HeaderScreen"
 import { StyleSheet, View, Text } from "react-native"
 import { FormControl } from "@components/form/FormControl"
 import { ButtonPrimary } from "@components/form/Buttons"
 import { useTranslateService } from "@src/providers/TranslateProvider"
-import { StackScreenProps } from "@react-navigation/stack"
 import { ScrollView } from "react-native-gesture-handler"
 import { useEffect, useState } from "react"
 import theme from "@src/theme"
+import { useService } from "@/src/providers/ServiceProvider"
 
-const WalletName = ({ navigation }: StackScreenProps<any>) => {
+const WalletNameScreen = ({ navigation, route }: any) => {
 
+    const { action } = route.params
     const { useTranslate } = useTranslateService()
     const [disabled, setDisabled] = useState(true)
+    const [loading, setLoading] = useState(true)
     const [name, setName] = useState<string>("")
+    const { walletFactory } = useService()
 
-    useEffect(() => {
-        setDisabled(name.length <= 2)
-    }, [name])
+    useEffect(() => setDisabled(name.length <= 2), [name])
 
-    const continueToNetwork = () => navigation.navigate("create-wallet-network", { 
-        name 
-    })
+    const continueToNetwork = () => {
+        setLoading(true)
+        setDisabled(true)
+        if(action=="create") {
+            const mnemonic = walletFactory.generateMnemonic()
+            navigation.navigate("wallet-mnemonic", { 
+                name: name.trim(),
+                mnemonic: mnemonic.split(" "),
+                action
+            })
+        } 
+        else if(action=="import") {
+
+        }
+        setDisabled(false)
+        setLoading(false)
+    }
 
     return (
-        <ScrollView contentContainerStyle={theme.styles.container}>
-            <HeaderScreen 
-                style={{ position: "absolute", top: 5 }}
-                title={useTranslate("screen.title.addwallet")}
-                onClose={() => navigation.goBack()}
-            />
+        <ScrollView contentContainerStyle={{ flex: 1 }}>
+            <View style={styles.content}>
+                <View style={styles.titleContainer}>
+                    <Text style={styles.title}>
+                        Dê um nome para sua carteira
+                    </Text>
+                </View>
 
-            <View style={{ height: 20 }}></View>
+                <View style={styles.descriptionContainer}>
+                    <Text style={styles.description} >
+                        Escolha um nome para identificar esta carteira. Ele aparecerá na lista de carteiras e nas seleções.
+                    </Text>
+                </View>
 
-            <Text style={styles.title}>Defina um nome para a sua carteira</Text>
-
-            <FormControl  
-                value={name} 
-                onChangeText={setName}                 
-                label={useTranslate("labels.wallet.name")}
-            />
+                <FormControl  
+                    value={name} 
+                    onChangeText={setName}                 
+                    label={useTranslate("labels.wallet.name")}
+                />
+            </View>
 
             <View style={styles.buttonArea}>
                 <ButtonPrimary 
@@ -52,9 +70,13 @@ const WalletName = ({ navigation }: StackScreenProps<any>) => {
 }
 
 const styles = StyleSheet.create({
-    container: { flex: 1, alignItems: 'center', backgroundColor: theme.colors.black },
-    title: { fontSize: 25, fontWeight: "bold", textAlign: "center", color: theme.colors.white, marginVertical: 20 },
-    buttonArea: { width: '100%', justifyContent: 'center', marginVertical: 10, flexDirection: "row", marginTop: 50 }
+    content: { width: "100%", paddingVertical: 50 },
+    titleContainer: { padding: 10, paddingVertical: 10 },
+    title: { fontSize: 32, fontWeight: "bold", textAlign: "center", color: theme.colors.white },
+    descriptionContainer: { width: "100%", padding: 20, marginVertical: 10 },
+    description: { fontSize: 14, color: theme.colors.gray },
+    buttonArea: { width: "100%", position: "absolute", bottom: 0, paddingVertical: 16, 
+        paddingHorizontal: 20 }
 })
 
-export default WalletName
+export default WalletNameScreen

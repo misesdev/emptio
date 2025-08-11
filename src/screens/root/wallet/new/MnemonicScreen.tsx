@@ -1,63 +1,72 @@
-
-import { HeaderScreen } from "@components/general/HeaderScreen"
 import { ScrollView, StyleSheet, Text, View } from "react-native"
 import { useTranslateService } from "@src/providers/TranslateProvider"
 import { ButtonPrimary } from "@components/form/Buttons"
-import { useEffect, useState } from "react"
+import MnemonicWord from "../commons/MnemonicWord"
 import theme from "@src/theme"
 
-const WalletMnemonic = ({ navigation, route }: any) => {
+const MnemonicScreen = ({ navigation, route }: any) => {
 
-    const { mnemonic } = route.params
     const { useTranslate } = useTranslateService()
-    const [wordList, setWordList] = useState<string[]>()
+    const { action, name, network, mnemonic } = route.params
 
-    useEffect(() => {
-        navigation.setOptions({
-            headerTransparent: false,
-            header: () => <HeaderScreen 
-                title={useTranslate("wallet.title.seed")} 
-                onClose={() => navigation.goBack()} 
-            />
+    const continueToConfirmation = () => {
+        navigation.navigate("confirmation-mnemonic", {
+            action, name, network, mnemonic
         })
-        setWordList(mnemonic as string[])
-    }, [])
-
-    const handleClose = () => {
-        navigation.reset({ index: 0, routes: [{ name: "home" }] })
     }
 
     return (
-        <View style={theme.styles.container}>
-            
-            <Text style={styles.title}>{useTranslate("message.wallet.saveseed")}</Text>
+        <ScrollView contentContainerStyle={theme.styles.scroll_container}>
+           
+            <View style={styles.content}>
+                <View style={styles.titleContainer}>
+                    <Text style={styles.title}>
+                        Sua Frase Secreta 
+                    </Text>
+                </View>
+                    
+                <View style={styles.descriptionContainer}>
+                    <Text style={styles.description} >
+                        Anote essas palavras em um local seguro. Se você perder, não será possível 
+                        recuperar a carteira.  
+                    </Text>
+                </View>
 
-            <ScrollView showsVerticalScrollIndicator>
-                <View style={styles.seedarea}>
+                <View style={styles.mnemonicArea}>
                     <View style={{ width: "50%", padding: 8 }}>
-                        {wordList && wordList.slice(0, 6).map((word, index) => <Text key={word} style={styles.word}>{`#${index + 1} - ${word}`}</Text>)}
+                        {mnemonic && (mnemonic as string[]).slice(0, 6)
+                            .map((word, index) => { 
+                                return <MnemonicWord key={word} word={word} position={index + 1} />
+                            })
+                        }
                     </View>
                     <View style={{ width: "50%", padding: 8 }}>
-                        {wordList && wordList.slice(6, 12).map((word, index) => <Text key={word} style={styles.word}>{`#${index + 7} - ${word}`}</Text>)}
+                        {mnemonic && (mnemonic as string[]).slice(6, 12)
+                            .map((word, index) => {
+                                return <MnemonicWord key={word} word={word} position={index + 7} />
+                            })
+                        }
                     </View>
                 </View>
-            </ScrollView>
-
-            <View style={styles.buttonarea}>
-                <ButtonPrimary label={useTranslate("commons.ok")} onPress={handleClose} />
             </View>
-        </View>
+
+            <View style={styles.buttonArea}>
+                <ButtonPrimary label={"Anotado"} onPress={continueToConfirmation} />
+            </View>
+        </ScrollView>
     )
 }
 
 const styles = StyleSheet.create({
-    title: { fontSize: 30, maxWidth: "90%", fontWeight: "bold", textAlign: "center", 
-        color: theme.colors.white, marginVertical: 20 },
-    seedarea: { width: "100%", marginVertical: 20, flexDirection: "row" },
-    buttonarea: { width: "100%", paddingVertical: 6, marginBottom: 40, 
-        justifyContent: "center", alignItems: "center" },
-    word: { color: theme.colors.white, fontSize: 14, fontWeight: "bold", 
-        textAlign: "center", padding: 15, paddingVertical: 20, borderRadius: 10 }
+    content: { width: "100%", paddingVertical: 50 },
+    titleContainer: { width: "100%", padding: 10, paddingVertical: 10 },
+    title: { fontSize: 32, fontWeight: "bold", textAlign: "center", 
+        color: theme.colors.white },
+    descriptionContainer: { width: "100%", padding: 20 },
+    description: { fontSize: 14, color: theme.colors.gray },
+    mnemonicArea: { width: "100%", marginVertical: 20, flexDirection: "row" },
+    buttonArea: { width: '100%', position: "absolute", bottom: 0, marginVertical: 20, 
+        paddingHorizontal: 30  },
 })
 
-export default WalletMnemonic
+export default MnemonicScreen

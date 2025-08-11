@@ -111,12 +111,14 @@ export const ButtonIcon = ({ icon, size, style, buttonStyle, onPress }: IconProp
 }
 
 const styles = StyleSheet.create({
-    button: { margin: 10, minWidth: 150, maxWidth: "96%", paddingVertical: 14, borderRadius: 10 },
+    button: { margin: 10, minWidth: 150, maxWidth: "96%", paddingVertical: 14,
+        borderRadius: theme.design.borderRadius },
     succes: { backgroundColor: theme.colors.green },
     primary: { backgroundColor: theme.colors.blue },
     danger: { backgroundColor: theme.colors.red },
     default: { backgroundColor: theme.colors.gray },
-    text: { fontSize: 13, fontWeight: "500", textAlign: 'center', marginHorizontal: 10, color: theme.colors.white },
+    text: { fontSize: 13, fontWeight: "500", textAlign: 'center', marginHorizontal: 10, 
+        color: theme.colors.white },
     buttonLink: { marginVertical: 20, padding: 15, flexDirection: "row" },
     textLink: { fontSize: 16, fontWeight: "400", marginHorizontal: 5 },
 })

@@ -155,8 +155,8 @@ const EventViewer = ({ event, nevent, note, videoMuted=true, videoPaused=true, v
 }
 
 const styles = StyleSheet.create({
-    container: { width: "100%", padding: 10, borderRadius: 10, borderWidth: 1, 
-        borderColor: theme.colors.blue },
+    container: { width: "100%", padding: 10, borderRadius: theme.design.borderRadius,
+        borderWidth: 1, borderColor: theme.colors.blue },
     header: { width: "100%", flexDirection: "row" },
     userProfile: { width: theme.icons.extra, height: theme.icons.extra, borderRadius: 50 },
     profileName: { fontSize: 16, fontWeight: "500", color: theme.colors.white },

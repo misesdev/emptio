@@ -60,6 +60,6 @@ export const RelayList = ({ relays, onPressRelay }: Props) => {
 }
 
 const styles = StyleSheet.create({
-    sectionRelay: { width: "100%", borderRadius: 10, marginVertical: 2, flexDirection: "row",
-        padding: 15, backgroundColor: "rgba(0, 55, 55, .2)" },
+    sectionRelay: { width: "100%", borderRadius: theme.design.borderRadius, marginVertical: 2, 
+        flexDirection: "row", padding: 15, backgroundColor: "rgba(0, 55, 55, .2)" },
 })

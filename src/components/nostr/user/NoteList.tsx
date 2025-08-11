@@ -82,7 +82,8 @@ export const NoteList = ({ user, notes, isVisible, horizontal=true, pagingEnable
 
 const styles = StyleSheet.create({
     scroll: { width: "100%", marginBottom: 10 },
-    scrollNote: { height: 340, margin: 6, borderRadius: 10, backgroundColor: theme.colors.black },
+    scrollNote: { height: 340, margin: 6, borderRadius: theme.design.borderRadius, 
+        backgroundColor: theme.colors.black },
     note: { color: theme.colors.gray },
     viewNote: { flex: 1, height: 'auto', marginVertical: 20 }
 })

@@ -40,9 +40,9 @@ class UserService implements IUserService
         this._keyStorage = keyStorage
     }
 
-    public async init(): Promise<void> 
+    public async init(profile?: User): Promise<void> 
     {
-        const user = await this._storage.get();
+        const user = profile ?? await this._storage.get();
         if (!user?.pubkey) 
             throw new Error("User not found or missing pubkey");
         this._profile = user;

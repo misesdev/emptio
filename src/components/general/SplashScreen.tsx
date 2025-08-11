@@ -25,7 +25,7 @@ const styles = StyleSheet.create({
     logo: { maxWidth: "80%", height: "25%" },
     load: { marginVertical: 80 },
     message: { color: theme.colors.gray, backgroundColor: "rgba(255, 255, 255, .1)",
-        maxWidth: "80%", paddingHorizontal: 20, paddingVertical: 10, borderRadius: 10,
+        maxWidth: "80%", paddingHorizontal: 20, paddingVertical: 10, borderRadius: theme.design.borderRadius,
         position: "absolute", bottom: 100 }
 });
 

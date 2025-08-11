@@ -46,7 +46,7 @@ export const CurrencyList = ({ onPress }: CurrencyListProps) => {
 
 const styles = StyleSheet.create({
     item: { width: "100%", padding: 10, backgroundColor: "rgba(0, 55, 55, .2)", 
-        borderRadius: 10, marginVertical: 1 },
+        borderRadius: theme.design.borderRadius, marginVertical: 1 },
     flagContainer: { alignItems: "center", justifyContent: "center", borderRadius: 50,
         width: 50, height: 50, overflow: "hidden" },
     currencyFlag: { position: "absolute", fontSize: 35, opacity: 0.7 },

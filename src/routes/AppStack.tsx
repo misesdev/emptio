@@ -3,7 +3,6 @@ import { CardStyleInterpolators, createStackNavigator } from "@react-navigation/
 import UserMenuScreen from "@screens/root/settings/UserMenuScreen"
 import FeedSearchScreen from "@screens/root/orders/search/FeedSearch"
 import UserEditScreen from "@screens/root/settings/user/UserEditScreen"
-import ManageRelaysScreen from "@screens/root/settings/relays/ManageRelaysScreen"
 import AboutScreen from "@screens/root/settings/about/AboutScreen"
 import ManageSecurityScreen from "@screens/root/settings/security/ManageSecurityScreen"
 import AddFolowScreen from "@screens/root/friends/AddFollowScreen"
@@ -12,11 +11,24 @@ import NewChatScreen from "@screens/root/chats/new/NewChatScreen"
 import NewOrderScreen from "@screens/root/orders/new/NewOrderScreen"
 import ConversationScreen from "@screens/root/chats/conversation/ConversationScreen"
 import ManageFriendsScreen from "@screens/root/friends/ManageFriendsScreen"
-import RelayScreen from "@screens/root/settings/relays/RelayScreen"
-import AddRelayScreen from "@screens/root/settings/relays/AddRelayScreen"
 import OrderClosureScreen from "@screens/root/orders/new/OrderClosureScreen"
 import AuthenticateScreen from "@screens/root/AuthenticateScreen"
-import WalletStackNavigation from "./WalletStackNavigation"
+import ManageRelaysScreen from "@screens/root/settings/relays/ManageRelaysScreen"
+import RelayScreen from "@screens/root/settings/relays/RelayScreen"
+import AddRelayScreen from "@screens/root/settings/relays/AddRelayScreen"
+import WalletScreen from "@screens/root/wallet/WalletScreen"
+import ImportationScreen from "@screens/root/wallet/new/ImportationScreen"
+import WalletReceiveScreen from "@screens/root/wallet/receive/WalletReceiveScreen"
+import SendScreen from "@screens/root/wallet/send/SendScreen"
+import ReceiverScreen from "@screens/root/wallet/send/ReceiverScreen"
+import SendFinalScreen from "@screens/root/wallet/send/SendFinalScreen"
+import WalletSettings from "@screens/root/wallet/settings/WalletSettings"
+import TransactionScreen from "@screens/root/wallet/transaction/TransactionScreen"
+import MnemonicScreen from "@screens/root/wallet/new/MnemonicScreen"
+import NetworkScreen from "@screens/root/wallet/new/NetworkScreen"
+import WalletNameScreen from "@screens/root/wallet/new/WalletNameScreen"
+import PassphraseScreen from "@screens/root/wallet/new/PassphraseScreen"
+import ConfirmMnemonicScreen from "@screens/root/wallet/new/ConfirmMnemonicScreen"
 import AppTabStack from "./AppTabStack"
 
 const Stack = createStackNavigator()
@@ -50,10 +62,23 @@ const AppStack = () => {
             <Stack.Screen name="manage-relays" component={ManageRelaysScreen} options={ScreenCardOptions} />
             <Stack.Screen name="manage-relay" component={RelayScreen} options={ScreenCardOptions} />
             <Stack.Screen name="add-relay" component={AddRelayScreen} options={ScreenCardOptions} />
+            
             <Stack.Screen name="manage-security" component={ManageSecurityScreen} options={ScreenCardOptions} />
 
             {/* Wallet  */}
-            <Stack.Screen name="wallet-stack" component={WalletStackNavigation} /> 
+            <Stack.Screen name="wallet" component={WalletScreen} options={{ headerShown: true }} />
+            <Stack.Screen name="new-wallet" component={WalletNameScreen} options={{...ScreenCardOptions, headerShown: true}} />
+            <Stack.Screen name="import-wallet" component={ImportationScreen} options={{...ScreenCardOptions, headerShown: true }} />
+            <Stack.Screen name="wallet-network" component={NetworkScreen} options={{...ScreenCardOptions, headerShown: true }} />
+            <Stack.Screen name="wallet-mnemonic" component={MnemonicScreen} options={{...ScreenCardOptions, headerShown: true }} />
+            <Stack.Screen name="confirmation-mnemonic" component={ConfirmMnemonicScreen} options={{...ScreenCardOptions, headerShown: true }} />
+            <Stack.Screen name="wallet-passphrase" component={PassphraseScreen} options={{...ScreenCardOptions, headerShown: true }} />
+            <Stack.Screen name="wallet-receive" component={WalletReceiveScreen} options={ScreenCardOptions} />
+            <Stack.Screen name="wallet-send" component={SendScreen} options={ScreenCardOptions} />
+            <Stack.Screen name="wallet-send-receiver" component={ReceiverScreen} options={ScreenCardOptions} />
+            <Stack.Screen name="wallet-send-final" component={SendFinalScreen} options={ScreenCardOptions} />
+            <Stack.Screen name="wallet-settings" component={WalletSettings} options={ScreenCardOptions} />
+            <Stack.Screen name="wallet-transaction" component={TransactionScreen} options={ScreenCardOptions} />
 
             {/* Manage Friends */}
             <Stack.Screen name="add-follow" component={AddFolowScreen} options={ScreenCardOptions} />

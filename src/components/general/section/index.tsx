@@ -41,9 +41,10 @@ export const LinkSection = ({ label, onPress, icon }: LinkSectionProps) => {
 }
 
 const styles = StyleSheet.create({
-    section: { width: "90%", marginVertical: 8, borderRadius: 10, padding: 5,
-        backgroundColor: theme.colors.section },
-    link: { width: '100%', padding: 8, marginVertical: 2, borderRadius: 10, flexDirection: "row" },
+    section: { width: "90%", marginVertical: 8, borderRadius: theme.design.borderRadius, 
+        padding: 5, backgroundColor: theme.colors.section },
+    link: { width: '100%', padding: 8, marginVertical: 2, borderRadius: theme.design.borderRadius, 
+        flexDirection: "row" },
     linkIcon: { margin: 5, fontSize: theme.icons.mine, color: theme.colors.white,
         backgroundColor: theme.colors.transparent },
     linkText: { fontSize: 14, fontWeight: '400', paddingHorizontal: 8, paddingVertical: 5,  

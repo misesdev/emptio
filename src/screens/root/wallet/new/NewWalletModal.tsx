@@ -1,5 +1,5 @@
 import OptionButtonScreen from "@components/form/OptionButtonScreen";
-import ModalBottom, { showModalBottom } from "@components/modal/ModalBottom"
+import ModalBottom, { closeModalBottom, showModalBottom } from "@components/modal/ModalBottom"
 import { useTranslateService } from "@src/providers/TranslateProvider"
 import { View, StyleSheet } from "react-native";
 
@@ -14,8 +14,15 @@ const NewWalletModal = ({ navigation }: NewWalletModalProps) => {
     showNewWalletFunction = showModalBottom;
     const { useTranslate } = useTranslateService()
 
-    const onCreate = () => navigation.navigate("create-wallet")
-    const onImport = () => navigation.navigate("import-wallet")
+    const onCreate = () => {
+        closeModalBottom()
+        navigation.navigate("new-wallet", { action: "create" })
+    }
+
+    const onImport = () => { 
+        closeModalBottom()
+        navigation.navigate("new-wallet", { action: "import" })
+    }
 
     return (
         <ModalBottom heightPercent={48}

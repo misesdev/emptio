@@ -73,7 +73,7 @@ const styles = StyleSheet.create({
         margin: 2, marginTop: 12 },
     userAbout: { fontSize: 12, color: theme.colors.gray, margin: 2, paddingRight: 8, 
         paddingBottom: 8, fontWeight: "bold" },
-    sectionUser: { width: "98%", minHeight: 65, maxHeight: 120, borderRadius: 10,
+    sectionUser: { width: "98%", minHeight: 65, maxHeight: 120, borderRadius: theme.design.borderRadius,
         marginVertical: 1, flexDirection: "row", backgroundColor: "rgba(0, 55, 55, .2)" },
     friendtag: { position: "absolute", bottom: 2, right: -5, padding: 8 }
 })

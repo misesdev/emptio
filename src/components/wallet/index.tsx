@@ -34,7 +34,10 @@ export const WalletHeader = ({ wallet, showOptions }: WalletProps) => {
                 <Text style={[{ fontSize: 18 }, styles.headerText]}>{formatName}</Text>
                 <Text style={[{ fontSize: 30 }, styles.headerText]}>{balanceSats} Sats</Text>
                 <Text style={[{ fontSize: 14 }, styles.headerText]}>{balanceBTC} BTC</Text>
-                <Text style={[styles.headerText, { fontSize: 12, backgroundColor: walletColor, padding: 10, borderRadius: 10, maxWidth: 130, textAlign: "center" }]}>
+                <Text style={[styles.headerText, {
+                    fontSize: 12, backgroundColor: walletColor, padding: 10, 
+                    borderRadius: theme.design.borderRadius, maxWidth: 130, textAlign: "center" 
+                }]}>
                     {wallet?.network == "mainnet" && useTranslate("wallet.bitcoin.tag") }
                     {wallet?.network == "testnet" && useTranslate("wallet.bitcoin.testnet.tag") }
                     {/* {wallet?.network == "lightning" && useTranslate("wallet.lightning.tag") } */}
@@ -148,14 +151,19 @@ export const WalletButtons = ({ onReceive, onSend }: WalletButtonProps) => {
             <View style={{ flexDirection: "row" }}>
                 <TouchableOpacity activeOpacity={.7}
                     onPress={() => onReceive(true)}
-                    style={[styles.walletActionButton, { borderRightWidth: .2, borderBottomLeftRadius: 15, borderTopLeftRadius: 15 }]}
+                    style={[styles.walletActionButton, {
+                        borderRightWidth: .2, borderBottomLeftRadius: theme.design.borderRadius, 
+                        borderTopLeftRadius: theme.design.borderRadius }]}
                 >
                     <Ionicons style={{ margin: 5 }} name="enter" color={theme.colors.white} size={theme.icons.medium} />
                     <Text style={styles.walletaAtionText} >{useTranslate("commons.receive")}</Text>
 
                 </TouchableOpacity>
                 <TouchableOpacity activeOpacity={.7} onPress={onSend}
-                    style={[styles.walletActionButton, { borderLeftWidth: .2, borderBottomRightRadius: 15, borderTopRightRadius: 15 }]}
+                    style={[styles.walletActionButton, { 
+                        borderLeftWidth: .2, borderBottomRightRadius: theme.design.borderRadius,
+                        borderTopRightRadius: theme.design.borderRadius 
+                    }]}
                 >
 
                     <Text style={styles.walletaAtionText} >{useTranslate("commons.send")}</Text>

@@ -6,11 +6,12 @@ import { useTranslateService } from "@src/providers/TranslateProvider"
 import { Formatter } from "@services/converter/Formatter"
 import { Utilities } from "@src/utils/Utilities"
 import theme from "@src/theme"
+import { StoredItem } from "@storage/types"
 
 interface AmountBoxProps {
     value?: string | "",
-    wallet: Wallet,
-    setWallet?: (wallet: Wallet) => void,
+    wallet: StoredItem<Wallet>,
+    setWallet?: (wallet: StoredItem<Wallet>) => void,
     placeholder?: string,
     manageWallet?: boolean,
     onChangeText: (text: string) => void,
@@ -29,20 +30,20 @@ export const AmountBox = ({ value, placeholder, onChangeText, isValidHandle, wal
 
         if (isValidHandle) 
         {
-            if (wallet?.lastBalance)
-                isValidHandle(textNumbers > 0 && wallet?.lastBalance >= textNumbers)
+            if (wallet.entity.lastBalance)
+                isValidHandle(textNumbers > 0 && wallet.entity.lastBalance >= textNumbers)
             else
                 isValidHandle(false)
         }
     }
 
-    const walletSelection = (item: Wallet) => {
+    const walletSelection = (item: StoredItem<Wallet>) => {
         if(setWallet) setWallet(item)
 
         const textNumbers = Formatter.textToNumber(value ?? "0")
 
         if(isValidHandle)
-            isValidHandle(textNumbers >= (wallet?.lastBalance ?? 0))
+            isValidHandle(textNumbers >= (wallet?.entity.lastBalance ?? 0))
     }
 
     return (
@@ -50,7 +51,7 @@ export const AmountBox = ({ value, placeholder, onChangeText, isValidHandle, wal
             <View style={{ width: "100%", flexDirection: "row" }}>
                 <View style={{ width: "15%", alignItems: "center", justifyContent: "center" }}>
                     <Ionicons name="logo-bitcoin" 
-                        color={wallet.network == "testnet" ? theme.colors.green : theme.colors.orange}
+                        color={wallet.entity.network == "testnet" ? theme.colors.green : theme.colors.orange}
                         size={40} 
                     /> 
                 </View>
@@ -68,7 +69,7 @@ export const AmountBox = ({ value, placeholder, onChangeText, isValidHandle, wal
                 </View>
             </View>
             <Text style={styles.balance}>
-                {`${useTranslate("wallet.subtitle.balance")}${Formatter.formatSats(wallet.lastBalance??0)} sats.`}
+                {`${useTranslate("wallet.subtitle.balance")}${Formatter.formatSats(wallet.entity.lastBalance??0)} sats.`}
             </Text>
             
             {manageWallet &&
@@ -76,7 +77,7 @@ export const AmountBox = ({ value, placeholder, onChangeText, isValidHandle, wal
                     <TouchableOpacity style={styles.wallets} onPress={showSelectWallet}>
                         <Ionicons style={{ marginHorizontal: 8 }} size={20} name="wallet" color={theme.colors.white} />
                         <Text style={{ fontSize: 14, fontWeight: "600", color: theme.colors.white }}>
-                            {Utilities.getClipedContent(wallet.name??"", 15)}
+                            {Utilities.getClipedContent(wallet.entity.name??"", 15)}
                         </Text>
                         <Ionicons style={{ marginHorizontal: 4 }} size={20} name="chevron-forward" color={theme.colors.white} />
                     </TouchableOpacity>
@@ -89,8 +90,9 @@ export const AmountBox = ({ value, placeholder, onChangeText, isValidHandle, wal
 }
 
 const styles = StyleSheet.create({
-    container: { width: "90%", paddingHorizontal: 20, paddingVertical: 15, borderRadius: 10, 
-        margin: 10, backgroundColor: "rgba(0, 55, 55, .2)" },
+    container: { width: "90%", paddingHorizontal: 20, paddingVertical: 15, 
+        borderRadius: theme.design.borderRadius, margin: 10, 
+        backgroundColor: "rgba(0, 55, 55, .2)" },
     amount: { padding: 10, fontSize: 32, fontWeight: "bold", borderBottomWidth: 1, 
         borderBottomColor: theme.colors.gray, color: theme.colors.white },
     wallets: { borderRadius: 10, padding: 2, backgroundColor: theme.colors.blueOpacity, 

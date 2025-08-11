@@ -115,9 +115,12 @@ export const RelayItem = ({ relay, onDelete }: RelayProps) => {
 }
 
 const styles = StyleSheet.create({
-    relay_container: { width: "94%", padding: 12, marginVertical: 5, borderRadius: 10, backgroundColor: "rgba(0, 55, 55, .2)" },
-    button_delete: { borderRadius: 20, padding: 2, backgroundColor: theme.colors.transparent },
+    relay_container: { width: "94%", padding: 12, marginVertical: 5,
+        borderRadius: theme.design.borderRadius, backgroundColor: "rgba(0, 55, 55, .2)" },
+    button_delete: { borderRadius: theme.design.borderRadius, padding: 2, 
+        backgroundColor: theme.colors.transparent },
     relay_row: { width: "100%", flexDirection: "row", padding: 5 },
-    nip: { borderRadius: 8, marginHorizontal: 10, padding: 5, backgroundColor: theme.colors.black },
+    nip: { borderRadius: theme.design.borderRadius, marginHorizontal: 10, padding: 5, 
+        backgroundColor: theme.colors.black },
     nip_text: { color: theme.colors.gray, fontWeight: "bold" }
 })
