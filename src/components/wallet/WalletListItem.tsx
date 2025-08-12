@@ -7,13 +7,13 @@ import { useAccount } from "@src/context/AccountContext"
 import { useTranslateService } from "@src/providers/TranslateProvider"
 import { Utilities } from "@src/utils/Utilities"
 import { Formatter } from "@services/converter/Formatter"
-import { useService } from "@/src/providers/ServiceProvider"
-import { StoredItem } from "@/src/storage/types"
+import { useService } from "@src/providers/ServiceProvider"
+import { StoredItem } from "@storage/types"
 import theme from "@src/theme"
 
 interface Props {
     wallet: StoredItem<Wallet>;
-    handleOpen: (wallet: Wallet) => void;
+    handleOpen: (id: string) => void;
     style: ViewStyle;
 }
 
@@ -36,17 +36,17 @@ const WalletListItem = ({ wallet, handleOpen, style }: Props) => {
         if(!isFetching.current) 
         {
             setLoading(true)
-            isFetching.current = true
-            await walletService.init(wallet.id)
-            let balance = await walletService.getBalance(false)
-            if(walletData.lastBalance != balance)
-            {
-                setWalletData(prev => ({ ...prev, lastBalance: balance }))
-                setTimeout(async () => await walletService.update(wallet.id, {
-                    ...walletData, lastBalance: balance
-                }), 20)
-            }
-            isFetching.current = false
+            // isFetching.current = true
+            // await walletService.init(wallet.id)
+            // let balance = await walletService.getBalance(true)
+            // if(walletData.lastBalance != balance)
+            // {
+            //     setWalletData(prev => ({ ...prev, lastBalance: balance }))
+            //     setTimeout(async () => await walletService.update(wallet.id, {
+            //         ...walletData, lastBalance: balance
+            //     }), 20)
+            // }
+            // isFetching.current = false
             setLoading(false)
         }
     }
@@ -55,7 +55,7 @@ const WalletListItem = ({ wallet, handleOpen, style }: Props) => {
 
     return (
         <TouchableOpacity key={wallet.id} activeOpacity={.7} 
-            style={[styles.wallet,style]} onPress={() => handleOpen(walletData)}
+            style={[styles.wallet,style]} onPress={() => handleOpen(wallet.id)}
         >
             {walletData!.network === "mainnet" && <Image source={require("@assets/images/bitcoin-wallet-header3.jpg")} style={{ position: "absolute", borderRadius: 18, width: "100%", height: "100%" }} />}
             {walletData!.network === "testnet" && <Image source={require("@assets/images/bitcoin-wallet-header.jpg")} style={{ position: "absolute", borderRadius: 18, width: "100%", height: "100%" }} />}
@@ -79,7 +79,7 @@ const WalletListItem = ({ wallet, handleOpen, style }: Props) => {
             <TouchableOpacity activeOpacity={.7} 
                 style={[styles.button, { backgroundColor: walletData.network == "mainnet" ?
                     theme.colors.orange : theme.colors.blue 
-                }]} onPress={() => handleOpen(walletData)}
+                }]} onPress={() => handleOpen(wallet.id)}
             >
                 <Text style={styles.buttonText}> {useTranslate("commons.open")} </Text>
             </TouchableOpacity>

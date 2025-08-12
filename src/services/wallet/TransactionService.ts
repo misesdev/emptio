@@ -61,6 +61,11 @@ export default class TransactionService implements ITransactionService
         return results
     }
 
+    public async allTransactions(): Promise<BTransaction[]>
+    {
+        return await this._storage.all()
+    }
+
     public async getTransactions(address: string, cached: boolean = false): Promise<BTransaction[]> 
     {
         if(cached) {

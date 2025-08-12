@@ -20,7 +20,7 @@ export default class WalletService implements IWalletService
     private _transaction!: TransactionService;
     protected _addresses: number;
     constructor(
-        addresses: number = 15,
+        addresses: number = 10,
         storage: WalletStorage = new WalletStorage(),
         keyStorage: PrivateKeyStorage = new PrivateKeyStorage()
     ) {
@@ -156,6 +156,16 @@ export default class WalletService implements IWalletService
             return { success: true, data }
         }
         catch (ex) {
+            return trackException(ex)
+        }
+    }
+
+    public async allTransactions(): Promise<AppResponse<BTransaction[]>>
+    {
+        try {
+            const transactions = await this._transaction.allTransactions()
+            return { success: true, data: transactions }
+        } catch(ex) {
             return trackException(ex)
         }
     }

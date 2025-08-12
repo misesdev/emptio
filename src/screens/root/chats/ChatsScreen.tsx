@@ -54,8 +54,10 @@ const ChatsScreen = ({ navigation }: StackScreenProps<any>) => {
 
 const styles = StyleSheet.create({
     chatsScroll: { flex: 1, paddingVertical: 10 },
-    newChatButton: { backgroundColor: theme.colors.blue, padding: 18, borderRadius: 50 },
-    rightButton: { position: "absolute", bottom: 8, right: 0, width: 90, height: 70, justifyContent: "center", alignItems: "center" },
+    newChatButton: { backgroundColor: theme.colors.blue, borderRadius: theme.design.borderRadius,
+        padding: 18 },
+    rightButton: { position: "absolute", bottom: 8, right: 0, width: 90, height: 70,
+        justifyContent: "center", alignItems: "center" },
 
     chatRow: { minHeight: 75, flexDirection: "row" },
     profile: { width: 50, height: 50, borderRadius: 50, overflow: "hidden" },

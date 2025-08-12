@@ -10,10 +10,10 @@ import theme from "@src/theme"
 
 export type WalletListProps = {
     wallets: StoredItem<Wallet>[];
-    navigation: any;
+    openWallet: (id: string) => void;
 }
 
-const WalletList = ({ wallets, navigation }: WalletListProps) => {
+const WalletList = ({ wallets, openWallet }: WalletListProps) => {
     const { width } = Dimensions.get("window")
     const itemWidth = width * .82
     const spacing = width * .06
@@ -24,10 +24,6 @@ const WalletList = ({ wallets, navigation }: WalletListProps) => {
     useEffect(() => {
         setWalletList([...wallets, { id: "create", entity: {} as Wallet }])
     }, [wallets])
-
-    const handleOpenWallet = useCallback((wallet: Wallet) => {
-        navigation.navigate("wallet", { wallet })
-    }, [navigation])
 
     const renderItem = useCallback(({ item }: { item: StoredItem<Wallet> }) => {
         if(item.id === "create")
@@ -53,14 +49,16 @@ const WalletList = ({ wallets, navigation }: WalletListProps) => {
         return (
             <WalletListItem wallet={item}
                 style={{ width: itemWidth, marginRight: spacing }}
-                handleOpen={handleOpenWallet} 
+                handleOpen={openWallet} 
             />
         )
-    }, [navigation, useTranslate, handleOpenWallet])
+    }, [useTranslate, openWallet])
 
     return (
         <SafeAreaView style={{ width: "100%", height: 220 }}>
-            <FlatList horizontal pagingEnabled
+            <FlatList 
+                horizontal 
+                pagingEnabled
                 data={walletList}
                 snapToInterval={itemWidth+spacing}
                 renderItem={renderItem}

@@ -126,7 +126,7 @@ export const WalletTransactions = ({ transactions, onPressTransaction }: WalletT
             }
 
             {
-                transactions.length <= 0 &&
+                !transactions.length &&
                 <Text style={{ color: theme.colors.gray, textAlign: "center" }}>
                     {useTranslate("section.title.transactions.empty")}
                 </Text>

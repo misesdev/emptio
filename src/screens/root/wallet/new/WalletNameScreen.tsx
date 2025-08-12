@@ -3,23 +3,21 @@ import { FormControl } from "@components/form/FormControl"
 import { ButtonPrimary } from "@components/form/Buttons"
 import { useTranslateService } from "@src/providers/TranslateProvider"
 import { ScrollView } from "react-native-gesture-handler"
+import { useService } from "@src/providers/ServiceProvider"
 import { useEffect, useState } from "react"
 import theme from "@src/theme"
-import { useService } from "@/src/providers/ServiceProvider"
 
 const WalletNameScreen = ({ navigation, route }: any) => {
 
     const { action } = route.params
     const { useTranslate } = useTranslateService()
     const [disabled, setDisabled] = useState(true)
-    const [loading, setLoading] = useState(true)
     const [name, setName] = useState<string>("")
     const { walletFactory } = useService()
 
     useEffect(() => setDisabled(name.length <= 2), [name])
 
-    const continueToNetwork = () => {
-        setLoading(true)
+    const continueToMnemonic = () => {
         setDisabled(true)
         if(action=="create") {
             const mnemonic = walletFactory.generateMnemonic()
@@ -30,10 +28,11 @@ const WalletNameScreen = ({ navigation, route }: any) => {
             })
         } 
         else if(action=="import") {
-
+            navigation.navigate("import-wallet", {
+                action, name
+            })
         }
         setDisabled(false)
-        setLoading(false)
     }
 
     return (
@@ -62,7 +61,7 @@ const WalletNameScreen = ({ navigation, route }: any) => {
                 <ButtonPrimary 
                     disabled={disabled} 
                     label={useTranslate("commons.continue")} 
-                    onPress={continueToNetwork} 
+                    onPress={continueToMnemonic} 
                 />
             </View>
         </ScrollView>

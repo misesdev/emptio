@@ -66,7 +66,7 @@ const AppStack = () => {
             <Stack.Screen name="manage-security" component={ManageSecurityScreen} options={ScreenCardOptions} />
 
             {/* Wallet  */}
-            <Stack.Screen name="wallet" component={WalletScreen} options={{ headerShown: true }} />
+            <Stack.Screen name="wallet-screen" component={WalletScreen} options={{ headerShown: true }} />
             <Stack.Screen name="new-wallet" component={WalletNameScreen} options={{...ScreenCardOptions, headerShown: true}} />
             <Stack.Screen name="import-wallet" component={ImportationScreen} options={{...ScreenCardOptions, headerShown: true }} />
             <Stack.Screen name="wallet-network" component={NetworkScreen} options={{...ScreenCardOptions, headerShown: true }} />

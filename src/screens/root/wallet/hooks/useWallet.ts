@@ -13,7 +13,7 @@ export const useWallet = ({ navigation, route }: any) => {
     const [utxos, setUtxos] = useState<UTXO[]>([])
 
     useEffect(() => {
-        setTimeout(loadTransactions, 20)
+        setTimeout(loadTransactions, 50)
     }, [])
 
     const loadTransactions = async () => {
@@ -22,14 +22,16 @@ export const useWallet = ({ navigation, route }: any) => {
         setWallet(await walletService.get(route.params.id as string))
        
         // load cached transactions and utxos
-        let cached = await walletService.listTransactions(true)
-        if(cached.success) 
-            await setDataState(cached.data ?? [], true)
+        // let cached = await walletService.listTransactions(true)
+        // if(cached.success) 
+        //     await setDataState(cached.data ?? [], true)
 
         // load uncached transactions and utxos
-        const result = await walletService.listTransactions(false)
-        if(result.success)
-            await setDataState(result.data??[], false)
+        // const result = await walletService.listTransactions(false)
+        // if(result.success)
+        //     await setDataState(result.data??[], false)
+        // else
+        //     console.log(result)
 
         setRefreshing(false)
     }

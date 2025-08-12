@@ -60,7 +60,7 @@ const ConfirmMnemonicScreen = ({ navigation, route }: any) => {
 
     const continueToPassPhrase = () => {
         navigation.navigate("wallet-passphrase", {
-            action, name, mnemonic
+            action, name, mnemonic: mnemonic.join(" ")
         })
     }
 

@@ -66,7 +66,8 @@ const OrdersScreen = ({ navigation }: StackScreenProps<any>) => {
 }
 
 const styles = StyleSheet.create({
-    newOrderButton: { backgroundColor: theme.colors.blue, padding: 18, borderRadius: 50 },
+    newOrderButton: { backgroundColor: theme.colors.blue, borderRadius: theme.design.borderRadius,
+        padding: 18 },
     rightButton: { position: "absolute", bottom: 8, right: 0, width: 90, height: 70,
         justifyContent: "center", alignItems: "center" },
     empty: { width: "80%", color: theme.colors.gray, marginTop: 200, textAlign: "center" }

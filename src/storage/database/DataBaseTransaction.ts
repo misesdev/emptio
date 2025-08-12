@@ -65,6 +65,36 @@ export class DataBaseTransaction extends Database
         }
     }
 
+    public async all(): Promise<BTransaction[]>
+    {
+        const results: BTransaction[] = [];
+        const db = await this.getConnection()
+        const rows: any = await db.getAllAsync(`
+            SELECT t.* 
+            FROM transactions t
+                JOIN participants p ON t.txid = p.txid
+            WHERE t.deleted = 0 
+                AND p.deleted = 0
+        `)
+        for(const tx of rows) {
+            const participants = await db.getAllAsync<BParticitant>(`
+                SELECT * FROM participants WHERE txid = ? AND deleted = 0
+            `, [tx.txid]);
+            results.push({
+                txid: tx.txid, 
+                type: tx.type ?? "received",
+                value: tx.value,
+                fee: tx.fee,
+                confirmed: tx.confirmed == 1,
+                block_height: tx.block_height,
+                block_time: tx.block_time,
+                block_hash: tx.block_hash,
+                participants: participants
+            })
+        }
+        return results
+    }
+
     public async list(address: string): Promise<BTransaction[]>
     {
         const results: BTransaction[] = [];
@@ -93,7 +123,6 @@ export class DataBaseTransaction extends Database
                 participants: participants
             })
         }
-
         return results
     }
 

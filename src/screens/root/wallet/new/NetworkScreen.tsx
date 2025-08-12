@@ -9,6 +9,7 @@ import { pushMessage } from "@services/notification"
 import { BNetwork } from "bitcoin-tx-lib"
 import { useState } from "react"
 import theme from "@src/theme"
+import SplashScreen from "@/src/components/general/SplashScreen"
 
 const NetworkScreen = ({ navigation, route }: any) => {
 
@@ -17,6 +18,7 @@ const NetworkScreen = ({ navigation, route }: any) => {
     const [network, setNetwork] = useState<BNetwork>("mainnet")
     const [disabled, setDisabled] = useState<boolean>(false)
     const [loading, setLoading] = useState<boolean>(false)
+    const [status, setStatus] = useState("")
     const { walletFactory, walletService } = useService()
     const { useTranslate } = useTranslateService()
 
@@ -24,9 +26,11 @@ const NetworkScreen = ({ navigation, route }: any) => {
         setLoading(true)
         setDisabled(true)
         setTimeout(async () => {
+            setStatus("Derivando a master key bip39...")
             const masterKey = await walletFactory.create({ 
-                mnemonic: mnemonic.join(" "), passphrase, network 
+                mnemonic, passphrase, network 
             })
+            setStatus("Criando a carteira HD bip39")
             const result = await walletService.add({
                 name, 
                 masterKey,
@@ -46,6 +50,9 @@ const NetworkScreen = ({ navigation, route }: any) => {
         }, 20)
     }
 
+    if(loading)
+        return <SplashScreen message={status} />
+    
     return (
         <ScrollView contentContainerStyle={{ flex: 1 }}>
 
