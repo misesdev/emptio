@@ -1,5 +1,5 @@
 
-export type UTXO = {
+export type Utxo = {
     txid: string;
     address: string;
     value: number;

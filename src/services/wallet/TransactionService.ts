@@ -10,7 +10,7 @@ import { ITransactionService } from "./ITransactionService";
 import mempool from "@mempool/mempool.js";
 import { BNetwork } from "bitcoin-tx-lib";
 import { FeeRate } from "./types/FeeRate";
-import { UTXO } from "./types/Utxo";
+import { Utxo } from "./types/Utxo";
 
 export default class TransactionService implements ITransactionService
 {
@@ -38,14 +38,14 @@ export default class TransactionService implements ITransactionService
         this._fees = service.bitcoin.fees;
     }
 
-    public async getUtxos(address: string, cached: boolean = false): Promise<UTXO[]> 
+    public async getUtxos(address: string, cached: boolean = false): Promise<Utxo[]> 
     {
         if(cached) {
             const utxos = await this._utxoStorage.list(address)
             return utxos
         }
         const utxos = await this._addresses.getAddressTxsUtxo({ address })
-        const results = utxos.map((utxo): UTXO => ({
+        const results = utxos.map((utxo): Utxo => ({
             txid: utxo.txid,
             address: address,
             vout: utxo.vout,

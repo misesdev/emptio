@@ -8,7 +8,7 @@ import { ECPairKey, HDKManager, HDTransaction, HDWallet,
 import TransactionService from "./TransactionService";
 import { BTransaction } from "./types/Transaction";
 import { Wallet } from "./types/Wallet";
-import { UTXO } from "./types/Utxo";
+import { Utxo } from "./types/Utxo";
 import { FeeRate } from "./types/FeeRate";
 
 export default class WalletService implements IWalletService 
@@ -132,7 +132,7 @@ export default class WalletService implements IWalletService
         return this._hdwallet.listChangeAddresses(quantity)
     }
     
-    public async listUtxos(cached: boolean = false): Promise<AppResponse<UTXO[]>> 
+    public async listUtxos(cached: boolean = false): Promise<AppResponse<Utxo[]>> 
     {
         try {
             if(!this._wallet)

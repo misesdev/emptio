@@ -1,6 +1,6 @@
 import { BNetwork } from "bitcoin-tx-lib";
 
-export interface Wallet {
+export type Wallet = {
     name?: string;
     default?: boolean;
     lastBalance?: number;

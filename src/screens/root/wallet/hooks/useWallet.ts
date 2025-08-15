@@ -2,7 +2,7 @@ import { useService } from "@src/providers/ServiceProvider"
 import { BTransaction } from "@services/wallet/types/Transaction"
 import { Wallet } from "@services/wallet/types/Wallet"
 import { useCallback, useEffect, useState } from "react"
-import { UTXO } from "@services/wallet/types/Utxo"
+import { Utxo } from "@services/wallet/types/Utxo"
 
 export const useWallet = ({ navigation, route }: any) => {
 
@@ -10,7 +10,7 @@ export const useWallet = ({ navigation, route }: any) => {
     const [refreshing, setRefreshing] = useState(false)
     const [transactions, setTransactions] = useState<BTransaction[]>([])
     const [wallet, setWallet] = useState<Wallet>({} as Wallet)
-    const [utxos, setUtxos] = useState<UTXO[]>([])
+    const [utxos, setUtxos] = useState<Utxo[]>([])
 
     useEffect(() => {
         setTimeout(loadTransactions, 50)
