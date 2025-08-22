@@ -13,19 +13,33 @@ export type TxProps = {
     txid: string;
 }
 
-export type BlockChainProps = {
+export type BlockChainAddress = {
+    addrs?: string[];
+    address?: string;
     network?: BNetwork;
-    addrs: string[];
 }
 
-interface IBlockChainService {
-    getUtxos(props: BlockChainProps): Promise<Utxo[]>;
-    getBalance(props: BlockChainProps): Promise<Balance>;
+export type SyncBlockChainProps = {
+    addrs: string[];
+    network?: BNetwork;
+    onTransactions: () => BTransaction[];
+}
+
+interface IBlockChainService 
+{    
+    getBalance(props: Required<Pick<BlockChainAddress, "address"|"network">>): Promise<Balance>;
+    listBalance(props: Required<Pick<BlockChainAddress, "addrs"|"network">>): Promise<Balance>;
+
+    getUtxos(props: Required<Pick<BlockChainAddress, "address"|"network">>): Promise<Utxo[]>;
+    listUtxos(props: Required<Pick<BlockChainAddress, "addrs"|"network">>): Promise<Utxo[]>;
+    
+    getTransactions(props: Required<Pick<BlockChainAddress, "address"|"network">>): Promise<BTransaction[]>;
+    listTransactions(props: Required<Pick<BlockChainAddress, "addrs"|"network">>): Promise<BTransaction[]>;
 
     getTransaction(props: TxProps): Promise<BTransaction>;
-    listTransactions(props: BlockChainProps): Promise<BTransaction[]>;
-
     pushTransaction(props: PushTxProps): Promise<string>;
+    
+    sync(props:  SyncBlockChainProps): Promise<void>;
 }
 
 export default IBlockChainService
