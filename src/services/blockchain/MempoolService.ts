@@ -1,5 +1,4 @@
-import IBlockChainService, { BlockChainAddress,
-    PushTxProps, SyncBlockChainProps, TxProps } from "./IBlockChainService";
+import IBlockChainService, { BlockChainAddress, BlockChainTxProps } from "./IBlockChainService";
 import { BTransaction } from "../wallet/types/Transaction";
 import { Balance } from "../wallet/types/Balance";
 import { Utxo } from "../wallet/types/Utxo";
@@ -9,7 +8,7 @@ class MempoolService implements IBlockChainService
 {
     public async getUtxos({ 
         address, network="mainnet" 
-    }: Required<Pick<BlockChainAddress, "address"|"network">>): Promise<Utxo[]> 
+    }: Pick<BlockChainAddress,"address"|"network">): Promise<Utxo[]> 
     {
         const apiUrl = this.getApiUrl(network) 
 
@@ -18,7 +17,7 @@ class MempoolService implements IBlockChainService
 
     public async listUtxos({ 
         addrs, network="mainnet" 
-    }: Required<Pick<BlockChainAddress, "addrs"|"network">>): Promise<Utxo[]> 
+    }: Pick<BlockChainAddress,"addrs"|"network">): Promise<Utxo[]> 
     {
         const apiUrl = this.getApiUrl(network) 
 
@@ -27,21 +26,23 @@ class MempoolService implements IBlockChainService
 
     public async getBalance({ 
         address, network="mainnet" 
-    }: Required<Pick<BlockChainAddress, "address"|"network">>): Promise<Balance> 
+    }: Pick<BlockChainAddress,"address"|"network">): Promise<Balance> 
     {
         return {} as Balance
     }
 
     public async listBalance({ 
         addrs, network="mainnet"
-    }: Required<Pick<BlockChainAddress, "addrs"|"network">>): Promise<Balance>
+    }: Pick<BlockChainAddress,"addrs"|"network">): Promise<Balance>
     {
         const apiUrl = this.getApiUrl(network) 
 
         return {} as Balance
     }
 
-    public async getTransaction({ txid, network="mainnet" }: TxProps): Promise<BTransaction> 
+    public async getTransaction({ 
+        txid, network="mainnet" 
+    }: Pick<BlockChainTxProps,"txid"|"network">): Promise<BTransaction> 
     {
         const apiUrl = this.getApiUrl(network) 
 
@@ -50,7 +51,7 @@ class MempoolService implements IBlockChainService
 
     public async getTransactions({ 
         address, network="mainnet" 
-    }: Required<Pick<BlockChainAddress, "address"|"network">>): Promise<BTransaction[]> 
+    }: Pick<BlockChainAddress,"address"|"network">): Promise<BTransaction[]> 
     {
         const apiUrl = this.getApiUrl(network)
 
@@ -59,7 +60,7 @@ class MempoolService implements IBlockChainService
 
     public async listTransactions({
         addrs, network="mainnet" 
-    }: Required<Pick<BlockChainAddress, "addrs"|"network">>): Promise<BTransaction[]> 
+    }: Pick<BlockChainAddress,"addrs"|"network">): Promise<BTransaction[]> 
     {
         const apiUrl = this.getApiUrl(network) 
 
@@ -68,18 +69,11 @@ class MempoolService implements IBlockChainService
 
     public async pushTransaction({
         tx, network="mainnet"
-    }: PushTxProps): Promise<string>
+    }: Pick<BlockChainTxProps,"tx"|"network">): Promise<string>
     {
         const apiUrl = this.getApiUrl(network) 
 
         return "txid"
-    }
-
-    public async sync({ 
-        addrs, network="mainnet", onTransactions 
-    }: SyncBlockChainProps): Promise<void> 
-    {
-
     }
 
     private getApiUrl(network: BNetwork="mainnet"): string
@@ -89,7 +83,4 @@ class MempoolService implements IBlockChainService
     }
 }
 
-const service = new MempoolService()
-
-service.listUtxos({ addrs: [], network: "mainnet" })
 export default MempoolService
