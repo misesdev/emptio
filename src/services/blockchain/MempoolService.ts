@@ -1,85 +1,219 @@
-import IBlockChainService, { BlockChainAddress, BlockChainTxProps } from "./IBlockChainService";
-import { BTransaction } from "../wallet/types/Transaction";
-import { Balance } from "../wallet/types/Balance";
+import IBlockChainService from "./IBlockChainService";
+import { BParticitant, BTransaction } from "../wallet/types/Transaction";
+import { AddressBalance, Balance } from "../wallet/types/Balance";
 import { Utxo } from "../wallet/types/Utxo";
 import { BNetwork } from "bitcoin-tx-lib";
+import axios, { AxiosInstance } from "axios"
+import { FeeRate } from "../wallet/types/FeeRate";
 
 class MempoolService implements IBlockChainService
 {
-    public async getUtxos({ 
-        address, network="mainnet" 
-    }: Pick<BlockChainAddress,"address"|"network">): Promise<Utxo[]> 
+    private readonly _httpClient: AxiosInstance;
+    constructor (network: BNetwork = "mainnet") 
     {
-        const apiUrl = this.getApiUrl(network) 
-
-        return []
+        let apiUrl = process.env.MEMPOOL_MAIN as string
+        if(network == "testnet")
+            apiUrl = process.env.MEMPOOL_TESTNET as string
+        this._httpClient = axios.create({
+            baseURL: apiUrl,
+            timeout: 3000
+        })
     }
 
-    public async listUtxos({ 
-        addrs, network="mainnet" 
-    }: Pick<BlockChainAddress,"addrs"|"network">): Promise<Utxo[]> 
+    public async getUtxos(address: string): Promise<Utxo[]> 
     {
-        const apiUrl = this.getApiUrl(network) 
-
-        return []
+        const response = await this._httpClient.get(`/address/${address}/utxo`)
+        return response.data.map((u: any): Utxo => ({
+            address,
+            txid: u.txid,
+            vout: u.vout,
+            value: u.value,
+            confirmed: u.status.confirmed,
+            block_hash: u.status.block_hash,
+            block_height: u.status.block_height,
+            block_time: u.status.block_time
+        }))
     }
 
-    public async getBalance({ 
-        address, network="mainnet" 
-    }: Pick<BlockChainAddress,"address"|"network">): Promise<Balance> 
+    public async listUtxos(addrs: string[]): Promise<Utxo[]> 
     {
-        return {} as Balance
+        const results: Utxo[] = []
+        for (const address of addrs) {
+            const utxos = await this.getUtxos(address)
+            results.push(...utxos)
+        }
+        return results
     }
 
-    public async listBalance({ 
-        addrs, network="mainnet"
-    }: Pick<BlockChainAddress,"addrs"|"network">): Promise<Balance>
+    public async getBalance(address: string): Promise<AddressBalance> 
     {
-        const apiUrl = this.getApiUrl(network) 
-
-        return {} as Balance
+        const response = await this._httpClient.get(`/address/${address}`)
+        const chain = response.data.chain_stats
+        const mempool = response.data.mempool_stats
+        return {
+            address: response.data.address,
+            confirmedBalance: chain.funded_txo_sum - chain.spent_txo_sum,
+            unconfirmedBalance: mempool.funded_txo_sum - mempool.spent_txo_sum,
+            totalBalance: (
+                chain.funded_txo_sum - chain.spent_txo_sum + 
+                mempool.funded_txo_sum - mempool.spent_txo_sum
+            ),
+            received: (chain.funded_txo_sum + mempool.funded_txo_sum),
+            sent: (chain.spent_txo_sum + mempool.spent_txo_sum),
+            received_txs: (
+                (chain.tx_count - chain.spent_txo_count) +
+                (mempool.tx_count - mempool.spent_txo_count)
+            ),
+            sent_txs: (chain.spent_txo_count + mempool.spent_txo_count),
+            txs: (chain.tx_count + chain.tx_count),
+        } 
     }
 
-    public async getTransaction({ 
-        txid, network="mainnet" 
-    }: Pick<BlockChainTxProps,"txid"|"network">): Promise<BTransaction> 
+    public async listBalance(addrs: string[]): Promise<Balance>
     {
-        const apiUrl = this.getApiUrl(network) 
-
-        return {} as BTransaction
+        const addrsBalances: AddressBalance[] = []
+        for (let address of addrs) {
+            let balance = await this.getBalance(address)
+            addrsBalances.push(balance)
+        }
+        const balance = addrsBalances.reduce((acc, ab) => {
+            acc.sent += ab.sent
+            acc.received += ab.received
+            acc.confirmedBalance += ab.confirmedBalance
+            acc.unconfirmedBalance += ab.unconfirmedBalance
+            acc.totalBalance += ab.totalBalance
+            acc.received_txs += ab.received_txs,
+            acc.sent_txs += ab.sent_txs
+            acc.txs += ab.txs
+            return acc
+        }, {
+            received: 0,
+            sent: 0,
+            confirmedBalance: 0,
+            unconfirmedBalance: 0,
+            totalBalance: 0,
+            received_txs: 0,
+            sent_txs: 0,
+            txs: 0
+        })
+        const totalBalance: Balance = { ...balance, addrsBalances }
+        return totalBalance
     }
 
-    public async getTransactions({ 
-        address, network="mainnet" 
-    }: Pick<BlockChainAddress,"address"|"network">): Promise<BTransaction[]> 
+    public async getTransaction(txid: string): Promise<BTransaction> 
     {
-        const apiUrl = this.getApiUrl(network)
-
-        return []
+        const response = await this._httpClient.get(`/tx/${txid}`)
+        const tx: any = response.data
+        const participants: BParticitant[] = []
+        let input = 0, output = 0
+        for(let vin of tx.vin) {
+            participants.push({
+                type: "input",
+                txid: vin.txid,
+                vout: vin.vout,
+                address: vin.prevout.scriptpubkey_address,
+                value: vin.prevout.value
+            })
+            input += vin.prevout.value
+        }
+        for(let vout of tx.vout) {
+            participants.push({
+                type: "output",
+                txid: tx.txid,
+                vout: tx.vout.indexOf(vout),
+                address: vout.scriptpubkey_address,
+                value: vout.value
+            })
+            output += vout.value
+        }
+        return {
+            txid: tx.txid,
+            fee: tx.fee,
+            type: "unknown",
+            value: input - (output+tx.fee), 
+            confirmed: tx.status.confirmed,
+            block_hash: tx.status.block_hash,
+            block_height: tx.status.block_height,
+            block_time: tx.status.block_time,
+            participants,
+        } 
     }
 
-    public async listTransactions({
-        addrs, network="mainnet" 
-    }: Pick<BlockChainAddress,"addrs"|"network">): Promise<BTransaction[]> 
+    public async getTransactions(address: string): Promise<BTransaction[]> 
     {
-        const apiUrl = this.getApiUrl(network) 
-
-        return []
+        const response = await this._httpClient.get(`/address/${address}/txs`)
+        const transactions: BTransaction[] = []
+        for(let tx of response.data) {
+            let input = 0, output = 0
+            const participants: BParticitant[] = []
+            for(let vin of tx.vin) {
+                participants.push({
+                    type: "input",
+                    txid: vin.txid,
+                    vout: vin.vout,
+                    address: vin.prevout.scriptpubkey_address,
+                    value: vin.prevout.value
+                })
+                input += vin.prevout.value
+            }
+            for(let vout of tx.vout) {
+                participants.push({
+                    type: "output",
+                    txid: tx.txid,
+                    vout: tx.vout.indexOf(vout),
+                    address: vout.scriptpubkey_address,
+                    value: vout.value
+                })
+                output += vout.value
+            }
+            const isSending = !!participants
+                .find(t => t.type == "input" && t.address == address)
+            transactions.push({
+                txid: tx.txid,
+                fee: tx.fee,
+                type: isSending ? "sent" : "received", 
+                value: input - (output+tx.fee), 
+                confirmed: tx.status.confirmed,
+                block_hash: tx.status.block_hash,
+                block_height: tx.status.block_height,
+                block_time: tx.status.block_time,
+                participants
+            })
+        }
+        return transactions
     }
 
-    public async pushTransaction({
-        tx, network="mainnet"
-    }: Pick<BlockChainTxProps,"tx"|"network">): Promise<string>
+    public async listTransactions(addrs: string[]): Promise<BTransaction[]> 
     {
-        const apiUrl = this.getApiUrl(network) 
-
-        return "txid"
+        const results: BTransaction[] = []
+        for (const address of addrs) {
+            const txs = await this.getTransactions(address)
+            results.push(...txs)
+        }
+        return results
     }
 
-    private getApiUrl(network: BNetwork="mainnet"): string
+    public async getFeesRecommended(): Promise<FeeRate> 
     {
-        return network=="mainnet" ? process.env.MEMPOOL_MAIN as string : 
-            process.env.MEMPOOL_TESTNET as string;
+        const response = await this._httpClient.get<FeeRate>("/v1/fees/recommended")
+        return response.data
+    }
+
+    public async getBlockHeight(): Promise<number> 
+    {
+        const response = await this._httpClient.get<number>("/blocks/tip/height")
+        return response.data
+    }
+
+    public async pushTransaction(tx: string): Promise<string>
+    {
+        const response = await this._httpClient.post("/tx", tx, {
+            headers: {
+                "Content-Type": "text/plain"
+            }            
+        })
+        const txid = response.data as string
+        return txid
     }
 }
 

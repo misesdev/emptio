@@ -1,7 +1,6 @@
 
 export type BTransaction = {
     txid: string;
-    type: "sent" | "received";
     value: number;
     fee: number;
     confirmed: boolean;
@@ -9,6 +8,7 @@ export type BTransaction = {
     block_time: number;
     block_hash: string;
     participants: BParticitant[];
+    type: "sent" | "received" | "unknown";
 }
 
 export type BParticitant = {
@@ -16,4 +16,5 @@ export type BParticitant = {
     type: "input" | "output";
     address: string;
     value: number;
+    vout: number;
 }

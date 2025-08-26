@@ -1,33 +1,24 @@
-import { BNetwork } from "bitcoin-tx-lib";
-import { Balance } from "../wallet/types/Balance";
+import { AddressBalance, Balance } from "../wallet/types/Balance";
+import { FeeRate } from "../wallet/types/FeeRate";
 import { BTransaction } from "../wallet/types/Transaction";
 import { Utxo } from "../wallet/types/Utxo"
 
-export type BlockChainTxProps = {
-    tx: string;
-    network?: BNetwork;
-    txid: string;
-}
-
-export type BlockChainAddress = {
-    addrs: string[];
-    address: string;
-    network?: BNetwork;
-}
-
 interface IBlockChainService 
 {    
-    getBalance(props: Pick<BlockChainAddress, "address"|"network">): Promise<Balance>;
-    listBalance(props: Pick<BlockChainAddress, "addrs"|"network">): Promise<Balance>;
+    listBalance(addrs: string[]): Promise<Balance>;
+    getBalance(address: string): Promise<AddressBalance>;
 
-    getUtxos(props: Pick<BlockChainAddress, "address"|"network">): Promise<Utxo[]>;
-    listUtxos(props: Pick<BlockChainAddress, "addrs"|"network">): Promise<Utxo[]>;
+    getUtxos(address: string): Promise<Utxo[]>;
+    listUtxos(addrs: string[]): Promise<Utxo[]>;
     
-    getTransaction(props: Pick<BlockChainTxProps, "txid"|"network">): Promise<BTransaction>;
-    getTransactions(props: Pick<BlockChainAddress, "address"|"network">): Promise<BTransaction[]>;
-    listTransactions(props: Pick<BlockChainAddress, "addrs"|"network">): Promise<BTransaction[]>;
+    getTransaction(txid: string): Promise<BTransaction>;
+    getTransactions(address: string): Promise<BTransaction[]>;
+    listTransactions(addrs: string[]): Promise<BTransaction[]>;
 
-    pushTransaction(props: Pick<BlockChainTxProps, "tx"|"network">): Promise<string>;
+    getFeesRecommended(): Promise<FeeRate>;
+    getBlockHeight(): Promise<number>;
+
+    pushTransaction(tx: string): Promise<string>;
 }
 
 export default IBlockChainService
