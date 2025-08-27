@@ -7,7 +7,7 @@ import { BNetwork } from "bitcoin-tx-lib";
 import { FeeRate } from "./types/FeeRate";
 import { Utxo } from "./types/Utxo";
 
-export default class TransactionService implements ITransactionService
+class TransactionService implements ITransactionService
 {
     private readonly _utxoStorage: DataBaseUtxo;
     private readonly _storage: DataBaseTransaction; 
@@ -75,48 +75,6 @@ export default class TransactionService implements ITransactionService
     {
         return await this._mempool.getBlockHeight()
     }
-
-    // private extract(tx: Tx, address?: string): BTransaction 
-    // {
-    //     if(!address)
-    //         address = tx.vin[0].prevout.scriptpubkey_address
-
-    //     const participants: BParticitant[] = [];
-    //     const receiving = tx.vout.some(t => t.scriptpubkey_address == address)
-    //     let inValue = tx.vout.reduce((sum, v) => {
-    //         participants.push({
-    //             type: "output",
-    //             txid: tx.txid,
-    //             address: v.scriptpubkey_address,
-    //             value: v.value
-    //         })
-    //         if(v.scriptpubkey_address == address) 
-    //             return v.value + sum
-    //         return sum
-    //     }, 0)
-
-    //     let outValue = tx.vin.reduce((sum, v) => {
-    //         participants.push({
-    //             type: "input",
-    //             txid: tx.txid,
-    //             address: v.prevout.scriptpubkey_address,
-    //             value: v.prevout.value
-    //         })
-    //         if(v.prevout.scriptpubkey_address == address)
-    //             return sum + v.prevout.value
-    //         return sum
-    //     }, 0)
-
-    //     return {
-    //         txid: tx.txid,
-    //         value: receiving ? outValue : (inValue - outValue - tx.fee),
-    //         type: receiving ? "received" : "sent",
-    //         confirmed: tx.status.confirmed,
-    //         block_height: tx.status.block_height,
-    //         block_time: tx.status.block_time,
-    //         block_hash: tx.status.block_hash,
-    //         participants,
-    //         fee: tx.fee
-    //     } 
-    // }
 }
+
+export default TransactionService

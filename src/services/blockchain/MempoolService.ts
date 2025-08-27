@@ -1,14 +1,15 @@
 import IBlockChainService from "./IBlockChainService";
 import { BParticitant, BTransaction } from "../wallet/types/Transaction";
 import { AddressBalance, Balance } from "../wallet/types/Balance";
+import { FeeRate } from "../wallet/types/FeeRate";
 import { Utxo } from "../wallet/types/Utxo";
 import { BNetwork } from "bitcoin-tx-lib";
 import axios, { AxiosInstance } from "axios"
-import { FeeRate } from "../wallet/types/FeeRate";
 
 class MempoolService implements IBlockChainService
 {
     private readonly _httpClient: AxiosInstance;
+
     constructor (network: BNetwork = "mainnet") 
     {
         let apiUrl = process.env.MEMPOOL_MAIN as string
@@ -16,7 +17,7 @@ class MempoolService implements IBlockChainService
             apiUrl = process.env.MEMPOOL_TESTNET as string
         this._httpClient = axios.create({
             baseURL: apiUrl,
-            timeout: 3000
+            timeout: 10000
         })
     }
 
@@ -100,12 +101,11 @@ class MempoolService implements IBlockChainService
         return totalBalance
     }
 
-    public async getTransaction(txid: string): Promise<BTransaction> 
+    public async getTransaction(txid: string, addressRef: string): Promise<BTransaction> 
     {
         const response = await this._httpClient.get(`/tx/${txid}`)
         const tx: any = response.data
         const participants: BParticitant[] = []
-        let input = 0, output = 0
         for(let vin of tx.vin) {
             participants.push({
                 type: "input",
@@ -114,7 +114,6 @@ class MempoolService implements IBlockChainService
                 address: vin.prevout.scriptpubkey_address,
                 value: vin.prevout.value
             })
-            input += vin.prevout.value
         }
         for(let vout of tx.vout) {
             participants.push({
@@ -124,13 +123,21 @@ class MempoolService implements IBlockChainService
                 address: vout.scriptpubkey_address,
                 value: vout.value
             })
-            output += vout.value
         }
+
+        const receivedValue = tx.vout.filter((t: any) => t.scriptpubkey_address === addressRef)
+            .reduce((sum: any, t: any) => sum + t.value, 0)
+
+        const sentValue = tx.vout.filter((t: any) => t.scriptpubkey_address !== addressRef)
+            .reduce((sum: any, t: any) => sum + t.value, 0)
+
+        const isSent = !!participants.find(t => t.type == "input" && t.address == addressRef)
+
         return {
             txid: tx.txid,
             fee: tx.fee,
-            type: "unknown",
-            value: input - (output+tx.fee), 
+            type: isSent ? "sent" : "received",
+            value: isSent ? sentValue : receivedValue, 
             confirmed: tx.status.confirmed,
             block_hash: tx.status.block_hash,
             block_height: tx.status.block_height,
@@ -143,8 +150,8 @@ class MempoolService implements IBlockChainService
     {
         const response = await this._httpClient.get(`/address/${address}/txs`)
         const transactions: BTransaction[] = []
-        for(let tx of response.data) {
-            let input = 0, output = 0
+        for(let tx of response.data) 
+        {
             const participants: BParticitant[] = []
             for(let vin of tx.vin) {
                 participants.push({
@@ -154,7 +161,6 @@ class MempoolService implements IBlockChainService
                     address: vin.prevout.scriptpubkey_address,
                     value: vin.prevout.value
                 })
-                input += vin.prevout.value
             }
             for(let vout of tx.vout) {
                 participants.push({
@@ -164,15 +170,21 @@ class MempoolService implements IBlockChainService
                     address: vout.scriptpubkey_address,
                     value: vout.value
                 })
-                output += vout.value
             }
-            const isSending = !!participants
-                .find(t => t.type == "input" && t.address == address)
+
+            const receivedValue = tx.vout.filter((t: any) => t.scriptpubkey_address === address)
+                .reduce((sum: any, t: any) => sum + t.value, 0)
+
+            const sentValue = tx.vout.filter((t: any) => t.scriptpubkey_address !== address)
+                .reduce((sum: any, t: any) => sum + t.value, 0)
+
+            const isSent = !!participants.find(t => t.type == "input" && t.address == address)
+            
             transactions.push({
                 txid: tx.txid,
                 fee: tx.fee,
-                type: isSending ? "sent" : "received", 
-                value: input - (output+tx.fee), 
+                type: isSent ? "sent" : "received", 
+                value: isSent ? sentValue : receivedValue, 
                 confirmed: tx.status.confirmed,
                 block_hash: tx.status.block_hash,
                 block_height: tx.status.block_height,
@@ -193,6 +205,17 @@ class MempoolService implements IBlockChainService
         return results
     }
 
+    public async pushTransaction(tx: string): Promise<string>
+    {
+        const response = await this._httpClient.post<string>("/tx", tx, {
+            headers: {
+                "Content-Type": "text/plain"
+            }            
+        })
+        const txid = response.data 
+        return txid
+    }
+    
     public async getFeesRecommended(): Promise<FeeRate> 
     {
         const response = await this._httpClient.get<FeeRate>("/v1/fees/recommended")
@@ -203,17 +226,6 @@ class MempoolService implements IBlockChainService
     {
         const response = await this._httpClient.get<number>("/blocks/tip/height")
         return response.data
-    }
-
-    public async pushTransaction(tx: string): Promise<string>
-    {
-        const response = await this._httpClient.post("/tx", tx, {
-            headers: {
-                "Content-Type": "text/plain"
-            }            
-        })
-        const txid = response.data as string
-        return txid
     }
 }
 

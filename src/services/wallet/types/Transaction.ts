@@ -8,7 +8,7 @@ export type BTransaction = {
     block_time: number;
     block_hash: string;
     participants: BParticitant[];
-    type: "sent" | "received" | "unknown";
+    type: "sent" | "received";
 }
 
 export type BParticitant = {

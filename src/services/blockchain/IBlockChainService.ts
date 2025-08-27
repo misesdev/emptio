@@ -11,14 +11,14 @@ interface IBlockChainService
     getUtxos(address: string): Promise<Utxo[]>;
     listUtxos(addrs: string[]): Promise<Utxo[]>;
     
-    getTransaction(txid: string): Promise<BTransaction>;
+    getTransaction(txid: string, refAddress: string): Promise<BTransaction>;
     getTransactions(address: string): Promise<BTransaction[]>;
     listTransactions(addrs: string[]): Promise<BTransaction[]>;
 
+    pushTransaction(tx: string): Promise<string>;
+    
     getFeesRecommended(): Promise<FeeRate>;
     getBlockHeight(): Promise<number>;
-
-    pushTransaction(tx: string): Promise<string>;
 }
 
 export default IBlockChainService
