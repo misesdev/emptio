@@ -74,13 +74,21 @@ yarn-error.*
 # @end expo-cli
 
 # Build outputs
-android/app/build/
-android/.gradle/
-android/.idea/
-android/.cxx/
-ios/Pods/
-ios/build/
-android/app/.cxx
+/android/app/build/
+/android/.gradle/
+/android/.idea/
+/android/.cxx/
+/ios/Pods/
+/ios/build/
+/android/app/.cxx
+/android/build/ 
+/android/app/*.iml 
+/android/*.iml 
+/android/local.properties 
+/android/.idea/ 
+/android/captures/ 
+/android/gradle-wrapper.jar
+/android/.kotlin
 
 # Arquivos gerados pelo pacote manager
 package-lock.json
@@ -166,3 +174,4 @@ Thumbs.db
 # Node Modules
 node_modules/
 !.expo
+
