@@ -88,8 +88,6 @@ yarn-error.*
 /android/.idea/ 
 /android/captures/ 
 /android/gradle-wrapper.jar
-/android/.kotlin
-
 # Arquivos gerados pelo pacote manager
 package-lock.json
 yarn.lock
